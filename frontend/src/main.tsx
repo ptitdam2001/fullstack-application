@@ -3,6 +3,8 @@ import ReactDOM from "react-dom/client";
 
 import App from "@Application/App";
 
+import '@fontsource/roboto'
+import '@fontsource/poppins'
 import "./index.css";
 
 async function enableMocking() {

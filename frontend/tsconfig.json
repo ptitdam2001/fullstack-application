@@ -19,7 +19,8 @@
     "types": ["vitest/globals", "@testing-library/jest-dom"],
     "paths": {
       "@Application/*": ["application/*", "application/"],
-      "@Common/*": ["common/*", "common/"]
+      "@Common/*": ["common/*", "common/"],
+      "@Assets/*": ["assets/*", "assets/"],
     }
   },
   "include": ["src"],

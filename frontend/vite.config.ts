@@ -1,6 +1,7 @@
 import { UserConfig, defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
 import path from 'path'
+import macrosPlugin from 'vite-plugin-babel-macros'
 import appPackageJson from './package.json'
 
 const ALIASES = {
@@ -63,7 +64,7 @@ export const TEST_CONFIG = {
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), macrosPlugin()],
   test: TEST_CONFIG,
   server: {
     port: 3000,
