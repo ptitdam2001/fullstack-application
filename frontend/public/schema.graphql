@@ -1,0 +1,59 @@
+# -------------- Inputs
+
+input LoginInput {
+  login: String
+  password: String
+}
+
+# -------------- Types
+
+type Query {
+  _empty: String
+}
+
+type LoginOutput {
+  status: String
+  access_token: String
+}
+
+type User {
+  id: String
+  email: String
+  name: String
+  role: String
+  photo: String
+  updatedAt: Int
+  createdAt: Int
+}
+
+type RefreshAccessToken {
+  status: String
+  access_token: String
+}
+
+type getMeOutput {
+  status: String
+  user: User
+}
+
+type LogoutUser {
+  status: String
+}
+
+# ----------------- Schema
+
+type Mutation {
+  _empty: String
+  loginUser(inputs: LoginInput): LoginOutput
+}
+
+type Query {
+  getMe(input: LoginInput): getMeOutput
+  logoutUser: LogoutUser
+  refreshAccessToken: RefreshAccessToken
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+}

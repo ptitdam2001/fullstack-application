@@ -3,8 +3,8 @@ import { faker } from '@faker-js/faker'
 
 export const handlers = [
   // Handles a "Login" mutation
-  graphql.mutation('Login', (req) => {
-    const { login } = req.variables
+  graphql.mutation('LoginUser', (req) => {
+    const { login } = req.variables.input
 
     sessionStorage.setItem('is-authenticated', login)
     return HttpResponse.json({
@@ -26,26 +26,28 @@ export const handlers = [
   }),
 
   // Handles a "GetUserInfo" query
-  graphql.query('GetUserInfo', () => {
-    const authenticatedUser = sessionStorage.getItem('is-authenticated')
-    if (!authenticatedUser) {
-      // When not authenticated, respond with an error
-      return HttpResponse.json({
-        errors: [
-          {
-            message: 'Not authenticated',
-            errorType: 'AuthenticationError',
-          },
-        ],
-      })
-    }
+  graphql.query('GetMe', () => {
+    // const authenticatedUser = sessionStorage.getItem('is-authenticated')
+    // if (!authenticatedUser) {
+    //   // When not authenticated, respond with an error
+    //   return HttpResponse.json({
+    //     errors: [
+    //       {
+    //         message: 'Not authenticated',
+    //         errorType: 'AuthenticationError',
+    //       },
+    //     ],
+    //   })
+    // }
     // When authenticated, respond with a query payload
     return HttpResponse.json({
       data: {
-        user: {
-          userName: authenticatedUser,
-          firstName: faker.person.firstName(),
-          avatar: faker.image.avatar(),
+        getMe: {
+          user: {
+            userName: faker.person.firstName(),
+            firstName: faker.person.firstName(),
+            avatar: faker.image.avatar(),
+          },
         },
       },
     })

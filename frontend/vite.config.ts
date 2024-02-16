@@ -7,6 +7,9 @@ import appPackageJson from './package.json'
 const ALIASES = {
   '@Common': path.resolve(__dirname, './src/common'),
   '@Application': path.resolve(__dirname, './src/application'),
+  "@Authentication": path.resolve(__dirname, './src/authentication/'),
+  "@User": path.resolve(__dirname, './src/user/'),
+  "@Api": path.resolve(__dirname, './src/api'),
 };
 
 export const TEST_CONFIG = {

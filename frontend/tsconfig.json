@@ -21,6 +21,9 @@
       "@Application/*": ["application/*", "application/"],
       "@Common/*": ["common/*", "common/"],
       "@Assets/*": ["assets/*", "assets/"],
+      "@Authentication/*": ["authentication/*", "authentication/"],
+      "@User/*": ["user/*", "user/"],
+      "@Api": ["api/"]
     }
   },
   "include": ["src"],

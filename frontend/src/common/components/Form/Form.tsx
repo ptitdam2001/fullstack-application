@@ -1,4 +1,4 @@
-import { WithDesignProps } from '@feature/Common/types'
+import { WithDesignProps } from '@Common/types'
 import { ReactElement } from 'react'
 import { useForm, DefaultValues, FieldValues, FormProvider, Mode } from 'react-hook-form'
 import { joiResolver } from '@hookform/resolvers/joi'

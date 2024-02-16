@@ -1,16 +1,39 @@
-import "./App.css";
-import { PrimaryButton } from "@Common/components";
-import { SnackbarProvider } from "notistack";
+import { SnackbarProvider } from 'notistack'
+import React from 'react'
+import { RouterProvider, createBrowserRouter } from 'react-router-dom'
+import routes from '@Application/config/routes'
+import { QueryClient, QueryClientProvider } from '@Api'
+
+const router = createBrowserRouter(routes)
+// Create a client
+const graphQLClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 10 * 1000,
+    },
+  },
+  // fetchOptions: () => {
+  //   const sessionId = getAuth({})
+  //   const anotherHeader = sessionId ? { authorization: `Bearer ${sessionId}` } : {}
+  //   return {
+  //     headers: {
+  //       ...anotherHeader,
+  //       accept: '*/*',
+  //     },
+  //   } as RequestInit
+  // },
+})
 
 function App() {
   return (
-    <SnackbarProvider>
-      <h1 className="text-3xl font-bold underline">
-        Hello world!
-        <PrimaryButton>Coucou</PrimaryButton>
-      </h1>
-    </SnackbarProvider>
-  );
+    <React.Suspense fallback="loading">
+      <QueryClientProvider client={graphQLClient}>
+        <SnackbarProvider>
+          <RouterProvider router={router} />
+        </SnackbarProvider>
+      </QueryClientProvider>
+    </React.Suspense>
+  )
 }
 
-export default App;
+export default App

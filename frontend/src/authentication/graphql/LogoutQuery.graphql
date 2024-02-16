@@ -1,0 +1,5 @@
+query LogoutUser {
+  logoutUser {
+    status
+  }
+}

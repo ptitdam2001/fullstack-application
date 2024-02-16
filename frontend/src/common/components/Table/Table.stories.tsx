@@ -3,7 +3,7 @@ import { default as Table } from './Table'
 import { faker } from '@faker-js/faker'
 import { Close } from '../Icon'
 import { useState } from 'react'
-import { usePagination } from '@feature/Common'
+import { usePagination } from '@Common'
 
 interface DataType {
   avatar: string
