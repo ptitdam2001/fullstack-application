@@ -1,10 +1,10 @@
 import classNames from 'classnames'
-import React, { useCallback, useState } from 'react'
+import React, { memo, useCallback, useState } from 'react'
 import { BaseInputProps } from './types'
 
 export interface PasswordInputProps extends BaseInputProps {}
 
-export const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(({ label, id, name, className, error, ...args }, ref) => {
+const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(({ label, id, name, className, error, ...args }, ref) => {
   const [show, setShow] = useState<boolean>(false)
 
   const inputId = id || name
@@ -65,3 +65,4 @@ export const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputPro
     </div>
   )
 })
+export default memo(PasswordInput)

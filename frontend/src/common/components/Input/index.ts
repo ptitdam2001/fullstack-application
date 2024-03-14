@@ -1,3 +1,3 @@
-export * from './TextInput'
-export * from './PasswordInput'
-export * from './EmailInput'
+export { default as TextInput } from './TextInput'
+export { default as PasswordInput } from './PasswordInput'
+export { default as EmailInput } from './EmailInput'

@@ -1,6 +1,7 @@
 import classNames from 'classnames'
-import { useState } from 'react'
+import { memo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { DropDownItem } from './types'
 
 export interface DropDownProps {
   //boolean to always open ddm (for presentation)
@@ -13,15 +14,7 @@ export interface DropDownProps {
   closeOnClick?: boolean
 }
 
-export interface DropDownItem {
-  icon?: JSX.Element
-  label: string
-  desc?: string
-  link?: string
-  onClick?: () => void
-}
-
-export const DropDown = ({ items, withBackground, withDivider, icon, label, forceOpen, closeOnClick = false }: DropDownProps) => {
+const DropDown = ({ items, withBackground, withDivider, icon, label, forceOpen, closeOnClick = false }: DropDownProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const navigate = useNavigate()
 
@@ -102,3 +95,4 @@ export const DropDown = ({ items, withBackground, withDivider, icon, label, forc
     </div>
   )
 }
+export default memo(DropDown)

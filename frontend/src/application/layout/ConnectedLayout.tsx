@@ -2,9 +2,9 @@ import { ApplicationBar } from '@Application/components'
 import { Outlet } from 'react-router-dom'
 import { Sidebar } from '@Common/components'
 import menu from '@Application/config/menu'
+import { memo } from 'react'
 
-export const ConnectedLayout = () => {
-  return (
+export const ConnectedLayout = memo(() => (
     <main style={{ height: '100vh' }}>
       <header>
         <ApplicationBar />
@@ -17,4 +17,4 @@ export const ConnectedLayout = () => {
       </section>
     </main>
   )
-}
+)

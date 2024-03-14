@@ -1,5 +1,5 @@
-import { ReactElement } from 'react'
-import { UserOutlined } from './Icon'
+import { ReactElement, memo } from 'react'
+import { UserOutlined } from '@Common/components/Icon'
 import { styled } from 'styled-components'
 import tw from 'twin.macro'
 
@@ -24,6 +24,8 @@ const AvatarImg = styled.img<AvatarImgProps>(({ size, shape = 'circle' }: Avatar
   shape === 'square' && tw`rounded`,
 ])
 
-export const Avatar = ({ size = 32, shape = 'circle', icon = <UserOutlined />, imgSrc, text }: AvatarProps) => {
+const Avatar = ({ size = 32, shape = 'circle', icon = <UserOutlined />, imgSrc, text }: AvatarProps) => {
   return imgSrc ? <AvatarImg src={imgSrc} alt={text} size={size} shape={shape} /> : <div style={{ width: size, height: size }}>{icon}</div>
 }
+
+export default memo(Avatar)

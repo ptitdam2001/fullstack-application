@@ -1,9 +1,9 @@
 import type { Meta } from '@storybook/react'
 import { default as Table } from './Table'
 import { faker } from '@faker-js/faker'
-import { Close } from '../Icon'
+import { Close } from '@Common/components/Icon'
 import { useState } from 'react'
-import { usePagination } from '@Common'
+import { usePagination } from '@Common/hooks'
 
 interface DataType {
   avatar: string

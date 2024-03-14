@@ -1,6 +1,6 @@
 import { useId } from 'react'
-import { IconButton, PrimaryButton } from '../Buttons'
-import { Tooltip } from '../Tooltip'
+import { IconButton, PrimaryButton } from '@Common/components/Buttons'
+import { Tooltip } from '@Common/components/Tooltip'
 import { TableRowAction } from './types'
 
 type Props<T> = {

@@ -1,8 +1,9 @@
 import { Signin } from '@Authentication/components'
 import { Card, PrimaryButton } from '@Common/components'
+import { memo } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-export const Login = () => {
+export const Login = memo(() => {
   const navigate = useNavigate()
 
   const handleConnected = () => {
@@ -17,4 +18,4 @@ export const Login = () => {
       </Card>
     </section>
   )
-}
+})

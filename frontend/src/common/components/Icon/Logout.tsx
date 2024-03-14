@@ -1,6 +1,7 @@
+import { memo } from 'react'
 import { BaseIconProps } from './types'
 
-export const LogoutIcon = ({ className }: BaseIconProps) => (
+export const LogoutIcon = memo(({ className }: BaseIconProps) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={className}>
     <path
       fillRule="evenodd"
@@ -8,4 +9,4 @@ export const LogoutIcon = ({ className }: BaseIconProps) => (
       clipRule="evenodd"
     />
   </svg>
-)
+))

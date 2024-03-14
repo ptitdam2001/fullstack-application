@@ -1,8 +1,9 @@
-import { MenuItemProp } from '../../../types'
+import { MenuItemProp } from '@Common/types'
 // import { v4 as uuid } from 'uuid'
 import { useNavigate } from 'react-router-dom'
 // import { ReactNode } from 'react'
-import { LateralMenu } from './Menu'
+import { LateralMenu } from '../Menu'
+import { memo } from 'react'
 
 // type MenuItem = {
 //   key: string
@@ -28,7 +29,7 @@ type Props = {
   menu: MenuItemProp[]
 }
 
-export const Sidebar = ({ menu }: Props) => {
+const Sidebar = ({ menu }: Props) => {
   const navigate = useNavigate()
 
   return (
@@ -44,7 +45,7 @@ export const Sidebar = ({ menu }: Props) => {
     //   }}
     //   triggerSubMenuAction="click"
     // />
-    <span role="menu">
+    <menu role="menu">
       <LateralMenu
         items={menu.map(({ icon, label, link }) => ({
           label,
@@ -56,6 +57,7 @@ export const Sidebar = ({ menu }: Props) => {
           },
         }))}
       />
-    </span>
+    </menu>
   )
 }
+export default memo(Sidebar)

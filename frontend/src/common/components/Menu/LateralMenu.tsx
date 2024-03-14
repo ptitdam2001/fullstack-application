@@ -1,16 +1,16 @@
 import classNames from 'classnames'
-import { useEffect, useState } from 'react'
+import { memo, useEffect, useState } from 'react'
 import { IconButton } from '../Buttons'
 import { ChevronLeft, ChevronRight } from '../Icon'
 import { MenuItem } from './types'
-import { LateralMenuItem } from './LateralMenuItem'
+import LateralMenuItem from './LateralMenuItem'
 
 type LateralMenuProps = {
   expanded?: boolean
   items: MenuItem[]
 }
 
-export const LateralMenu = ({ expanded = false, items }: LateralMenuProps) => {
+export const LateralMenu = memo(({ expanded = false, items }: LateralMenuProps) => {
   const [expandedMenu, setExpandedMenu] = useState<boolean>(expanded)
 
   useEffect(() => {
@@ -42,4 +42,4 @@ export const LateralMenu = ({ expanded = false, items }: LateralMenuProps) => {
       </ul>
     </nav>
   )
-}
+})

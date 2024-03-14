@@ -1,5 +1,5 @@
 import classNames from 'classnames'
-import { ReactNode, useMemo } from 'react'
+import { ReactNode, memo, useMemo } from 'react'
 
 type TooltipProps = {
   title?: ReactNode
@@ -7,7 +7,7 @@ type TooltipProps = {
   children?: ReactNode
 }
 
-export const Tooltip = ({ title, children, position = 'top' }: TooltipProps) => {
+const Tooltip = ({ title, children, position = 'top' }: TooltipProps) => {
   const tooltipClasses = useMemo(() => {
     switch (position) {
       case 'bottom':
@@ -49,3 +49,4 @@ export const Tooltip = ({ title, children, position = 'top' }: TooltipProps) => 
     children ?? null
   )
 }
+export default memo(Tooltip)

@@ -1,8 +1,9 @@
+import { memo } from 'react';
 import { useRouteError } from 'react-router-dom'
 
 type ErrorOutput = { statusText?: string; message?: string }
 
-export const NotFound = () => {
+export const NotFound = memo(() => {
   const { statusText = '', message = '' }: ErrorOutput = useRouteError() as ErrorOutput
 
   return (
@@ -13,4 +14,4 @@ export const NotFound = () => {
       </p>
     </span>
   )
-}
+})

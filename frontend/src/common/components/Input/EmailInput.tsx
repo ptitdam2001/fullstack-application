@@ -1,10 +1,10 @@
 import classNames from 'classnames'
 import { BaseInputProps } from './types'
-import React from 'react'
+import React, { memo } from 'react'
 
-export interface EmailInputProps extends BaseInputProps {}
+export type EmailInputProps = BaseInputProps
 
-export const EmailInput = React.forwardRef<HTMLInputElement, EmailInputProps>(({ label, id, name, className, error, required, ...args }, ref) => {
+const EmailInput = React.forwardRef<HTMLInputElement, EmailInputProps>(({ label, id, name, className, error, required, ...args }, ref) => {
   const inputId = id || name
   const inputErrorClass = error ? 'ring-red-500 ring-1' : ''
 
@@ -32,3 +32,4 @@ export const EmailInput = React.forwardRef<HTMLInputElement, EmailInputProps>(({
     </div>
   )
 })
+export default memo(EmailInput)

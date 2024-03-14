@@ -2,8 +2,9 @@ import { useNavigate } from 'react-router-dom'
 
 import { ResetPassword as ResetPasswordComponent } from '@Authentication/components'
 import { Card } from '@Common/components'
+import { memo } from 'react'
 
-export const ResetPassword = () => {
+export const ResetPassword = memo(() => {
   const navigate = useNavigate()
 
   const handleResetPasswordSucceed = () => {
@@ -17,4 +18,4 @@ export const ResetPassword = () => {
       </Card>
     </section>
   )
-}
+})

@@ -1,5 +1,6 @@
 import { MyProfilMenu, Signout } from '@Authentication/components'
 import { AppBar } from '@Common/components'
+import { memo } from 'react'
 // import { styled } from 'styled-components'
 
 // const Row = styled.div`
@@ -10,8 +11,7 @@ import { AppBar } from '@Common/components'
 // `
 // const Col = styled.span``
 
-export const ApplicationBar = () => {
-  return (
+export const ApplicationBar = memo(() => (
     <AppBar
       logo={{
         img: <img src="/img/logo.jpg" />,
@@ -27,4 +27,4 @@ export const ApplicationBar = () => {
       fixed
     />
   )
-}
+)

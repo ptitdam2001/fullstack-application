@@ -1,4 +1,5 @@
 import { AppBar } from '@Common/components'
+import { memo } from 'react'
 import { Outlet } from 'react-router-dom'
 
 // export const DefaultLayout = () => {
@@ -16,8 +17,7 @@ import { Outlet } from 'react-router-dom'
 //   )
 // }
 
-export const DefaultLayout = () => {
-  return (
+export const DefaultLayout = memo(() => (
     <main className="w-full h-full flex flex-col">
       <header data-testid="defaultLayout-header">
         <AppBar title="Main" />
@@ -28,4 +28,4 @@ export const DefaultLayout = () => {
       <footer></footer>
     </main>
   )
-}
+)
