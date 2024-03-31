@@ -93,6 +93,6 @@
     ]
   },
   "lint-staged": {
-    "*.{ts,tsx,js,css,md}": "prettier --write"
+    "*.{ts,tsx,js,css,md}": "bun run format"
   }
 }
