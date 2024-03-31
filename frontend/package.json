@@ -13,7 +13,8 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "graph-gen": "graphql-codegen --config codegen.ts",
-    "prepare": "cd .. && husky frontend/.husky"
+    "prepare": "cd .. && husky frontend/.husky && husky install",
+    "format": "prettier . --write"
   },
   "dependencies": {
     "@fontsource/poppins": "^5.0.13",
@@ -73,6 +74,7 @@
     "autoprefixer": "^10.4.19",
     "husky": "^9.0.11",
     "jsdom": "^24.0.0",
+    "lint-staged": "^15.2.2",
     "msw": "^2.2.13",
     "msw-storybook-addon": "v2.0.0-beta.1",
     "postcss": "^8.4.38",
