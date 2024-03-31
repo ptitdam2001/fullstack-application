@@ -91,5 +91,8 @@
     "workerDirectory": [
       "public"
     ]
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,css,md}": "prettier --write"
   }
 }
