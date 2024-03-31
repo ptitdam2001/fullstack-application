@@ -10,6 +10,7 @@ const ALIASES = {
   "@Authentication": path.resolve(__dirname, './src/authentication/'),
   "@User": path.resolve(__dirname, './src/user/'),
   "@Api": path.resolve(__dirname, './src/api'),
+  "@Testing": path.resolve(__dirname, './src/test'),
 };
 
 export const TEST_CONFIG = {

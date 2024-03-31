@@ -17,6 +17,7 @@ const IconButton = ({
   size = 'medium',
   className,
   disabled = false,
+  'data-testid': testId,
 }: IconButtonProps) => {
   const iconSize = useMemo(
     () => ({
@@ -50,7 +51,7 @@ const IconButton = ({
   )
 
   return (
-    <button onClick={onClick} type={type} role="button" className={classes} disabled={disabled}>
+    <button onClick={onClick} type={type} role="button" className={classes} disabled={disabled} data-testid={testId}>
       {icon ? <span className={classNames('flex p-1', iconSize)}>{icon}</span> : children}
     </button>
   )

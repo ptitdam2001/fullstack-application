@@ -18,6 +18,7 @@ const PrimaryButton = ({
   to,
   disabled = false,
   className: classes,
+  'data-testid': testId,
 }: PrimaryButtonProps) => {
   const classname = useMemo(
     () =>
@@ -37,7 +38,7 @@ const PrimaryButton = ({
 
   if (to) {
     return (
-      <Link to={to} className={classname} role="link">
+      <Link to={to} className={classname} role="link" data-testid={testId}>
         {icon && <span className="mr-2">{icon}</span>}
         {children || label}
       </Link>
@@ -45,7 +46,7 @@ const PrimaryButton = ({
   }
 
   return (
-    <button type={type} onClick={onClick} className={classname} disabled={disabled} role="button">
+    <button type={type} onClick={onClick} className={classname} disabled={disabled} role="button" data-testid={testId}>
       {icon && <span className="mr-2 size-4">{icon}</span>}
       {children || label}
     </button>

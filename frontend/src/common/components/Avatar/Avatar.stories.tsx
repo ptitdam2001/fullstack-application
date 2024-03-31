@@ -2,7 +2,6 @@ import type { Meta, StoryObj } from '@storybook/react'
 import Avatar from './Avatar'
 import { faker } from '@faker-js/faker'
 
-
 const meta = {
   title: 'Common/Avatar',
   component: Avatar,
@@ -15,10 +14,22 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Default: Story = {
+export const Square: Story = {
   args: {
     imgSrc: faker.image.avatar(),
     shape: 'square',
-    size: 25
+    size: 40,
   },
+}
+
+export const Circle: Story = {
+  args: {
+    imgSrc: faker.image.avatar(),
+    shape: 'circle',
+    size: 40,
+  },
+}
+
+export const WithoutSrc: Story = {
+  args: {},
 }

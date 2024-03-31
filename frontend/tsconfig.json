@@ -23,7 +23,8 @@
       "@Assets/*": ["assets/*", "assets/"],
       "@Authentication/*": ["authentication/*", "authentication/"],
       "@User/*": ["user/*", "user/"],
-      "@Api": ["api/"]
+      "@Api": ["api/"],
+      "@Testing": ["test/"]
     }
   },
   "include": ["src"],

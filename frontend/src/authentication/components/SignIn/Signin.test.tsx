@@ -1,11 +1,13 @@
-import { screen, withGraphQLRenderer } from '@testing'
+import { screen, withGraphQLRenderer } from '@Testing'
 import { BrowserRouter } from 'react-router-dom'
 import { expect, describe, it } from 'vitest'
-import { Signin } from './Signin'
+import Signin from './Signin'
 
 describe('Signin', () => {
   const onConnectionDone = vi.fn()
-  const renderComponent = withGraphQLRenderer(<Signin onConnectionDone={onConnectionDone} />, { wrapper: BrowserRouter })
+  const renderComponent = withGraphQLRenderer(<Signin onConnectionDone={onConnectionDone} />, {
+    wrapper: BrowserRouter,
+  })
 
   it('must a Sign in form', () => {
     renderComponent()
