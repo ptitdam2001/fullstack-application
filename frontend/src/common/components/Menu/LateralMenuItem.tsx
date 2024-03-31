@@ -10,7 +10,10 @@ type LateralMenuItemProps = {
 }
 
 const LateralMenuItem = ({ item, expanded, className }: LateralMenuItemProps) => (
-  <div onClick={item.onClick} className={classNames('group p-2 flex flex-row gap-1 align-middle cursor-pointer items-center', className)}>
+  <div
+    onClick={item.onClick}
+    className={classNames('group p-2 flex flex-row gap-1 align-middle cursor-pointer items-center', className)}
+  >
     <Tooltip position="right" title={expanded ? '' : item.label}>
       <div className="h-6 w-6">{item.icon}</div>
     </Tooltip>

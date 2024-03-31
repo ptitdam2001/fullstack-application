@@ -1,5 +1,5 @@
 import { loginSchema } from '@Authentication/config/validators'
-import { Form, FormField, PasswordInput, PrimaryButton, TextInput } from '@Common/components'
+import { EmailInput, Form, FormField, PasswordInput, PrimaryButton } from '@Common/components'
 import { useLoginUserMutation, graphqlRequestClient, LoginUserMutation } from '@Api'
 import { memo } from 'react'
 
@@ -9,38 +9,58 @@ type FormData = {
 }
 
 type Props = {
-  onConnectionDone: () => void
+  onConnectionDone: VoidFunction
 }
 
 const Signin = ({ onConnectionDone }: Props) => {
-  const { mutate: doLogin } = useLoginUserMutation(graphqlRequestClient, {
-    onSuccess(data: LoginUserMutation) {
-      // Set token
+  const /*{ mutate: doLogin, isPending }*/ mutate = useLoginUserMutation(graphqlRequestClient, {
+      onSuccess(data: LoginUserMutation) {
+        // Set token
 
-      // callback
-      onConnectionDone()
-    },
-    onError(error: any) {
-      console.log('Error Login:', error)
-    }
-  })
-
+        // callback
+        onConnectionDone()
+      },
+      onError(error: any) {
+        console.log('Error Login:', error)
+      },
+    })
+  console.log(mutate)
   const onSubmit = (data: Partial<FormData>) => {
-    doLogin({ input: data })
+    mutate.mutate({ input: data })
   }
 
   return (
-    <Form<FormData> name="signin" onSubmit={onSubmit} className="py-2 flex flex-col gap-2" validation={loginSchema} mode="all">
+    <Form<FormData>
+      name="signin"
+      onSubmit={onSubmit}
+      className="p-2 flex flex-col gap-2"
+      validation={loginSchema}
+      mode="all"
+      defaultValues={{ login: '', password: '' }}
+    >
       <>
         <FormField name="login">
-          {({ field, fieldState: { error } }) => <TextInput {...field} error={error?.message} label="Login" required />}
+          {({ field, fieldState: { error } }) => (
+            <EmailInput
+              {...field}
+              error={error?.message}
+              label="Login"
+              required
+              disabled={mutate.isPending}
+              borderless
+            />
+          )}
         </FormField>
 
         <FormField name="password">
-          {({ field, fieldState: { error } }) => <PasswordInput {...field} error={error?.message} label="Password" />}
+          {({ field, fieldState: { error } }) => (
+            <PasswordInput {...field} error={error?.message} label="Password" disabled={mutate.isPending} />
+          )}
         </FormField>
 
-        <PrimaryButton type="submit">Signin</PrimaryButton>
+        <PrimaryButton type="submit" disabled={mutate.isPending}>
+          Signin
+        </PrimaryButton>
       </>
     </Form>
   )

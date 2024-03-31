@@ -12,15 +12,22 @@ export interface DrawerProps {
   content: ReactNode
 }
 
-const Drawer = ({ open = false, toggleIcon = <Bars3 />, closeIcon = <Close />, position = 'left', title, content }: DrawerProps) => {
+const Drawer = ({
+  open = false,
+  toggleIcon = <Bars3 />,
+  closeIcon = <Close />,
+  position = 'left',
+  title,
+  content,
+}: DrawerProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(open)
 
   const toggleOpen = useCallback(() => {
-    setIsOpen((oldValue) => !oldValue)
+    setIsOpen(oldValue => !oldValue)
   }, [setIsOpen])
 
   return (
-    <section className="flex" role='menu'>
+    <section className="flex" role="menu">
       <IconButton onClick={toggleOpen} icon={toggleIcon} withBorder />
       <div
         className={classNames('fixed top-0 h-full duration-500 bg-white shadow-lg flex flex-col', {
@@ -35,7 +42,9 @@ const Drawer = ({ open = false, toggleIcon = <Bars3 />, closeIcon = <Close />, p
           <span className="flex-grow">{title}</span>
           <IconButton withBorder={false} onClick={toggleOpen} size="small" icon={closeIcon} />
         </h2>
-        <section className="px-2 py-2 box-content overflow-auto hover:overflow-scroll overscroll-contain">{content}</section>
+        <section className="px-2 py-2 box-content overflow-auto hover:overflow-scroll overscroll-contain">
+          {content}
+        </section>
       </div>
     </section>
   )

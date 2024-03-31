@@ -6,4 +6,5 @@ export interface BaseInputProps extends Omit<InputHTMLAttributes<HTMLInputElemen
   label?: string
   error?: string
   defaultValue?: InputValueType
+  borderless?: boolean
 }

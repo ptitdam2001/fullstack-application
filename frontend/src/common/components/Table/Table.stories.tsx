@@ -72,7 +72,7 @@ export const SimpleUsage = () => {
         {
           key: 'createdAt',
           label: 'Created at',
-          render: (elt) => <>{elt.createdAt.toDateString()}</>,
+          render: elt => <>{elt.createdAt.toDateString()}</>,
         },
         {
           key: 'status',
@@ -83,8 +83,8 @@ export const SimpleUsage = () => {
         {
           icon: <Close />,
           label: 'Close',
-          onClick: (row) => alert(row.user),
-          disable: (row) => row.status === 'inactive',
+          onClick: row => alert(row.user),
+          disable: row => row.status === 'inactive',
         },
       ]}
       pagination={{

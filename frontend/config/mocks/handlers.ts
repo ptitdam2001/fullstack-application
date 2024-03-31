@@ -1,29 +1,10 @@
 import { graphql, HttpResponse } from 'msw'
 import { faker } from '@faker-js/faker'
 
+import auth from './auth'
+
 export const handlers = [
-  // Handles a "Login" mutation
-  graphql.mutation('LoginUser', (req) => {
-    const { login } = req.variables.input
-
-    sessionStorage.setItem('is-authenticated', login)
-    return HttpResponse.json({
-      data: {
-        login: {
-          sessionId: 'abc-123',
-        },
-      },
-    })
-  }),
-
-  graphql.query('Logout', () => {
-    sessionStorage.removeItem('is-authenticated')
-    return HttpResponse.json({
-      data: {
-        logout: true,
-      },
-    })
-  }),
+  ...auth,
 
   // Handles a "GetUserInfo" query
   graphql.query('GetMe', () => {
@@ -49,15 +30,6 @@ export const handlers = [
             avatar: faker.image.avatar(),
           },
         },
-      },
-    })
-  }),
-
-  graphql.mutation('ResetPasswordMutation', () => {
-    return HttpResponse.json({
-      data: {
-        redirection: '/reset-paswword/auth_token_123',
-        status: 'email_sent',
       },
     })
   }),

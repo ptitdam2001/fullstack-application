@@ -25,7 +25,11 @@ const AvatarImg = styled.img<AvatarImgProps>(({ size, shape = 'circle' }: Avatar
 ])
 
 const Avatar = ({ size = 32, shape = 'circle', icon = <UserOutlined />, imgSrc, text }: AvatarProps) => {
-  return imgSrc ? <AvatarImg src={imgSrc} alt={text} size={size} shape={shape} /> : <div style={{ width: size, height: size }}>{icon}</div>
+  return imgSrc ? (
+    <AvatarImg src={imgSrc} alt={text} size={size} shape={shape} />
+  ) : (
+    <div style={{ width: size, height: size }}>{icon}</div>
+  )
 }
 
 export default memo(Avatar)

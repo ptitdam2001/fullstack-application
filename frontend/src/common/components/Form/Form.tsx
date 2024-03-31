@@ -13,7 +13,15 @@ type FormProps<T> = {
   validation?: Joi.Schema<T>
 } & WithDesignProps
 
-const Form = <T extends FieldValues>({ children, name, onSubmit, defaultValues, mode = 'all', className, validation }: FormProps<T>) => {
+const Form = <T extends FieldValues>({
+  children,
+  name,
+  onSubmit,
+  defaultValues,
+  mode = 'all',
+  className,
+  validation,
+}: FormProps<T>) => {
   const form = useForm<T>({
     defaultValues,
     mode,

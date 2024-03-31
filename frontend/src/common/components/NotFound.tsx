@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo } from 'react'
 import { useRouteError } from 'react-router-dom'
 
 type ErrorOutput = { statusText?: string; message?: string }

@@ -18,16 +18,19 @@ export const LateralMenu = memo(({ expanded = false, items }: LateralMenuProps) 
   }, [expanded])
 
   const toggleExpanded = () => {
-    setExpandedMenu((oldValue) => !oldValue)
+    setExpandedMenu(oldValue => !oldValue)
   }
   const Icon = expandedMenu ? <ChevronLeft /> : <ChevronRight />
 
   return (
     <nav
-      className={classNames('flex flex-col gap-1 transform transition-all duration-350 shadow-sm py-2 h-full bg-primary', {
-        'w-48': expandedMenu,
-        'w-10': !expandedMenu,
-      })}
+      className={classNames(
+        'flex flex-col gap-1 transform transition-all duration-350 shadow-sm py-2 h-full bg-primary',
+        {
+          'w-48': expandedMenu,
+          'w-10': !expandedMenu,
+        }
+      )}
     >
       <div className="flex flex-row-reverse px-2">
         <IconButton onClick={toggleExpanded} icon={Icon} className="text-white" size="small" />
@@ -36,7 +39,11 @@ export const LateralMenu = memo(({ expanded = false, items }: LateralMenuProps) 
       <ul className="text-primaryText">
         {items.map((item, key) => (
           <li key={`menu-item-${key}`} className="h-10">
-            <LateralMenuItem item={item} expanded={expandedMenu} className="hover:bg-slate-200 hover:text-slate-800 h-full" />
+            <LateralMenuItem
+              item={item}
+              expanded={expandedMenu}
+              className="hover:bg-slate-200 hover:text-slate-800 h-full"
+            />
           </li>
         ))}
       </ul>

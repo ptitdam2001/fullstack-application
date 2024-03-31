@@ -32,7 +32,15 @@ export const RowActions = <T,>({ rowActions, row }: Props<T>) => {
           </Tooltip>
         )
       }
-      return <IconButton onClick={handleClick} icon={icon} size="small" disabled={isDisabled} key={`rowAction-${id}-${index}`} />
+      return (
+        <IconButton
+          onClick={handleClick}
+          icon={icon}
+          size="small"
+          disabled={isDisabled}
+          key={`rowAction-${id}-${index}`}
+        />
+      )
     } else if (label) {
       return (
         <PrimaryButton onClick={handleClick} disabled={isDisabled} key={`rowAction-${id}-${index}`}>

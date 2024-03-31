@@ -23,7 +23,7 @@ const Table = <T extends { [k: string]: any }>({ columns, data, title, rowAction
           <table className="min-w-full leading-normal">
             <thead>
               <tr>
-                {columns.map((column) => (
+                {columns.map(column => (
                   <th
                     id={`col-${column.key}`}
                     scope="col"
@@ -34,15 +34,23 @@ const Table = <T extends { [k: string]: any }>({ columns, data, title, rowAction
                   </th>
                 ))}
 
-                <th scope="col" className="px-5 py-3 text-sm font-bold text-left text-gray-800 uppercase bg-white border-b border-gray-200"></th>
+                <th
+                  scope="col"
+                  className="px-5 py-3 text-sm font-bold text-left text-gray-800 uppercase bg-white border-b border-gray-200"
+                ></th>
               </tr>
             </thead>
             <tbody>
               {data.map((line, index) => (
                 <tr key={`body-row-${index}`}>
                   {columns.map(({ key, render }, colIndex) => (
-                    <td className="px-5 py-5 text-sm bg-white border-b border-gray-200" key={`body-row-${index}-col-${colIndex}`}>
-                      {line[key] ? render?.(line) || <p className="text-gray-900 whitespace-no-wrap">{line[key]}</p> : null}
+                    <td
+                      className="px-5 py-5 text-sm bg-white border-b border-gray-200"
+                      key={`body-row-${index}-col-${colIndex}`}
+                    >
+                      {line[key]
+                        ? render?.(line) || <p className="text-gray-900 whitespace-no-wrap">{line[key]}</p>
+                        : null}
                     </td>
                   ))}
                   {/* Actions */}

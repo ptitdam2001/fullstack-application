@@ -13,7 +13,9 @@ export interface AppBarProps {
 }
 
 export const AppBar = memo(({ logo, title, rightContent, fixed = false }: AppBarProps) => (
-  <nav className={classNames('bg-primary text-primaryText dark:bg-primary-800 shadow-lg w-full z-10', { fixed: fixed })}>
+  <nav
+    className={classNames('bg-primary text-primaryText dark:bg-primary-800 shadow-lg w-full z-10', { fixed: fixed })}
+  >
     <div className="px-8 mx-auto max-w-7xl">
       <div className="flex items-center justify-between h-16">
         <div className="w-full justify-start flex items-center">
