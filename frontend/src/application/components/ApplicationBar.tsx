@@ -12,19 +12,18 @@ import { memo } from 'react'
 // const Col = styled.span``
 
 export const ApplicationBar = memo(() => (
-    <AppBar
-      logo={{
-        img: <img src="/img/logo.jpg" />,
-        url: '/app',
-      }}
-      title="Welcome"
-      rightContent={
-        <span className="flex flex-row">
-          <MyProfilMenu />
-          <Signout redirect="/auth/signin" />
-        </span>
-      }
-      fixed
-    />
-  )
-)
+  <AppBar
+    logo={{
+      img: <img src="/img/logo.jpg" />,
+      url: '/app',
+    }}
+    title="Welcome"
+    rightContent={
+      <span className="flex flex-row">
+        <MyProfilMenu />
+        <Signout redirect="/auth/signin" />
+      </span>
+    }
+    fixed
+  />
+))

@@ -1,4 +1,4 @@
 export const unsetAuth = () => {
-  localStorage.removeItem('sessionId');
-  return true;
+  localStorage.removeItem('sessionId')
+  return true
 }

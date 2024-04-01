@@ -1,7 +1,7 @@
-import { graphqlRequestClient, useGetMeQuery } from '@Api';
+import { graphqlRequestClient, useGetMeQuery } from '@Api'
 
 export const useCurrentUser = () => {
-  const { data, refetch, error, isFetching} = useGetMeQuery(graphqlRequestClient)
+  const { data, refetch, error, isFetching } = useGetMeQuery(graphqlRequestClient)
 
   return {
     user: data?.getMe?.user,

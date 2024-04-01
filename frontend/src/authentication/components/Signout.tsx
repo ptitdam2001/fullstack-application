@@ -3,17 +3,20 @@ import { unsetAuth } from '../helpers'
 import { LogoutIcon } from '@Common/components'
 import { graphqlRequestClient, useLogoutUserQuery } from '@Api'
 
-
 type Props = {
   redirect?: string
 }
 
 export const Signout = ({ redirect = '/' }: Props) => {
-  const { refetch: doLogout } = useLogoutUserQuery(graphqlRequestClient, {}, {
-    enabled: false,
-    retry: false,
-    queryKey: ['logoutUser'],
-  })
+  const { refetch: doLogout } = useLogoutUserQuery(
+    graphqlRequestClient,
+    {},
+    {
+      enabled: false,
+      retry: false,
+      queryKey: ['logoutUser'],
+    }
+  )
 
   const navigate = useNavigate()
 

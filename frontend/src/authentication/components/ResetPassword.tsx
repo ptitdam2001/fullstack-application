@@ -24,11 +24,11 @@ export const ResetPassword = ({ onSuccess }: Props) => {
       data: {
         login: {
           sessionId: '',
-        }
+        },
       },
       error: false,
     })
-  };
+  }
 
   const { enqueueSnackbar } = useSnackbar()
 
@@ -62,7 +62,9 @@ export const ResetPassword = ({ onSuccess }: Props) => {
     <Form<FormData> onSubmit={onSubmit} className="flex flex-col p-2 gap-2" validation={forgotPasswordSchema}>
       <>
         <FormField name="email">
-          {({ field, fieldState: { error } }) => <EmailInput {...field} placeholder="Tape your email" required error={error?.message} />}
+          {({ field, fieldState: { error } }) => (
+            <EmailInput {...field} placeholder="Tape your email" required error={error?.message} />
+          )}
         </FormField>
         <PrimaryButton type="submit">Reinit.</PrimaryButton>
       </>

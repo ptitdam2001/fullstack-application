@@ -20,11 +20,15 @@ export const MyProfileForm = () => {
         <Avatar size={100} shape="square" imgSrc={user.avatar} />
 
         <FormField name="userName">
-          {({ field, fieldState: { error } }) => <TextInput {...field} error={error?.message} required label="Username" />}
+          {({ field, fieldState: { error } }) => (
+            <TextInput {...field} error={error?.message} required label="Username" />
+          )}
         </FormField>
 
         <FormField name="firstName">
-          {({ field, fieldState: { error } }) => <TextInput {...field} error={error?.message} required label="First name" />}
+          {({ field, fieldState: { error } }) => (
+            <TextInput {...field} error={error?.message} required label="First name" />
+          )}
         </FormField>
       </>
     </Form>

@@ -1,4 +1,4 @@
-import { HttpResponse, delay, graphql } from "msw"
+import { HttpResponse, delay, graphql } from 'msw'
 
 export default [
   graphql.mutation('ResetPasswordMutation', () => {
@@ -10,7 +10,7 @@ export default [
     })
   }),
   // Handles a "Login" mutation
-  graphql.mutation('LoginUser', async (req) => {
+  graphql.mutation('LoginUser', async req => {
     const { login } = req.variables.input
 
     await delay(2000)

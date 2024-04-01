@@ -18,14 +18,13 @@ import { Outlet } from 'react-router-dom'
 // }
 
 export const DefaultLayout = memo(() => (
-    <main className="w-full h-full flex flex-col">
-      <header data-testid="defaultLayout-header">
-        <AppBar title="Main" />
-      </header>
-      <section role="main" data-testid="defaultLayout-content" className="flex flex-1 flex-col">
-        <Outlet />
-      </section>
-      <footer></footer>
-    </main>
-  )
-)
+  <main className="w-full h-full flex flex-col">
+    <header data-testid="defaultLayout-header">
+      <AppBar title="Main" />
+    </header>
+    <section role="main" data-testid="defaultLayout-content" className="flex flex-1 flex-col">
+      <Outlet />
+    </section>
+    <footer></footer>
+  </main>
+))

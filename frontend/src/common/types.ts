@@ -3,12 +3,12 @@ export type WithDesignProps = {
 }
 
 export type WithDateTestIdProps = {
-  'data-testid'?: string;
+  'data-testid'?: string
 }
 
 export interface MenuItemProp {
-	label: string;
-	link: string;
-	icon: React.ReactElement;
-	children?: MenuItemProp[];
+  label: string
+  link: string
+  icon: React.ReactElement
+  children?: MenuItemProp[]
 }

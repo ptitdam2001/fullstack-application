@@ -1,18 +1,17 @@
-import React from 'react';
+import React from 'react'
 
 import { QueryClient, QueryClientProvider } from '../src/api'
 
-import type { Preview } from "@storybook/react";
-import { withThemeByClassName } from "@storybook/addon-themes";
-import { initialize, mswLoader, MswParameters } from 'msw-storybook-addon';
+import type { Preview } from '@storybook/react'
+import { withThemeByClassName } from '@storybook/addon-themes'
+import { initialize, mswLoader, MswParameters } from 'msw-storybook-addon'
 
 import '../src/index.css'
 
 import authHandlers from '../config/mocks/auth'
 
 // Initialize MSW
-initialize({
-});
+initialize({})
 
 const graphQLClient = new QueryClient({
   defaultOptions: {
@@ -32,9 +31,9 @@ const graphQLClient = new QueryClient({
   // },
 })
 
-const preview: Preview= {
+const preview: Preview = {
   parameters: {
-    actions: { argTypesRegex: "^on[A-Z].*" },
+    actions: { argTypesRegex: '^on[A-Z].*' },
     controls: {
       matchers: {
         color: /(background|color)$/i,
@@ -44,19 +43,19 @@ const preview: Preview= {
     msw: {
       handlers: {
         auth: authHandlers,
-      }
+      },
     },
   },
   decorators: [
     withThemeByClassName({
       themes: {
-          // nameOfTheme: 'classNameForTheme',
-          light: '',
-          dark: 'dark',
+        // nameOfTheme: 'classNameForTheme',
+        light: '',
+        dark: 'dark',
       },
       defaultTheme: 'light',
     }),
-    (Story) => (
+    Story => (
       <QueryClientProvider client={graphQLClient}>
         <Story />
       </QueryClientProvider>
@@ -64,6 +63,6 @@ const preview: Preview= {
   ],
   // Provide the MSW addon loader globally
   loaders: [mswLoader],
-};
+}
 
-export default preview;
+export default preview

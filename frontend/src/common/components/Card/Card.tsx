@@ -8,7 +8,7 @@ export interface CardProps {
 }
 
 export const Card = styled.div<CardProps>`
-  flex-direction: ${(props) => props.direction ?? 'row'};
+  flex-direction: ${props => props.direction ?? 'row'};
   ${tw`
     m-2
     p-2

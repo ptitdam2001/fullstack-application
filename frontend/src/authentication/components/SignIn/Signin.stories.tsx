@@ -17,13 +17,12 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
-  args: {
-  },
+  args: {},
   parameters: {
     msw: {
       auth: [
         // Handles a "Login" mutation
-        graphql.mutation('LoginUser', async (req) => {
+        graphql.mutation('LoginUser', async req => {
           const { login } = req.variables.input
 
           await delay(5000)
@@ -37,7 +36,7 @@ export const Default: Story = {
             },
           })
         }),
-      ]
-    }
-  }
+      ],
+    },
+  },
 }

@@ -2,7 +2,14 @@ import { memo } from 'react'
 import { BaseIconProps } from './types'
 
 export const OpenEye = memo(({ className }: BaseIconProps) => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke="currentColor"
+    className={className}
+  >
     <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
     <path
       fill-rule="evenodd"

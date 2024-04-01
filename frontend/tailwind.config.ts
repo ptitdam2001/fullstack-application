@@ -2,10 +2,7 @@ import type { Config } from 'tailwindcss'
 
 export default {
   darkMode: ['class', '[data-mode="dark"]'],
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     screens: {
       sm: '480px',
@@ -19,8 +16,8 @@ export default {
     },
     extend: {
       colors: {
-        'primary': '#7e5bef',
-        'primaryText': '#fff'
+        primary: '#7e5bef',
+        primaryText: '#fff',
       },
       spacing: {
         '128': '32rem',
@@ -28,11 +25,8 @@ export default {
       },
       borderRadius: {
         '4xl': '2rem',
-      }
-    }
+      },
+    },
   },
-  plugins: [
-    require('@tailwindcss/typography'),
-    require('@tailwindcss/forms'),
-  ],
+  plugins: [require('@tailwindcss/typography'), require('@tailwindcss/forms')],
 } satisfies Config

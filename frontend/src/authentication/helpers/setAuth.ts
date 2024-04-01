@@ -1,8 +1,8 @@
 export const setAuth = (token: string) => {
-	if (token) {
-		localStorage.setItem("sessionId", token);
-		return true;
-	}
+  if (token) {
+    localStorage.setItem('sessionId', token)
+    return true
+  }
 
-	return false;
-};
+  return false
+}

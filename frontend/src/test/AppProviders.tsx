@@ -14,7 +14,9 @@ const graphQLClient = new QueryClient({
   },
 })
 
-export const UrqlClientProvider = ({ children }: Props) =><QueryClientProvider client={graphQLClient}>{children}</QueryClientProvider>
+export const UrqlClientProvider = ({ children }: Props) => (
+  <QueryClientProvider client={graphQLClient}>{children}</QueryClientProvider>
+)
 
 export const AppProviders = ({ children }: Props) => (
   <BrowserRouter>
