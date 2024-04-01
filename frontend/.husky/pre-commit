@@ -1,5 +1,0 @@
-cd frontend
-
-bun run test --run
-
-npx lint-staged

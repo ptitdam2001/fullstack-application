@@ -13,7 +13,6 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "graph-gen": "graphql-codegen --config codegen.ts",
-    "prepare": "cd .. && husky frontend/.husky && husky install",
     "format": "prettier . --write"
   },
   "dependencies": {
@@ -72,7 +71,6 @@
     "@vitest/coverage-istanbul": "^1.4.0",
     "@vitest/ui": "^1.4.0",
     "autoprefixer": "^10.4.19",
-    "husky": "^9.0.11",
     "jsdom": "^24.0.0",
     "lint-staged": "^15.2.2",
     "msw": "^2.2.13",
@@ -91,9 +89,5 @@
     "workerDirectory": [
       "public"
     ]
-  },
-  "lint-staged": {
-    "*.{ts,tsx,js,css,scss,mdx,md}": "bun run format",
-    "*.--write": "prettier --write"
   }
 }

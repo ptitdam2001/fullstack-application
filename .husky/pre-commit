@@ -1,0 +1,5 @@
+cd frontend
+
+bun run format
+
+bun run test
