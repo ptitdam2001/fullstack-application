@@ -2,7 +2,7 @@ import { memo, useMemo } from 'react'
 import { TablePaginationProps } from './types'
 import classNames from 'classnames'
 
-export const TablePagination = memo(({ currentPage, maxPage, onClick }: TablePaginationProps) => {
+const Component = ({ currentPage, maxPage, onClick }: TablePaginationProps) => {
   const button = useMemo(() => 'text-gray-600 border hover:bg-gray-100', [])
   const selectedButton = useMemo(() => 'text-indigo-500 border-t border-b hover:bg-indigo-100 font-semibold', [])
 
@@ -61,4 +61,6 @@ export const TablePagination = memo(({ currentPage, maxPage, onClick }: TablePag
       </div>
     </div>
   )
-})
+}
+
+export const TablePagination = memo(Component)

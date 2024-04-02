@@ -10,7 +10,7 @@ type LateralMenuProps = {
   items: MenuItem[]
 }
 
-export const LateralMenu = memo(({ expanded = false, items }: LateralMenuProps) => {
+export const LateralMenuComponent = ({ expanded = false, items }: LateralMenuProps) => {
   const [expandedMenu, setExpandedMenu] = useState<boolean>(expanded)
 
   useEffect(() => {
@@ -49,4 +49,5 @@ export const LateralMenu = memo(({ expanded = false, items }: LateralMenuProps) 
       </ul>
     </nav>
   )
-})
+}
+export const LateralMenu = memo(LateralMenuComponent)

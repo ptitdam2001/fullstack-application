@@ -16,6 +16,7 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(({ 
   return (
     <div className={classNames('relative', className)}>
       <TextInput
+        ref={ref}
         {...args}
         htmlType={show ? 'text' : 'password'}
         error={error}

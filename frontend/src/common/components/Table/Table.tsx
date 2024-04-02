@@ -11,7 +11,7 @@ type TableProps<T> = {
   pagination?: TablePaginationProps
 }
 
-const Table = <T extends { [k: string]: any }>({ columns, data, title, rowActions, pagination }: TableProps<T>) => (
+const Table = <T extends { [k: string]: never }>({ columns, data, title, rowActions, pagination }: TableProps<T>) => (
   <div className="container max-w-3xl px-4 mx-auto sm:px-8">
     <div className="py-8">
       <div className="flex flex-row justify-between w-full mb-1 sm:mb-0">

@@ -1,5 +1,5 @@
 // rome-ignore lint/suspicious/noExplicitAny: <explanation>
-export const getAuth = ({ authState }: any): string | null => {
+export const getAuth = ({ authState }: never): string | null => {
   if (!authState) {
     const sessionId = localStorage.getItem('sessionId')
     // const refreshToken = localStorage.getItem('refreshToken');

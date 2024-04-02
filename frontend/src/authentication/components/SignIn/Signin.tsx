@@ -1,7 +1,7 @@
 import { loginSchema } from '@Authentication/config/validators'
 import { EmailInput, Form, FormField, PasswordInput, PrimaryButton } from '@Common/components'
 import { WithDateTestIdProps } from '@Common/types'
-import { useLoginUserMutation, graphqlRequestClient, LoginUserMutation } from '@Api'
+import { useLoginUserMutation, graphqlRequestClient } from '@Api'
 import { memo } from 'react'
 
 type FormData = {
@@ -15,13 +15,13 @@ type Props = {
 
 const Signin = ({ onConnectionDone, 'data-testid': testId }: Props) => {
   const /*{ mutate: doLogin, isPending }*/ mutate = useLoginUserMutation(graphqlRequestClient, {
-      onSuccess(data: LoginUserMutation) {
+      onSuccess(/* data: LoginUserMutation */) {
         // Set token
 
         // callback
         onConnectionDone()
       },
-      onError(error: any) {
+      onError(error) {
         console.log('Error Login:', error)
       },
     })

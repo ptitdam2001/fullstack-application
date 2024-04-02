@@ -7,11 +7,11 @@ type FormData = {
   email: string
 }
 
-const MUTATION_RESET_PASSWORD = `mutation ResetPasswordMutation($email: String!) {
-  ResetPassword(email: $email) {
-    sessionId
-  }
-}`
+// const MUTATION_RESET_PASSWORD = `mutation ResetPasswordMutation($email: String!) {
+//   ResetPassword(email: $email) {
+//     sessionId
+//   }
+// }`
 
 type Props = {
   onSuccess: () => void
@@ -19,12 +19,13 @@ type Props = {
 
 export const ResetPassword = ({ onSuccess }: Props) => {
   // const [, doResetPassword] = useMutation(MUTATION_RESET_PASSWORD)
-  const doResetPassword = (data: any) => {
+  const doResetPassword = (data: Partial<FormData>) => {
     return Promise.resolve({
       data: {
         login: {
           sessionId: '',
         },
+        extra: data,
       },
       error: false,
     })

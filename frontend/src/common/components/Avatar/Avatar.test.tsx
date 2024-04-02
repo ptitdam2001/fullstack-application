@@ -1,4 +1,4 @@
-import { render, screen } from '@Testing'
+import { render } from '@Testing'
 import Avatar from './Avatar'
 import { faker } from '@faker-js/faker'
 import { userEvent } from '@testing-library/user-event'
