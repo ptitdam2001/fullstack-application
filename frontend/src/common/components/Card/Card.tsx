@@ -1,13 +1,9 @@
-import { ReactNode } from 'react'
+import { memo } from 'react'
 import { styled } from 'styled-components'
 import tw from 'twin.macro'
+import { CardProps } from './types'
 
-export interface CardProps {
-  children: ReactNode
-  direction?: 'column' | 'row' | 'column-reverse' | 'row-reverse'
-}
-
-export const Card = styled.div<CardProps>`
+const Card = styled.section<CardProps>`
   flex-direction: ${props => props.direction ?? 'row'};
   ${tw`
     m-2
@@ -15,9 +11,11 @@ export const Card = styled.div<CardProps>`
     shadow-sm
     border
     border-gray-900/10
-    flex
+    bg-white
     flex
     rounded-lg
     border-solid
   `}
 `
+
+export default memo(Card)

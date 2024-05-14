@@ -2,6 +2,7 @@ import { EmailInput, Form, FormField, PrimaryButton } from '@Common/components'
 import { useSnackbar } from 'notistack'
 // import { useMutation } from '@Api'
 import { forgotPasswordSchema } from '../config/validators'
+import { graphqlRequestClient, useResetPasswordMutation } from '@Api'
 
 type FormData = {
   email: string
@@ -14,31 +15,20 @@ type FormData = {
 // }`
 
 type Props = {
-  onSuccess: () => void
+  onSuccess: (sessionId: string) => void
 }
 
 export const ResetPassword = ({ onSuccess }: Props) => {
-  // const [, doResetPassword] = useMutation(MUTATION_RESET_PASSWORD)
-  const doResetPassword = (data: Partial<FormData>) => {
-    return Promise.resolve({
-      data: {
-        login: {
-          sessionId: '',
-        },
-        extra: data,
-      },
-      error: false,
-    })
-  }
+  const { mutate: doResetPassword, error, data: result } = useResetPasswordMutation(graphqlRequestClient, {})
 
   const { enqueueSnackbar } = useSnackbar()
 
   const onSubmit = async (data: Partial<FormData>) => {
     try {
-      const result = await doResetPassword(data)
+      await doResetPassword({ input: data })
 
-      if (result.error) {
-        console.log('Error Reset Password:', result.error)
+      if (error) {
+        console.log('Error Reset Password:', error)
         enqueueSnackbar({
           message: 'An error during reset password',
           variant: 'error',
@@ -48,7 +38,7 @@ export const ResetPassword = ({ onSuccess }: Props) => {
           message: 'An email was sent to reset your password',
           variant: 'success',
         })
-        onSuccess()
+        onSuccess(result?.resetPassword?.token || '')
       }
     } catch (err) {
       console.log('Error Reset Password:', err)

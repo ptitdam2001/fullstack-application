@@ -1,106 +1,68 @@
 import classNames from 'classnames'
-import { memo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { DropDownItem } from './types'
+import { cloneElement, memo, useCallback, useRef } from 'react'
+import { ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
+import { DropDownProps } from './types'
+import { useClickOutside, useToggle } from '@Common/hooks'
+import { DropdownButton, DropdownContainer, DropdownItem, DropdownMenu } from './styledComponent'
+import { TextWithIcon } from '../Text'
 
-export interface DropDownProps {
-  //boolean to always open ddm (for presentation)
-  forceOpen?: boolean
-  label?: string
-  withDivider?: boolean
-  icon?: JSX.Element
-  items: DropDownItem[]
-  withBackground?: boolean
-  closeOnClick?: boolean
-}
+const DropDown = ({ button, items, withDivider, icon, forceOpen, stayOpenOnClick = false }: DropDownProps) => {
+  const wrapperRef = useRef(null)
+  const { isOpen, toggleOpen, setIsOpen } = useToggle(false)
 
-const DropDown = ({
-  items,
-  withBackground,
-  withDivider,
-  icon,
-  label,
-  forceOpen,
-  closeOnClick = false,
-}: DropDownProps) => {
-  const [isOpen, setIsOpen] = useState<boolean>(false)
-  const navigate = useNavigate()
+  useClickOutside([wrapperRef], () => {
+    setIsOpen(false)
+  })
 
-  const toggleDropdown = () => {
-    setIsOpen(oldValue => !oldValue)
-  }
+  const initOnClick = useCallback(
+    (callback?: VoidFunction) => () => {
+      if (!stayOpenOnClick && !!callback) {
+        toggleOpen()
+      }
 
-  const handleClickLink = (link: string) => () => {
-    if (closeOnClick) {
-      toggleDropdown()
-    }
-    navigate(link)
-  }
-
-  const handleClick = (onClick?: () => void) => () => {
-    if (closeOnClick) {
-      toggleDropdown()
-    }
-    onClick?.()
-  }
+      if (callback) {
+        return callback()
+      }
+    },
+    [toggleOpen, stayOpenOnClick]
+  )
 
   return (
-    <div className="relative inline-block text-left">
-      <div>
-        <button
-          type="button"
-          onClick={toggleDropdown}
-          className={classNames(
-            'flex items-center justify-center w-full rounded-md px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-50 hover:bg-gray-50 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-gray-500',
-            {
-              'border border-gray-300 bg-white dark:bg-gray-800 shadow-sm': withBackground,
-            }
-          )}
-          id="options-menu"
-        >
-          {label}
-
-          {icon || (
-            <svg width="20" height="20" fill="currentColor" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
-              <path d="M1408 704q0 26-19 45l-448 448q-19 19-45 19t-45-19l-448-448q-19-19-19-45t19-45 45-19h896q26 0 45 19t19 45z" />
-            </svg>
-          )}
-        </button>
-      </div>
+    <DropdownContainer tabIndex={0} ref={wrapperRef}>
+      <DropdownButton>
+        {cloneElement(button, { onClick: toggleOpen, role: 'button' })}
+        {icon ||
+          (isOpen ? (
+            <ChevronUpIcon className="w-5 h-5" onClick={toggleOpen} />
+          ) : (
+            <ChevronDownIcon className="w-5 h-5" onClick={toggleOpen} />
+          ))}
+      </DropdownButton>
 
       {(forceOpen || isOpen) && (
-        <div className="absolute right-0 w-56 mt-2 origin-top-right bg-white rounded-md shadow-lg dark:bg-gray-800 ring-1 ring-black ring-opacity-5">
-          <div
-            className={classNames('py-1', { 'divide-y divide-gray-100': withDivider })}
-            role="menu"
-            aria-orientation="vertical"
-            aria-labelledby="options-menu"
-          >
-            {items.map(item => {
-              return (
-                <button
-                  key={item.label}
-                  onClick={item.link ? handleClickLink(item.link) : handleClick(item.onClick)}
-                  className={classNames(
-                    'w-full block px-4 py-2 text-md text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600',
-                    item.icon ? 'flex items-center' : 'block'
-                  )}
-                  role="menuitem"
-                >
-                  <div className="flex flex-row">
-                    {item.icon}
-                    <span className="flex-grow flex flex-col">
-                      <span className="text-left">{item.label}</span>
-                      {item.desc && <span className="text-xs text-gray-400">{item.desc}</span>}
-                    </span>
+        <DropdownMenu role="menu" aria-orientation="vertical" aria-labelledby="options-menu" withDivider={withDivider}>
+          {items.map(item => (
+            <DropdownItem
+              key={item.label}
+              className={classNames(item.icon ? 'flex items-center' : 'block')}
+              role="menuitem"
+              onClick={initOnClick(item.onClick)}
+            >
+              {item.customRender ? (
+                item.customRender
+              ) : (
+                <TextWithIcon icon={item.icon}>
+                  <div className="py-1">
+                    <p className="text-left">{item.label}</p>
+                    {item.desc && <p className="text-xs text-gray-400">{item.desc}</p>}
                   </div>
-                </button>
-              )
-            })}
-          </div>
-        </div>
+                </TextWithIcon>
+              )}
+            </DropdownItem>
+          ))}
+        </DropdownMenu>
       )}
-    </div>
+    </DropdownContainer>
   )
 }
 export default memo(DropDown)

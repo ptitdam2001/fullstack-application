@@ -1,6 +1,7 @@
 import classNames from 'classnames'
 import { memo } from 'react'
 import { Link } from 'react-router-dom'
+import { Title1 } from '../Typography'
 
 export interface AppBarProps {
   logo?: {
@@ -13,10 +14,10 @@ export interface AppBarProps {
 }
 
 export const AppBar = memo(({ logo, title, rightContent, fixed = false }: AppBarProps) => (
-  <nav
+  <header
     className={classNames('bg-primary text-primaryText dark:bg-primary-800 shadow-lg w-full z-10', { fixed: fixed })}
   >
-    <div className="px-8 mx-auto max-w-7xl">
+    <div className="px-4 mx-auto max-w-7xl">
       <div className="flex items-center justify-between h-16">
         <div className="w-full justify-start flex items-center">
           <>
@@ -28,7 +29,7 @@ export const AppBar = memo(({ logo, title, rightContent, fixed = false }: AppBar
               ) : (
                 <span className="mr-2">{logo.img}</span>
               ))}
-            {title && <h1 className="text-primaryText py-2 prose lg:prose-xl">{title}</h1>}
+            {title && <Title1 className="!text-primaryText">{title}</Title1>}
           </>
         </div>
         <div className="block">
@@ -37,5 +38,5 @@ export const AppBar = memo(({ logo, title, rightContent, fixed = false }: AppBar
         <div className="flex -mr-2">{rightContent}</div>
       </div>
     </div>
-  </nav>
+  </header>
 ))

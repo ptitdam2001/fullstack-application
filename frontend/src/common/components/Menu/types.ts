@@ -3,6 +3,6 @@ import { ReactNode } from 'react'
 export type MenuItem = {
   icon: ReactNode
   label: string
-  onClick: () => void
+  onClick?: VoidFunction
   children?: MenuItem[]
 }

@@ -5,6 +5,10 @@ input LoginInput {
   password: String
 }
 
+input EmailInput {
+  email: String
+}
+
 # -------------- Types
 
 type Query {
@@ -14,6 +18,10 @@ type Query {
 type LoginOutput {
   status: String
   access_token: String
+}
+
+type PublicTokenOutput {
+  sessionId: String
 }
 
 type User {
@@ -45,6 +53,7 @@ type LogoutUser {
 type Mutation {
   _empty: String
   loginUser(inputs: LoginInput): LoginOutput
+  resetPassword(inputs: EmailInput): PublicTokenOutput
 }
 
 type Query {

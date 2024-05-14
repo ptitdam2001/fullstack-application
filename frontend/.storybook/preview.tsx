@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '../src/api'
 
 import type { Preview } from '@storybook/react'
 import { withThemeByClassName } from '@storybook/addon-themes'
-import { initialize, mswLoader, MswParameters } from 'msw-storybook-addon'
+import { initialize, mswLoader } from 'msw-storybook-addon'
 
 import '../src/index.css'
 
@@ -33,7 +33,6 @@ const graphQLClient = new QueryClient({
 
 const preview: Preview = {
   parameters: {
-    actions: { argTypesRegex: '^on[A-Z].*' },
     controls: {
       matchers: {
         color: /(background|color)$/i,

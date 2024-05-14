@@ -18,6 +18,7 @@ export default {
       colors: {
         primary: '#7e5bef',
         primaryText: '#fff',
+        title: '#111',
       },
       spacing: {
         '128': '32rem',

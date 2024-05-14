@@ -2,6 +2,10 @@ import { ReactElement } from 'react'
 import { TablePagination } from './Pagination'
 import { TableCol, TablePaginationProps, TableRowAction } from './types'
 import { RowActions } from './RowActions'
+import { TableCell, TableCellHeader, TableContainer, TableTitle } from './styledComponent'
+import { TableHead } from './TableHead'
+import { WithDateTestIdProps, WithDesignProps } from '@Common/types'
+import classNames from 'classnames'
 
 type TableProps<T> = {
   columns: TableCol<T>[]
@@ -9,63 +13,52 @@ type TableProps<T> = {
   title?: string | ReactElement
   rowActions?: TableRowAction<T>[]
   pagination?: TablePaginationProps
-}
+  withBorder?: boolean
+} & WithDesignProps &
+  WithDateTestIdProps
 
-const Table = <T extends { [k: string]: never }>({ columns, data, title, rowActions, pagination }: TableProps<T>) => (
-  <div className="container max-w-3xl px-4 mx-auto sm:px-8">
-    <div className="py-8">
-      <div className="flex flex-row justify-between w-full mb-1 sm:mb-0">
-        <h2 className="text-2xl leading-tight">{title}</h2>
-        <div className="text-end"></div>
-      </div>
-      <div className="px-4 py-4 -mx-4 overflow-x-auto sm:-mx-8 sm:px-8">
-        <div className="inline-block min-w-full overflow-hidden rounded-lg shadow">
-          <table className="min-w-full leading-normal">
-            <thead>
-              <tr>
-                {columns.map(column => (
-                  <th
-                    id={`col-${column.key}`}
-                    scope="col"
-                    className="px-5 py-3 text-sm text-left font-bold text-gray-800 uppercase bg-white border-b border-gray-200"
-                    key={`header-col-${column.key}`}
-                  >
-                    {column.label}
-                  </th>
-                ))}
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+const Table = <T extends { [k: string]: any }>({
+  columns,
+  data,
+  title,
+  rowActions,
+  pagination,
+  className,
+  withBorder = false,
+  'data-testid': testId,
+}: TableProps<T>) => (
+  <TableContainer className={classNames(className, { 'rounded-lg shadow': withBorder })} data-testid={testId}>
+    {title && <TableTitle data-testid={testId && `${testId}--title`}>{title}</TableTitle>}
+    <table className="min-w-full leading-normal">
+      <TableHead data-testid={testId && `${testId}--head`}>
+        {columns.map(column => (
+          <TableCellHeader id={`col-${column.key}`} scope="col" key={`header-col-${column.key}`}>
+            {column.label}
+          </TableCellHeader>
+        ))}
 
-                <th
-                  scope="col"
-                  className="px-5 py-3 text-sm font-bold text-left text-gray-800 uppercase bg-white border-b border-gray-200"
-                ></th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.map((line, index) => (
-                <tr key={`body-row-${index}`}>
-                  {columns.map(({ key, render }, colIndex) => (
-                    <td
-                      className="px-5 py-5 text-sm bg-white border-b border-gray-200"
-                      key={`body-row-${index}-col-${colIndex}`}
-                    >
-                      {line[key]
-                        ? render?.(line) || <p className="text-gray-900 whitespace-no-wrap">{line[key]}</p>
-                        : null}
-                    </td>
-                  ))}
-                  {/* Actions */}
-                  <td className="px-5 py-5 text-sm bg-white border-b border-gray-200" key={`row-action-${index}`}>
-                    {rowActions && <RowActions<T> row={line} rowActions={rowActions} />}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          {pagination && <TablePagination {...pagination} />}
-        </div>
-      </div>
-    </div>
-  </div>
+        <TableCellHeader scope="col" />
+      </TableHead>
+
+      <tbody>
+        {data.map((line, index) => (
+          <tr key={`body-row-${index}`} data-testid={testId && `${testId}--line`}>
+            {columns.map(({ key, render }, colIndex) => (
+              <TableCell key={`body-row-${index}-col-${colIndex}`}>
+                {line[key] ? render?.(line) || <p className="text-gray-900 whitespace-no-wrap">{line[key]}</p> : null}
+              </TableCell>
+            ))}
+            {/* Actions */}
+            <TableCell key={`row-action-${index}`}>
+              {rowActions && <RowActions<T> row={line} rowActions={rowActions} />}
+            </TableCell>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+    {pagination && <TablePagination {...pagination} data-testid={testId && `${testId}--pagination`} />}
+  </TableContainer>
 )
 
 export default Table

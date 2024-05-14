@@ -1,9 +1,10 @@
-import type { Meta } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react'
 import { default as Table } from './Table'
 import { faker } from '@faker-js/faker'
 import { Close } from '@Common/components/Icon'
 import { useState } from 'react'
 import { usePagination } from '@Common/hooks'
+import { Avatar } from '../Avatar'
 
 interface DataType {
   avatar: string
@@ -31,15 +32,58 @@ const meta = {
   title: 'Common/Table',
   component: Table<DataType>,
   tags: ['autodocs'],
-  parameters: {
-    // More on how to position stories at: https://storybook.js.org/docs/react/configure/story-layout
-  },
+  decorators: [Story => <div>{<Story />}</div>],
 } satisfies Meta<typeof Table<DataType>>
 
 export default meta
-// type Story = StoryObj<typeof meta>
+type Story = StoryObj<typeof meta>
 
-export const SimpleUsage = () => {
+const columns = [
+  {
+    key: 'user',
+    label: 'User',
+    render: (elt: DataType) => (
+      <div className="flex items-center">
+        <div className="flex-shrink-0">
+          <Avatar imgSrc={elt.avatar} size="2.5rem" />
+        </div>
+        <div className="ml-3">
+          <p className="text-gray-900 whitespace-no-wrap">{elt.user}</p>
+        </div>
+      </div>
+    ),
+  },
+  {
+    key: 'role',
+    label: 'Role',
+  },
+  {
+    key: 'createdAt',
+    label: 'Created at',
+    render: (elt: DataType) => <>{elt.createdAt.toDateString()}</>,
+  },
+  {
+    key: 'status',
+    label: 'Status',
+  },
+]
+
+export const Default: Story = {
+  args: {
+    columns,
+    data: generateData(10),
+  },
+}
+
+export const WithBorder: Story = {
+  args: {
+    columns,
+    data: generateData(10),
+    withBorder: true,
+  },
+}
+
+export const ExampleWithPagination = () => {
   const [data, setData] = useState<DataType[]>(generateData(10))
   const { currentPage, gotoPage } = usePagination(() => {
     setData(generateData(10))

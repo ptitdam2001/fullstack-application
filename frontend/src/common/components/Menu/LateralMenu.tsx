@@ -1,9 +1,11 @@
-import classNames from 'classnames'
 import { memo, useEffect, useState } from 'react'
 import { IconButton } from '../Buttons'
 import { ChevronLeft, ChevronRight } from '../Icon'
 import { MenuItem } from './types'
 import LateralMenuItem from './LateralMenuItem'
+import { Divider } from '../Divider'
+import { MenuContainer, MenuHeader, MenuList } from './styledComponent'
+import classNames from 'classnames'
 
 type LateralMenuProps = {
   expanded?: boolean
@@ -23,31 +25,17 @@ export const LateralMenuComponent = ({ expanded = false, items }: LateralMenuPro
   const Icon = expandedMenu ? <ChevronLeft /> : <ChevronRight />
 
   return (
-    <nav
-      className={classNames(
-        'flex flex-col gap-1 transform transition-all duration-350 shadow-sm py-2 h-full bg-primary',
-        {
-          'w-48': expandedMenu,
-          'w-10': !expandedMenu,
-        }
-      )}
-    >
-      <div className="flex flex-row-reverse px-2">
-        <IconButton onClick={toggleExpanded} icon={Icon} className="text-white" size="small" />
-      </div>
-      <hr className="divide-y" />
-      <ul className="text-primaryText">
+    <MenuContainer className={classNames(expandedMenu ? `w-48` : `w-10`, 'Menu')}>
+      <MenuHeader className="MenuHeader">
+        <IconButton onClick={toggleExpanded} icon={Icon} size="small" className="text-white" />
+      </MenuHeader>
+      <Divider position="horizontal" />
+      <MenuList className="MenuList">
         {items.map((item, key) => (
-          <li key={`menu-item-${key}`} className="h-10">
-            <LateralMenuItem
-              item={item}
-              expanded={expandedMenu}
-              className="hover:bg-slate-200 hover:text-slate-800 h-full"
-            />
-          </li>
+          <LateralMenuItem key={`menu-item-${key}`} item={item} expanded={expandedMenu} />
         ))}
-      </ul>
-    </nav>
+      </MenuList>
+    </MenuContainer>
   )
 }
 export const LateralMenu = memo(LateralMenuComponent)

@@ -19,3 +19,6 @@ export * from './Tooltip'
 
 export * from './Table'
 export * from './Card'
+export * from './Text'
+
+export * from './Typography'

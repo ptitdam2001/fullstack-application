@@ -12,22 +12,22 @@ const menu = [
   {
     label: 'second link',
     icon: <UserAccount />,
-    onClick: () => console.log('first link clicked'),
+    onClick: () => console.log('second link clicked'),
   } as MenuItem,
   {
     label: 'third link',
     icon: <UserAccount />,
-    onClick: () => console.log('first link clicked'),
+    onClick: () => console.log('third link clicked'),
   } as MenuItem,
   {
     label: 'fourth link',
     icon: <UserAccount />,
-    onClick: () => console.log('first link clicked'),
+    onClick: () => console.log('fourth link clicked'),
   } as MenuItem,
   {
     label: 'fifth link',
     icon: <UserAccount />,
-    onClick: () => console.log('first link clicked'),
+    onClick: () => console.log('fifth link clicked'),
   } as MenuItem,
 ]
 
@@ -54,6 +54,13 @@ export const SimpleUsage: Story = {
 export const ExpandedUsage: Story = {
   args: {
     items: menu,
+    expanded: true,
+  },
+}
+
+export const UnClickableItems: Story = {
+  args: {
+    items: menu.map(({ onClick, ...item }) => item) /* eslint-disable-line @typescript-eslint/no-unused-vars */,
     expanded: true,
   },
 }

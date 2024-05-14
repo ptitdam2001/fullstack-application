@@ -32,6 +32,10 @@ export type Scalars = {
   Float: { input: number; output: number }
 }
 
+export type EmailInput = {
+  email?: InputMaybe<Scalars['String']['input']>
+}
+
 export type LoginInput = {
   login?: InputMaybe<Scalars['String']['input']>
   password?: InputMaybe<Scalars['String']['input']>
@@ -52,10 +56,20 @@ export type Mutation = {
   __typename?: 'Mutation'
   _empty?: Maybe<Scalars['String']['output']>
   loginUser?: Maybe<LoginOutput>
+  resetPassword?: Maybe<PublicTokenOutput>
 }
 
 export type MutationLoginUserArgs = {
   inputs?: InputMaybe<LoginInput>
+}
+
+export type MutationResetPasswordArgs = {
+  inputs?: InputMaybe<EmailInput>
+}
+
+export type PublicTokenOutput = {
+  __typename?: 'PublicTokenOutput'
+  sessionId?: Maybe<Scalars['String']['output']>
 }
 
 export type Query = {
@@ -128,6 +142,15 @@ export type RefreshAccessTokenQuery = {
     status?: string | null
     access_token?: string | null
   } | null
+}
+
+export type ResetPasswordMutationVariables = Exact<{
+  input: EmailInput
+}>
+
+export type ResetPasswordMutation = {
+  __typename?: 'Mutation'
+  resetPassword?: { __typename?: 'PublicTokenOutput'; sessionId?: string | null } | null
 }
 
 export type LoginUserMutationVariables = Exact<{
@@ -219,6 +242,32 @@ export const useRefreshAccessTokenQuery = <TData = RefreshAccessTokenQuery, TErr
       variables,
       headers
     ),
+    ...options,
+  })
+}
+
+export const ResetPasswordDocument = `
+    mutation ResetPassword($input: EmailInput!) {
+  resetPassword(inputs: $input) {
+    sessionId
+  }
+}
+    `
+
+export const useResetPasswordMutation = <TError = unknown, TContext = unknown>(
+  client: GraphQLClient,
+  options?: UseMutationOptions<ResetPasswordMutation, TError, ResetPasswordMutationVariables, TContext>,
+  headers?: RequestInit['headers']
+) => {
+  return useMutation<ResetPasswordMutation, TError, ResetPasswordMutationVariables, TContext>({
+    mutationKey: ['ResetPassword'],
+    mutationFn: (variables?: ResetPasswordMutationVariables) =>
+      fetcher<ResetPasswordMutation, ResetPasswordMutationVariables>(
+        client,
+        ResetPasswordDocument,
+        variables,
+        headers
+      )(),
     ...options,
   })
 }

@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import IconButton from './IconButton'
 import { Close } from '@Common/components/Icon'
+import { fn } from '@storybook/test'
 
 const meta = {
   title: 'Common/Buttons/IconButton',
@@ -20,6 +21,9 @@ const meta = {
     onClick: {
       actions: 'click',
     },
+  },
+  args: {
+    onClick: fn(),
   },
 } satisfies Meta<typeof IconButton>
 

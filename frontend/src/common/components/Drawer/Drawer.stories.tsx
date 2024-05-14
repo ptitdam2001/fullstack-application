@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import Drawer from './Drawer'
+import { DrawerProps } from './types'
+import { fn } from '@storybook/test'
 
 const DrawerContent = () => (
   <ul>
@@ -39,13 +41,21 @@ const DrawerContent = () => (
 const meta = {
   title: 'Common/Drawer',
   component: Drawer,
-  // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: ['autodocs'],
   parameters: {
-    // More on how to position stories at: https://storybook.js.org/docs/react/configure/story-layout
     layout: 'fullscreen',
   },
-} satisfies Meta<typeof Drawer>
+  decorators: [
+    Story => (
+      <div className="bg-slate-400 w-full h-128">
+        <Story />
+      </div>
+    ),
+  ],
+  args: {
+    onOpenChange: fn(),
+  },
+} satisfies Meta<DrawerProps>
 
 export default meta
 type Story = StoryObj<typeof meta>

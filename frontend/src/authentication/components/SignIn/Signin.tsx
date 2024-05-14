@@ -14,18 +14,18 @@ type Props = {
 } & WithDateTestIdProps
 
 const Signin = ({ onConnectionDone, 'data-testid': testId }: Props) => {
-  const /*{ mutate: doLogin, isPending }*/ mutate = useLoginUserMutation(graphqlRequestClient, {
-      onSuccess(/* data: LoginUserMutation */) {
-        // Set token
+  const mutate = useLoginUserMutation(graphqlRequestClient, {
+    onSuccess(/* data: LoginUserMutation */) {
+      // Set token
 
-        // callback
-        onConnectionDone()
-      },
-      onError(error) {
-        console.log('Error Login:', error)
-      },
-    })
-  console.log(mutate)
+      // callback
+      onConnectionDone()
+    },
+    onError(error) {
+      console.log('Error Login:', error)
+    },
+  })
+
   const onSubmit = (data: Partial<FormData>) => {
     mutate.mutate({ input: data })
   }

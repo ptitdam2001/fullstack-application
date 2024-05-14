@@ -2,7 +2,7 @@ import { WithDateTestIdProps } from '@Common/types'
 import { ReactElement } from 'react'
 
 export type AvatarProps = {
-  size?: number
+  size?: number | string
   shape?: 'square' | 'circle'
   imgSrc?: string
   text?: string
@@ -11,6 +11,6 @@ export type AvatarProps = {
 } & WithDateTestIdProps
 
 export type AvatarImgProps = {
-  readonly size: number
+  readonly size: string
   readonly shape?: 'square' | 'circle'
 } & WithDateTestIdProps

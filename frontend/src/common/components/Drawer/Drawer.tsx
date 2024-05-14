@@ -1,16 +1,9 @@
 import classNames from 'classnames'
-import { ReactElement, ReactNode, memo, useCallback, useState } from 'react'
+import { memo, useCallback } from 'react'
 import { IconButton } from '../Buttons'
 import { Bars3, Close } from '../Icon'
-
-export interface DrawerProps {
-  open?: boolean
-  toggleIcon?: ReactElement
-  closeIcon?: ReactElement
-  position?: 'left' | 'right'
-  title?: string
-  content: ReactNode
-}
+import { DrawerProps } from './types'
+import { useToggle } from '@Common/hooks'
 
 const Drawer = ({
   open = false,
@@ -19,17 +12,24 @@ const Drawer = ({
   position = 'left',
   title,
   content,
+  className,
+  onOpenChange,
+  'data-testid': testId,
 }: DrawerProps) => {
-  const [isOpen, setIsOpen] = useState<boolean>(open)
+  const { toggleOpen, isOpen } = useToggle(open)
 
-  const toggleOpen = useCallback(() => {
-    setIsOpen(oldValue => !oldValue)
-  }, [setIsOpen])
+  const handleClick = useCallback(() => {
+    onOpenChange?.(!isOpen)
+    toggleOpen()
+  }, [onOpenChange, isOpen, toggleOpen])
 
   return (
-    <section className="flex" role="menu">
-      <IconButton onClick={toggleOpen} icon={toggleIcon} withBorder />
+    <menu className={classNames('flex', className)} role="menu">
+      {!isOpen && (
+        <IconButton onClick={handleClick} icon={toggleIcon} withBorder data-testid={testId && `${testId}--toggle`} />
+      )}
       <div
+        data-testid={testId}
         className={classNames('fixed top-0 h-full duration-500 bg-white shadow-lg flex flex-col', {
           'w-64': isOpen,
           'w-0': position === 'right' && !isOpen,
@@ -39,14 +39,23 @@ const Drawer = ({
         })}
       >
         <h2 className="text-lg font-semibold flex flex-row px-3 py-1 shadow-md h-9">
-          <span className="flex-grow">{title}</span>
-          <IconButton withBorder={false} onClick={toggleOpen} size="small" icon={closeIcon} />
+          <div className="flex-grow">{title}</div>
+          <IconButton
+            withBorder={false}
+            onClick={handleClick}
+            size="small"
+            icon={closeIcon}
+            data-testid={testId && `${testId}--close`}
+          />
         </h2>
-        <section className="px-2 py-2 box-content overflow-auto hover:overflow-scroll overscroll-contain">
+        <section
+          className="px-2 py-2 box-content overflow-auto hover:overflow-scroll overscroll-contain"
+          data-testid={testId && `${testId}--content`}
+        >
           {content}
         </section>
       </div>
-    </section>
+    </menu>
   )
 }
 export default memo(Drawer)
