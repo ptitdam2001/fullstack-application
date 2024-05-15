@@ -3,7 +3,7 @@ import pluginJs from '@eslint/js'
 import tseslint from 'typescript-eslint'
 import pluginReactConfig from 'eslint-plugin-react'
 import pluginReactHookConfig from 'eslint-plugin-react-hooks'
-
+import eslintConfigPrettier from 'eslint-config-prettier'
 import { fixupPluginRules } from '@eslint/compat'
 
 export default [
@@ -47,4 +47,5 @@ export default [
       'react-hook': fixupPluginRules(pluginReactHookConfig),
     },
   },
+  eslintConfigPrettier,
 ]
