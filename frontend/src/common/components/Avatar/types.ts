@@ -1,4 +1,4 @@
-import { WithDateTestIdProps } from '@Common/types'
+import { WithDataTestIdProps } from '@Common/types'
 import { ReactElement } from 'react'
 
 export type AvatarProps = {
@@ -8,9 +8,9 @@ export type AvatarProps = {
   text?: string
   icon?: ReactElement
   onClick?: VoidFunction
-} & WithDateTestIdProps
+} & WithDataTestIdProps
 
 export type AvatarImgProps = {
   readonly size: string
   readonly shape?: 'square' | 'circle'
-} & WithDateTestIdProps
+} & WithDataTestIdProps

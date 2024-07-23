@@ -1,7 +1,7 @@
-import { WithDateTestIdProps, WithDesignProps } from '@Common/types'
+import { WithDataTestIdProps, WithDesignProps } from '@Common/types'
 import { ReactElement, ReactNode } from 'react'
 
-export interface DrawerProps extends WithDateTestIdProps, WithDesignProps {
+export interface DrawerProps extends WithDataTestIdProps, WithDesignProps {
   open?: boolean
   toggleIcon?: ReactElement
   closeIcon?: ReactElement

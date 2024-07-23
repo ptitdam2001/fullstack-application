@@ -4,7 +4,7 @@ import { TableCol, TablePaginationProps, TableRowAction } from './types'
 import { RowActions } from './RowActions'
 import { TableCell, TableCellHeader, TableContainer, TableTitle } from './styledComponent'
 import { TableHead } from './TableHead'
-import { WithDateTestIdProps, WithDesignProps } from '@Common/types'
+import { WithDataTestIdProps, WithDesignProps } from '@Common/types'
 import classNames from 'classnames'
 
 type TableProps<T> = {
@@ -15,7 +15,7 @@ type TableProps<T> = {
   pagination?: TablePaginationProps
   withBorder?: boolean
 } & WithDesignProps &
-  WithDateTestIdProps
+  WithDataTestIdProps
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 const Table = <T extends { [k: string]: any }>({

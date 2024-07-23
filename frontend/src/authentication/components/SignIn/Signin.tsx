@@ -1,6 +1,6 @@
 import { loginSchema } from '@Authentication/config/validators'
 import { EmailInput, Form, FormField, PasswordInput, PrimaryButton } from '@Common/components'
-import { WithDateTestIdProps } from '@Common/types'
+import { WithDataTestIdProps } from '@Common/types'
 import { useLoginUserMutation, graphqlRequestClient } from '@Api'
 import { memo } from 'react'
 
@@ -11,7 +11,7 @@ type FormData = {
 
 type Props = {
   onConnectionDone: VoidFunction
-} & WithDateTestIdProps
+} & WithDataTestIdProps
 
 export const Signin = memo(({ onConnectionDone, 'data-testid': testId }: Props) => {
   const mutate = useLoginUserMutation(graphqlRequestClient, {

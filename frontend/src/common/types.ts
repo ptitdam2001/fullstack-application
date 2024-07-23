@@ -2,7 +2,7 @@ export type WithDesignProps = {
   className?: string
 }
 
-export type WithDateTestIdProps = {
+export type WithDataTestIdProps = {
   'data-testid'?: string
 }
 
