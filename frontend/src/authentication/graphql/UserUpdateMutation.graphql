@@ -1,6 +1,5 @@
-query GetMe {
-  getMe {
-    status
+mutation UserUpdate($id: String!, $input: UserInput) {
+  userUpdate(id: $id, inputs: $input) {
     user {
       id
       email

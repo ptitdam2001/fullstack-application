@@ -50,7 +50,7 @@ const Tooltip = ({ title, children, position = 'top' }: TooltipProps) => {
       </div>
     </div>
   ) : (
-    children ?? null
+    (children ?? null)
   )
 }
 export default memo(Tooltip)

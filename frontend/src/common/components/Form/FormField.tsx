@@ -1,5 +1,5 @@
 import { Controller, useFormContext } from 'react-hook-form'
-import { ReactElement, memo } from 'react'
+import { ReactElement } from 'react'
 
 type FormFieldProps = {
   name: string
@@ -7,9 +7,8 @@ type FormFieldProps = {
   children: (controller: any) => ReactElement
 }
 
-const FormField = ({ name, children }: FormFieldProps) => {
+export const FormField = ({ name, children }: FormFieldProps) => {
   const { control } = useFormContext()
 
   return <Controller name={name} control={control} render={children} />
 }
-export default memo(FormField)

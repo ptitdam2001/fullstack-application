@@ -9,6 +9,7 @@ import { initialize, mswLoader } from 'msw-storybook-addon'
 import '../src/index.css'
 
 import authHandlers from '../config/mocks/auth'
+import userHandlers from '../config/mocks/user'
 
 // Initialize MSW
 initialize({})
@@ -42,6 +43,7 @@ const preview: Preview = {
     msw: {
       handlers: {
         auth: authHandlers,
+        user: userHandlers,
       },
     },
   },

@@ -1,7 +1,7 @@
 import { screen, withGraphQLRenderer } from '@Testing'
 import { BrowserRouter } from 'react-router-dom'
 import { expect, describe, it } from 'vitest'
-import Signin from './Signin'
+import { Signin } from './Signin'
 
 describe('Signin', () => {
   const onConnectionDone = vi.fn()

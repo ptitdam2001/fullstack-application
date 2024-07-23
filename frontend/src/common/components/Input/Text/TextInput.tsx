@@ -1,13 +1,13 @@
 import classNames from 'classnames'
 import { BaseInputProps } from '../types'
-import React, { ReactNode, memo, useMemo } from 'react'
+import React, { ReactNode, useMemo } from 'react'
 
 export interface TextInputProps extends BaseInputProps {
   htmlType?: string
   preElement?: ReactNode
 }
 
-const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>((props, ref) => {
+export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>((props, ref) => {
   const {
     label,
     id,
@@ -96,5 +96,3 @@ const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>((props, ref
     </section>
   )
 })
-
-export default memo(TextInput)

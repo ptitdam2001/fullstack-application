@@ -9,6 +9,13 @@ input EmailInput {
   email: String
 }
 
+input UserInput {
+  email: String
+  name: String
+  role: String
+  avatar: String
+}
+
 # -------------- Types
 
 type Query {
@@ -29,7 +36,7 @@ type User {
   email: String
   name: String
   role: String
-  photo: String
+  avatar: String
   updatedAt: Int
   createdAt: Int
 }
@@ -40,6 +47,7 @@ type RefreshAccessToken {
 }
 
 type getMeOutput {
+  id: String
   status: String
   user: User
 }
@@ -48,16 +56,21 @@ type LogoutUser {
   status: String
 }
 
+type userUpdateOutput {
+  user: User
+}
+
 # ----------------- Schema
 
 type Mutation {
   _empty: String
   loginUser(inputs: LoginInput): LoginOutput
   resetPassword(inputs: EmailInput): PublicTokenOutput
+  userUpdate(id: String!, inputs: UserInput): userUpdateOutput
 }
 
 type Query {
-  getMe(input: LoginInput): getMeOutput
+  getMe: getMeOutput
   logoutUser: LogoutUser
   refreshAccessToken: RefreshAccessToken
 }

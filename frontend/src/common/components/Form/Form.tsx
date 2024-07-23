@@ -13,7 +13,7 @@ type FormProps<T> = {
   validation?: Joi.Schema<T>
 } & WithDesignProps
 
-const Form = <T extends FieldValues>({
+export const Form = <T extends FieldValues>({
   children,
   name,
   onSubmit,
@@ -36,4 +36,3 @@ const Form = <T extends FieldValues>({
     </FormProvider>
   )
 }
-export default Form

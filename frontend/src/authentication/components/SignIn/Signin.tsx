@@ -13,7 +13,7 @@ type Props = {
   onConnectionDone: VoidFunction
 } & WithDateTestIdProps
 
-const Signin = ({ onConnectionDone, 'data-testid': testId }: Props) => {
+export const Signin = memo(({ onConnectionDone, 'data-testid': testId }: Props) => {
   const mutate = useLoginUserMutation(graphqlRequestClient, {
     onSuccess(/* data: LoginUserMutation */) {
       // Set token
@@ -65,5 +65,4 @@ const Signin = ({ onConnectionDone, 'data-testid': testId }: Props) => {
       </>
     </Form>
   )
-}
-export default memo(Signin)
+})

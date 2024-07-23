@@ -57,6 +57,7 @@ export type Mutation = {
   _empty?: Maybe<Scalars['String']['output']>
   loginUser?: Maybe<LoginOutput>
   resetPassword?: Maybe<PublicTokenOutput>
+  userUpdate?: Maybe<UserUpdateOutput>
 }
 
 export type MutationLoginUserArgs = {
@@ -65,6 +66,11 @@ export type MutationLoginUserArgs = {
 
 export type MutationResetPasswordArgs = {
   inputs?: InputMaybe<EmailInput>
+}
+
+export type MutationUserUpdateArgs = {
+  id: Scalars['String']['input']
+  inputs?: InputMaybe<UserInput>
 }
 
 export type PublicTokenOutput = {
@@ -79,10 +85,6 @@ export type Query = {
   refreshAccessToken?: Maybe<RefreshAccessToken>
 }
 
-export type QueryGetMeArgs = {
-  input?: InputMaybe<LoginInput>
-}
-
 export type RefreshAccessToken = {
   __typename?: 'RefreshAccessToken'
   access_token?: Maybe<Scalars['String']['output']>
@@ -91,18 +93,31 @@ export type RefreshAccessToken = {
 
 export type User = {
   __typename?: 'User'
+  avatar?: Maybe<Scalars['String']['output']>
   createdAt?: Maybe<Scalars['Int']['output']>
   email?: Maybe<Scalars['String']['output']>
   id?: Maybe<Scalars['String']['output']>
   name?: Maybe<Scalars['String']['output']>
-  photo?: Maybe<Scalars['String']['output']>
   role?: Maybe<Scalars['String']['output']>
   updatedAt?: Maybe<Scalars['Int']['output']>
 }
 
+export type UserInput = {
+  avatar?: InputMaybe<Scalars['String']['input']>
+  email?: InputMaybe<Scalars['String']['input']>
+  name?: InputMaybe<Scalars['String']['input']>
+  role?: InputMaybe<Scalars['String']['input']>
+}
+
 export type GetMeOutput = {
   __typename?: 'getMeOutput'
+  id?: Maybe<Scalars['String']['output']>
   status?: Maybe<Scalars['String']['output']>
+  user?: Maybe<User>
+}
+
+export type UserUpdateOutput = {
+  __typename?: 'userUpdateOutput'
   user?: Maybe<User>
 }
 
@@ -119,7 +134,7 @@ export type GetMeQuery = {
       email?: string | null
       name?: string | null
       role?: string | null
-      photo?: string | null
+      avatar?: string | null
       updatedAt?: number | null
       createdAt?: number | null
     } | null
@@ -162,6 +177,28 @@ export type LoginUserMutation = {
   loginUser?: { __typename?: 'LoginOutput'; status?: string | null; access_token?: string | null } | null
 }
 
+export type UserUpdateMutationVariables = Exact<{
+  id: Scalars['String']['input']
+  input?: InputMaybe<UserInput>
+}>
+
+export type UserUpdateMutation = {
+  __typename?: 'Mutation'
+  userUpdate?: {
+    __typename?: 'userUpdateOutput'
+    user?: {
+      __typename?: 'User'
+      id?: string | null
+      email?: string | null
+      name?: string | null
+      role?: string | null
+      avatar?: string | null
+      updatedAt?: number | null
+      createdAt?: number | null
+    } | null
+  } | null
+}
+
 export const GetMeDocument = `
     query GetMe {
   getMe {
@@ -171,7 +208,7 @@ export const GetMeDocument = `
       email
       name
       role
-      photo
+      avatar
       updatedAt
       createdAt
     }
@@ -290,6 +327,35 @@ export const useLoginUserMutation = <TError = unknown, TContext = unknown>(
     mutationKey: ['LoginUser'],
     mutationFn: (variables?: LoginUserMutationVariables) =>
       fetcher<LoginUserMutation, LoginUserMutationVariables>(client, LoginUserDocument, variables, headers)(),
+    ...options,
+  })
+}
+
+export const UserUpdateDocument = `
+    mutation UserUpdate($id: String!, $input: UserInput) {
+  userUpdate(id: $id, inputs: $input) {
+    user {
+      id
+      email
+      name
+      role
+      avatar
+      updatedAt
+      createdAt
+    }
+  }
+}
+    `
+
+export const useUserUpdateMutation = <TError = unknown, TContext = unknown>(
+  client: GraphQLClient,
+  options?: UseMutationOptions<UserUpdateMutation, TError, UserUpdateMutationVariables, TContext>,
+  headers?: RequestInit['headers']
+) => {
+  return useMutation<UserUpdateMutation, TError, UserUpdateMutationVariables, TContext>({
+    mutationKey: ['UserUpdate'],
+    mutationFn: (variables?: UserUpdateMutationVariables) =>
+      fetcher<UserUpdateMutation, UserUpdateMutationVariables>(client, UserUpdateDocument, variables, headers)(),
     ...options,
   })
 }

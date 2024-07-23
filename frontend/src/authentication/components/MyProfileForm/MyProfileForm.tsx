@@ -1,23 +1,25 @@
-import { Avatar, Form, FormField, TextInput } from '@Common/components'
+import { Avatar, Form, FormBlock, FormField, PrimaryButton, TextInput } from '@Common/components'
 import { useCurrentUser } from '@Authentication/hooks'
-
-type FormData = {
-  userName: string
-  firstName: string
-}
+import { User, graphqlRequestClient, useUserUpdateMutation } from '@Api'
 
 export const MyProfileForm = () => {
-  const { user } = useCurrentUser()
+  const { user, isLoading } = useCurrentUser()
+  const { mutateAsync } = useUserUpdateMutation(graphqlRequestClient)
 
-  const onSubmit = (data: Partial<FormData>) => {
-    console.log('>>>>>> submit', data)
+  const onSubmit = async (data: Partial<User>) => {
+    try {
+      if (user && !!user.id) {
+        await mutateAsync({ id: user.id, input: data })
+      }
+    } catch (err) {
+      console.error(err)
+    }
   }
 
-  console.log('----', user)
-  return (
-    <Form<FormData> name="profile" onSubmit={onSubmit} defaultValues={user}>
+  return !isLoading && !!user ? (
+    <Form<User> name="profile" onSubmit={onSubmit} defaultValues={user}>
       <>
-        <Avatar size={100} shape="square" imgSrc={user.avatar} />
+        <Avatar size={100} shape="square" imgSrc={user?.avatar || ''} />
 
         <FormField name="userName">
           {({ field, fieldState: { error } }) => (
@@ -30,7 +32,17 @@ export const MyProfileForm = () => {
             <TextInput {...field} error={error?.message} required label="First name" />
           )}
         </FormField>
+
+        <FormBlock>
+          {form => (
+            <PrimaryButton type="submit" disabled={form.formState.disabled || !form.formState.isDirty}>
+              Save
+            </PrimaryButton>
+          )}
+        </FormBlock>
       </>
     </Form>
+  ) : (
+    <div>Loading</div>
   )
 }

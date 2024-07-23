@@ -1,7 +1,7 @@
 import { HttpResponse, delay, graphql } from 'msw'
 
 export default [
-  graphql.mutation('ResetPasswordMutation', () => {
+  graphql.mutation('ResetPassword', () => {
     return HttpResponse.json({
       data: {
         redirection: '/reset-paswword/auth_token_123',

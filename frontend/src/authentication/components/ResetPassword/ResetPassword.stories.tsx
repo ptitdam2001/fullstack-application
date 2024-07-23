@@ -1,17 +1,17 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { Signin } from './Signin'
+import { ResetPassword } from './ResetPassword'
 import { fn } from '@storybook/test'
 import { HttpResponse, delay, graphql } from 'msw'
 
 const meta = {
-  title: 'Authentication/Signin',
-  component: Signin,
+  title: 'Authentication/ResetPassword',
+  component: ResetPassword,
   tags: ['autodocs'],
   parameters: {
     layout: 'fullscreen',
   },
-  args: { onConnectionDone: fn() },
-} satisfies Meta<typeof Signin>
+  args: { onSuccess: fn() },
+} satisfies Meta<typeof ResetPassword>
 
 export default meta
 type Story = StoryObj<typeof meta>
@@ -22,7 +22,7 @@ export const Default: Story = {
     msw: {
       auth: [
         // Handles a "Login" mutation
-        graphql.mutation('LoginUser', async req => {
+        graphql.mutation('ResetPassword', async req => {
           const { login } = req.variables.input
 
           await delay(5000)
