@@ -1,13 +1,13 @@
-import classNames from 'classnames'
-import { memo, useMemo } from 'react'
+import { useMemo } from 'react'
 import { BaseButtonProps } from '../types'
+import { classnameMerge } from '@Utils/classnames'
 
 export interface IconButtonProps extends BaseButtonProps {
   withBorder?: boolean
   size?: 'small' | 'medium' | 'large'
 }
 
-const IconButton = ({
+export const IconButton = ({
   onClick,
   type,
   children,
@@ -16,7 +16,7 @@ const IconButton = ({
   size = 'medium',
   className,
   disabled = false,
-  'data-testid': testId,
+  testId,
 }: IconButtonProps) => {
   const iconSize = useMemo(
     () => ({
@@ -29,7 +29,7 @@ const IconButton = ({
 
   const classes = useMemo(
     () =>
-      classNames(
+      classnameMerge(
         'flex justify-center items-center',
         'bg-transparent text-center text-base',
         disabled ? 'opacity-60 text-slate-400 bg-slate-200/50' : 'hover:bg-slate-200/50 text-primary',
@@ -51,9 +51,7 @@ const IconButton = ({
 
   return (
     <button onClick={onClick} type={type} role="button" className={classes} disabled={disabled} data-testid={testId}>
-      {icon ? <span className={classNames('flex p-1', iconSize)}>{icon}</span> : children}
+      {icon ? <span className={classnameMerge('flex p-1', iconSize)}>{icon}</span> : children}
     </button>
   )
 }
-
-export default memo(IconButton)

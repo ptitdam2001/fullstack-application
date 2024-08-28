@@ -1,6 +1,6 @@
 import { memo, useMemo } from 'react'
 import { TablePaginationProps } from './types'
-import classNames from 'classnames'
+import { classnameMerge } from '@Utils/classnames'
 
 const Component = ({ currentPage, maxPage, onClick }: TablePaginationProps) => {
   const button = useMemo(() => 'text-gray-600 border hover:bg-gray-100', [])
@@ -29,7 +29,7 @@ const Component = ({ currentPage, maxPage, onClick }: TablePaginationProps) => {
         {new Array(maxPage).fill(null).map((_, index) => (
           <button
             type="button"
-            className={classNames(
+            className={classnameMerge(
               'w-full px-4 py-2 text-base bg-white',
               currentPage === index + 1 ? selectedButton : button
             )}

@@ -1,10 +1,10 @@
-import { useSelectorConfig } from '../Provider/SelectorConfigProvider'
-import { useSelectorOptionsDispatch } from '../Provider/SelectorOptionsProvider'
+import SelectorConfigProvider from '../Provider/SelectorConfigProvider'
+import SelectorOptionsProvider from '../Provider/SelectorOptionsProvider'
 import { OptionValueType } from '../types'
 
 export const useOptions = () => {
-  const dispatchOptions = useSelectorOptionsDispatch()
-  const { onChange, disabled } = useSelectorConfig()
+  const dispatchOptions = SelectorOptionsProvider.useSelectorOptionsDispatch()
+  const { onChange, disabled } = SelectorConfigProvider.useSelectorConfig()
 
   const setOption = (id: OptionValueType, selected: boolean) => {
     dispatchOptions(previousOptions => ({ ...previousOptions, [id]: { selected } }))

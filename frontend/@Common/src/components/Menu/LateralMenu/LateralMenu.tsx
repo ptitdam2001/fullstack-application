@@ -1,18 +1,18 @@
-import { memo, useEffect, useState } from 'react'
-import { IconButton } from '../Buttons'
-import { ChevronLeft, ChevronRight } from '../Icon'
-import { MenuItem } from './types'
-import LateralMenuItem from './LateralMenuItem'
-import { Divider } from '../Divider'
+import { useEffect, useState } from 'react'
+import { IconButton } from '@Components/Buttons'
+import { ChevronLeft, ChevronRight } from '@Components/Icon'
+import { MenuItem } from '../types'
+import { Divider } from '@Components/Divider/Divider'
+import { LateralMenuItem } from './LateralMenuItem'
 import { MenuContainer, MenuHeader, MenuList } from './styledComponent'
-import classNames from 'classnames'
+import { classnameMerge } from '@Utils/classnames'
 
 type LateralMenuProps = {
   expanded?: boolean
   items: MenuItem[]
 }
 
-export const LateralMenuComponent = ({ expanded = false, items }: LateralMenuProps) => {
+export const LateralMenu = ({ expanded = false, items }: LateralMenuProps) => {
   const [expandedMenu, setExpandedMenu] = useState<boolean>(expanded)
 
   useEffect(() => {
@@ -25,7 +25,7 @@ export const LateralMenuComponent = ({ expanded = false, items }: LateralMenuPro
   const Icon = expandedMenu ? <ChevronLeft /> : <ChevronRight />
 
   return (
-    <MenuContainer className={classNames(expandedMenu ? `w-48` : `w-10`, 'Menu')}>
+    <MenuContainer className={classnameMerge(expandedMenu ? `w-48` : `w-10`, 'Menu')}>
       <MenuHeader className="MenuHeader">
         <IconButton onClick={toggleExpanded} icon={Icon} size="small" className="text-white" />
       </MenuHeader>
@@ -38,4 +38,3 @@ export const LateralMenuComponent = ({ expanded = false, items }: LateralMenuPro
     </MenuContainer>
   )
 }
-export const LateralMenu = memo(LateralMenuComponent)

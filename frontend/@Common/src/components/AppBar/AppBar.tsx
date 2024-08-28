@@ -1,6 +1,6 @@
-import classNames from 'classnames'
 import { memo } from 'react'
 import { Title1 } from '@Components/Typography'
+import { classnameMerge } from '@Utils/classnames'
 
 export interface AppBarProps {
   logo?: {
@@ -14,7 +14,10 @@ export interface AppBarProps {
 
 export const AppBar = memo(({ logo, title, rightContent, fixed = false }: AppBarProps) => (
   <header
-    className={classNames('bg-primary text-primaryText dark:bg-primary-800 shadow-lg w-full z-10', { fixed: fixed })}
+    className={classnameMerge(
+      ['bg-primary', 'text-primaryText', 'dark:bg-primary-800', 'shadow-lg', 'w-full', 'z-10'],
+      { fixed: fixed }
+    )}
   >
     <div className="px-4 mx-auto max-w-7xl">
       <div className="flex items-center justify-between h-16">

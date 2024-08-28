@@ -1,8 +1,7 @@
 import { MenuItemProp } from '../../types'
 // import { v4 as uuid } from 'uuid'
 // import { ReactNode } from 'react'
-import { LateralMenu } from '../Menu'
-import { memo } from 'react'
+import { LateralMenu } from '@Components/Menu/LateralMenu/LateralMenu'
 
 // type MenuItem = {
 //   key: string
@@ -28,7 +27,7 @@ type Props = {
   menu: MenuItemProp[]
 }
 
-const Sidebar = ({ menu }: Props) => {
+export const Sidebar = ({ menu }: Props) => {
   return (
     // <Menu
     //   mode="inline"
@@ -57,4 +56,3 @@ const Sidebar = ({ menu }: Props) => {
     </menu>
   )
 }
-export default memo(Sidebar)

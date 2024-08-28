@@ -5,7 +5,7 @@ import { RowActions } from './RowActions'
 import { TableCell, TableCellHeader, TableContainer, TableTitle } from './styledComponent'
 import { TableHead } from './TableHead'
 import { WithDataTestIdProps, WithDesignProps } from '../../types'
-import classNames from 'classnames'
+import { classnameMerge } from '@Utils/classnames'
 
 type TableProps<T> = {
   columns: TableCol<T>[]
@@ -18,7 +18,7 @@ type TableProps<T> = {
   WithDataTestIdProps
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-const Table = <T extends { [k: string]: any }>({
+export const Table = <T extends { [k: string]: any }>({
   columns,
   data,
   title,
@@ -26,9 +26,9 @@ const Table = <T extends { [k: string]: any }>({
   pagination,
   className,
   withBorder = false,
-  'data-testid': testId,
+  testId,
 }: TableProps<T>) => (
-  <TableContainer className={classNames(className, { 'rounded-lg shadow': withBorder })} data-testid={testId}>
+  <TableContainer className={classnameMerge(className, { 'rounded-lg shadow': withBorder })} data-testid={testId}>
     {title && <TableTitle data-testid={testId && `${testId}--title`}>{title}</TableTitle>}
     <table className="min-w-full leading-normal">
       <TableHead data-testid={testId && `${testId}--head`}>
@@ -60,5 +60,3 @@ const Table = <T extends { [k: string]: any }>({
     {pagination && <TablePagination {...pagination} data-testid={testId && `${testId}--pagination`} />}
   </TableContainer>
 )
-
-export default Table

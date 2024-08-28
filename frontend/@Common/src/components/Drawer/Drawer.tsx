@@ -1,11 +1,11 @@
-import classNames from 'classnames'
-import { memo, useCallback } from 'react'
+import { useCallback } from 'react'
 import { IconButton } from '../Buttons'
 import { Bars3, Close } from '../Icon'
 import { DrawerProps } from './types'
 import { useToggle } from '@Hooks/useToggle'
+import { classnameMerge } from '@Utils/classnames'
 
-const Drawer = ({
+export const Drawer = ({
   open = false,
   toggleIcon = <Bars3 />,
   closeIcon = <Close />,
@@ -14,7 +14,7 @@ const Drawer = ({
   content,
   className,
   onOpenChange,
-  'data-testid': testId,
+  testId,
 }: DrawerProps) => {
   const { toggleOpen, isOpen } = useToggle(open)
 
@@ -24,13 +24,13 @@ const Drawer = ({
   }, [onOpenChange, isOpen, toggleOpen])
 
   return (
-    <menu className={classNames('flex', className)} role="menu">
+    <menu className={classnameMerge('flex', className)} role="menu">
       {!isOpen && (
-        <IconButton onClick={handleClick} icon={toggleIcon} withBorder data-testid={testId && `${testId}--toggle`} />
+        <IconButton onClick={handleClick} icon={toggleIcon} withBorder testId={testId && `${testId}--toggle`} />
       )}
       <div
         data-testid={testId}
-        className={classNames('fixed top-0 h-full duration-500 bg-white shadow-lg flex flex-col', {
+        className={classnameMerge('fixed top-0 h-full duration-500 bg-white shadow-lg flex flex-col', {
           'w-64': isOpen,
           'w-0': position === 'right' && !isOpen,
           'translate-x-0': isOpen,
@@ -45,7 +45,7 @@ const Drawer = ({
             onClick={handleClick}
             size="small"
             icon={closeIcon}
-            data-testid={testId && `${testId}--close`}
+            testId={testId && `${testId}--close`}
           />
         </h2>
         <section
@@ -58,4 +58,3 @@ const Drawer = ({
     </menu>
   )
 }
-export default memo(Drawer)

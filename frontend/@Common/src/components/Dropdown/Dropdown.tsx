@@ -1,13 +1,13 @@
-import classNames from 'classnames'
-import { cloneElement, memo, useCallback, useRef } from 'react'
+import { cloneElement, useCallback, useRef } from 'react'
 import { ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
 import { DropDownProps } from './types'
 import { DropdownButton, DropdownContainer, DropdownItem, DropdownMenu } from './styledComponent'
-import { TextWithIcon } from '../Text'
 import { useClickOutside } from '@Hooks/useClickOutside'
 import { useToggle } from '@Hooks/useToggle'
+import { classnameMerge } from '@Utils/classnames'
+import { TextWithIcon } from '@Components/Text/TextWithIcon'
 
-const DropDown = ({ button, items, withDivider, icon, forceOpen, stayOpenOnClick = false }: DropDownProps) => {
+export const DropDown = ({ button, items, withDivider, icon, forceOpen, stayOpenOnClick = false }: DropDownProps) => {
   const wrapperRef = useRef(null)
   const { isOpen, toggleOpen, setIsOpen } = useToggle(false)
 
@@ -45,7 +45,7 @@ const DropDown = ({ button, items, withDivider, icon, forceOpen, stayOpenOnClick
           {items.map(item => (
             <DropdownItem
               key={item.label}
-              className={classNames(item.icon ? 'flex items-center' : 'block')}
+              className={classnameMerge(item.icon ? 'flex items-center' : 'block')}
               role="menuitem"
               onClick={initOnClick(item.onClick)}
             >
@@ -66,4 +66,3 @@ const DropDown = ({ button, items, withDivider, icon, forceOpen, stayOpenOnClick
     </DropdownContainer>
   )
 }
-export default memo(DropDown)

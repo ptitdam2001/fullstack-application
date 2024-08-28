@@ -11,7 +11,7 @@ export type SelectorConfigType = {
 const context = createContext<SelectorConfigType | typeof noProvider>(noProvider)
 context.displayName = 'SelectorConfig'
 
-export const useSelectorConfig = () => {
+const useSelectorConfig = () => {
   const value = useContext(context)
 
   if (value === noProvider) {
@@ -23,6 +23,9 @@ export const useSelectorConfig = () => {
 
 type SelectorConfigProviderProps = ProviderProps<SelectorConfigType>
 
-export const SelectorConfigProvider = ({ children, value }: SelectorConfigProviderProps) => (
-  <context.Provider value={value}>{children}</context.Provider>
-)
+export default {
+  Provider: ({ children, value }: SelectorConfigProviderProps) => (
+    <context.Provider value={value}>{children}</context.Provider>
+  ),
+  useSelectorConfig,
+}

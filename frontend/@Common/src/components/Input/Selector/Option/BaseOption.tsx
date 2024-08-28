@@ -4,8 +4,9 @@ import { useOptions } from '../hooks/useOptions'
 import { useSelectorOptions } from '../Provider/SelectorOptionsProvider'
 import { SelectorOptionContainer } from '../styledComponent'
 import { CheckCircle, CheckCircleOutline } from '@Components/Icon'
-import classNames from 'classnames'
-import { useSelectorConfig } from '../Provider/SelectorConfigProvider'
+import SelectorConfigProvider from '../Provider/SelectorConfigProvider'
+
+import { classnameMerge } from '@Utils/classnames'
 
 export type BaseOptionProps = PropsWithChildren<{
   id: OptionValueType
@@ -16,7 +17,7 @@ export type BaseOptionProps = PropsWithChildren<{
 export const BaseOption = ({ children, id, onClick, selected = false }: BaseOptionProps) => {
   const { setOption, removeOption } = useOptions()
   const options = useSelectorOptions()
-  const { disabled } = useSelectorConfig()
+  const { disabled } = SelectorConfigProvider.useSelectorConfig()
 
   const currentOption = options[id]
 
@@ -39,7 +40,7 @@ export const BaseOption = ({ children, id, onClick, selected = false }: BaseOpti
       key={id}
       onClick={!disabled ? onClick : undefined}
       role="button"
-      className={classNames({
+      className={classnameMerge({
         'bg-slate-100': isSelected,
         'hover:cursor-pointer': !disabled,
         'cursor-not-allowed opacity-25': disabled,

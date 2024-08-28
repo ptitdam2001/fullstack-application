@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import Dropdown from './Dropdown'
+import { DropDown } from './Dropdown'
 import { DropDownProps } from './types'
 import { faker } from '@faker-js/faker'
 import { fn } from '@storybook/test'
@@ -25,7 +25,7 @@ const items = [
 
 const meta = {
   title: 'Common/Dropdown',
-  component: Dropdown,
+  component: DropDown,
   tags: ['autodocs'],
   parameters: {
     layout: 'fullscreen',

@@ -1,8 +1,8 @@
-import { useSelectorGroup, useSelectorGroupDispatch } from '../Provider/SelectorGroupProvider'
+import SelectorGroupProvider from '../Provider/SelectorGroupProvider'
 
 export const useGroup = () => {
-  const groupDispatch = useSelectorGroupDispatch()
-  const childrenIds = useSelectorGroup()
+  const groupDispatch = SelectorGroupProvider.useSelectorGroupDispatch()
+  const childrenIds = SelectorGroupProvider.useSelectorGroup()
 
   return {
     addChildToGroup: (id: string) => {

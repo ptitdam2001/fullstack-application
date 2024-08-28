@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import PrimaryButton from './PrimaryButton'
+import { PrimaryButton } from './PrimaryButton'
 import { Close } from '@Components/Icon'
 import { fn } from '@storybook/test'
 

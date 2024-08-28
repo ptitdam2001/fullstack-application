@@ -1,12 +1,12 @@
 import { act, render } from '@testing-library/react'
-import Drawer from './Drawer'
+import { Drawer } from './Drawer'
 import userEvent from '@testing-library/user-event'
 
 const testId = 'Drawer'
 const args = {
   title: 'My title left',
   content: <div data-testid="myContent">My Content</div>,
-  'data-testid': testId,
+  testId,
 }
 
 const onOpenChange = vi.hoisted(() => vi.fn())

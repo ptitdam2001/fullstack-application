@@ -1,32 +1,33 @@
-import classNames from 'classnames'
-import React, { memo, useCallback, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { BaseInputProps } from '../types'
-import { TextInput } from '../Text'
+import { TextInput } from '../Text/TextInput'
 import { CloseEye, OpenEye } from '@Components/Icon'
+import { classnameMerge } from '@Utils/classnames'
 
 export type PasswordInputProps = BaseInputProps
 
-const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(({ className, error, ...args }, ref) => {
-  const [show, setShow] = useState<boolean>(false)
+export const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
+  ({ className, error, ...args }, ref) => {
+    const [show, setShow] = useState<boolean>(false)
 
-  const toogleIconClass = classNames('h-5 w-5', { 'fill-red-500': error })
+    const toogleIconClass = classnameMerge('h-5 w-5', { 'fill-red-500': error })
 
-  const handleToggleMode = useCallback(() => setShow(oldValue => !oldValue), [setShow])
+    const handleToggleMode = useCallback(() => setShow(oldValue => !oldValue), [setShow])
 
-  return (
-    <div className={classNames('relative', className)}>
-      <TextInput
-        ref={ref}
-        {...args}
-        htmlType={show ? 'text' : 'password'}
-        error={error}
-        preElement={
-          <span onClick={handleToggleMode}>
-            {show ? <OpenEye className={toogleIconClass} /> : <CloseEye className={toogleIconClass} />}
-          </span>
-        }
-      />
-    </div>
-  )
-})
-export default memo(PasswordInput)
+    return (
+      <div className={classnameMerge('relative', className)}>
+        <TextInput
+          ref={ref}
+          {...args}
+          htmlType={show ? 'text' : 'password'}
+          error={error}
+          preElement={
+            <span onClick={handleToggleMode}>
+              {show ? <OpenEye className={toogleIconClass} /> : <CloseEye className={toogleIconClass} />}
+            </span>
+          }
+        />
+      </div>
+    )
+  }
+)

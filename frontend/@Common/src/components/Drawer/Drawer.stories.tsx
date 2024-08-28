@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import Drawer from './Drawer'
+import { Drawer } from './Drawer'
 import { DrawerProps } from './types'
 import { fn } from '@storybook/test'
 

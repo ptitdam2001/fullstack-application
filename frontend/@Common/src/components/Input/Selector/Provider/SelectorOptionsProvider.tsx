@@ -19,13 +19,13 @@ export const useSelectorOptions = () => {
   const value = useContext(valueContext)
 
   if (value === noProvider) {
-    throw new Error(`useSelectorOptions is used outside of its SelectorConfigProvider`)
+    throw new Error(`useSelectorOptions is used outside of its SelectorOptionsProvider`)
   }
 
   return value
 }
 
-export const useSelectorOptionsDispatch = () => {
+const useSelectorOptionsDispatch = () => {
   const value = useContext(valueDispatchContext)
 
   if (value === noProvider) {
@@ -37,12 +37,15 @@ export const useSelectorOptionsDispatch = () => {
 
 type SelectorOptionsProviderProps = PropsWithChildren<unknown>
 
-export const SelectorOptionsProvider = ({ children }: SelectorOptionsProviderProps) => {
-  const [options, setOptions] = useState<SelectorOptionType>({})
+export default {
+  Provider: ({ children }: SelectorOptionsProviderProps) => {
+    const [options, setOptions] = useState<SelectorOptionType>({})
 
-  return (
-    <valueContext.Provider value={options}>
-      <valueDispatchContext.Provider value={setOptions}>{children}</valueDispatchContext.Provider>
-    </valueContext.Provider>
-  )
+    return (
+      <valueContext.Provider value={options}>
+        <valueDispatchContext.Provider value={setOptions}>{children}</valueDispatchContext.Provider>
+      </valueContext.Provider>
+    )
+  },
+  useSelectorOptionsDispatch,
 }

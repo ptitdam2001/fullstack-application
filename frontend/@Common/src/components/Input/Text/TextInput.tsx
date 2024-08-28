@@ -1,6 +1,6 @@
-import classNames from 'classnames'
 import { BaseInputProps } from '../types'
 import React, { ReactNode, useMemo } from 'react'
+import { classnameMerge } from '@Utils/classnames'
 
 export interface TextInputProps extends BaseInputProps {
   htmlType?: string
@@ -25,7 +25,7 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>((pro
 
   const classes = useMemo(
     () =>
-      classNames(
+      classnameMerge(
         'form-input',
         {
           'rounded-lg': !preElement,
@@ -51,7 +51,7 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>((pro
   )
   const preElementClass = useMemo(
     () =>
-      classNames(
+      classnameMerge(
         'border',
         'rounded-r-lg',
         'border-l-0',
@@ -72,7 +72,7 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>((pro
   )
 
   return (
-    <section className={classNames('relative', className)}>
+    <section className={classnameMerge('relative', className)}>
       {label && (
         <label htmlFor={inputId} className="text-gray-500 text-sm">
           {label}

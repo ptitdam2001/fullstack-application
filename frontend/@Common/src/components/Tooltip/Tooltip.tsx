@@ -1,5 +1,5 @@
-import classNames from 'classnames'
-import { ReactNode, memo, useMemo } from 'react'
+import { classnameMerge } from '@Utils/classnames'
+import { ReactNode, useMemo } from 'react'
 
 type TooltipProps = {
   title?: ReactNode
@@ -7,7 +7,7 @@ type TooltipProps = {
   children?: ReactNode
 }
 
-const Tooltip = ({ title, children, position = 'top' }: TooltipProps) => {
+export const Tooltip = ({ title, children, position = 'top' }: TooltipProps) => {
   const tooltipClasses = useMemo(() => {
     switch (position) {
       case 'bottom':
@@ -44,8 +44,8 @@ const Tooltip = ({ title, children, position = 'top' }: TooltipProps) => {
   return title && children ? (
     <div className="group relative w-full h-full">
       {children}
-      <div className={classNames(tooltipClasses.body)}>
-        <span className={classNames(tooltipClasses.footer)}></span>
+      <div className={classnameMerge(tooltipClasses.body)}>
+        <span className={classnameMerge(tooltipClasses.footer)}></span>
         {title}
       </div>
     </div>
@@ -53,4 +53,3 @@ const Tooltip = ({ title, children, position = 'top' }: TooltipProps) => {
     (children ?? null)
   )
 }
-export default memo(Tooltip)

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import { UserAccount } from '@Components/Icon'
+import { MenuItem } from '../types'
 import { LateralMenu } from './LateralMenu'
-import { UserAccount } from '../Icon'
-import { MenuItem } from './types'
 
 const menu = [
   {

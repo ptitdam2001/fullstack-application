@@ -1,5 +1,5 @@
 import { IconButton, PrimaryButton } from '@Components/Buttons'
-import { Tooltip } from '@Components/Tooltip'
+import { Tooltip } from '@Components/Tooltip/Tooltip'
 import { TableRowAction } from './types'
 
 type Props<T> = {

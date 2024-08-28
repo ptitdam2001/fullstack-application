@@ -1,8 +1,8 @@
-import { MenuItem } from './types'
-import { Tooltip } from '@Components/Tooltip'
+import { MenuItem } from '../types'
+import { Tooltip } from '@Components/Tooltip/Tooltip'
 import { memo } from 'react'
 import { MenuListItem } from './styledComponent'
-import classNames from 'classnames'
+import { classnameMerge } from '@Utils/classnames'
 
 type LateralMenuItemProps = {
   item: MenuItem
@@ -10,10 +10,10 @@ type LateralMenuItemProps = {
   className?: string
 }
 
-const LateralMenuItem = ({ item, expanded, className }: LateralMenuItemProps) => (
+export const LateralMenuItem = memo(({ item, expanded, className }: LateralMenuItemProps) => (
   <MenuListItem
     onClick={item.onClick}
-    className={classNames('LateralMenuItem', className, {
+    className={classnameMerge('LateralMenuItem', className, {
       'hover:bg-slate-200/45 hover:text-slate-800 cursor-pointer': !!item.onClick,
     })}
   >
@@ -22,5 +22,4 @@ const LateralMenuItem = ({ item, expanded, className }: LateralMenuItemProps) =>
     </Tooltip>
     {expanded && <span className="flex-1">{item.label}</span>}
   </MenuListItem>
-)
-export default memo(LateralMenuItem)
+))

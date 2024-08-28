@@ -1,13 +1,13 @@
-import classNames from 'classnames'
-import { ReactElement, memo, useMemo } from 'react'
+import { ReactElement, useMemo } from 'react'
 import { BaseButtonProps } from '../types'
+import { classnameMerge } from '@Utils/classnames'
 
 export interface PrimaryButtonProps extends BaseButtonProps {
   label?: string | ReactElement
   fullwidth?: boolean
 }
 
-const PrimaryButton = ({
+export const PrimaryButton = ({
   label,
   onClick = () => {},
   children,
@@ -17,11 +17,11 @@ const PrimaryButton = ({
   to,
   disabled = false,
   className: classes,
-  'data-testid': testId,
+  testId,
 }: PrimaryButtonProps) => {
   const classname = useMemo(
     () =>
-      classNames(
+      classnameMerge(
         classes,
         'text-center text-sm font-semibold',
         'transition ease-in duration-200 rounded-md bg-primary px-4 py-2 shadow-sm',
@@ -51,5 +51,3 @@ const PrimaryButton = ({
     </button>
   )
 }
-
-export default memo(PrimaryButton)

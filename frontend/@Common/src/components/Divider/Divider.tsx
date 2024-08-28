@@ -1,10 +1,10 @@
 import { memo } from 'react'
 import { DividerProps } from './types'
-import classNames from 'classnames'
+import { classnameMerge } from '@Utils/classnames'
 
 export const Divider = memo(({ position = 'horizontal', className }: DividerProps) => (
   <hr
-    className={classNames(
+    className={classnameMerge(
       {
         'divide-y': position === 'horizontal',
         'divide-x': position === 'vertical',

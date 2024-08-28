@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { default as Table } from './Table'
+import { Table } from './Table'
 import { faker } from '@faker-js/faker'
 import { Close } from '@Components/Icon'
 import { useState } from 'react'
 import { usePagination } from '@Hooks/usePagination'
-import { Avatar } from '../Avatar'
+import { Avatar } from '@Components/Avatar/Avatar'
 import { fn } from '@storybook/test'
 
 interface DataType {

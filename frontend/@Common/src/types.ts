@@ -3,7 +3,7 @@ export type WithDesignProps = {
 }
 
 export type WithDataTestIdProps = {
-  'data-testid'?: string
+  testId?: string
 }
 
 export interface MenuItemProp {
