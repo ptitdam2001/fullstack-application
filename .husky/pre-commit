@@ -1,5 +1,5 @@
-cd frontend
+cd frontend/@Common
 
-bun lint-staged
+bun run lint
 
 bun run test --run
