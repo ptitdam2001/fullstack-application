@@ -1,76 +1,107 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { Drawer } from './Drawer'
-import { DrawerProps } from './types'
 import { fn } from '@storybook/test'
-
-const DrawerContent = () => (
-  <ul>
-    <li>Line</li>
-    <li>Line</li>
-    <li>Line</li>
-    <li>Line</li>
-    <li>Line</li>
-    <li>Line</li>
-    <li>Line</li>
-    <li>Line</li>
-    <li>Line</li>
-    <li>Line</li>
-    <li>Line</li>
-    <li>Line</li>
-    <li>Line</li>
-    <li>Line</li>
-    <li>Line</li>
-    <li>Line</li>
-    <li>Line</li>
-    <li>Line</li>
-    <li>Line</li>
-    <li>Line</li>
-    <li>Line</li>
-    <li>Line</li>
-    <li>Line</li>
-    <li>Line</li>
-    <li>Line</li>
-    <li>Line</li>
-    <li>Line</li>
-    <li>Line</li>
-    <li>Line</li>
-    <li>Line</li>
-  </ul>
-)
+import { Drawer } from './Drawer'
 
 const meta = {
-  title: 'Common/Drawer',
-  component: Drawer,
+  title: 'Data Display/Drawer',
+  component: Drawer.Container,
   tags: ['autodocs'],
   parameters: {
     layout: 'fullscreen',
   },
   decorators: [
     Story => (
-      <div className="bg-slate-400 w-full h-128">
+      <div className="bg-white-400 w-full h-128">
         <Story />
       </div>
     ),
   ],
   args: {
-    onOpenChange: fn(),
+    onVisibilityChange: fn(),
   },
-} satisfies Meta<DrawerProps>
+} satisfies Meta<typeof Drawer.Container>
 
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const SimpleUsage: Story = {
+const CustomDawerOpener = () => {
+  const handleClick = Drawer.useDrawerToggleOpen()
+  return <button onClick={handleClick}>Open</button>
+}
+
+export const Left: Story = {
   args: {
-    title: 'My title left',
-    content: <DrawerContent />,
+    position: 'left',
+    children: (
+      <>
+        <CustomDawerOpener />
+        <Drawer.Content>
+          {toggleClose => (
+            <div>
+              <p>My drawer content</p>
+              <button onClick={toggleClose}>Close</button>
+            </div>
+          )}
+        </Drawer.Content>
+      </>
+    ),
   },
 }
 
-export const RightUsage: Story = {
+export const Right: Story = {
   args: {
-    title: 'My title right',
     position: 'right',
-    content: <DrawerContent />,
+    children: (
+      <>
+        <CustomDawerOpener />
+        <Drawer.Content>
+          {toggleClose => (
+            <div>
+              <p>My drawer content</p>
+              <button onClick={toggleClose}>Close</button>
+            </div>
+          )}
+        </Drawer.Content>
+      </>
+    ),
+  },
+}
+
+export const WithHeader: Story = {
+  args: {
+    position: 'left',
+    children: (
+      <>
+        <CustomDawerOpener />
+        <Drawer.Content>
+          {() => (
+            <div>
+              <Drawer.Header title="Drawer Title" />
+              <p>My drawer content</p>
+            </div>
+          )}
+        </Drawer.Content>
+      </>
+    ),
+  },
+}
+
+export const WithCustomWidth: Story = {
+  args: {
+    position: 'left',
+    width: 'w-4/6',
+    children: (
+      <>
+        <CustomDawerOpener />
+        <Drawer.Content>
+          {() => (
+            <div>
+              <Drawer.Header title="Drawer Title" />
+              <p>My drawer content</p>
+            </div>
+          )}
+        </Drawer.Content>
+      </>
+    ),
   },
 }

@@ -3,7 +3,7 @@ import { DropDown } from './Dropdown'
 import { DropDownProps } from './types'
 import { faker } from '@faker-js/faker'
 import { fn } from '@storybook/test'
-import { Avatar } from '@Components/Avatar'
+import { Avatar } from '@Components/Avatar/Avatar'
 
 const items = [
   {
@@ -52,14 +52,14 @@ export const Default: Story = {
 export const WithIcons: Story = {
   args: {
     button: <button>My dropdown trigger</button>,
-    items: items.map(item => ({ ...item, icon: <Avatar imgSrc={faker.image.avatar()} /> })),
+    items: items.map(item => ({ ...item, icon: <Avatar imgSrc={faker.image.avatarGitHub()} /> })),
   },
 }
 
 export const StayOpenOnItemClick: Story = {
   args: {
     button: <button>My dropdown trigger</button>,
-    items: items.map(item => ({ ...item, icon: <Avatar imgSrc={faker.image.avatar()} /> })),
+    items: items.map(item => ({ ...item, icon: <Avatar imgSrc={faker.image.avatarGitHub()} /> })),
     stayOpenOnClick: true,
   },
 }
