@@ -32,6 +32,7 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@floating-ui/react": "^0.26.23",
     "@fontsource/poppins": "^5.0.14",
     "@fontsource/roboto": "^5.0.13",
     "@heroicons/react": "^2.1.5",
