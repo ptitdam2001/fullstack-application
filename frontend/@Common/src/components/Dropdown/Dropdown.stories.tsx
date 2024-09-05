@@ -44,21 +44,21 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   args: {
-    button: <button>My dropdown</button>,
+    button: <span>My dropdown</span>,
     items,
   },
 }
 
 export const WithIcons: Story = {
   args: {
-    button: <button>My dropdown trigger</button>,
+    button: <span>My dropdown trigger</span>,
     items: items.map(item => ({ ...item, icon: <Avatar imgSrc={faker.image.avatarGitHub()} /> })),
   },
 }
 
 export const StayOpenOnItemClick: Story = {
   args: {
-    button: <button>My dropdown trigger</button>,
+    button: <span>My dropdown trigger</span>,
     items: items.map(item => ({ ...item, icon: <Avatar imgSrc={faker.image.avatarGitHub()} /> })),
     stayOpenOnClick: true,
   },

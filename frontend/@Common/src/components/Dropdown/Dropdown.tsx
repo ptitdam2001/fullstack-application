@@ -1,68 +1,59 @@
-import { cloneElement, useCallback, useRef } from 'react'
-import { ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
 import { DropDownProps } from './types'
-import { DropdownButton, DropdownContainer, DropdownItem, DropdownMenu } from './styledComponent'
-import { useClickOutside } from '@Hooks/useClickOutside'
-import { useToggle } from '@Hooks/useToggle'
+import { DropdownItem, DropdownMenu } from './styledComponent'
 import { classnameMerge } from '@Utils/classnames'
-import { TextWithIcon } from '@Components/Text/TextWithIcon'
+import { DropdownItemContent } from './DropdownItem'
+import { Popover } from '../Popover/Popover'
+import { useState } from 'react'
+import { DropdownButton } from './DropdownButton'
 
-export const DropDown = ({ button, items, withDivider, icon, forceOpen, stayOpenOnClick = false }: DropDownProps) => {
-  const wrapperRef = useRef(null)
-  const { isOpen, toggleOpen, setIsOpen } = useToggle(false)
-
-  useClickOutside([wrapperRef], () => {
-    setIsOpen(false)
-  })
-
-  const initOnClick = useCallback(
-    (callback?: VoidFunction) => () => {
-      if (!stayOpenOnClick && !!callback) {
-        toggleOpen()
-      }
-
-      if (callback) {
-        return callback()
-      }
-    },
-    [toggleOpen, stayOpenOnClick]
-  )
+export const DropDown = ({
+  button,
+  items,
+  withDivider,
+  icon,
+  forceOpen = false,
+  stayOpenOnClick = false,
+}: DropDownProps) => {
+  const [isOpen, setIsOpen] = useState(forceOpen)
 
   return (
-    <DropdownContainer tabIndex={0} ref={wrapperRef}>
-      <DropdownButton>
-        {cloneElement(button, { onClick: toggleOpen, role: 'button' })}
-        {icon ||
-          (isOpen ? (
-            <ChevronUpIcon className="w-5 h-5" onClick={toggleOpen} />
-          ) : (
-            <ChevronDownIcon className="w-5 h-5" onClick={toggleOpen} />
-          ))}
-      </DropdownButton>
+    <Popover.Container open={isOpen} onOpenChange={setIsOpen}>
+      <Popover.Trigger
+        onClick={() => {
+          setIsOpen(v => !v)
+        }}
+      >
+        <DropdownButton icon={icon}>{button}</DropdownButton>
+      </Popover.Trigger>
 
-      {(forceOpen || isOpen) && (
-        <DropdownMenu role="menu" aria-orientation="vertical" aria-labelledby="options-menu" withDivider={withDivider}>
-          {items.map(item => (
-            <DropdownItem
-              key={item.label}
-              className={classnameMerge(item.icon ? 'flex items-center' : 'block')}
-              role="menuitem"
-              onClick={initOnClick(item.onClick)}
-            >
-              {item.customRender ? (
-                item.customRender
-              ) : (
-                <TextWithIcon icon={item.icon}>
-                  <div className="py-1">
-                    <p className="text-left">{item.label}</p>
-                    {item.desc && <p className="text-xs text-gray-400">{item.desc}</p>}
-                  </div>
-                </TextWithIcon>
-              )}
-            </DropdownItem>
-          ))}
-        </DropdownMenu>
-      )}
-    </DropdownContainer>
+      <Popover.Content>
+        {close => (
+          <DropdownMenu
+            role="menu"
+            aria-orientation="vertical"
+            aria-labelledby="options-menu"
+            withDivider={withDivider}
+          >
+            {items.map(item => (
+              <DropdownItem
+                key={item.label}
+                className={classnameMerge(item.icon ? 'flex items-center' : 'block')}
+                role="menuitem"
+                onClick={() => {
+                  if (!stayOpenOnClick) {
+                    close()
+                  }
+                  if (item.onClick) {
+                    item.onClick()
+                  }
+                }}
+              >
+                <DropdownItemContent item={item} />
+              </DropdownItem>
+            ))}
+          </DropdownMenu>
+        )}
+      </Popover.Content>
+    </Popover.Container>
   )
 }

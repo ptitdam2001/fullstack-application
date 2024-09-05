@@ -1,9 +1,14 @@
+import { PropsWithChildren } from 'react'
 import { styled } from 'styled-components'
-import tw from 'twin.macro'
-import { CardProps } from './types'
+import tw, { css } from 'twin.macro'
+import { WithDataTestIdProps } from 'types'
+
+export type CardProps = PropsWithChildren<{
+  direction?: 'column' | 'row' | 'column-reverse' | 'row-reverse'
+}> &
+  WithDataTestIdProps
 
 export const Card = styled.section<CardProps>`
-  flex-direction: ${props => props.direction ?? 'row'};
   ${tw`
     m-2
     p-2
@@ -14,5 +19,8 @@ export const Card = styled.section<CardProps>`
     flex
     rounded-lg
     border-solid
+  `}
+  ${({ direction = 'row' }) => css`
+    flex-direction: ${direction};
   `}
 `

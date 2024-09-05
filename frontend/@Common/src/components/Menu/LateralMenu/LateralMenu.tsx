@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { memo, useEffect, useState } from 'react'
 import { IconButton } from '@Components/Buttons'
 import { ChevronLeft, ChevronRight } from '@Components/Icon'
 import { MenuItem } from '../types'
@@ -12,7 +12,7 @@ type LateralMenuProps = {
   items: MenuItem[]
 }
 
-export const LateralMenu = ({ expanded = false, items }: LateralMenuProps) => {
+export const LateralMenu = memo(({ expanded = false, items }: LateralMenuProps) => {
   const [expandedMenu, setExpandedMenu] = useState<boolean>(expanded)
 
   useEffect(() => {
@@ -37,4 +37,4 @@ export const LateralMenu = ({ expanded = false, items }: LateralMenuProps) => {
       </MenuList>
     </MenuContainer>
   )
-}
+})
