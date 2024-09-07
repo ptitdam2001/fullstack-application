@@ -24,7 +24,7 @@ const items = [
 ]
 
 const meta = {
-  title: 'Common/Dropdown',
+  title: 'Navigation/Dropdown',
   component: DropDown,
   tags: ['autodocs'],
   parameters: {

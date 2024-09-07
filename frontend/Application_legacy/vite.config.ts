@@ -5,12 +5,12 @@ import macrosPlugin from 'vite-plugin-babel-macros'
 import appPackageJson from './package.json'
 
 const ALIASES = {
-  '@Common': path.resolve(__dirname, './src/common'),
-  '@Application': path.resolve(__dirname, './src/application'),
-  '@Authentication': path.resolve(__dirname, './src/authentication/'),
-  '@User': path.resolve(__dirname, './src/user/'),
-  '@Api': path.resolve(__dirname, './src/api'),
-  '@Testing': path.resolve(__dirname, './src/test'),
+  '@Common': path.resolve(__dirname, './common'),
+  '@Application': path.resolve(__dirname, './application'),
+  '@Authentication': path.resolve(__dirname, './authentication/'),
+  '@User': path.resolve(__dirname, './user/'),
+  '@Api': path.resolve(__dirname, './api'),
+  '@Testing': path.resolve(__dirname, './test'),
 }
 
 export const TEST_CONFIG = {
@@ -58,7 +58,7 @@ export const TEST_CONFIG = {
   environment: 'jsdom',
   setupFiles: ['./config/vitest/setup.ts'],
   globalSetup: ['./config/vitest/setup-global.ts'],
-  include: ['./src/**/*.test.{ts,tsx}'],
+  include: ['./**/*.test.{ts,tsx}'],
   typecheck: {
     tsconfig: './tsconfig.json',
   },

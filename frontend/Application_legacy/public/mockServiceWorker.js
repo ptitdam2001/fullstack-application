@@ -8,7 +8,7 @@
  * - Please do NOT serve this file on production.
  */
 
-const PACKAGE_VERSION = '2.3.4'
+const PACKAGE_VERSION = '2.4.2'
 const INTEGRITY_CHECKSUM = '26357c79639bfa20d64c0efca2a87423'
 const IS_MOCKED_RESPONSE = Symbol('isMockedResponse')
 const activeClientIds = new Set()
@@ -75,7 +75,7 @@ self.addEventListener('message', async function (event) {
     case 'CLIENT_CLOSED': {
       activeClientIds.delete(clientId)
 
-      const remainingClients = allClients.filter(client => {
+      const remainingClients = allClients.filter((client) => {
         return client.id !== clientId
       })
 
@@ -140,7 +140,7 @@ async function handleRequest(event, requestId) {
             headers: Object.fromEntries(responseClone.headers.entries()),
           },
         },
-        [responseClone.body]
+        [responseClone.body],
       )
     })()
   }
@@ -164,11 +164,11 @@ async function resolveMainClient(event) {
   })
 
   return allClients
-    .filter(client => {
+    .filter((client) => {
       // Get only those clients that are currently visible.
       return client.visibilityState === 'visible'
     })
-    .find(client => {
+    .find((client) => {
       // Find the client ID that's recorded in the
       // set of clients that have registered the worker.
       return activeClientIds.has(client.id)
@@ -229,7 +229,7 @@ async function getResponse(event, client, requestId) {
         keepalive: request.keepalive,
       },
     },
-    [requestBuffer]
+    [requestBuffer],
   )
 
   switch (clientMessage.type) {
@@ -249,7 +249,7 @@ function sendToClient(client, message, transferrables = []) {
   return new Promise((resolve, reject) => {
     const channel = new MessageChannel()
 
-    channel.port1.onmessage = event => {
+    channel.port1.onmessage = (event) => {
       if (event.data && event.data.error) {
         return reject(event.data.error)
       }
@@ -257,7 +257,10 @@ function sendToClient(client, message, transferrables = []) {
       resolve(event.data)
     }
 
-    client.postMessage(message, [channel.port2].concat(transferrables.filter(Boolean)))
+    client.postMessage(
+      message,
+      [channel.port2].concat(transferrables.filter(Boolean)),
+    )
   })
 }
 
