@@ -1,8 +1,8 @@
 import { WithDesignProps } from '../../types'
 import { ReactElement } from 'react'
 import { useForm, DefaultValues, FieldValues, FormProvider, Mode } from 'react-hook-form'
-import { joiResolver } from '@hookform/resolvers/joi'
-import Joi from 'joi'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { ZodType } from 'zod'
 
 type FormProps<T> = {
   name?: string
@@ -10,7 +10,7 @@ type FormProps<T> = {
   children: ReactElement
   defaultValues?: DefaultValues<T>
   mode?: Mode
-  validation?: Joi.Schema<T>
+  validation?: ZodType<T>
 } & WithDesignProps
 
 export const Form = <T extends FieldValues>({
@@ -25,7 +25,7 @@ export const Form = <T extends FieldValues>({
   const form = useForm<T>({
     defaultValues,
     mode,
-    resolver: validation ? joiResolver(validation) : undefined,
+    resolver: validation ? zodResolver(validation) : undefined,
   })
 
   return (
