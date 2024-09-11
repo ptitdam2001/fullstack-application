@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 import dts from 'vite-plugin-dts'
@@ -20,11 +20,14 @@ export default defineConfig({
     // https://github.com/vitejs/vite/issues/8644#issuecomment-1159308803
     logOverride: { 'this-is-undefined-in-esm': 'silent' },
   },
-  plugins: [react({
-    babel: {
-      plugins: ['babel-plugin-macros', 'babel-plugin-styled-components'],
-    },
-  }), dts()],
+  plugins: [
+    react({
+      babel: {
+        plugins: ['babel-plugin-macros', 'babel-plugin-styled-components'],
+      },
+    }),
+    dts(),
+  ],
   test: {
     globals: true,
     coverage: {
@@ -39,14 +42,10 @@ export default defineConfig({
         'dist/**',
         'packages/*/test{,s}/**',
         '**/*.d.ts',
-        'cypress/**',
         'test{,s}/**',
         'test{,-*}.{js,cjs,mjs,ts,tsx,jsx}',
         '**/*{.,-}test.{js,cjs,mjs,ts,tsx,jsx}',
         '**/*{.,-}spec.{js,cjs,mjs,ts,tsx,jsx}',
-        '**/*-in-memory-service.ts',
-        '**/*-memory-service.ts',
-        '**/__tests__/**',
         '**/{karma,rollup,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build}.config.*',
         '**/.{eslint,mocha,prettier}rc.{js,cjs,yml}',
         /** To uncomment when we won't have component in index.tsx */
@@ -54,9 +53,6 @@ export default defineConfig({
         '**/*.stories.{ts,tsx}',
         '.storybook',
         './*.{ts,tsx}',
-        '**/*.mock.ts',
-        '**/testing/*.{ts,tsx}',
-        '**/ui/testing/**',
       ],
       /** To define after increase coverage what level we want to cover */
       watermarks: {
@@ -85,8 +81,9 @@ export default defineConfig({
   build: {
     lib: {
       entry: path.resolve(__dirname, 'src', 'index.ts'),
+      formats: ['es', 'cjs'],
       name: 'dsu-react-common',
-      fileName: (format) => `index.${format}.js`,
+      fileName: format => `index.${format}.js`,
     },
     rollupOptions: {
       external: ['react', 'react-dom'],
@@ -99,5 +96,6 @@ export default defineConfig({
     },
     sourcemap: true,
     emptyOutDir: true,
+    target: 'esnext',
   },
 })
