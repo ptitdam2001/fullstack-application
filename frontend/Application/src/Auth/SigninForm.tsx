@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form'
 import { useAuthContext } from './AuthProvider'
 import { useNavigate } from 'react-router-dom'
 import { CONNECTED_HOME } from './constant'
+import { Card, PasswordInput, PrimaryButton, TextInput } from 'dsu-react-common'
 
 type FormInput = {
   email: string
@@ -24,10 +25,12 @@ export const SigninForm = () => {
   }
 
   return (
-    <form name="Signin" onSubmit={handleSubmit(onSubmit)}>
-      <input type="email" {...register('email')} />
-      <input type="password" {...register('password')} />
-      <button type="submit">Login</button>
-    </form>
+    <Card>
+      <form name="Signin" onSubmit={handleSubmit(onSubmit)}>
+        <TextInput htmlType="email" label="Email" {...register('email')} />
+        <PasswordInput label="Password" {...register('password')} />
+        <PrimaryButton type="submit">Login</PrimaryButton>
+      </form>
+    </Card>
   )
 }

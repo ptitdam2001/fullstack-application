@@ -1,7 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 
-import './index.css'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import React from 'react'
 import { AuthProvider } from '@Auth/AuthProvider'
@@ -9,6 +8,10 @@ import { AnonymousLayout, ConnectedLayout, RootLayout } from '@Layouts/'
 import { Dashboard, Login, MyProfile, NotFound, ResetPassword } from '@Pages/'
 import { AuthenticatedContent } from '@Auth/AuthenticatedContent'
 import { Logout } from '@Auth/Logout'
+
+import '@fontsource/roboto'
+import '@fontsource/poppins'
+import './index.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
