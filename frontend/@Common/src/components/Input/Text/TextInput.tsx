@@ -26,7 +26,7 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>((pro
   const classes = useMemo(
     () =>
       classnameMerge(
-        'form-input',
+        'text-form-input',
         {
           'rounded-lg': !preElement,
           'rounded-l-lg': !!preElement,

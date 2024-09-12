@@ -1,14 +1,15 @@
-import { PropsWithChildren } from 'react'
+import React, { PropsWithChildren } from 'react'
 import { styled } from 'styled-components'
 import tw, { css } from 'twin.macro'
-import { WithDataTestIdProps } from 'types'
+import { WithDataTestIdProps, WithDesignProps } from 'types'
 
 export type CardProps = PropsWithChildren<{
   direction?: 'column' | 'row' | 'column-reverse' | 'row-reverse'
 }> &
-  WithDataTestIdProps
+  WithDataTestIdProps &
+  WithDesignProps
 
-export const Card = styled.section<CardProps>`
+const StyledCard = styled.article<CardProps>`
   ${tw`
     m-2
     p-2
@@ -24,3 +25,9 @@ export const Card = styled.section<CardProps>`
     flex-direction: ${direction};
   `}
 `
+
+export const Card: React.FC<CardProps> = ({ direction = 'row', children, testId, className }) => (
+  <StyledCard direction={direction} className={className} data-testid={testId}>
+    {children}
+  </StyledCard>
+)
