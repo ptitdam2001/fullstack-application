@@ -6,7 +6,9 @@ import MoreVertIcon from '@mui/icons-material/MoreVert'
 import { FC } from 'react'
 
 type UserCardProps = {
-  user: unknown
+  user: {
+    login: string
+  }
 }
 
 export const UserCard: FC<UserCardProps> = ({ user }) => (

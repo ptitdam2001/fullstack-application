@@ -1,7 +1,7 @@
 import { UserCard } from '@Common/UserCard'
 
 export const Team = () => {
-  const players: any[] = []
+  const players: { login: string }[] = []
   return (
     <article>
       {players.map(player => (
