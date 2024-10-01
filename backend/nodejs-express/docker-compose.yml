@@ -1,59 +1,44 @@
-volumes:
-  db_data: {}
+version: "3.8"
 
 services:
-  # api:
-  #   build:
-  #     context: .
-  #     dockerfile: ./Dockerfile
-  #     target: ProductionApi
-  #   ports:
-  #     - 4000:4000
-  #   env_file:
-  #     - .env
-
-  #   stdin_open: true
-  #   networks:
-  #     nest_backend:
-
-  #   # network_mode: host
-
-  # Database service
-  db:
-    # pull image from docker hub
-    image: mongo:8.0.0
-    # always restart the container if it stops.
-    restart: always
-    env_file:
-      - .env
-    # database credentials, this is take value from env file
-    environment:
-      MONGO_INITDB_DATABASE: ${DATABASE_NAME}
-      MONGO_INITDB_ROOT_USERNAME: ${DATABASE_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${DATABASE_PASSWORD}
-    # save (persist) data and also to share data between containers
+  mongo1:
+    container_name: mongo1
+    image: mongo:5
     volumes:
-      - ./database:/data/db
-    # database port
+      - ./database/data/1:/data/db
+      - ./database/rs-init.sh:/scripts/rs-init.sh
+    networks:
+      - mongors-network
     ports:
-      - ${DATABASE_PORT}:27017
-    # application network, each container for a service joins this network
-    # networks:
-    #   - nest_backend
-
-  db-viewer:
-    image: mongo-express
+      - 27021:27017
+    links:
+      - mongo2
+      - mongo3
     restart: always
+    entrypoint: ["/usr/bin/mongod", "--bind_ip_all", "--replSet", "dbrs"]
+  mongo2:
+    container_name: mongo2
+    image: mongo:5
+    volumes:
+      - ./database/data/2:/data/db
+    networks:
+      - mongors-network
     ports:
-      - 8081:8081
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: ${DATABASE_USERNAME}
-      ME_CONFIG_MONGODB_ADMINPASSWORD: ${DATABASE_PASSWORD}
-      ME_CONFIG_MONGODB_URL: mongodb://${DATABASE_USERNAME}:${DATABASE_PASSWORD}@db:${DATABASE_PORT}/
-      ME_CONFIG_BASICAUTH: false
+      - 27022:27017
+    restart: always
+    entrypoint: ["/usr/bin/mongod", "--bind_ip_all", "--replSet", "dbrs"]
+  mongo3:
+    container_name: mongo3
+    image: mongo:5
+    volumes:
+      - ./database/data/3:/data/db
+    networks:
+      - mongors-network
+    ports:
+      - 27023:27017
+    restart: always
+    entrypoint: ["/usr/bin/mongod", "--bind_ip_all", "--replSet", "dbrs"]
 
-# Rename the default network so we can easily identify it
-# Across all containers
 networks:
-  nest_backend:
+  mongors-network:
     driver: bridge
