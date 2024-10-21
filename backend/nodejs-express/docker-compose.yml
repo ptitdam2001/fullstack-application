@@ -1,44 +1,25 @@
-version: "3.8"
-
 services:
-  mongo1:
-    container_name: mongo1
-    image: mongo:5
-    volumes:
-      - ./database/data/1:/data/db
-      - ./database/rs-init.sh:/scripts/rs-init.sh
-    networks:
-      - mongors-network
+  mongodb:
+    # This image automatically creates a replica set required for transactions
+    image: prismagraphql/mongo-single-replica:4.4.3-bionic
+    env_file:
+      - .env
+    environment:
+      MONGO_INITDB_DATABASE: ${DATABASE_NAME}
+      MONGO_INITDB_ROOT_USERNAME: ${DATABASE_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+      INIT_WAIT_SEC: 3
     ports:
-      - 27021:27017
-    links:
-      - mongo2
-      - mongo3
+      - ${DATABASE_PORT}:27017
+  db-viewer:
+    image: mongo-express
     restart: always
-    entrypoint: ["/usr/bin/mongod", "--bind_ip_all", "--replSet", "dbrs"]
-  mongo2:
-    container_name: mongo2
-    image: mongo:5
-    volumes:
-      - ./database/data/2:/data/db
-    networks:
-      - mongors-network
+    env_file:
+      - .env
     ports:
-      - 27022:27017
-    restart: always
-    entrypoint: ["/usr/bin/mongod", "--bind_ip_all", "--replSet", "dbrs"]
-  mongo3:
-    container_name: mongo3
-    image: mongo:5
-    volumes:
-      - ./database/data/3:/data/db
-    networks:
-      - mongors-network
-    ports:
-      - 27023:27017
-    restart: always
-    entrypoint: ["/usr/bin/mongod", "--bind_ip_all", "--replSet", "dbrs"]
-
-networks:
-  mongors-network:
-    driver: bridge
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${DATABASE_USERNAME}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${DATABASE_PASSWORD}
+      ME_CONFIG_MONGODB_URL: ${DATABASE_URL}
+      ME_CONFIG_BASICAUTH: false

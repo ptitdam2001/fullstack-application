@@ -8,6 +8,6 @@ router.get('/', (_, res) => {
     })
 })
 
-router.get('/me', (_, res) => res.send({ message: 'Hello world'}))
+router.get('/hello', (_, res) => res.send({ message: 'Hello world'}))
 
 export default router
