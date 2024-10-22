@@ -1,0 +1,285 @@
+openapi: "3.0.0"
+info:
+  version: "1"
+  title: ""
+  description: ""
+paths:
+  /users:
+    get:
+      operationId: "getUsers"
+      description: ""
+      parameters:
+        - in: "query"
+          name: "count"
+          schema:
+            type: "integer"
+        - in: "query"
+          name: "page"
+          schema:
+            type: "integer"
+      responses:
+        200:
+          description: "Get list of users"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/User"
+      security:
+        - BearerAuth: []
+  /user:
+    post:
+      operationId: "createUser"
+      description: ""
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        500:
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /teams:
+    get:
+      operationId: "getTeams"
+      description: ""
+      parameters: []
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Team"
+    post:
+      operationId: "createTeam"
+      description: ""
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Team"
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: "string"
+  /teams/{id}:
+    delete:
+      operationId: "removeTeam"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: "string"
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: "string"
+    get:
+      operationId: "getTeam"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Team"
+        404:
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: "string"
+    put:
+      operationId: "updateTeam"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Team"
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Team"
+  /user/{id}:
+    delete:
+      operationId: "removeUser"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: "string"
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: "boolean"
+        404:
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      operationId: "updateUser"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        404:
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /users/{id}:
+    get:
+      operationId: "getUser"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        403:
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: "Not found user"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+components:
+  securitySchemes:
+    BearerAuth:
+      type: "http"
+      scheme: "bearer"
+      bearerFormat: "JWT"
+  schemas:
+    User:
+      properties:
+        lastname:
+          nullable: false
+          type: "string"
+        firstname:
+          nullable: false
+          type: "string"
+        email:
+          nullable: false
+          type: "string"
+        id:
+          nullable: false
+          type: "string"
+        role:
+          nullable: true
+          type: "array"
+          items:
+            type: "string"
+        createdAt:
+          nullable: false
+          type: "number"
+        password:
+          nullable: false
+          type: "string"
+    Team:
+      properties:
+        name:
+          nullable: false
+          type: "string"
+        id:
+          nullable: false
+          type: "string"
+        players:
+          nullable: false
+          type: "array"
+          items:
+            $ref: "#/components/schemas/User"
+    Error:
+      properties:
+        status:
+          nullable: false
+          type: "number"
+        message:
+          nullable: false
+          type: "string"

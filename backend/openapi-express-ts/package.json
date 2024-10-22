@@ -1,0 +1,41 @@
+{
+  "name": "openapi-express-ts",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "check:type": "tsc --noEmit",
+    "generate:prisma": "prisma generate",
+    "format:prisma": "prisma format",
+    "build": "esbuild index.ts --platform=node --bundle --outfile=./dist/index.js",
+    "start:dev": "tsx watch index.ts",
+    "start:prod": "node ./dist/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@prisma/client": "^5.21.1",
+    "chalk": "^5.3.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "helmet": "^8.0.0",
+    "morgan": "^1.10.0",
+    "openapi-backend": "^5.11.0",
+    "prisma": "^5.21.1",
+    "winston": "^3.15.0"
+  },
+  "devDependencies": {
+    "@types/chalk": "^0.4.31",
+    "@types/cors": "^2.8.17",
+    "@types/dotenv": "^6.1.1",
+    "@types/express": "^5.0.0",
+    "@types/helmet": "^0.0.48",
+    "@types/morgan": "^1.9.9",
+    "esbuild": "0.24.0",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.3"
+  }
+}
