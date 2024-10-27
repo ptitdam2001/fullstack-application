@@ -4,9 +4,53 @@ info:
   title: ""
   description: ""
 paths:
+  /me:
+    get:
+      operationId: me
+      tags:
+        - Authentication
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserWithoutPassword"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorOutput"
+  /login:
+    post:
+      operationId: login
+      tags:
+        - Authentication
+      security: [] # no auth needed
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Login"
+      responses:
+        "200":
+          description: Logged in succesfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TokenData"
+        404:
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorOutput"
   /users:
     get:
       operationId: "getUsers"
+      tags:
+        - Users
       description: ""
       parameters:
         - in: "query"
@@ -26,12 +70,12 @@ paths:
                 type: "array"
                 items:
                   $ref: "#/components/schemas/User"
-      security:
-        - BearerAuth: []
   /user:
     post:
       operationId: "createUser"
       description: ""
+      tags:
+        - Users
       parameters: []
       requestBody:
         content:
@@ -50,11 +94,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: "#/components/schemas/ErrorOutput"
   /teams:
     get:
       operationId: "getTeams"
       description: ""
+      tags:
+        - Teams
       parameters: []
       responses:
         200:
@@ -68,6 +114,8 @@ paths:
     post:
       operationId: "createTeam"
       description: ""
+      tags:
+        - Teams
       parameters: []
       requestBody:
         content:
@@ -85,17 +133,14 @@ paths:
     delete:
       operationId: "removeTeam"
       description: ""
+      tags:
+        - Teams
       parameters:
         - in: "path"
           name: "id"
           required: true
           schema:
             type: "string"
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: "string"
       responses:
         200:
           description: ""
@@ -106,6 +151,8 @@ paths:
     get:
       operationId: "getTeam"
       description: ""
+      tags:
+        - Teams
       parameters:
         - in: "path"
           name: "id"
@@ -125,9 +172,11 @@ paths:
             application/json:
               schema:
                 type: "string"
-    put:
+    patch:
       operationId: "updateTeam"
       description: ""
+      tags:
+        - Teams
       parameters:
         - in: "path"
           name: "id"
@@ -150,17 +199,15 @@ paths:
     delete:
       operationId: "removeUser"
       description: ""
+      tags:
+        - Users
       parameters:
         - in: "path"
           name: "id"
           required: true
           schema:
             type: "string"
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: "string"
+
       responses:
         200:
           description: ""
@@ -173,10 +220,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-    put:
+                $ref: "#/components/schemas/ErrorOutput"
+    patch:
       operationId: "updateUser"
       description: ""
+      tags:
+        - Users
       parameters:
         - in: "path"
           name: "id"
@@ -200,11 +249,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: "#/components/schemas/ErrorOutput"
   /users/{id}:
     get:
       operationId: "getUser"
       description: ""
+      tags:
+        - Users
       parameters:
         - in: "path"
           name: "id"
@@ -223,21 +274,56 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: "#/components/schemas/ErrorOutput"
         404:
           description: "Not found user"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: "#/components/schemas/ErrorOutput"
+security:
+  - jwtAuth: []
 components:
   securitySchemes:
-    BearerAuth:
+    jwtAuth:
       type: "http"
       scheme: "bearer"
       bearerFormat: "JWT"
   schemas:
+    Login:
+      properties:
+        email:
+          nullable: false
+          type: string
+        password:
+          nullable: false
+          type: string
     User:
+      properties:
+        lastname:
+          nullable: false
+          type: "string"
+        firstname:
+          nullable: false
+          type: "string"
+        email:
+          nullable: false
+          type: "string"
+        id:
+          nullable: false
+          type: "string"
+        role:
+          nullable: true
+          type: array
+          items:
+            type: "string"
+        createdAt:
+          nullable: false
+          type: "number"
+        password:
+          nullable: false
+          type: "string"
+    UserWithoutPassword:
       properties:
         lastname:
           nullable: false
@@ -259,9 +345,21 @@ components:
         createdAt:
           nullable: false
           type: "number"
-        password:
+    TokenData:
+      type: object
+      properties:
+        userId:
+          type: string
           nullable: false
-          type: "string"
+        email:
+          type: string
+          # format: email
+          nullable: false
+          example: 
+            - john@example.com
+        token:
+          type: string
+          nullable: false
     Team:
       properties:
         name:
@@ -275,7 +373,7 @@ components:
           type: "array"
           items:
             $ref: "#/components/schemas/User"
-    Error:
+    ErrorOutput:
       properties:
         status:
           nullable: false
