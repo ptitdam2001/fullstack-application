@@ -1,6 +1,24 @@
 # nodejs-express
 
+## Configuration
+
+At the root of `nodejs-express` project, pluease create a new file `.env` which looks like:
+
+```
+# Server configuration
+PORT=3000
+BASE_PATH='/'
+
+# Database configuration
+DATABASE_PORT=27017
+DATABASE_USERNAME=root
+DATABASE_PASSWORD=admin
+DATABASE_NAME=myApplication
+```
+
 ## Commands
+
+### To Run locally
 
 To install dependencies:
 
@@ -26,10 +44,15 @@ To Run production code (after building):
 bun run start
 ```
 
+### Docker compose
+
+It is possible to run the full backend with docker-compose, the dedicated command is :
+
+`docker-compose  -f "docker-compose.yml" up -d`
+
 ## Todo
 
 - Implement api validator
-- Docker
 - Tests
 - Database connexion
 
