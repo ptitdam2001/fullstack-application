@@ -28,7 +28,6 @@ export const getUser = async (
   req: Request,
   res: Response<UserOrErrorOutput>
 ) => {
-  logger.debug('______', ctx.request.params)
   const id: string = ctx.request.params.id;
   if (!id) {
     return res.status(403).json({

@@ -11,6 +11,9 @@ import helmet from "helmet";
 import * as userHandlers from './controllers/users'
 import * as loginHandlers from './controllers/login'
 import * as meHandlers from './controllers/me'
+import * as teamHandlers from './controllers/teams'
+import * as userTeamHandler from './controllers/userTeam'
+import * as playerHandler from './controllers/player'
 
 import { logger } from './config/logger';
 
@@ -22,8 +25,7 @@ const PORT = process.env.PORT;
 
 app.use(express.json())
 app.use(helmet())
-app.use(cors(
-))
+app.use(cors())
 
 const api = new OpenAPIBackend({
   definition: '../openapi.yml',
@@ -31,6 +33,9 @@ const api = new OpenAPIBackend({
     ...userHandlers,
     ...loginHandlers,
     ...meHandlers,
+    ...teamHandlers,
+    ...userTeamHandler,
+    ...playerHandler,
     validationFail: (c, _: Request, res: Response) => res.status(400).json({ err: c.validation.errors }),
     notFound: (c, _: Request, res: Response) => res.status(404).json({ err: 'not found', operation: c.operation?.operationId, status: 404, path: c.operation?.path, method: c.operation?.method }),
     methodNotAllowed: (_, _1, res: Response) => res.status(405).json({ status: 405, err: "Method not allowed" }),

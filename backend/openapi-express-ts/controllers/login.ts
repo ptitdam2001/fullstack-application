@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { Request, Response } from "express";
 import { Context } from "openapi-backend";
-import { type TokenData, type ErrorOutput } from "@prisma/client";
+import type { TokenData, ErrorOutput } from "@prisma/client";
 import jwt from 'jsonwebtoken'
 import bcrypt from "bcrypt";
 import { logger } from "../config/logger";
@@ -21,8 +21,6 @@ type SigninInput = {
 
 export const login = async (ctx: Context, req: Request<SigninInput>, res: Response<TokenData|ErrorOutput>, next) => {
   const { email, password } = req.body;
-
-  console.log(process.env)
 
   try {
     const existingUser = await prisma.user.findUnique({ where: { email } });
