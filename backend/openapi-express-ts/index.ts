@@ -25,7 +25,13 @@ const PORT = process.env.PORT;
 
 app.use(express.json())
 app.use(helmet())
-app.use(cors())
+app.use(cors({
+  // origin: 'http://localhost:5173',
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
+  // credentials: true,
+}))
 
 const api = new OpenAPIBackend({
   definition: '../openapi.yml',
@@ -60,7 +66,6 @@ app.use(morgan('combined'));
 
 // use as express middleware
 app.use((req: RequestOpenApi, res: Request) => api.handleRequest(req, req, res));
-
 
 app.listen(PORT, () => { 
   logger.info("Server running at PORT: %d", PORT); 

@@ -17,7 +17,7 @@ export const TopBar: FC<TopBarProps> = ({ title, leftContent, position = 'static
       </Typography>
       <div className="flex gap-2">
         <ToggleThemeMode />
-        <AuthActions />
+        <AuthActions color="inherit" size="small" />
       </div>
     </Toolbar>
   </AppBar>
