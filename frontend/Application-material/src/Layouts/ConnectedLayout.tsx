@@ -3,14 +3,14 @@ import { TopBar } from '@Common/TopBar'
 import { MenuDrawer, MenuToggleButton } from '@Common/Menu'
 
 import PersonIcon from '@mui/icons-material/Person'
-import CreateIcon from '@mui/icons-material/Create'
+import CategoryIcon from '@mui/icons-material/Category'
 
 import { Main } from './components/Main'
 import { LateralConnectedMenu, MenuElt } from './components/LateralConnectedMenu'
 
 const MENU: MenuElt[] = [
   { label: 'My Profile', url: '/app/my-profile', icon: <PersonIcon /> },
-  { label: 'My Team', url: '/app/my-team', icon: <CreateIcon /> },
+  { label: 'Categories', url: '/app/categories', icon: <CategoryIcon /> },
 ] as const
 
 export const ConnectedLayout = () => (
