@@ -13,12 +13,14 @@ export default {
           name: 'customAxiosInstance',
         },
       },
-      mock: {
-        type: 'msw',
-        delay: false,
-        useExamples: false,
-    },
-    allParamsOptional: true,
+      // mock: {
+      //   type: 'msw',
+      //   delay: false,
+      //   useExamples: false,
+      // },
+      mock: true,
+      mode: 'split',
+      allParamsOptional: true,
     }
   },
 };

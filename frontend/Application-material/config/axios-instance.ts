@@ -6,10 +6,7 @@
 import Axios, { AxiosError, AxiosRequestConfig } from 'axios'
 
 // const getBaseUrl = () => import.meta.env.BACKEND_BASEURL
-const getBaseUrl = () => {
-  console.log('>>>>', import.meta.env)
-  return 'http://localhost:3000/'
-}
+const getBaseUrl = () => 'http://localhost:3000/'
 
 const getAxiosConfig = (): AxiosRequestConfig => ({
   baseURL: getBaseUrl(),
