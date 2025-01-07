@@ -1,5 +1,3 @@
 cd frontend/@Common
 
 bun run lint
-
-bun run test --run

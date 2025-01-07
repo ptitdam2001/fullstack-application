@@ -46,6 +46,20 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorOutput"
+  /logout:
+    post:
+      operationId: logout
+      tags:
+        - Authentication
+      responses:
+        200:
+          description: succesful current user's Logout
+        500:
+          description: "Internal error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorOutput"
   /users:
     get:
       operationId: "getUsers"
@@ -129,7 +143,7 @@ paths:
   /teams:
     get:
       operationId: "getTeams"
-      description: ""
+      description: "get list of teams"
       tags:
         - Teams
       parameters: []
@@ -142,11 +156,12 @@ paths:
                 type: "array"
                 items:
                   $ref: "#/components/schemas/Team"
+  /team:
     post:
       operationId: "createTeam"
-      description: ""
+      description: "create a team"
       tags:
-        - Teams
+        - Team
       parameters: []
       requestBody:
         content:
@@ -160,12 +175,12 @@ paths:
             application/json:
               schema:
                 type: "string"
-  /teams/{id}:
+  /team/{id}:
     delete:
       operationId: "removeTeam"
       description: ""
       tags:
-        - Teams
+        - Team
       parameters:
         - in: "path"
           name: "id"
@@ -181,9 +196,9 @@ paths:
                 type: "string"
     get:
       operationId: "getTeam"
-      description: ""
+      description: "get a team info"
       tags:
-        - Teams
+        - Team
       parameters:
         - in: "path"
           name: "id"
@@ -205,9 +220,9 @@ paths:
                 $ref: "#/components/schemas/ErrorOutput"
     patch:
       operationId: "updateTeam"
-      description: ""
+      description: "Update a team"
       tags:
-        - Teams
+        - Team
       parameters:
         - in: "path"
           name: "id"
@@ -226,9 +241,46 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Team"
-  /teams/{teamId}/player/{userId}:
+
+  /team/{teamId}/players:
+    get:
+      operationId: getTeamPlayers
+      description: "Get list of player"
+      tags:
+        - Teams
+      parameters: 
+        - in: "path"
+          name: "teamId"
+          required: true
+          schema:
+            type: "string"
+        - in: "query"
+          name: "count"
+          schema:
+            type: "integer"
+        - in: "query"
+          name: "page"
+          schema:
+            type: "integer"
+      responses:
+        200:
+          description: "list of player about current team"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Player"
+        404:
+          description: "not found team"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorOutput"
+  /team/{teamId}/player/{userId}:
     post:
       operationId: putUserToTeam
+      description: "Set a player to the team"
       tags:
         - Teams
       parameters:
@@ -341,6 +393,180 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorOutput"
+  /areas:
+    get:
+      operationId: "getAreaList"
+      description: "get list of areas"
+      tags:
+        - Area
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Area"
+    post:
+      description: "create an area"
+      operationId: createArea
+      tags:
+        - Area
+      responses:
+        200:
+          description: "successful"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Area"
+        500:
+          description: "Error during creation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorOutput"
+  /areas/{id}:  
+    delete:
+      description: "delete an area"
+      operationId: deleteArea
+      tags:
+        - Area
+      parameters:
+        - in: "path"
+          name: "id"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        200:
+          description: ""
+        404:
+          description: "Not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorOutput"
+  /team/{teamId}/games:
+    get:
+      description: "get list of match about current team"
+      operationId: getTeamGames
+      tags:
+        - Games
+        - Team
+      parameters:
+        - in: "path"
+          name: "teamId"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Game"
+        404:
+          description: "Team not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorOutput"
+  /game:
+    post:
+      description: "Create a game"
+      operationId: createMatch
+      tags:
+        - Games
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Game"
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Game"
+        500:
+          description: "Internal error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorOutput"
+  /game/{id}:
+    patch:
+      description: "Create a game"
+      operationId: updateMatch
+      tags:
+        - Games
+      parameters:
+        - in: "path"
+          name: "id"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Game"
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Game"
+        404:
+          description: "Not found game"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorOutput"  
+        500:
+          description: "Internal error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorOutput"
+    delete:
+      description: "Delete a game"
+      operationId: removeGame
+      tags:
+        - Games
+      parameters:
+        - in: "path"
+          name: "id"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        200:
+          description: ""
+        404:
+          description: "Not found game"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorOutput"  
+        500:
+          description: "Internal error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorOutput"
+
 security:
   - jwtAuth: []
 components:
@@ -350,6 +576,23 @@ components:
       scheme: "bearer"
       bearerFormat: "JWT"
   schemas:
+    Area:
+      properties:
+        name:
+          type: string
+          nullable: false
+        address:
+          type: string
+          nullable: false
+        city:
+          type: string
+          nullable: false
+        longitude:
+          type: number
+          nullable: false
+        latitude:
+          type: number
+          nullable: false
     Login:
       properties:
         email:
@@ -422,32 +665,51 @@ components:
           nullable: false
     Team:
       properties:
-        name:
-          nullable: false
-          type: "string"
         id:
           nullable: false
           type: "string"
-        players:
+        name:
           nullable: false
-          type: "array"
-          items:
-            $ref: "#/components/schemas/User"
+          type: "string"
+        color:
+          nullable: true
+          type: "string"
     Player:
       properties:
         id:
           type: string
           nullable: false  
-           
         userId:
           type: string
-        
         jersey:
           type: string
         position:
           type: string
         teamId: 
           type: string
+    Game:
+      properties:
+        id:
+          type: string
+          nullable: true
+        team1:
+          type: string
+          nullable: false
+        score1:
+          type: number
+          nullable: true
+        team2:
+          type: string
+          nullable: false
+        score2:
+          type: number
+          nullable: true
+        date:
+          type: integer
+          nullable: true
+        area:
+          $ref: "#/components/schemas/Area"
+
     ErrorOutput:
       properties:
         status:

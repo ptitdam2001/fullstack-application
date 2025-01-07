@@ -13,6 +13,8 @@
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
 
     /* Linting */
     "strict": true,
@@ -24,12 +26,15 @@
     "paths": {
       "@Auth/*": ["Auth/*", "Auth/"],
       "@Layouts/*": ["Layouts/*", "Layouts/"],
-      "@Hooks/*": ["hooks/*", "hooks/"],
       "@Pages/*": ["pages/*", "pages/"],
       "@Theme/*": ["Theme/*", "Theme/"],
       "@Common/*": ["Common/*", "Common/"],
       "@Providers/*": ["Providers/*", "Providers/"],
-      "@mui/styled-engine": ["./node_modules/@mui/styled-engine-sc"]
+      "@mui/styled-engine": ["./node_modules/@mui/styled-engine-sc"],
+      "@Sdk/*": ["sdk/generated/", "sdk/generated/*"],
+      "@Spotify/*": ["spotify/", "spotify/*"],
+      "@Categories/*": ["Categories/", "Categories/*"],
+      "@/*": ["/*"]
     }
   },
   "include": ["src"]

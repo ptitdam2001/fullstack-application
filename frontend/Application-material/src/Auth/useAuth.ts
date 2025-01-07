@@ -1,10 +1,14 @@
 import { useCallback } from 'react'
-import { useLocalStorage } from '@Hooks/useLocalstorage'
+import { useLocalStorage } from '@Common/hooks/useLocalstorage'
+import { useLogin } from '@Sdk/sdk'
 
 export const useAuth = () => {
   const [user, setUser] = useLocalStorage('user', null)
+  const { mutate } = useLogin()
 
-  const login = (login: string, password: string) => {
+  const login = async (login: string, password: string) => {
+    const data = await mutate({ data: {  email: login, password } })
+    console.log('>>>>>>', data)
     setUser({ login, password })
     return Promise.resolve()
   }

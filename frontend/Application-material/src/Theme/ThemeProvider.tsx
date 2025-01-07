@@ -2,10 +2,21 @@ import { createTheme, StyledEngineProvider, ThemeProvider as MuiThemeProvider, C
 import { FC, ReactNode } from 'react'
 import { GlobalCssPriority } from './GlobalCssPriority'
 
+import { purple } from '@mui/material/colors'
+
 const theme = createTheme({
+  palette: {
+    primary: {
+      main: purple[500],
+    },
+    secondary: {
+      main: '#f44336',
+    },
+  },
   colorSchemes: {
     dark: true,
   },
+
   components: {
     MuiPopover: {
       defaultProps: {},
@@ -27,12 +38,12 @@ type Props = {
 }
 
 export const ThemeProvider: FC<Props> = ({ children }) => (
-  <GlobalCssPriority>
-    <StyledEngineProvider injectFirst>
-      <MuiThemeProvider theme={theme}>
+  <MuiThemeProvider theme={theme}>
+    <GlobalCssPriority>
+      <StyledEngineProvider injectFirst>
         <CssBaseline />
         {children}
-      </MuiThemeProvider>
-    </StyledEngineProvider>
-  </GlobalCssPriority>
+      </StyledEngineProvider>
+    </GlobalCssPriority>
+  </MuiThemeProvider>
 )
