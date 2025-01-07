@@ -9,11 +9,10 @@ const ALIASES = {
   '@Pages': path.resolve(__dirname, './src/pages/'),
   '@Theme': path.resolve(__dirname, './src/Theme'),
   '@Common': path.resolve(__dirname, './src/Common'),
+  '@Application': path.resolve(__dirname, './src/Application'),
   '@Providers': path.resolve(__dirname, './src/Providers'),
   '@Sdk': path.resolve(__dirname, './src/sdk/generated'),
   "@": path.resolve(__dirname, "./src"),
-  '@Spotify': path.resolve(__dirname, './src/spotify'),
-  '@Categories': path.resolve(__dirname, './src/Categories'),
 }
 
 // https://vitejs.dev/config/
