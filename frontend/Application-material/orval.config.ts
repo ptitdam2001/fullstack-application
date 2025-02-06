@@ -1,3 +1,5 @@
+import { faker } from '@faker-js/faker'
+
 export default {
   'sdk': {
     input: {
@@ -12,6 +14,21 @@ export default {
           path: './config/axios-instance.ts',
           name: 'customAxiosInstance',
         },
+        operations: {
+          countTeams: {
+            mock: {
+              data: faker.number.int({ min: 10, max: 250 }),
+
+            },
+          },
+        },
+        mock: {
+          properties: {
+            '/name/': () => faker.person.fullName(),
+            '/color/': () => faker.color.rgb(),
+          },
+          delay: 500,
+        },
       },
       // mock: {
       //   type: 'msw',
@@ -21,6 +38,9 @@ export default {
       mock: true,
       mode: 'split',
       allParamsOptional: true,
-    }
+    },
+    hooks: {
+      afterAllFilesWrite: 'prettier --write',
+    },
   },
 };

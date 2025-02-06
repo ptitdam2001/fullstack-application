@@ -67,14 +67,16 @@ paths:
         - Users
       description: ""
       parameters:
-        - in: "query"
-          name: "count"
+        - in: query
+          name: page
           schema:
-            type: "integer"
-        - in: "query"
-          name: "page"
+            type: integer
+          description: The number of items to skip before starting to collect the result set
+        - in: query
+          name: limit
           schema:
-            type: "integer"
+            type: integer
+          description: The numbers of items to return
       responses:
         200:
           description: "Get list of users"
@@ -146,7 +148,17 @@ paths:
       description: "get list of teams"
       tags:
         - Teams
-      parameters: []
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+          description: The number of items to skip before starting to collect the result set
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: The numbers of items to return
       responses:
         200:
           description: ""
@@ -156,6 +168,20 @@ paths:
                 type: "array"
                 items:
                   $ref: "#/components/schemas/Team"
+  /teams/count:
+    get:
+      operationId: countTeams
+      description: count the number of teams
+      tags:
+        - Teams
+      parameters: []
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Count"
   /team:
     post:
       operationId: "createTeam"
@@ -460,6 +486,16 @@ paths:
           required: true
           schema:
             type: "string"
+        - in: query
+          name: page
+          schema:
+            type: integer
+          description: The number of items to skip before starting to collect the result set
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: The numbers of items to return
       responses:
         200:
           description: ""
@@ -576,6 +612,13 @@ components:
       scheme: "bearer"
       bearerFormat: "JWT"
   schemas:
+    Count:
+      type: integer
+      nullable: false
+    uuid:
+      type: string
+      description: The unique ID
+      example: abcdef
     Area:
       properties:
         name:
@@ -593,6 +636,9 @@ components:
         latitude:
           type: number
           nullable: false
+      required:
+        - longitude
+        - latitude
     Login:
       properties:
         email:
@@ -605,27 +651,31 @@ components:
       properties:
         lastname:
           nullable: false
-          type: "string"
+          type: string
         firstname:
           nullable: false
-          type: "string"
+          type: string
         email:
           nullable: false
-          type: "string"
-        id:
-          nullable: false
-          type: "string"
+          type: string
+        _id:
+          type: string
         role:
           nullable: true
           type: array
           items:
-            type: "string"
+            type: string
         createdAt:
           nullable: false
-          type: "number"
+          type: number
         password:
           nullable: false
-          type: "string"
+          type: string
+      required:
+        - _id
+        - email
+        - lastname
+        - firstname
     UserWithoutPassword:
       properties:
         lastname:
@@ -666,14 +716,16 @@ components:
     Team:
       properties:
         id:
-          nullable: false
-          type: "string"
+          type: string
         name:
-          nullable: false
-          type: "string"
+          type: string
         color:
           nullable: true
-          type: "string"
+          type: string
+          example: "#222abb"
+      required:
+        - id
+        - name
     Player:
       properties:
         id:
@@ -687,6 +739,10 @@ components:
           type: string
         teamId: 
           type: string
+      required:
+        - id
+        - userId
+        - teamId
     Game:
       properties:
         id:

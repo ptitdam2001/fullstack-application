@@ -7,7 +7,7 @@ export const AnonymousLayout = () => {
     <section className="h-full w-full flex flex-col">
       <TopBar title={'Anonymous'} />
 
-      <Main className="flex-grow p-1">
+      <Main className="grow p-1">
         <Outlet />
       </Main>
     </section>
