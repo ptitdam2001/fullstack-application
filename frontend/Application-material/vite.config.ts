@@ -9,6 +9,10 @@ const ALIASES = {
   '@Pages': path.resolve(__dirname, './src/pages/'),
   '@Theme': path.resolve(__dirname, './src/Theme'),
   '@Common': path.resolve(__dirname, './src/Common'),
+  '@Teams': path.resolve(__dirname, './src/Teams'),
+  '@Player': path.resolve(__dirname, './src/Player'),
+  '@Game': path.resolve(__dirname, './src/Game'),
+  '@Calendar': path.resolve(__dirname, './src/Calendar'),
   '@Application': path.resolve(__dirname, './src/Application'),
   '@Providers': path.resolve(__dirname, './src/Providers'),
   '@Sdk': path.resolve(__dirname, './src/sdk/generated'),
@@ -17,7 +21,9 @@ const ALIASES = {
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+  ],
   resolve: {
     alias: {
       ...ALIASES,

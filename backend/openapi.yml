@@ -67,14 +67,16 @@ paths:
         - Users
       description: ""
       parameters:
-        - in: "query"
-          name: "count"
+        - in: query
+          name: page
           schema:
-            type: "integer"
-        - in: "query"
-          name: "page"
+            type: integer
+          description: The number of items to skip before starting to collect the result set
+        - in: query
+          name: limit
           schema:
-            type: "integer"
+            type: integer
+          description: The numbers of items to return
       responses:
         200:
           description: "Get list of users"
@@ -130,8 +132,8 @@ paths:
         200:
           description: "successful"
           content:
-            application/json: 
-              schema: 
+            application/json:
+              schema:
                 type: string
         404:
           description: "User or team does not exist"
@@ -139,14 +141,24 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorOutput"
-                
+
   /teams:
     get:
       operationId: "getTeams"
       description: "get list of teams"
       tags:
         - Teams
-      parameters: []
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+          description: The number of items to skip before starting to collect the result set
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: The numbers of items to return
       responses:
         200:
           description: ""
@@ -156,6 +168,20 @@ paths:
                 type: "array"
                 items:
                   $ref: "#/components/schemas/Team"
+  /teams/count:
+    get:
+      operationId: countTeams
+      description: count the number of teams
+      tags:
+        - Teams
+      parameters: []
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Count"
   /team:
     post:
       operationId: "createTeam"
@@ -248,7 +274,7 @@ paths:
       description: "Get list of player"
       tags:
         - Teams
-      parameters: 
+      parameters:
         - in: "path"
           name: "teamId"
           required: true
@@ -426,7 +452,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorOutput"
-  /areas/{id}:  
+  /areas/{id}:
     delete:
       description: "delete an area"
       operationId: deleteArea
@@ -447,6 +473,46 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorOutput"
+  /games:
+    get:
+      description: "get list of match"
+      operationId: getGames
+      tags:
+        - Games
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+          description: The number of items to skip before starting to collect the result set
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: The numbers of items to return
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Game"
+  /games/count:
+    get:
+      operationId: countAllGames
+      description: count the number of games
+      tags:
+        - Games
+      parameters: []
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Count"
   /team/{teamId}/games:
     get:
       description: "get list of match about current team"
@@ -460,6 +526,16 @@ paths:
           required: true
           schema:
             type: "string"
+        - in: query
+          name: page
+          schema:
+            type: integer
+          description: The number of items to skip before starting to collect the result set
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: The numbers of items to return
       responses:
         200:
           description: ""
@@ -533,7 +609,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"  
+                $ref: "#/components/schemas/ErrorOutput"
         500:
           description: "Internal error"
           content:
@@ -559,7 +635,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"  
+                $ref: "#/components/schemas/ErrorOutput"
         500:
           description: "Internal error"
           content:
@@ -576,6 +652,14 @@ components:
       scheme: "bearer"
       bearerFormat: "JWT"
   schemas:
+    Count:
+      type: integer
+      nullable: false
+    uuid:
+      type: string
+      description: The unique ID
+      example: abcdef
+      format: uuid
     Area:
       properties:
         name:
@@ -584,20 +668,30 @@ components:
         address:
           type: string
           nullable: false
+          format: streetName
         city:
           type: string
           nullable: false
+          format: city
         longitude:
           type: number
+          format: float
           nullable: false
         latitude:
           type: number
           nullable: false
+          format: float
+      required:
+        - address
+        - city
+        - longitude
+        - latitude
     Login:
       properties:
         email:
           nullable: false
           type: string
+          format: email
         password:
           nullable: false
           type: string
@@ -605,41 +699,53 @@ components:
       properties:
         lastname:
           nullable: false
-          type: "string"
+          type: string
         firstname:
           nullable: false
-          type: "string"
+          type: string
+          format: firstName
         email:
           nullable: false
-          type: "string"
-        id:
-          nullable: false
-          type: "string"
+          type: string
+          format: email
+        _id:
+          type: string
+          format: uuid
         role:
           nullable: true
           type: array
           items:
-            type: "string"
+            type: string
         createdAt:
           nullable: false
-          type: "number"
+          type: number
+          format: date-time
         password:
           nullable: false
-          type: "string"
+          type: string
+      required:
+        - _id
+        - email
+        - lastname
+        - firstname
     UserWithoutPassword:
       properties:
         lastname:
           nullable: false
           type: "string"
+          format: lastName
         firstname:
           nullable: false
           type: "string"
+          format: firstName
         email:
           nullable: false
           type: "string"
+          format: email
         id:
           nullable: false
           type: "string"
+          format: uuid
         role:
           nullable: true
           type: "array"
@@ -648,67 +754,109 @@ components:
         createdAt:
           nullable: false
           type: "number"
+          format: date-time
     TokenData:
       type: object
       properties:
         userId:
           type: string
           nullable: false
+          format: uuid
         email:
           type: string
-          # format: email
+          format: email
           nullable: false
-          example: 
+          example:
             - john@example.com
         token:
           type: string
           nullable: false
     Team:
+      type: object
       properties:
         id:
-          nullable: false
-          type: "string"
+          type: string
+          format: uuid
         name:
-          nullable: false
-          type: "string"
+          type: string
         color:
           nullable: true
-          type: "string"
+          type: string
+          example: "#222abb"
+          format: color
+      required:
+        - id
+        - name
     Player:
+      type: object
       properties:
         id:
           type: string
-          nullable: false  
+          nullable: false
+          format: uuid
         userId:
           type: string
+          format: uuid
         jersey:
-          type: string
+          type: integer
         position:
           type: string
-        teamId: 
+        teamId:
           type: string
+        lastname:
+          nullable: false
+          type: string
+          format: lastName
+        firstname:
+          nullable: false
+          type: string
+          format: firstName
+        avatar:
+          type: string
+          nullable: true
+      required:
+        - id
+        - userId
+        - teamId
+        - lastname
+        - firstname
+    GameTeam:
+      allOf:
+        - $ref: "#/components/schemas/Team"
+        - type: object
+          required:
+            - score
+          properties:
+            score:
+              type: integer
+              format: score
+              default: 0
+              minimum: 0
+              nullable: false
+
     Game:
+      type: object
       properties:
         id:
           type: string
           nullable: true
-        team1:
-          type: string
-          nullable: false
-        score1:
-          type: number
-          nullable: true
-        team2:
-          type: string
-          nullable: false
-        score2:
-          type: number
-          nullable: true
+          format: uuid
         date:
           type: integer
           nullable: true
+          format: date-time
         area:
           $ref: "#/components/schemas/Area"
+        teams:
+          type: "array"
+          oneOf:
+            - minItems: 2
+              maxItems: 2
+          items:
+            $ref: "#/components/schemas/GameTeam"
+      required:
+        - id
+        - teams
 
     ErrorOutput:
       properties:

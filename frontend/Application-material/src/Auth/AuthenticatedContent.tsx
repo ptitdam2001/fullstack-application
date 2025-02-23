@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 import { Navigate } from 'react-router-dom'
-import { useAuthContext } from './AuthProvider'
+import { Auth } from './Auth'
 import { LOGIN_PAGE } from './constant'
 
 type Props = {
@@ -8,7 +8,7 @@ type Props = {
 }
 
 export const AuthenticatedContent = ({ children }: Props) => {
-  const { user } = useAuthContext()
+  const { user } = Auth.useAuthValue()
 
   if (!user) {
     // user is not authenticated

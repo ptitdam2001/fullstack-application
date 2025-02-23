@@ -1,5 +1,5 @@
 import { Button, ButtonProps } from '@mui/material'
-import { useAuthContext } from './AuthProvider'
+import { Auth } from './Auth'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import { Link } from 'react-router-dom'
 import { LOGOUT_PAGE } from './constant'
@@ -7,7 +7,7 @@ import { LOGOUT_PAGE } from './constant'
 type AuthActionsProps = Pick<ButtonProps, 'color' | 'size'>
 
 export const AuthActions = ({ color = 'primary', size = 'medium' }: AuthActionsProps) => {
-  const { user } = useAuthContext()
+  const { user } = Auth.useAuthValue()
 
   return user ? (
     <Button
