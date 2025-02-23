@@ -1,9 +1,8 @@
 import { Button, Card, CardActions, CardContent, LinearProgress, Typography } from '@mui/material'
 import { useGetTeam } from '@Sdk/sdk'
+import { BaseTeamType } from '@Teams/types'
 
-type TeamDetailProps = {
-  teamId: string
-}
+type TeamDetailProps = BaseTeamType
 
 export const TeamDetail = ({ teamId }: TeamDetailProps) => {
   const { data: team, isLoading } = useGetTeam(teamId)

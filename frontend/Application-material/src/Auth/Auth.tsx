@@ -9,11 +9,11 @@ type AuthContextType = ReturnType<typeof useAuth>
 const AuthContext = createContext<AuthContextType | typeof noProvider>(noProvider)
 AuthContext.displayName = 'AuthContextProvider'
 
-export const useAuthContext = () => {
+const useAuthValue = () => {
   const value = useContext(AuthContext)
 
   if (value === noProvider) {
-    throw new Error('useAuth is used outside of AuthProvider')
+    throw new Error('useAuthValue is used outside of AuthProvider')
   }
 
   return value
@@ -23,8 +23,11 @@ type AuthProviderProps = {
   children: ReactNode
 }
 
-export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const value = useAuth()
+export const Auth = {
+  Provider: ({ children }: AuthProviderProps) => {
+    const value = useAuth()
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+  },
+  useAuthValue,
 }

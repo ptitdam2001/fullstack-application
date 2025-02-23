@@ -50,7 +50,14 @@ export const ToggleThemeMode = () => {
       <IconButton aria-describedby={id} type="button" onClick={handleClick}>
         <SettingsBrightnessIcon />
       </IconButton>
-      <Popper id={id} open={open} anchorEl={anchorEl} transition>
+      <Popper
+        data-testid="ToggleThemeMode-popover"
+        id={id}
+        open={open}
+        anchorEl={anchorEl}
+        transition
+        sx={{ zIndex: 10 }}
+      >
         {({ TransitionProps }) => (
           <Fade {...TransitionProps} timeout={350}>
             <Paper sx={{ p: 1, bgcolor: 'background.paper' }}>

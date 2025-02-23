@@ -1,8 +1,8 @@
 import { Navigate } from 'react-router-dom'
-import { useAuthContext } from '@Auth/AuthProvider'
+import { Auth } from '@Auth/Auth'
 
 export const RootLayout = () => {
-  const { user } = useAuthContext()
+  const { user } = Auth.useAuthValue()
 
   return <Navigate to={user ? 'app' : 'auth/signin'} />
 }

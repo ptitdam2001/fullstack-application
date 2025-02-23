@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form'
-import { useAuthContext } from './AuthProvider'
+import { Auth } from './Auth'
 import { useNavigate } from 'react-router-dom'
 import { CONNECTED_HOME } from './constant'
 import { Button, Paper, TextField } from '@mui/material'
@@ -10,7 +10,7 @@ type FormInput = {
 }
 
 export const SigninForm = () => {
-  const { login } = useAuthContext()
+  const { login } = Auth.useAuthValue()
   const navigate = useNavigate()
   const { register, handleSubmit, getValues } = useForm<FormInput>()
 
