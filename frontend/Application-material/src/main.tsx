@@ -6,6 +6,7 @@ import { AppRouting } from '@Application/AppRouting'
 import { OpenProvider } from '@Providers/OpenProvider'
 import { ThemeProvider } from '@Theme/ThemeProvider'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 import './index.css'
 
@@ -28,6 +29,7 @@ enableMocking().then(() => {
     <StrictMode>
       <React.Suspense fallback="loading">
         <QueryClientProvider client={queryClient}>
+          <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
           <ThemeProvider>
             <Auth.Provider>
               <OpenProvider.Provider value={false}>

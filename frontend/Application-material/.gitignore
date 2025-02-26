@@ -26,3 +26,5 @@ dist-ssr
 # generated
 src/sdk/
 src/spotify/generated
+
+*storybook.log

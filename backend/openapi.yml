@@ -425,6 +425,17 @@ paths:
       description: "get list of areas"
       tags:
         - Area
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+          description: The number of items to skip before starting to collect the result set
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: The numbers of items to return
       responses:
         200:
           description: ""
@@ -452,6 +463,21 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorOutput"
+  /areas/count:
+    get:
+      operationId: countAllAreas
+      description: count the number of address
+      tags:
+        - Area
+      parameters: []
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Count"
+
   /areas/{id}:
     delete:
       description: "delete an area"
@@ -662,6 +688,9 @@ components:
       format: uuid
     Area:
       properties:
+        _id:
+          type: string
+          format: uuid
         name:
           type: string
           nullable: false
@@ -682,6 +711,7 @@ components:
           nullable: false
           format: float
       required:
+        - _id
         - address
         - city
         - longitude

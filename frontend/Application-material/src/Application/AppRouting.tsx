@@ -9,6 +9,7 @@ import { GameDetail, GameList } from '@Game/index'
 import { Calendar } from '@Calendar/index'
 import { TeamPage, TeamsPage } from '@Teams/pages'
 import { TeamPlayersPage } from '@Player/pages'
+import { AreaPages, SettingsLayout } from '@Settings/index'
 
 export const AppRouting = () => {
   return (
@@ -43,6 +44,10 @@ export const AppRouting = () => {
           <Route path="games">
             <Route index element={<GameList />} />
             <Route path=":gameId" element={<GameDetail />} />
+          </Route>
+
+          <Route path="settings" element={<SettingsLayout />}>
+            <Route index element={<AreaPages />} path="areas" />
           </Route>
         </Route>
 

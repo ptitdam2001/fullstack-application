@@ -22,22 +22,23 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
 
-    "baseUrl": "./src",
+    "baseUrl": ".",
     "paths": {
-      "@Auth/*": ["Auth/*", "Auth/"],
-      "@Layouts/*": ["Layouts/*", "Layouts/"],
-      "@Pages/*": ["pages/*", "pages/"],
-      "@Theme/*": ["Theme/*", "Theme/"],
-      "@Common/*": ["Common/*", "Common/"],
-      "@Teams/*": ["Teams/*", "Teams/"],
-      "@Player/*": ["Player/*", "Player/"],
-      "@Game/*": ["Game/*", "Game/"],
-      "@Calendar/*": ["Calendar/*", "Calendar/"],
-      "@Application/*": ["Application/*", "Application/"],
-      "@Providers/*": ["Providers/*", "Providers/"],
+      "@Auth/*": ["./src/Auth/*", "./src/Auth/"],
+      "@Layouts/*": ["./src/Layouts/*", "./src/Layouts/"],
+      "@Pages/*": ["./src/pages/*", "./src/pages/"],
+      "@Theme/*": ["./src/Theme/*", "./src/Theme/"],
+      "@Common/*": ["./src/Common/*", "./src/Common/"],
+      "@Teams/*": ["./src/Teams/*", "./src/Teams/"],
+      "@Player/*": ["./src/Player/*", "./src/Player/"],
+      "@Game/*": ["./src/Game/*", "./src/Game/"],
+      "@Calendar/*": ["./src/Calendar/*", "./src/Calendar/"],
+      "@Application/*": ["./src/Application/*", "./src/Application/"],
+      "@Providers/*": ["./src/Providers/*", "./src/Providers/"],
+      "@Settings/*": ["./src/Settings/*", "./src/Settings/"],
       "@mui/styled-engine": ["./node_modules/@mui/styled-engine-sc"],
-      "@Sdk/*": ["sdk/generated/", "sdk/generated/*"],
-      "@/*": ["/*"]
+      "@Sdk/*": ["./src/sdk/generated/", "./src/sdk/generated/*"],
+      "@/*": ["./src/*"]
     }
   },
   "include": ["src"]
