@@ -1,7 +1,7 @@
 import { Typography, Breadcrumbs as MuiBreadcrumbs } from '@mui/material'
 import Link, { LinkProps } from '@mui/material/Link'
 
-import { Link as RouterLink, useLocation } from 'react-router-dom'
+import { Link as RouterLink, useLocation } from 'react-router'
 
 type LinkRouterProps = LinkProps & {
   to: string

@@ -1,3 +1,4 @@
 export * from './Detail/TeamDetail'
 export * from './List/TeamList'
-export * from './EditOrCreate/TeamEditOrCreate'
+export * from './TeamForm/TeamForm'
+export * from './TeamLayout'

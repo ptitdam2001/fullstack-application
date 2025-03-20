@@ -5,11 +5,10 @@ WORKDIR /base/app/
 CMD [ "mkdir /base/app" ]
 COPY package.json /base/app
 COPY package-lock.json /base/app
+RUN npm ci
 
 COPY . .
-
 WORKDIR /base/app
-RUN npm ci
 RUN npm run build
 
 # -------------------------------

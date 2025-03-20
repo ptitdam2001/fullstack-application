@@ -1,13 +1,29 @@
 import { Tab, TabProps as MuiTabProps } from '@mui/material'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
+import { TabContext } from './TabsContext'
 
 export type TabProps = {
+  tabIndex: number
   label: string
   href: string
-  selected?: boolean
   icon?: MuiTabProps['icon']
 }
 
-export const LinkTab = ({ label, href, selected, icon }: TabProps) => (
-  <Tab component={Link} aria-current={selected} to={href} label={label} icon={icon} value={href} />
-)
+export const LinkTab = ({ tabIndex, label, href, icon }: TabProps) => {
+  const { currentIndex } = TabContext.useTabValue()
+  const dispatch = TabContext.useTabDispatch()
+
+  return (
+    <Tab
+      id={`${tabIndex}`}
+      component={Link}
+      aria-current={tabIndex === currentIndex}
+      to={href}
+      label={label}
+      icon={icon}
+      value={href}
+      onClick={() => dispatch({ currentIndex: tabIndex })}
+      wrapped
+    />
+  )
+}

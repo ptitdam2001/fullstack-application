@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useLocalStorage } from '@Common/hooks/useLocalstorage'
-import { useLogin } from '@Sdk/sdk'
+import { useLogin } from '@Sdk/authentication/authentication'
 
 export const useAuth = () => {
   const [user, setUser] = useLocalStorage('user', null)

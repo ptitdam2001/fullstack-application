@@ -450,6 +450,11 @@ paths:
       operationId: createArea
       tags:
         - Area
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AreaWithoutId"
       responses:
         200:
           description: "successful"
@@ -479,6 +484,31 @@ paths:
                 $ref: "#/components/schemas/Count"
 
   /areas/{id}:
+    get:
+      description: "Get an area"
+      operationId: getArea
+      tags:
+        - Area
+      parameters:
+        - in: "path"
+          name: "id"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Area"
+        404:
+          description: "Not found area"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorOutput"
+
     delete:
       description: "delete an area"
       operationId: deleteArea
@@ -495,6 +525,41 @@ paths:
           description: ""
         404:
           description: "Not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorOutput"
+    patch:
+      description: "update an area"
+      operationId: updateArea
+      tags:
+        - Area
+      parameters:
+        - in: "path"
+          name: "id"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AreaWithoutId"
+      responses:
+        200:
+          description: "successful"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Area"
+        404:
+          description: "Not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorOutput"
+        500:
+          description: "Error during creation"
           content:
             application/json:
               schema:
@@ -686,11 +751,8 @@ components:
       description: The unique ID
       example: abcdef
       format: uuid
-    Area:
+    AreaWithoutId:
       properties:
-        _id:
-          type: string
-          format: uuid
         name:
           type: string
           nullable: false
@@ -698,10 +760,12 @@ components:
           type: string
           nullable: false
           format: streetName
+          minLength: 1
         city:
           type: string
           nullable: false
           format: city
+          minLength: 1
         longitude:
           type: number
           format: float
@@ -716,6 +780,17 @@ components:
         - city
         - longitude
         - latitude
+    Area:
+      allOf:
+        - $ref: "#/components/schemas/AreaWithoutId"
+        - type: object
+          required:
+            - _id
+          properties:
+            _id:
+              type: string
+              format: uuid
+
     Login:
       properties:
         email:
@@ -725,15 +800,20 @@ components:
         password:
           nullable: false
           type: string
+      required:
+        - email
+        - password
     User:
       properties:
         lastname:
           nullable: false
           type: string
+          minLength: 1
         firstname:
           nullable: false
           type: string
           format: firstName
+          minLength: 1
         email:
           nullable: false
           type: string
@@ -809,6 +889,8 @@ components:
           format: uuid
         name:
           type: string
+          # nullable: false
+          # minLength: 1
         color:
           nullable: true
           type: string
@@ -837,10 +919,12 @@ components:
           nullable: false
           type: string
           format: lastName
+          minLength: 1
         firstname:
           nullable: false
           type: string
           format: firstName
+          minLength: 1
         avatar:
           type: string
           nullable: true
@@ -881,7 +965,7 @@ components:
           type: "array"
           oneOf:
             - minItems: 2
-              maxItems: 2
+            - maxItems: 2
           items:
             $ref: "#/components/schemas/GameTeam"
       required:

@@ -1,5 +1,5 @@
 import { Button, Card, CardActions, CardContent, LinearProgress, Typography } from '@mui/material'
-import { useGetTeam } from '@Sdk/sdk'
+import { useGetTeam } from '@Sdk/team/team'
 import { BaseTeamType } from '@Teams/types'
 
 type TeamDetailProps = BaseTeamType

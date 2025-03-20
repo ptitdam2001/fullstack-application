@@ -7,6 +7,7 @@ import { OpenProvider } from '@Providers/OpenProvider'
 import { ThemeProvider } from '@Theme/ThemeProvider'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import Toast from '@Common/Toast/Toast'
 
 import './index.css'
 
@@ -28,16 +29,18 @@ enableMocking().then(() => {
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <React.Suspense fallback="loading">
-        <QueryClientProvider client={queryClient}>
-          <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
-          <ThemeProvider>
-            <Auth.Provider>
-              <OpenProvider.Provider value={false}>
-                <AppRouting />
-              </OpenProvider.Provider>
-            </Auth.Provider>
-          </ThemeProvider>
-        </QueryClientProvider>
+        <Toast.Provider>
+          <QueryClientProvider client={queryClient}>
+            <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
+            <ThemeProvider>
+              <Auth.Provider>
+                <OpenProvider.Provider value={false}>
+                  <AppRouting />
+                </OpenProvider.Provider>
+              </Auth.Provider>
+            </ThemeProvider>
+          </QueryClientProvider>
+        </Toast.Provider>
       </React.Suspense>
     </StrictMode>
   )

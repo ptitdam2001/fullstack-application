@@ -14,7 +14,7 @@ type TableContextType = {
 const tableContext = React.createContext<TableContextType | typeof noProvider>(noProvider)
 tableContext.displayName = 'tableContext'
 
-const tableDispatchContext = React.createContext<React.Dispatch<TableReducerAtion> | typeof noProvider>(noProvider)
+const tableDispatchContext = React.createContext<React.Dispatch<TableReducerAction> | typeof noProvider>(noProvider)
 tableDispatchContext.displayName = 'tableDispatchContext'
 
 const useTableValue = () => {
@@ -31,17 +31,17 @@ const useTableDispatch = () => {
   const value = React.useContext(tableDispatchContext)
 
   if (value === noProvider) {
-    throw new Error(`useTableColsCountDispatch is used outside of its TableProvider`)
+    throw new Error(`useTableDispatch is used outside of its TableProvider`)
   }
 
   return value
 }
 
-type TableReducerAtion = {
+type TableReducerAction = {
   action: 'add' | 'remove'
   payload: TableCellType
 }
-const tableReducer = (currentState: TableContextType, newState: TableReducerAtion) => {
+const tableReducer = (currentState: TableContextType, newState: TableReducerAction) => {
   const { payload, action } = newState
 
   switch (action) {

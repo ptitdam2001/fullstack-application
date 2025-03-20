@@ -1,6 +1,17 @@
 import { faker } from '@faker-js/faker'
 
 export default {
+  'sdk-zod': {
+    output: {
+      client: 'zod',
+      mode: 'tags-split',
+      target: './src/sdk/generated',
+      fileExtension: '.zod.ts',
+    },
+    input: {
+      target: '../../backend/openapi.yml',
+    },
+  },
   'sdk': {
     input: {
       target: '../../backend/openapi.yml',
@@ -35,7 +46,7 @@ export default {
         },
         mock: {
           properties: {
-            name: () => faker.person.fullName(),
+            '/name/': () => faker.person.fullName(),
             '/jersey/': () => faker.number.int({ min: 0, max: 99 }),
             '/avatar/': () => faker.helpers.arrayElement([faker.image.personPortrait(), undefined]),
 
@@ -56,7 +67,7 @@ export default {
       //   useExamples: false,
       // },
       mock: true,
-      mode: 'split',
+      mode: 'tags-split',
       allParamsOptional: true,
       prettier: true,
     },

@@ -1,7 +1,7 @@
 import { Button, ButtonProps } from '@mui/material'
 import { Auth } from './Auth'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import { LOGOUT_PAGE } from './constant'
 
 type AuthActionsProps = Pick<ButtonProps, 'color' | 'size'>
