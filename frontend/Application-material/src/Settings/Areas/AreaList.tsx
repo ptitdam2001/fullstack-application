@@ -2,8 +2,8 @@ import { Address } from '@Common/Address/Address'
 import { usePagination } from '@Common/hooks/usePagination'
 import { Table } from '@Common/Table/Table'
 import { LinearProgress, TablePagination } from '@mui/material'
+import { useCountAllAreas, useGetAreaList } from '@Sdk/area/area'
 import { Area } from '@Sdk/model'
-import { useCountAllAreas, useGetAreaList } from '@Sdk/sdk'
 import React from 'react'
 
 type AeraListProps = {

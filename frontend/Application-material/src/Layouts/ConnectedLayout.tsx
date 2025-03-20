@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router-dom'
+import { Outlet } from 'react-router'
 import { TopBar } from '@Common/TopBar'
 import { MenuDrawer, MenuToggleButton } from '@Common/Menu'
 
@@ -15,8 +15,9 @@ export const ConnectedLayout = () => {
   return (
     <section
       className={cn(
-        { dark: mode === 'dark' },
-        'h-full w-full flex flex-col scrollbar-track-background scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800 dark:scrollbar-thumb-gray-500'
+        { dark: mode && ['dark', 'system'].includes(mode) },
+        'h-full w-full flex flex-col',
+        'scrollbar-track-background scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800 dark:scrollbar-thumb-gray-500'
       )}
     >
       <TopBar title={<Breadcrumbs />} leftContent={<MenuToggleButton />} />

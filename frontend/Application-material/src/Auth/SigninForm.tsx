@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form'
 import { Auth } from './Auth'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { CONNECTED_HOME } from './constant'
 import { Button, Paper, TextField } from '@mui/material'
 

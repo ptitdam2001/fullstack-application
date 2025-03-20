@@ -1,8 +1,9 @@
 import { AvatarWithBadge } from '@Common/Avatar/AvatarWithBadge'
 import { LinearProgress, List, ListItem, ListItemAvatar, ListItemText } from '@mui/material'
-import { useGetTeamPlayers } from '@Sdk/sdk'
+
 import { BaseTeamType } from '@Teams/types'
 import { className as cn } from '@Common/utils/className'
+import { useGetTeamPlayers } from '@Sdk/teams/teams'
 
 type PlayerListProps = BaseTeamType & { className?: string }
 

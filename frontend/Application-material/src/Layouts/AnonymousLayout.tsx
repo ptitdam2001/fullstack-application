@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router-dom'
+import { Outlet } from 'react-router'
 import { TopBar } from '@Common/TopBar'
 import { Main } from './components/Main'
 

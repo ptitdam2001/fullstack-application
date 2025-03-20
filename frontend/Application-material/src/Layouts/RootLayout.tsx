@@ -1,4 +1,4 @@
-import { Navigate } from 'react-router-dom'
+import { Navigate } from 'react-router'
 import { Auth } from '@Auth/Auth'
 
 export const RootLayout = () => {

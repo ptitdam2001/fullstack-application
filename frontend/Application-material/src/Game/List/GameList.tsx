@@ -1,7 +1,8 @@
 import { usePagination } from '@Common/hooks/usePagination'
 import { LinearProgress, TablePagination } from '@mui/material'
-import { useCountTeams, useGetGames } from '@Sdk/sdk'
 import { GameListItem } from './GameListItem/GameListItem'
+import { useGetGames } from '@Sdk/games/games'
+import { useCountTeams } from '@Sdk/teams/teams'
 
 export const GameList = () => {
   const { changePage, changeRowsPerPage, ...pagination } = usePagination()

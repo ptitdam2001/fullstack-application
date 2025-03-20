@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
@@ -21,7 +22,7 @@ const ALIASES = {
   "@": path.resolve(__dirname, "./src"),
 }
 
-// https://vitejs.dev/config/
+// https://vite.dev/config/
 export default defineConfig({
   plugins: [
     tailwindcss(),
@@ -35,4 +36,5 @@ export default defineConfig({
   server: {
     port: 3000,
   },
+  test: {}
 })

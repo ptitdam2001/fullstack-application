@@ -2,13 +2,13 @@ import { Table } from '@Common/Table/Table'
 import { usePagination } from '@Common/hooks/usePagination'
 
 import { IconButton, LinearProgress, Paper, TablePagination } from '@mui/material'
-import { useCountTeams, useGetTeams } from '@Sdk/sdk'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import ModeEditIcon from '@mui/icons-material/ModeEdit'
 import GroupsIcon from '@mui/icons-material/Groups'
 import PaletteIcon from '@mui/icons-material/Palette'
+import { useCountTeams, useGetTeams } from '@Sdk/teams/teams'
 
 export const TeamList = () => {
   const { changePage, changeRowsPerPage, ...pagination } = usePagination()
@@ -55,7 +55,7 @@ export const TeamList = () => {
                     >
                       <GroupsIcon />
                     </IconButton>
-                    <IconButton aria-label="Edit" color="primary" component={Link} to={`/app/team/${team.id}/edit`}>
+                    <IconButton aria-label="Edit" color="primary" component={Link} to={`${team.id}/edit`}>
                       <ModeEditIcon />
                     </IconButton>
                   </Table.TableCell>

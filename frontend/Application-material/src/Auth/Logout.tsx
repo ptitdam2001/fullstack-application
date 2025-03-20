@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { Auth } from './Auth'
-import { Navigate } from 'react-router-dom'
+import { Navigate } from 'react-router'
 import { LOGIN_PAGE } from './constant'
 
 export const Logout = () => {
