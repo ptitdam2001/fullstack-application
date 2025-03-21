@@ -14,7 +14,7 @@ type LateralConnectedMenuProps = {
 }
 
 export const LateralConnectedMenu: FC<LateralConnectedMenuProps> = ({ links }) => {
-  const dispatch = OpenProvider.useOpenDispatch()
+  const dispatch = OpenProvider.useDispatch()
   const navigate = useNavigate()
 
   const handleClick = (url: string) => () => {

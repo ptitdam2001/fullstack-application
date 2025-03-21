@@ -12,7 +12,7 @@ type TableHeadProps = React.ThHTMLAttributes<HTMLTableCellElement> & {
 export const TableHead = React.forwardRef<HTMLTableCellElement, TableHeadProps>(
   ({ className, style, size = '100%', ...props }, ref) => {
     const [id] = React.useState(uuid())
-    const dispatchTable = TableProvider.useTableDispatch()
+    const dispatchTable = TableProvider.useDispatch()
 
     React.useEffect(() => {
       dispatchTable({ action: 'add', payload: { size, id } })

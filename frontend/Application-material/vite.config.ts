@@ -36,5 +36,12 @@ export default defineConfig({
   server: {
     port: 3000,
   },
-  test: {}
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: './tests/setup.ts',
+    reporters: ['default', 'html', 'json'],
+    exclude: ['**/node_modules/**', '**/dist/**', '**/src/sdk/**', '**/src/mocks/**', 'public', '.storybook', 'config'],
+    outputFile: './coverage/report.html',
+  }
 })

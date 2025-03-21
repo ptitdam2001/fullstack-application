@@ -4,7 +4,7 @@ import { TableProvider } from './TableContext'
 
 export const TableFooter = React.forwardRef<HTMLTableSectionElement, React.HTMLAttributes<HTMLTableSectionElement>>(
   ({ children, className, ...props }, ref) => {
-    const { cells } = TableProvider.useTableValue()
+    const { cells } = TableProvider.useValue()
     return (
       <tfoot
         ref={ref}

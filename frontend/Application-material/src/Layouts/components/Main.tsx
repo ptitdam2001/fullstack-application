@@ -9,8 +9,7 @@ type MainProps = {
 }
 
 export const Main: FC<MainProps> = ({ menuWidth, children, className }) => {
-  const isMenuOpen = OpenProvider.useOpenValue()
-
+  const isMenuOpen = OpenProvider.useValue()
   return (
     <main
       className={clsx('transition duration-250 ease-in-out', isMenuOpen ? `ml-[-${menuWidth}]` : 'ml-0', className)}

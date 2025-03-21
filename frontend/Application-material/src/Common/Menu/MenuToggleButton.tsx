@@ -3,11 +3,11 @@ import MenuIcon from '@mui/icons-material/Menu'
 import { OpenProvider } from '@Providers/OpenProvider'
 
 export const MenuToggleButton = () => {
-  const isOpen = OpenProvider.useOpenValue()
-  const openDispatch = OpenProvider.useOpenDispatch()
+  const isOpen = OpenProvider.useValue()
+  const openDispatch = OpenProvider.useDispatch()
 
   const handleClick = () => {
-    openDispatch(oldValue => !oldValue)
+    openDispatch(true)
   }
 
   if (isOpen) {

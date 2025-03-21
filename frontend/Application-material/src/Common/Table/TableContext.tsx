@@ -1,6 +1,4 @@
-import React, { ReactNode, useReducer } from 'react'
-
-const noProvider = Symbol('no provider')
+import { createContextWithWrite } from '@Common/Context/createContextWithWrite'
 
 type TableCellType = {
   id: string
@@ -9,32 +7,6 @@ type TableCellType = {
 
 type TableContextType = {
   cells: TableCellType[]
-}
-
-const tableContext = React.createContext<TableContextType | typeof noProvider>(noProvider)
-tableContext.displayName = 'tableContext'
-
-const tableDispatchContext = React.createContext<React.Dispatch<TableReducerAction> | typeof noProvider>(noProvider)
-tableDispatchContext.displayName = 'tableDispatchContext'
-
-const useTableValue = () => {
-  const value = React.useContext(tableContext)
-
-  if (value === noProvider) {
-    throw new Error(`useTableValue is used outside of its TableProvider`)
-  }
-
-  return value
-}
-
-const useTableDispatch = () => {
-  const value = React.useContext(tableDispatchContext)
-
-  if (value === noProvider) {
-    throw new Error(`useTableDispatch is used outside of its TableProvider`)
-  }
-
-  return value
 }
 
 type TableReducerAction = {
@@ -57,20 +29,4 @@ const tableReducer = (currentState: TableContextType, newState: TableReducerActi
   }
 }
 
-type TableProviderProps = {
-  children: ReactNode
-}
-
-export const TableProvider = {
-  Provider: ({ children }: TableProviderProps) => {
-    const [value, dispatch] = useReducer(tableReducer, { cells: [] })
-
-    return (
-      <tableContext.Provider value={value}>
-        <tableDispatchContext.Provider value={dispatch}>{children}</tableDispatchContext.Provider>
-      </tableContext.Provider>
-    )
-  },
-  useTableValue,
-  useTableDispatch,
-}
+export const TableProvider = createContextWithWrite<TableContextType, TableReducerAction>('Table', tableReducer)
