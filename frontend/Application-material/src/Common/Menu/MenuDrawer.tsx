@@ -25,8 +25,8 @@ type MenuDrawerProps = {
 
 export const MenuDrawer: FC<MenuDrawerProps> = ({ children, width = DRAWER_WIDTH }) => {
   const theme = useTheme()
-  const open = OpenProvider.useOpenValue()
-  const dispatch = OpenProvider.useOpenDispatch()
+  const open = OpenProvider.useValue()
+  const dispatch = OpenProvider.useDispatch()
 
   const handleClose = () => {
     dispatch(false)

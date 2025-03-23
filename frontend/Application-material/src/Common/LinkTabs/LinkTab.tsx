@@ -10,8 +10,8 @@ export type TabProps = {
 }
 
 export const LinkTab = ({ tabIndex, label, href, icon }: TabProps) => {
-  const { currentIndex } = TabContext.useTabValue()
-  const dispatch = TabContext.useTabDispatch()
+  const { currentIndex } = TabContext.useValue()
+  const dispatch = TabContext.useDispatch()
 
   return (
     <Tab
