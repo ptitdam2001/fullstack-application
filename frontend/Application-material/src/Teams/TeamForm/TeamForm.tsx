@@ -8,6 +8,7 @@ import Toast from '@Common/Toast/Toast'
 import { ControlledTextInput } from '@Common/Input/TextInput/ControlledTextInput'
 import { Button } from '@mui/material'
 import { ColorInput } from '@Common/Input/ColorInput/ColorInput'
+import { Form } from '@Common/Form/Form'
 
 type TeamFormProps = {
   teamId?: string
@@ -37,7 +38,7 @@ export const TeamForm = ({ defaultValues, teamId, onFinish, className }: TeamFor
   }
 
   return (
-    <form name="teamForm" onSubmit={handleSubmit(onSubmit)} className={cn('h-full', className)}>
+    <Form name="teamForm" onSubmit={handleSubmit(onSubmit)} className={cn('h-full', className)}>
       <Controller
         name="name"
         render={({ field, fieldState }) => <ControlledTextInput {...field} fieldState={fieldState} label="Name" />}
@@ -70,6 +71,6 @@ export const TeamForm = ({ defaultValues, teamId, onFinish, className }: TeamFor
         </Button>
         {/* <DevTool control={control} placement="bottom-right" /> */}
       </div>
-    </form>
+    </Form>
   )
 }

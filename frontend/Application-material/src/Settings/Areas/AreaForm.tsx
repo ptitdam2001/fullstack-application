@@ -7,6 +7,7 @@ import { Button } from '@mui/material'
 import { useAreaForm } from './useAreaForm'
 import Toast from '@Common/Toast/Toast'
 import { ControlledTextInput } from '@Common/Input/TextInput/ControlledTextInput'
+import { Form } from '@Common/Form/Form'
 
 type AreaFormProps = {
   areaId?: string
@@ -35,7 +36,7 @@ export const AreaForm = ({ defaultValues, areaId, onFinish, className }: AreaFor
   }
 
   return (
-    <form name="areaForm" onSubmit={handleSubmit(onSubmit)} className={cn('h-full', className)}>
+    <Form name="areaForm" onSubmit={handleSubmit(onSubmit)} className={cn('h-full', className)}>
       <Controller
         name="name"
         render={({ field, fieldState }) => <ControlledTextInput {...field} fieldState={fieldState} label="Name" />}
@@ -80,8 +81,7 @@ export const AreaForm = ({ defaultValues, areaId, onFinish, className }: AreaFor
         >
           {areaId ? 'Update' : 'Create'}
         </Button>
-        {/* <DevTool control={control} placement="bottom-right" /> */}
       </div>
-    </form>
+    </Form>
   )
 }
