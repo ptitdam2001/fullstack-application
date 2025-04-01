@@ -8,10 +8,19 @@ import Axios, { AxiosError, AxiosRequestConfig } from 'axios'
 // const getBaseUrl = () => import.meta.env.BACKEND_BASEURL
 const getBaseUrl = () => 'http://localhost:3000/'
 
-const getAxiosConfig = (): AxiosRequestConfig => ({
-  baseURL: getBaseUrl(),
-  // withCredentials: true,
-})
+const getAxiosConfig = (): AxiosRequestConfig => {
+  const localstorageContent = localStorage.getItem('user')
+  const userInfo = JSON.parse(localstorageContent ?? '{}')
+
+  return {
+    baseURL: getBaseUrl(),
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      Authorization: `Bearer ${userInfo?.token}`,
+    },
+  }
+}
 
 const AXIOS_INSTANCE = Axios.create()
 
