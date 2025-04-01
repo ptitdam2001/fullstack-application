@@ -60,6 +60,25 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorOutput"
+  /forgot-password:
+    post:
+      operationId: forgotPassword
+      tags:
+        - Authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ForgotPassword"
+      responses:
+        200:
+          description: "successful"
+        500:
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorOutput"
   /users:
     get:
       operationId: "getUsers"
@@ -790,7 +809,14 @@ components:
             _id:
               type: string
               format: uuid
-
+    ForgotPassword:
+      properties:
+        email:
+          nullable: false
+          type: string
+          format: email
+      required:
+        - email
     Login:
       properties:
         email:
@@ -867,6 +893,10 @@ components:
           format: date-time
     TokenData:
       type: object
+      required:
+        - userId
+        - email
+        - token
       properties:
         userId:
           type: string
