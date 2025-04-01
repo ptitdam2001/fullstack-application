@@ -1,5 +1,5 @@
 import { Button, ButtonProps } from '@mui/material'
-import { Auth } from './Auth'
+import { AuthProvider } from './AuthProvider'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import { Link } from 'react-router'
 import { LOGOUT_PAGE } from './constant'
@@ -7,9 +7,9 @@ import { LOGOUT_PAGE } from './constant'
 type AuthActionsProps = Pick<ButtonProps, 'color' | 'size'>
 
 export const AuthActions = ({ color = 'primary', size = 'medium' }: AuthActionsProps) => {
-  const { user } = Auth.useAuthValue()
+  const { token } = AuthProvider.useAuthValue()
 
-  return user ? (
+  return token ? (
     <Button
       variant="outlined"
       startIcon={<AccountCircleIcon />}

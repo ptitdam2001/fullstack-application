@@ -1,5 +1,3 @@
 export * from './Dashboard'
-export * from './Login'
 export * from './MyProfile'
 export * from './NotFound'
-export * from './ResetPassword'

@@ -48,9 +48,9 @@ type ToastProviderProps = {
 }
 
 export default {
-  Provider: ({ children, value = defaultToastState }: ToastProviderProps) => {
-    return <ToastContext.Provider value={value}>{children}</ToastContext.Provider>
-  },
+  Provider: ({ children, value = defaultToastState }: ToastProviderProps) => (
+    <ToastContext.Provider value={value}>{children}</ToastContext.Provider>
+  ),
   useToast: () => {
     const dispatch = ToastContext.useDispatch()
     return (options: Omit<ToastOptionsType, 'open'>) => {

@@ -1,6 +1,6 @@
 import React, { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { Auth } from '@Auth/Auth'
+import { AuthProvider } from '@Auth/AuthProvider'
 import { AppRouting } from '@Application/AppRouting'
 
 import { OpenProvider } from '@Providers/OpenProvider'
@@ -33,11 +33,11 @@ enableMocking().then(() => {
           <QueryClientProvider client={queryClient}>
             <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
             <ThemeProvider>
-              <Auth.Provider>
+              <AuthProvider.Provider>
                 <OpenProvider.Provider value={false}>
                   <AppRouting />
                 </OpenProvider.Provider>
-              </Auth.Provider>
+              </AuthProvider.Provider>
             </ThemeProvider>
           </QueryClientProvider>
         </Toast.Provider>

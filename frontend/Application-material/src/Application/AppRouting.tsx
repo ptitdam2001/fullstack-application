@@ -1,8 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router'
 
 import { AnonymousLayout, ConnectedLayout, RootLayout } from '@Layouts/'
-import { Dashboard, Login, MyProfile, NotFound, ResetPassword } from '@Pages/'
-import { AuthenticatedContent } from '@Auth/AuthenticatedContent'
+import { Dashboard, MyProfile, NotFound } from '@Pages/'
 import { Logout } from '@Auth/Logout'
 import { GameDetail, GameList } from '@Game/index'
 import { Calendar } from '@Calendar/index'
@@ -11,6 +10,8 @@ import { TeamPlayersPage } from '@Player/pages'
 import { AreaEditPage, AreaPages, SettingsLayout } from '@Settings/index'
 import { TeamEditPage } from '@Teams/pages'
 import { TeamLayout } from '@Teams/index'
+import { CheckAuthentication } from '@Auth/CheckAuthentication/CheckAuthentication'
+import { ForgottenPasswordPage, LoginPage } from '@Auth/pages'
 
 export const AppRouting = () => {
   return (
@@ -21,9 +22,9 @@ export const AppRouting = () => {
         <Route
           path="app"
           element={
-            <AuthenticatedContent>
+            <CheckAuthentication>
               <ConnectedLayout />
-            </AuthenticatedContent>
+            </CheckAuthentication>
           }
           errorElement={<NotFound />}
         >
@@ -61,9 +62,9 @@ export const AppRouting = () => {
         </Route>
 
         <Route path="auth" element={<AnonymousLayout />} errorElement={<NotFound />}>
-          <Route index path="signin" element={<Login />} />
+          <Route index path="signin" element={<LoginPage />} />
           <Route path="logout" element={<Logout />} />
-          <Route path="forgotten-password" element={<ResetPassword />} />
+          <Route path="forgotten-password" element={<ForgottenPasswordPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
