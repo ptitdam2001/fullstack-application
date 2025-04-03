@@ -9,6 +9,14 @@ import { ControlledTextInput } from '@Common/Input/TextInput/ControlledTextInput
 import { Button } from '@mui/material'
 import { ColorInput } from '@Common/Input/ColorInput/ColorInput'
 import { Form } from '@Common/Form/Form'
+import { z } from 'zod'
+import { Team } from '@Sdk/model'
+
+const iniatialValues: Team = {
+  name: '',
+  color: '#000000',
+  id: '',
+}
 
 type TeamFormProps = {
   teamId?: string
@@ -17,10 +25,12 @@ type TeamFormProps = {
   className?: string
 }
 
-export const TeamForm = ({ defaultValues, teamId, onFinish, className }: TeamFormProps) => {
+type FormValue = z.infer<typeof createTeamBody>
+
+export const TeamForm: React.FC<TeamFormProps> = ({ defaultValues = iniatialValues, teamId, onFinish, className }) => {
   const toast = Toast.useToast()
 
-  const { control, handleSubmit, formState } = useForm({
+  const { control, handleSubmit, formState } = useForm<FormValue>({
     defaultValues,
     resolver: zodResolver(createTeamBody),
     mode: 'all',
@@ -69,7 +79,6 @@ export const TeamForm = ({ defaultValues, teamId, onFinish, className }: TeamFor
         >
           {teamId ? 'Update' : 'Create'}
         </Button>
-        {/* <DevTool control={control} placement="bottom-right" /> */}
       </div>
     </Form>
   )

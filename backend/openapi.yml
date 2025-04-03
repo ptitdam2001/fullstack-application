@@ -919,8 +919,8 @@ components:
           format: uuid
         name:
           type: string
-          # nullable: false
-          # minLength: 1
+          nullable: false
+          minLength: 1
         color:
           nullable: true
           type: string
