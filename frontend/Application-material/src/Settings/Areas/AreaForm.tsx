@@ -28,7 +28,7 @@ export const AreaForm = ({ defaultValues, areaId, onFinish, className }: AreaFor
   const onSubmit: SubmitHandler<CreateAreaMutationBody> = async data => {
     try {
       await submit(data, areaId)
-      toast({ message: 'Area is well updated' })
+      toast({ message: areaId ? 'Area is well updated' : 'Area is well created' })
       onFinish?.()
     } catch {
       toast({ message: 'Error during Area update' })
