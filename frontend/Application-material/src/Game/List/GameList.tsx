@@ -1,8 +1,9 @@
 import { usePagination } from '@Common/hooks/usePagination'
-import { LinearProgress, TablePagination } from '@mui/material'
 import { GameListItem } from './GameListItem/GameListItem'
 import { useGetGames } from '@Sdk/games/games'
 import { useCountTeams } from '@Sdk/teams/teams'
+import { TableLoader } from '@Common/Loading'
+import { TablePagination } from '@Common/Table/TablePagination'
 
 export const GameList = () => {
   const { changePage, changeRowsPerPage, ...pagination } = usePagination()
@@ -13,14 +14,10 @@ export const GameList = () => {
   })
   const { data: count, isLoading: isCountLoading } = useCountTeams()
 
-  if (isLoading) {
-    return <LinearProgress />
-  }
-
   return (
     <section data-testid="GameList" className="flex flex-col h-full">
       {isLoading && isCountLoading ? (
-        <LinearProgress />
+        <TableLoader nbCols={1} nbRows={10} />
       ) : (
         <>
           <ul role="list" className="flex-1 flex flex-col gap-2 overflow-y-scroll px-2">
@@ -32,14 +29,11 @@ export const GameList = () => {
           </ul>
 
           <TablePagination
-            component="div"
             count={count ?? 0}
             page={pagination.page}
             onPageChange={(_: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => changePage(newPage)}
             rowsPerPage={pagination.rowsPerPage}
-            onRowsPerPageChange={(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-              changeRowsPerPage(parseInt(event.target.value, 10))
-            }
+            onRowsPerPageChange={event => changeRowsPerPage(parseInt(event.target.value, 10))}
             className="w-full"
           />
         </>

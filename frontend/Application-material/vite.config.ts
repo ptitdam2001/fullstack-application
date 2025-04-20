@@ -5,7 +5,6 @@ import path from 'path'
 import tailwindcss from '@tailwindcss/vite'
 
 const ALIASES = {
-  '@mui/styled-engine': '@mui/styled-engine-sc',
   '@Auth': path.resolve(__dirname, './src/Auth'),
   '@Layouts': path.resolve(__dirname, './src/Layouts/'),
   '@Pages': path.resolve(__dirname, './src/pages/'),

@@ -1,7 +1,7 @@
 import { createContextWithWrite } from '@Common/Context/createContextWithWrite'
 
 type TabContextType = {
-  currentIndex: number
+  currentValue?: string
 }
 
 export const TabContext = createContextWithWrite<TabContextType, TabContextType>('Tab')

@@ -6,11 +6,12 @@ import { createTeamBody } from '@Sdk/team/team.zod'
 import { useTeamForm } from './useTeamForm'
 import Toast from '@Common/Toast/Toast'
 import { ControlledTextInput } from '@Common/Input/TextInput/ControlledTextInput'
-import { Button } from '@mui/material'
 import { ColorInput } from '@Common/Input/ColorInput/ColorInput'
 import { Form } from '@Common/Form/Form'
 import { z } from 'zod'
 import { Team } from '@Sdk/model'
+import { Button } from '@/components/ui/button'
+import { Loader2 } from 'lucide-react'
 
 const iniatialValues: Team = {
   name: '',
@@ -40,10 +41,10 @@ export const TeamForm: React.FC<TeamFormProps> = ({ defaultValues = iniatialValu
   const onSubmit: SubmitHandler<CreateTeamMutationBody> = async data => {
     try {
       await submit(data, teamId)
-      toast({ message: 'Area is well updated' })
+      toast('Area is well updated')
       onFinish?.()
     } catch {
-      toast({ message: 'Error during Area update' })
+      toast('Error during Area update')
     }
   }
 
@@ -71,12 +72,11 @@ export const TeamForm: React.FC<TeamFormProps> = ({ defaultValues = iniatialValu
       <div className="flex flex-row-reverse py-1">
         <Button
           type="submit"
-          variant="outlined"
+          variant="outline"
           color="primary"
           disabled={!formState.isValid || !formState.isDirty || isPending}
-          loading={isPending}
-          loadingPosition="start"
         >
+          {isPending && <Loader2 className="animate-spin" />}
           {teamId ? 'Update' : 'Create'}
         </Button>
       </div>

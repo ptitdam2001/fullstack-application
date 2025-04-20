@@ -1,29 +1,31 @@
-import { Tab, TabProps as MuiTabProps } from '@mui/material'
 import { Link } from 'react-router'
 import { TabContext } from './TabsContext'
+import { TabsTrigger } from '@/components/ui/tabs'
+import { ReactElement } from 'react'
 
 export type TabProps = {
-  tabIndex: number
+  tabIndex: string
   label: string
   href: string
-  icon?: MuiTabProps['icon']
+  icon?: ReactElement
 }
 
 export const LinkTab = ({ tabIndex, label, href, icon }: TabProps) => {
-  const { currentIndex } = TabContext.useValue()
+  const { currentValue } = TabContext.useValue()
   const dispatch = TabContext.useDispatch()
 
   return (
-    <Tab
+    <TabsTrigger
       id={`${tabIndex}`}
-      component={Link}
-      aria-current={tabIndex === currentIndex}
-      to={href}
-      label={label}
-      icon={icon}
+      aria-current={tabIndex === currentValue}
       value={href}
-      onClick={() => dispatch({ currentIndex: tabIndex })}
-      wrapped
-    />
+      onClick={() => dispatch({ currentValue: tabIndex })}
+      asChild
+    >
+      <Link to={href}>
+        {icon}
+        {label}
+      </Link>
+    </TabsTrigger>
   )
 }

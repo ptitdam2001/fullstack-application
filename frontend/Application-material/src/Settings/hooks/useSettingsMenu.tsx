@@ -1,15 +1,15 @@
 import { TabProps } from '@Common/LinkTabs/LinkTab'
-import PlaceIcon from '@mui/icons-material/Place'
+import { MapPinHouse } from 'lucide-react'
 
 /**
  * List of Setting menu
  */
 const menu = [
   {
-    tabIndex: 0,
+    tabIndex: 'areas',
     label: 'Area',
     href: 'areas',
-    icon: <PlaceIcon />,
+    icon: <MapPinHouse />,
   },
 ]
 

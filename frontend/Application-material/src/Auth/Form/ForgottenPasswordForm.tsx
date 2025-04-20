@@ -6,8 +6,9 @@ import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { className as cn } from '@Common/utils/className'
 import { ControlledTextInput } from '@Common/Input/TextInput/ControlledTextInput'
-import { Button } from '@mui/material'
 import { Form } from '@Common/Form/Form'
+import { Button } from '@/components/ui/button'
+import { Loader2 } from 'lucide-react'
 
 type FormValue = z.infer<typeof forgotPasswordBody>
 
@@ -31,12 +32,12 @@ export const ForgottenPasswordForm: React.FC<ForgottenPasswordFormProps> = ({ on
       {
         onSuccess: () => {
           // Handle success, e.g., show a success message
-          toast({ message: 'Password reset email sent successfully' })
+          toast('Password reset email sent successfully')
           onFinish?.()
         },
         onError: () => {
           // Handle error, e.g., show an error message
-          toast({ message: 'Error sending password reset email' })
+          toast('Error sending password reset email')
         },
       }
     )
@@ -48,11 +49,11 @@ export const ForgottenPasswordForm: React.FC<ForgottenPasswordFormProps> = ({ on
       onSubmit={handleSubmit(onSubmit)}
       className={cn('flex flex-col gap-4', className)}
       data-testid="forgotten-password-form"
-      enableDevTools
-      devToolsProps={{
-        control,
-        placement: 'bottom-right',
-      }}
+      // enableDevTools
+      // devToolsProps={{
+      //   control,
+      //   placement: 'bottom-right',
+      // }}
     >
       <Controller
         name="email"
@@ -65,12 +66,11 @@ export const ForgottenPasswordForm: React.FC<ForgottenPasswordFormProps> = ({ on
       <div className="flex flex-row-reverse py-1">
         <Button
           type="submit"
-          variant="outlined"
+          variant="outline"
           color="primary"
           disabled={!formState.isValid || !formState.isDirty || isPending}
-          loading={isPending}
-          loadingPosition="start"
         >
+          {isPending && <Loader2 className="animate-spin" />}
           Send
         </Button>
       </div>

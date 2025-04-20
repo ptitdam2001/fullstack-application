@@ -4,7 +4,7 @@ import { AuthProvider } from '@Auth/AuthProvider'
 import { AppRouting } from '@Application/AppRouting'
 
 import { OpenProvider } from '@Providers/OpenProvider'
-import { ThemeProvider } from '@Theme/ThemeProvider'
+import { ThemeProvider } from '@Theme/Provider/ThemeProvider'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import Toast from '@Common/Toast/Toast'
@@ -31,7 +31,7 @@ enableMocking().then(() => {
       <React.Suspense fallback="loading">
         <Toast.Provider>
           <QueryClientProvider client={queryClient}>
-            <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
+            <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-right" />
             <ThemeProvider>
               <AuthProvider.Provider>
                 <OpenProvider.Provider value={false}>

@@ -1,11 +1,10 @@
+import { Toaster } from '@/components/ui/sonner'
 import { createContextWithWrite } from '@Common/Context/createContextWithWrite'
-import { Snackbar, SnackbarOrigin } from '@mui/material'
 import React from 'react'
+import { ExternalToast, toast, ToasterProps } from 'sonner'
 
 type ToastOptionsType = {
-  open: boolean
-  message: React.ReactNode
-  position?: SnackbarOrigin
+  position?: ToasterProps['position']
 }
 
 const reducer = (currentState: ToastOptionsType, newState: Partial<ToastOptionsType>) => ({
@@ -14,24 +13,17 @@ const reducer = (currentState: ToastOptionsType, newState: Partial<ToastOptionsT
 })
 
 const defaultToastState: ToastOptionsType = {
-  open: false,
-  message: '',
-  position: { horizontal: 'left', vertical: 'bottom' },
+  position: 'bottom-left',
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
 const ToastContainer = ({ children }: { children: React.ReactNode }) => {
   const value = ToastContext.useValue()
-  const dispatch = ToastContext.useDispatch()
-
-  const handleClose = () => {
-    dispatch({ ...value, open: false })
-  }
 
   return (
     <>
       {children}
-      <Snackbar anchorOrigin={value.position} open={value.open} onClose={handleClose} message={value.message} />
+      <Toaster position={value.position ?? 'bottom-left'} />
     </>
   )
 }
@@ -51,10 +43,7 @@ export default {
   Provider: ({ children, value = defaultToastState }: ToastProviderProps) => (
     <ToastContext.Provider value={value}>{children}</ToastContext.Provider>
   ),
-  useToast: () => {
-    const dispatch = ToastContext.useDispatch()
-    return (options: Omit<ToastOptionsType, 'open'>) => {
-      dispatch({ ...options, open: true })
-    }
+  useToast: () => (message: React.ReactNode, options?: ExternalToast) => {
+    toast(message, options)
   },
 }

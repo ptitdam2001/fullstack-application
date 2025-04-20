@@ -36,7 +36,6 @@
       "@Application/*": ["./src/Application/*", "./src/Application/"],
       "@Providers/*": ["./src/Providers/*", "./src/Providers/"],
       "@Settings/*": ["./src/Settings/*", "./src/Settings/"],
-      "@mui/styled-engine": ["./node_modules/@mui/styled-engine-sc"],
       "@Sdk/*": ["./src/sdk/generated/", "./src/sdk/generated/*"],
       "@/*": ["./src/*"]
     }

@@ -859,6 +859,8 @@ components:
         password:
           nullable: false
           type: string
+        avatar:
+          type: string
       required:
         - _id
         - email
@@ -891,6 +893,8 @@ components:
           nullable: false
           type: "number"
           format: date-time
+        avatar:
+          type: string
     TokenData:
       type: object
       required:

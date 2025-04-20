@@ -3,11 +3,12 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { className as cn } from '@Common/utils/className'
 import { createAreaBody } from '@Sdk/area/area.zod'
 import { CreateAreaMutationBody } from '@Sdk/area/area'
-import { Button } from '@mui/material'
 import { useAreaForm } from './useAreaForm'
 import Toast from '@Common/Toast/Toast'
 import { ControlledTextInput } from '@Common/Input/TextInput/ControlledTextInput'
 import { Form } from '@Common/Form/Form'
+import { Button } from '@/components/ui/button'
+import { Loader2 } from 'lucide-react'
 
 type AreaFormProps = {
   areaId?: string
@@ -28,10 +29,10 @@ export const AreaForm = ({ defaultValues, areaId, onFinish, className }: AreaFor
   const onSubmit: SubmitHandler<CreateAreaMutationBody> = async data => {
     try {
       await submit(data, areaId)
-      toast({ message: areaId ? 'Area is well updated' : 'Area is well created' })
+      toast(areaId ? 'Area is well updated' : 'Area is well created')
       onFinish?.()
     } catch {
-      toast({ message: 'Error during Area update' })
+      toast('Error during Area update')
     }
   }
 
@@ -73,12 +74,11 @@ export const AreaForm = ({ defaultValues, areaId, onFinish, className }: AreaFor
       <div className="flex flex-row-reverse py-1">
         <Button
           type="submit"
-          variant="outlined"
+          variant="outline"
           color="primary"
           disabled={!formState.isValid || !formState.isDirty || isPending}
-          loading={isPending}
-          loadingPosition="start"
         >
+          {isPending && <Loader2 className="animate-spin" />}
           {areaId ? 'Update' : 'Create'}
         </Button>
       </div>

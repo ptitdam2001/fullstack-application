@@ -1,5 +1,5 @@
+import { Card, CardContent } from '@/components/ui/card'
 import { ForgottenPasswordForm } from '@Auth/Form/ForgottenPasswordForm'
-import { Card, CardContent } from '@mui/material'
 
 export const ForgottenPasswordPage = () => {
   return (

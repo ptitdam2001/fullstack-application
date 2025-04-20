@@ -1,4 +1,3 @@
-import { Box } from '@mui/material'
 import { Area } from '@Sdk/model'
 
 type AddressProps = {
@@ -7,9 +6,9 @@ type AddressProps = {
 
 export const Address = ({ address }: AddressProps) => (
   <>
-    <Box>{address.name}</Box>
-    <Box>
+    <p>{address.name}</p>
+    <p>
       {address.address} - {address.city}
-    </Box>
+    </p>
   </>
 )

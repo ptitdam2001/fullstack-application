@@ -1,4 +1,6 @@
-import { Button, Card, CardActions, CardContent, LinearProgress, Typography } from '@mui/material'
+import { Button } from '@/components/ui/button'
+import { Card, CardAction, CardContent } from '@/components/ui/card'
+import { LinearProgress } from '@Common/Loading/LinearProgress'
 import { useGetTeam } from '@Sdk/team/team'
 import { BaseTeamType } from '@Teams/types'
 
@@ -8,19 +10,17 @@ export const TeamDetail = ({ teamId }: TeamDetailProps) => {
   const { data: team, isLoading } = useGetTeam(teamId)
 
   return (
-    <Card variant="outlined" className="w-full h-full">
+    <Card className="w-full h-full">
       {isLoading ? (
         <LinearProgress />
       ) : (
         <>
           <CardContent>
-            <Typography gutterBottom variant="h5" component="div">
-              {team?.name}
-            </Typography>
+            <h5>{team?.name}</h5>
           </CardContent>
-          <CardActions disableSpacing>
-            <Button size="small">Learn More</Button>
-          </CardActions>
+          <CardAction>
+            <Button>Learn More</Button>
+          </CardAction>
         </>
       )}
     </Card>

@@ -1,6 +1,6 @@
+import { Card, CardContent } from '@/components/ui/card'
 import { CONNECTED_HOME } from '@Auth/constant'
 import { SigninForm } from '@Auth/Form/SigninForm'
-import { Card, CardContent } from '@mui/material'
 import { Link, useNavigate } from 'react-router'
 
 export const LoginPage = () => {

@@ -1,4 +1,3 @@
-import { LinearProgress, useColorScheme } from '@mui/material'
 import { NotFound } from '@Pages/NotFound'
 import { useGetTeam } from '@Sdk/team/team'
 import { getGetTeamsQueryKey } from '@Sdk/teams/teams'
@@ -15,9 +14,11 @@ import {
 } from '@/components/ui/dialog'
 import React from 'react'
 import { cn } from '@/lib/utils'
+import { useTheme } from '@Theme/Provider/ThemeProvider'
+import { LinearProgress } from '@Common/Loading/LinearProgress'
 
 export const TeamEditPage = () => {
-  const { mode } = useColorScheme()
+  const currentTheme = useTheme()
   const [open, setOpen] = React.useState<boolean>(true)
 
   const { teamId } = useParams()
@@ -39,7 +40,7 @@ export const TeamEditPage = () => {
       <DialogPortal>
         <DialogContent
           className={cn(
-            { dark: mode && ['dark', 'system'].includes(mode) },
+            { dark: currentTheme && ['dark', 'system'].includes(currentTheme) },
             'fixed left-1/2 top-1/2 flex flex-col',
             'max-h-[85vh] w-[90vw] max-w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-md',
             'dark:bg-gray-600 p-[25px] shadow-[var(--shadow-6)] focus:outline-none data-[state=open]:animate-contentShow'

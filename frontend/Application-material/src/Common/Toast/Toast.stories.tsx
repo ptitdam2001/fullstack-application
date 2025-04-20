@@ -20,5 +20,5 @@ export default meta
 export const Simple = () => {
   const toast = Toast.useToast()
 
-  return <button onClick={() => toast({ message: 'One toast' })}>Notify me</button>
+  return <button onClick={() => toast('One toast')}>Notify me</button>
 }

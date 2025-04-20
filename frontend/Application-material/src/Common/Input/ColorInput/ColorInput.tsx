@@ -2,8 +2,8 @@ import React, { ReactNode } from 'react'
 import { BaseInputProps } from '../BaseInputProps.type'
 import { HexColorPicker } from 'react-colorful'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { useColorScheme } from '@mui/material'
 import { cn } from '@/lib/utils'
+import { useTheme } from '@Theme/Provider/ThemeProvider'
 
 const DEFAULT_COLOR = '#000000'
 
@@ -23,7 +23,7 @@ export const ColorInput = ({
   onChange,
   ...props
 }: ColorInputProps) => {
-  const { mode } = useColorScheme()
+  const currentTheme = useTheme()
 
   const [openPopover, setOpenPopover] = React.useState(open)
   const [color, setColor] = React.useState<string>(value ?? DEFAULT_COLOR)
@@ -50,7 +50,10 @@ export const ColorInput = ({
             style={{ background: color }}
           />
         </PopoverTrigger>
-        <PopoverContent className={cn('p-2 w-52 h-52', { dark: mode && ['dark', 'system'].includes(mode) })} forceMount>
+        <PopoverContent
+          className={cn('p-2 w-52 h-52', { dark: currentTheme && ['dark', 'system'].includes(currentTheme) })}
+          forceMount
+        >
           <HexColorPicker color={value} onChange={handleChange} {...props} />
         </PopoverContent>
       </Popover>

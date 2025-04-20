@@ -1,9 +1,9 @@
 import { AvatarWithBadge } from '@Common/Avatar/AvatarWithBadge'
-import { LinearProgress, List, ListItem, ListItemAvatar, ListItemText } from '@mui/material'
 
 import { BaseTeamType } from '@Teams/types'
 import { className as cn } from '@Common/utils/className'
 import { useGetTeamPlayers } from '@Sdk/teams/teams'
+import { LinearProgress } from '@Common/Loading/LinearProgress'
 
 type PlayerListProps = BaseTeamType & { className?: string }
 
@@ -15,10 +15,10 @@ export const PlayerList: React.FC<PlayerListProps> = ({ teamId, className }: Pla
   }
 
   return (
-    <List className={cn('w-full overflow-y-scroll h-full', className)} sx={{ bgcolor: 'background.paper' }}>
+    <ul className={cn('w-full overflow-y-scroll h-full', className)}>
       {data?.map(player => (
-        <ListItem alignItems="flex-start" key={player.id}>
-          <ListItemAvatar>
+        <li className="flex flex-start py-2" key={player.id}>
+          <div className="px-4">
             <AvatarWithBadge
               avatar={{ label: `${player.firstname} ${player.lastname}`, url: player.avatar ?? undefined }}
               badge={{
@@ -26,10 +26,10 @@ export const PlayerList: React.FC<PlayerListProps> = ({ teamId, className }: Pla
                 className: 'text-white',
               }}
             />
-          </ListItemAvatar>
-          <ListItemText primary={`${player.firstname} ${player.lastname}`} />
-        </ListItem>
+          </div>
+          <div className="grow-1">{`${player.firstname} ${player.lastname}`}</div>
+        </li>
       ))}
-    </List>
+    </ul>
   )
 }

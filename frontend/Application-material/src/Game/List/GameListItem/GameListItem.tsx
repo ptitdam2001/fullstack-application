@@ -1,5 +1,5 @@
+import { Card, CardContent } from '@/components/ui/card'
 import { Address } from '@Common/Address/Address'
-import { Box, Card, CardContent, Typography } from '@mui/material'
 import { Game } from '@Sdk/model'
 
 type GameListItemProps = {
@@ -13,23 +13,19 @@ export const GameListItem = ({ game }: GameListItemProps) => {
     area,
   } = game
   return (
-    <Card variant="elevation" sx={theme => ({ background: theme.palette.info.light })}>
+    <Card>
       <CardContent>
         <div className="flex flex-col items-center">
           <div className="flex flex-row gap-3 w-full">
-            <div className="w-1/3">
-              <Typography variant="body1">{homeTeam.name}</Typography>
-            </div>
+            <div className="w-1/3">{homeTeam.name}</div>
             <div className="w-1/3 text-center">
-              <Typography variant="h6" color="textPrimary">
+              <h6>
                 {homeTeam.score ?? 0} - {awayTeam.score ?? 0}
-              </Typography>
+              </h6>
             </div>
-            <div className="w-1/3">
-              <Typography variant="body1">{awayTeam.name}</Typography>
-            </div>
+            <div className="w-1/3">{awayTeam.name}</div>
           </div>
-          <Box>{date}</Box>
+          <p>{date}</p>
           {area && <Address address={area} />}
         </div>
       </CardContent>

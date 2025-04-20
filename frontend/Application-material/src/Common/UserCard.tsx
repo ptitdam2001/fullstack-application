@@ -1,9 +1,8 @@
-import { Avatar, Card, CardActions, CardContent, CardHeader, CardMedia, IconButton, Typography } from '@mui/material'
-
-import FavoriteIcon from '@mui/icons-material/Favorite'
-import ShareIcon from '@mui/icons-material/Share'
-import MoreVertIcon from '@mui/icons-material/MoreVert'
-import { FC } from 'react'
+import { FunctionComponent } from 'react'
+import { Button } from '@/components/ui/button'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Share2, Star } from 'lucide-react'
 
 type UserCardProps = {
   user: {
@@ -11,36 +10,29 @@ type UserCardProps = {
   }
 }
 
-export const UserCard: FC<UserCardProps> = ({ user }) => (
+export const UserCard: FunctionComponent<UserCardProps> = ({ user }) => (
   <Card className="max-w-80">
-    <CardHeader
-      avatar={
+    <CardHeader>
+      <CardTitle>
         <Avatar className="bg-red-500" aria-label="recipe">
-          R
+          <AvatarFallback>R</AvatarFallback>
         </Avatar>
-      }
-      action={
-        <IconButton aria-label="settings">
-          <MoreVertIcon />
-        </IconButton>
-      }
-      title={user.login}
-      subheader="September 14, 2016"
-    />
-    <CardMedia component="img" height="194" image="/static/images/cards/paella.jpg" alt="Paella dish" />
+        {user.login}
+      </CardTitle>
+    </CardHeader>
     <CardContent>
-      <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+      <p className="text-justify" style={{ color: 'text.secondary' }}>
         This impressive paella is a perfect party dish and a fun meal to cook together with your guests. Add 1 cup of
         frozen peas along with the mussels, if you like.
-      </Typography>
+      </p>
     </CardContent>
-    <CardActions disableSpacing>
-      <IconButton aria-label="add to favorites">
-        <FavoriteIcon />
-      </IconButton>
-      <IconButton aria-label="share">
-        <ShareIcon />
-      </IconButton>
-    </CardActions>
+    <CardFooter>
+      <Button variant="outline" size="icon" aria-label="add to favorites">
+        <Star />
+      </Button>
+      <Button variant="outline" size="icon" aria-label="share">
+        <Share2 />
+      </Button>
+    </CardFooter>
   </Card>
 )

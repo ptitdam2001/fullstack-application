@@ -1,5 +1,4 @@
 import { Controller, useForm } from 'react-hook-form'
-import { Button } from '@mui/material'
 import { useLoginAction } from '@Auth/hooks/useLoginAction'
 import React from 'react'
 import Toast from '@Common/Toast/Toast'
@@ -9,6 +8,8 @@ import { Form } from '@Common/Form/Form'
 import { ControlledTextInput } from '@Common/Input/TextInput/ControlledTextInput'
 import { z } from 'zod'
 import { loginBody } from '@Sdk/authentication/authentication.zod'
+import { Button } from '@/components/ui/button'
+import { Loader2 } from 'lucide-react'
 
 type FormValue = z.infer<typeof loginBody>
 
@@ -19,17 +20,17 @@ type SigninFormProps = {
 
 export const SigninForm: React.FC<SigninFormProps> = ({ className, onSuccess }) => {
   const toast = Toast.useToast()
-  const { process: login, isError, isSuccess } = useLoginAction()
+  const { process: login, isError, isSuccess, isPending } = useLoginAction()
   const { control, handleSubmit, getValues } = useForm<FormValue>()
   const { user } = AuthProvider.useAuthValue()
 
   React.useEffect(() => {
     if (isSuccess) {
-      toast({ message: `Welcome ${user?.firstname} ${user?.lastname}` })
+      toast(`Welcome ${user?.firstname} ${user?.lastname}`)
       onSuccess?.()
     } else if (isError) {
       // Handle error
-      toast({ message: 'Login failed' })
+      toast('Login failed')
     }
   }, [isError, isSuccess, onSuccess, toast, user?.firstname, user?.lastname])
 
@@ -62,7 +63,8 @@ export const SigninForm: React.FC<SigninFormProps> = ({ className, onSuccess }) 
       />
 
       <div>
-        <Button variant="contained" type="submit">
+        <Button type="submit" variant="outline" color="primary" disabled={isPending}>
+          {isPending && <Loader2 className="animate-spin" />}
           Login
         </Button>
       </div>

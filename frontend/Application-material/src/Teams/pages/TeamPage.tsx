@@ -1,4 +1,3 @@
-import { Typography } from '@mui/material'
 import { NotFound } from '@Pages/NotFound'
 import { PlayerList } from '@Player/index'
 import { TeamDetail } from '@Teams/Detail/TeamDetail'
@@ -17,7 +16,7 @@ export const TeamPage = () => {
         <TeamDetail teamId={teamId} />
       </section>
       <section className="w-1/3">
-        <Typography variant="h5">Players</Typography>
+        <h5 className="text-xl">Players</h5>
         <PlayerList teamId={teamId} className="overflow-auto scrollbar-thin h-80" />
       </section>
     </article>

@@ -1,7 +1,8 @@
 import { Address } from '@Common/Address/Address'
 import { usePagination } from '@Common/hooks/usePagination'
+import { TableLoader } from '@Common/Loading'
 import { Table } from '@Common/Table/Table'
-import { LinearProgress, TablePagination } from '@mui/material'
+import { TablePagination } from '@Common/Table/TablePagination'
 import { useCountAllAreas, useGetAreaList } from '@Sdk/area/area'
 import { Area } from '@Sdk/model'
 import React from 'react'
@@ -20,7 +21,7 @@ export const AreaList = ({ actions }: AeraListProps) => {
   const { data: count, isLoading: isCountLoading } = useCountAllAreas()
 
   if (isLoading || isCountLoading) {
-    return <LinearProgress />
+    return <TableLoader nbCols={2} nbRows={10} />
   }
 
   return (
@@ -44,14 +45,11 @@ export const AreaList = ({ actions }: AeraListProps) => {
       </Table.TableContainer>
       <div className="min-h-10">
         <TablePagination
-          component="div"
           count={count ?? 0}
           page={pagination.page}
           onPageChange={(_: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => changePage(newPage)}
           rowsPerPage={pagination.rowsPerPage}
-          onRowsPerPageChange={(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-            changeRowsPerPage(parseInt(event.target.value, 10))
-          }
+          onRowsPerPageChange={event => changeRowsPerPage(parseInt(event.target.value, 10))}
           className="w-full"
         />
       </div>
