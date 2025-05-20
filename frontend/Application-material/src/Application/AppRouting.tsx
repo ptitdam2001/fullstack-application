@@ -4,7 +4,7 @@ import { AnonymousLayout, ConnectedLayout, RootLayout } from '@Layouts/'
 import { Dashboard, MyProfile, NotFound } from '@Pages/'
 import { Logout } from '@Auth/Logout'
 import { GameDetail, GameList } from '@Game/index'
-import { Calendar } from '@Calendar/index'
+import { CalendarPage } from '@Calendar/index'
 import { TeamPage, TeamsPage } from '@Teams/pages'
 import { TeamPlayersPage } from '@Player/pages'
 import { AreaEditPage, AreaPages, SettingsLayout } from '@Settings/index'
@@ -44,7 +44,7 @@ export const AppRouting = () => {
             <Route path="create" element={<TeamEditPage />} />
           </Route>
 
-          <Route path="calendar" element={<Calendar />} />
+          <Route path="calendar" element={<CalendarPage />} />
 
           <Route path="games">
             <Route index element={<GameList />} />
