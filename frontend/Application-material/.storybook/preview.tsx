@@ -1,4 +1,4 @@
-import type { Preview } from '@storybook/react'
+import type { Preview } from '@storybook/react-vite'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { initialize, mswLoader } from 'msw-storybook-addon'
 
@@ -24,8 +24,13 @@ const preview: Preview = {
       },
     },
   },
+
   decorators: [storyFn => <QueryClientProvider client={queryClient}>{storyFn()}</QueryClientProvider>],
-  loaders: [mswLoader], // 👈 Add the MSW loader to all stories
+
+  // 👈 Add the MSW loader to all stories
+  loaders: [mswLoader],
+
+  tags: ['autodocs']
 }
 
 export default preview

@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { ResetPassword } from './ResetPassword'
-import { fn } from '@storybook/test'
+import { fn } from 'storybook/test'
 import { HttpResponse, delay, graphql } from 'msw'
 
 const meta = {

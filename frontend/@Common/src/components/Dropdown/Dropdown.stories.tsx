@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { DropDown } from './Dropdown'
 import { DropDownProps } from './types'
 import { faker } from '@faker-js/faker'
-import { fn } from '@storybook/test'
+import { fn } from 'storybook/test'
 import { Avatar } from '@Components/Avatar/Avatar'
 
 const items = [

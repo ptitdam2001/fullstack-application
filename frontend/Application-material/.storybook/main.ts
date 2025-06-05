@@ -7,10 +7,9 @@ const config: StorybookConfig = {
   ],
 
   "addons": [
-    "@storybook/addon-essentials",
     "@chromatic-com/storybook",
-    "@storybook/experimental-addon-test",
-    "@storybook/addon-mdx-gfm"
+    "@storybook/addon-vitest",
+    "@storybook/addon-docs"
   ],
 
   "framework": {
@@ -19,10 +18,6 @@ const config: StorybookConfig = {
   },
 
   staticDirs: ['../public'],
-
-  docs: {
-    autodocs: true
-  },
 
   typescript: {
     reactDocgen: "react-docgen-typescript"

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { AppBar, AppBarProps } from './AppBar'
 import { UserAccount } from '@Components/Icon'
 

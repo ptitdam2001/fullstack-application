@@ -1,4 +1,4 @@
-import type { Meta } from '@storybook/react'
+import type { Meta } from '@storybook/react-vite'
 import { Title1, Paragraph, Title2, Title3, SubTitle } from './index'
 
 const meta = {

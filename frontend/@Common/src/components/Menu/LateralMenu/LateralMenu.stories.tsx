@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { UserAccount } from '@Components/Icon'
 import { MenuItem } from '../types'
 import { LateralMenu } from './LateralMenu'

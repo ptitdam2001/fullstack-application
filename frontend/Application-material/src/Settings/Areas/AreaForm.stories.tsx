@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import { fn } from '@storybook/test'
+import type { Meta, StoryObj } from '@storybook/react-vite'
+import { fn } from 'storybook/test'
 import { AreaForm } from './AreaForm'
 import Toast from '@Common/Toast/Toast'
 import { faker } from '@faker-js/faker'

@@ -1,11 +1,11 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Table } from './Table'
 import { faker } from '@faker-js/faker'
 import { Close } from '@Components/Icon'
 import { useState } from 'react'
 import { usePagination } from '@Hooks/usePagination'
 import { Avatar } from '@Components/Avatar/Avatar'
-import { fn } from '@storybook/test'
+import { fn } from 'storybook/test'
 
 interface DataType {
   avatar: string
