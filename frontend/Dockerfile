@@ -21,9 +21,6 @@ FROM nginx:stable-alpine
 # Disable nginx daemon mode
 RUN sed -i '1idaemon off;' /etc/nginx/nginx.conf
 
-# Copy nginx configuration
-# COPY --from=builder /app/docker/nginx.conf /etc/nginx/conf.d/default.conf
-
 # Copy built assets
 COPY --from=builder /app/dist/ /usr/share/nginx/html/
 
