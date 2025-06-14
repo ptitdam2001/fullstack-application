@@ -916,7 +916,7 @@ components:
             type: string
         createdAt:
           nullable: false
-          type: number
+          type: string
           format: date-time
         password:
           nullable: false
@@ -948,12 +948,12 @@ components:
           format: uuid
         role:
           nullable: true
-          type: "array"
+          type: array
           items:
-            type: "string"
+            type: string
         createdAt:
           nullable: false
-          type: "number"
+          type: string
           format: date-time
         avatar:
           type: string
@@ -1052,7 +1052,7 @@ components:
           nullable: true
           format: uuid
         date:
-          type: integer
+          type: string
           nullable: true
           format: date-time
         area:

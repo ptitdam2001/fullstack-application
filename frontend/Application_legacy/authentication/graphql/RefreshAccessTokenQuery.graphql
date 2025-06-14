@@ -1,6 +1,0 @@
-query RefreshAccessToken {
-  refreshAccessToken {
-    status
-    access_token
-  }
-}

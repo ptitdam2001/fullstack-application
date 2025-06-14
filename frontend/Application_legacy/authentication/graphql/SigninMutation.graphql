@@ -1,6 +1,0 @@
-mutation LoginUser($input: LoginInput!) {
-  loginUser(inputs: $input) {
-    status
-    access_token
-  }
-}

@@ -1,5 +1,0 @@
-export * from './SignIn/Signin'
-export * from './Signout'
-export * from './ResetPassword/ResetPassword'
-export * from './MyProfileMenu/MyProfilMenu'
-export * from './MyProfileForm/MyProfileForm'
