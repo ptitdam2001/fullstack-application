@@ -32,9 +32,9 @@ export default defineConfig({
       ...ALIASES,
     },
   },
-  server: {
-    port: 3000,
-  },
+  // server: {
+  //   port: 3000,
+  // },
   test: {
     environment: 'jsdom',
     globals: true,

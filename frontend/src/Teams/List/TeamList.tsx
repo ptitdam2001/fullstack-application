@@ -27,8 +27,8 @@ export const TeamList = () => {
           <Table.TableContainer>
             <Table.TableHeader>
               <Table.TableHead>Name</Table.TableHead>
-              <Table.TableHead size="3rem">Color</Table.TableHead>
-              <Table.TableHead size="10rem">Actions</Table.TableHead>
+              <Table.TableHead className="w-12">Color</Table.TableHead>
+              <Table.TableHead className="w-40">Actions</Table.TableHead>
             </Table.TableHeader>
             <Table.TableBody>
               {teams?.map(team => (
