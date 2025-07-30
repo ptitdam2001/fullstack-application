@@ -20,5 +20,5 @@
       "path": "@commitlint/cz-commitlint"
     }
   },
-  "packageManager": "pnpm@8.6.1+sha1.435b3c83c7de5c455ad80fd63ee7ecf3b67b949b"
+  "packageManager": "pnpm@10.13.1"
 }
