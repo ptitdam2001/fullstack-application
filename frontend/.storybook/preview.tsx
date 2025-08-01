@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { initialize, mswLoader } from 'msw-storybook-addon'
 
 import '../src/index.css'
+import React from 'react'
 
 const queryClient = new QueryClient()
 
@@ -30,7 +31,7 @@ const preview: Preview = {
   // 👈 Add the MSW loader to all stories
   loaders: [mswLoader],
 
-  tags: ['autodocs']
+  tags: ['autodocs'],
 }
 
 export default preview
