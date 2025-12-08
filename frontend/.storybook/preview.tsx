@@ -24,6 +24,9 @@ const preview: Preview = {
         date: /Date$/i,
       },
     },
+    screen: {
+      fullScreen: true,
+    },
   },
 
   decorators: [storyFn => <QueryClientProvider client={queryClient}>{storyFn()}</QueryClientProvider>],
