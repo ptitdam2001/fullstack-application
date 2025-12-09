@@ -6,7 +6,7 @@ type GameListItemProps = {
   game: Game
 }
 
-export const GameListItem = ({ game }: GameListItemProps) => {
+export const GameShortDescription = ({ game }: GameListItemProps) => {
   const {
     teams: [homeTeam, awayTeam],
     date,

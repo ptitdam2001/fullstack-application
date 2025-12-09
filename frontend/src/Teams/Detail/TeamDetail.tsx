@@ -27,10 +27,10 @@ export const TeamDetail = ({ teamId, className }: TeamDetailProps) => {
         </Card>
       )}
 
-      <Card className="flex-grow py-2 gap-1.5">
+      <Card className="grow py-2 gap-1.5 h-72">
         <CardTitle className="text-lg px-2">Calendar</CardTitle>
 
-        <CardContent>
+        <CardContent className="overflow-auto p-2">
           <TeamCalendar teamId={teamId} />
         </CardContent>
       </Card>

@@ -213,7 +213,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Team"
+              $ref: "#/components/schemas/TeamWithoutId"
       responses:
         200:
           description: ""
@@ -343,6 +343,16 @@ paths:
           name: "page"
           schema:
             type: "integer"
+        - in: "query"
+          name: "startDate"
+          schema:
+            type: "string"
+            format: date-time
+        - in: "query"
+          name: "endDate"
+          schema:
+            type: "string"
+            format: date-time
       responses:
         200:
           description: "games of given team"
@@ -977,6 +987,20 @@ components:
         token:
           type: string
           nullable: false
+    TeamWithoutId:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: false
+          minLength: 1
+        color:
+          nullable: true
+          type: string
+          example: "#222abb"
+          format: color
+      required:
+        - name
     Team:
       type: object
       properties:
@@ -1049,7 +1073,6 @@ components:
       properties:
         id:
           type: string
-          nullable: true
           format: uuid
         date:
           type: string
@@ -1059,9 +1082,8 @@ components:
           $ref: "#/components/schemas/Area"
         teams:
           type: "array"
-          oneOf:
-            - minItems: 2
-            - maxItems: 2
+          minItems: 2
+          maxItems: 2
           items:
             $ref: "#/components/schemas/GameTeam"
       required:

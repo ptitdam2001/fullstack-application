@@ -1,9 +1,9 @@
 import { usePagination } from '@Common/hooks/usePagination'
-import { GameListItem } from './GameListItem/GameListItem'
 import { useGetGames } from '@Sdk/games/games'
 import { useCountTeams } from '@Sdk/teams/teams'
 import { TableLoader } from '@Common/Loading'
 import { TablePagination } from '@Common/Table/TablePagination'
+import { GameListRaw } from '@Game/ListRaw/GameListRaw'
 
 export const GameList = () => {
   const { changePage, changeRowsPerPage, ...pagination } = usePagination()
@@ -20,13 +20,7 @@ export const GameList = () => {
         <TableLoader nbCols={1} nbRows={10} />
       ) : (
         <>
-          <ul role="list" className="flex-1 flex flex-col gap-2 overflow-y-scroll px-2">
-            {data?.map(game => (
-              <li key={game.id} role="listitem">
-                <GameListItem game={game} />
-              </li>
-            ))}
-          </ul>
+          <GameListRaw games={data ?? []} />
 
           <TablePagination
             count={count ?? 0}

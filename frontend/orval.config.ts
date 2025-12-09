@@ -1,18 +1,7 @@
 import { faker } from '@faker-js/faker'
 
 export default {
-  'sdk-zod': {
-    output: {
-      client: 'zod',
-      mode: 'tags-split',
-      target: './src/sdk/generated',
-      fileExtension: '.zod.ts',
-    },
-    input: {
-      target: '../backend/openapi.yml',
-    },
-  },
-  'sdk': {
+  sdk: {
     input: {
       target: '../backend/openapi.yml',
     },
@@ -35,25 +24,24 @@ export default {
             mock: {
               arrayMin: 10,
               arrayMax: 25,
-            }
+            },
           },
           getTeam: {
             mock: {
               arrayMin: 10,
               arrayMax: 50,
-            }
-          }
+            },
+          },
         },
         mock: {
           properties: {
             '/name/': () => faker.person.fullName(),
             '/jersey/': () => faker.number.int({ min: 0, max: 99 }),
             '/avatar/': () => faker.helpers.arrayElement([faker.image.personPortrait(), undefined]),
-
           },
           format: {
             color: () => faker.color.rgb(),
-            score: () => faker.number.int({ min: 0, max: 60})
+            score: () => faker.number.int({ min: 0, max: 60 }),
           },
           delay: 500,
           delayFunctionLazyExecute: true,
@@ -74,4 +62,17 @@ export default {
       clean: true,
     },
   },
-};
+  'sdk-zod': {
+    input: {
+      target: '../backend/openapi.yml',
+    },
+    output: {
+      client: 'zod',
+      mode: 'tags-split',
+      target: './src/sdk/generated',
+      fileExtension: '.zod.ts',
+      prettier: true,
+      clean: false,
+    },
+  },
+}

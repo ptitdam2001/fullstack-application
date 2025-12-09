@@ -2,49 +2,82 @@ import { CreateTeamMutationBody } from '@Sdk/team/team'
 import { className as cn } from '@Common/utils/className'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { createTeamBody } from '@Sdk/team/team.zod'
+import { createTeamBody, updateTeamBody } from '@Sdk/team/team.zod'
 import { useTeamForm } from './useTeamForm'
 import Toast from '@Common/Toast/Toast'
 import { ControlledTextInput } from '@Common/Input/TextInput/ControlledTextInput'
 import { ColorInput } from '@Common/Input/ColorInput/ColorInput'
 import { Form } from '@Common/Form/Form'
 import { z } from 'zod'
-import { Team } from '@Sdk/model'
+import { Team, TeamWithoutId } from '@Sdk/model'
 import { Button } from '@/components/ui/button'
 import { Loader2 } from 'lucide-react'
+import { useMemo } from 'react'
 
-const iniatialValues: Team = {
+const initialValues: TeamWithoutId = {
   name: '',
   color: '#000000',
-  id: '',
 }
 
 type TeamFormProps = {
   teamId?: string
-  defaultValues?: CreateTeamMutationBody
+  defaultValues?: CreateTeamMutationBody | Team
   onFinish?: VoidFunction
   className?: string
 }
 
-type FormValue = z.infer<typeof createTeamBody>
-
-export const TeamForm: React.FC<TeamFormProps> = ({ defaultValues = iniatialValues, teamId, onFinish, className }) => {
+export const TeamForm: React.FC<TeamFormProps> = ({ defaultValues, teamId, onFinish, className }) => {
   const toast = Toast.useToast()
 
+  // Use updateTeamBody for updates, createTeamBody for creation
+  const schema = useMemo(() => (teamId ? updateTeamBody : createTeamBody), [teamId])
+  type FormValue = z.infer<typeof schema>
+
+  // Prepare default values based on context
+  const formDefaultValues = useMemo((): FormValue => {
+    if (teamId) {
+      // For update, ensure id is present from teamId
+      // updateTeamBody requires id, so we must provide it
+      if (defaultValues) {
+        // If defaultValues has an id, use it; otherwise use teamId
+        const hasId = 'id' in defaultValues && defaultValues.id
+        const updateValues = {
+          ...defaultValues,
+          id: hasId ? (defaultValues as Team).id : teamId,
+        }
+        return updateValues as unknown as FormValue
+      }
+      // If no defaultValues provided, create minimal object with id
+      const updateValues = {
+        ...initialValues,
+        id: teamId,
+      }
+      return updateValues as unknown as FormValue
+    }
+    // For create, use initialValues without id or provided defaultValues
+    // createTeamBody does not require id, so we remove it if present
+    const values = defaultValues || initialValues
+
+    // Remove id if present for creation
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
+    const { id, ...rest } = values as any
+    return rest as FormValue
+  }, [defaultValues, teamId])
+
   const { control, handleSubmit, formState } = useForm<FormValue>({
-    defaultValues,
-    resolver: zodResolver(createTeamBody),
+    defaultValues: formDefaultValues,
+    resolver: zodResolver(schema),
     mode: 'all',
   })
   const { isPending, submit } = useTeamForm()
 
-  const onSubmit: SubmitHandler<CreateTeamMutationBody> = async data => {
+  const onSubmit: SubmitHandler<FormValue> = async data => {
     try {
-      await submit(data, teamId)
-      toast('Area is well updated')
+      await submit(data as CreateTeamMutationBody, teamId)
+      toast(teamId ? 'Team is well updated' : 'Team is well created')
       onFinish?.()
     } catch {
-      toast('Error during Area update')
+      toast(teamId ? 'Error during Team update' : 'Error during Team creation')
     }
   }
 
@@ -52,7 +85,9 @@ export const TeamForm: React.FC<TeamFormProps> = ({ defaultValues = iniatialValu
     <Form name="teamForm" onSubmit={handleSubmit(onSubmit)} className={cn('h-full', className)}>
       <Controller
         name="name"
-        render={({ field, fieldState }) => <ControlledTextInput {...field} fieldState={fieldState} label="Name" />}
+        render={({ field, fieldState }) => (
+          <ControlledTextInput {...field} fieldState={fieldState} label="Name" testId="team-form.name" />
+        )}
         control={control}
       />
 
