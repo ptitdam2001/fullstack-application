@@ -18,15 +18,12 @@ const ALIASES = {
   '@Providers': path.resolve(__dirname, './src/Providers'),
   '@Sdk': path.resolve(__dirname, './src/sdk/generated'),
   '@Settings': path.resolve(__dirname, './src/Settings'),
-  "@": path.resolve(__dirname, "./src"),
+  '@': path.resolve(__dirname, './src'),
 }
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [
-    tailwindcss(),
-    react(),
-  ],
+  plugins: [tailwindcss(), react()],
   resolve: {
     alias: {
       ...ALIASES,
@@ -42,5 +39,5 @@ export default defineConfig({
     reporters: ['default', 'html', 'json'],
     exclude: ['**/node_modules/**', '**/dist/**', '**/src/sdk/**', '**/src/mocks/**', 'public', '.storybook', 'config'],
     outputFile: './coverage/report.html',
-  }
+  },
 })

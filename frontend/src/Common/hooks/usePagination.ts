@@ -1,4 +1,4 @@
-import { useReducer } from "react"
+import { useReducer } from 'react'
 
 type PaginationState = {
   page: number
@@ -16,5 +16,5 @@ export const usePagination = (defaultValue: PaginationState = { page: 0, rowsPer
     ...pagination,
     changePage: (newPage: number) => dispatchPagination({ page: newPage }),
     changeRowsPerPage: (newValue: number) => dispatchPagination({ rowsPerPage: newValue, page: 0 }),
- }
+  }
 }

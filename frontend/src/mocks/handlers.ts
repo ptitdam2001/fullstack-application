@@ -11,5 +11,5 @@ export const handlers = [
   ...getGamesMock(),
   ...getTeamMock(),
   ...getTeamsMock(),
-  ...getUsersMock()
+  ...getUsersMock(),
 ]

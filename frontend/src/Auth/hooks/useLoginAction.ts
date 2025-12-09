@@ -8,7 +8,7 @@ export const useLoginAction = () => {
 
   const meApi = useMe({ query: { enabled: false } })
 
-  const { mutate, ...others} = useLogin({
+  const { mutate, ...others } = useLogin({
     mutation: {
       onSuccess: async loginData => {
         const { token } = loginData
@@ -27,6 +27,6 @@ export const useLoginAction = () => {
 
   return {
     process: (login: string, password: string) => mutate({ data: { email: login, password } }),
-    ...others
+    ...others,
   }
 }
