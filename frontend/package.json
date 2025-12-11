@@ -14,7 +14,8 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "check:types": "tsc --noEmit",
-    "check:format": "prettier -c ."
+    "check:format": "prettier -c .",
+    "check:lint": "eslint ."
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
