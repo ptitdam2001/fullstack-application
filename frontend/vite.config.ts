@@ -19,6 +19,7 @@ const ALIASES = {
   '@Sdk': path.resolve(__dirname, './src/sdk/generated'),
   '@Settings': path.resolve(__dirname, './src/Settings'),
   '@': path.resolve(__dirname, './src'),
+  '@Config': path.resolve(__dirname, './config'),
 }
 
 // https://vite.dev/config/

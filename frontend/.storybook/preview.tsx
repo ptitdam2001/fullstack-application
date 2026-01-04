@@ -1,11 +1,11 @@
 import type { Preview } from '@storybook/react-vite'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClientProvider } from '@tanstack/react-query'
 import { initialize, mswLoader } from 'msw-storybook-addon'
 
 import '../src/index.css'
 import React from 'react'
-
-const queryClient = new QueryClient()
+import { reactQueryClient } from '../config/reactQueryClient'
+import { ThemeProvider } from '@Theme/Provider/ThemeProvider'
 
 /*
  * Initializes MSW
@@ -29,7 +29,13 @@ const preview: Preview = {
     },
   },
 
-  decorators: [storyFn => <QueryClientProvider client={queryClient}>{storyFn()}</QueryClientProvider>],
+  decorators: [
+    storyFn => (
+      <QueryClientProvider client={reactQueryClient}>
+        <ThemeProvider>{storyFn()}</ThemeProvider>
+      </QueryClientProvider>
+    ),
+  ],
 
   // 👈 Add the MSW loader to all stories
   loaders: [mswLoader],

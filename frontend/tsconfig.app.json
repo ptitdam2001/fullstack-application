@@ -37,6 +37,7 @@
       "@Providers/*": ["./src/Providers/*", "./src/Providers/"],
       "@Settings/*": ["./src/Settings/*", "./src/Settings/"],
       "@Sdk/*": ["./src/sdk/generated/", "./src/sdk/generated/*"],
+      "@Config/*": ["./config/*", "./config/"],
       "@/*": ["./src/*"]
     }
   },

@@ -5,9 +5,11 @@ import { AppRouting } from '@Application/AppRouting'
 
 import { OpenProvider } from '@Providers/OpenProvider'
 import { ThemeProvider } from '@Theme/Provider/ThemeProvider'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import Toast from '@Common/Toast/Toast'
+
+import { reactQueryClient } from '@Config/reactQueryClient'
 
 import './index.css'
 
@@ -23,14 +25,12 @@ async function enableMocking() {
   return worker.start()
 }
 
-const queryClient = new QueryClient()
-
 enableMocking().then(() => {
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <React.Suspense fallback="loading">
         <Toast.Provider>
-          <QueryClientProvider client={queryClient}>
+          <QueryClientProvider client={reactQueryClient}>
             <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-right" />
             <ThemeProvider>
               <AuthProvider.Provider>
