@@ -1,28 +1,27 @@
 import { Address } from '@Common/Address/Address'
+import { ErrorBoundary } from '@Common/ErrorBoundary'
 import { usePagination } from '@Common/hooks/usePagination'
 import { TableLoader } from '@Common/Loading'
 import { Table } from '@Common/Table/Table'
 import { TablePagination } from '@Common/Table/TablePagination'
 import { useCountAllAreas, useGetAreaList } from '@Sdk/area/area'
 import { Area } from '@Sdk/model'
-import React from 'react'
+import React, { Suspense, use } from 'react'
 
 type AeraListProps = {
   actions?: (address: Area) => React.ReactNode
 }
 
-export const AreaList = ({ actions }: AeraListProps) => {
+const BaseAreaList = ({ actions }: AeraListProps) => {
   const { changePage, changeRowsPerPage, ...pagination } = usePagination()
 
-  const { data: addresses = [], isLoading } = useGetAreaList({
-    page: pagination.page,
-    limit: pagination.rowsPerPage,
-  })
-  const { data: count, isLoading: isCountLoading } = useCountAllAreas()
-
-  if (isLoading || isCountLoading) {
-    return <TableLoader nbCols={2} nbRows={10} />
-  }
+  const addresses = use(
+    useGetAreaList({
+      page: pagination.page,
+      limit: pagination.rowsPerPage,
+    }).promise
+  )
+  const count = use(useCountAllAreas().promise)
 
   return (
     <section className="w-full h-full flex flex-col gap-0.5">
@@ -56,3 +55,11 @@ export const AreaList = ({ actions }: AeraListProps) => {
     </section>
   )
 }
+
+export const AreaList = (props: AeraListProps) => (
+  <ErrorBoundary>
+    <Suspense fallback={<TableLoader nbCols={2} nbRows={10} />}>
+      <BaseAreaList {...props} />
+    </Suspense>
+  </ErrorBoundary>
+)

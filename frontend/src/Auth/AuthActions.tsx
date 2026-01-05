@@ -66,17 +66,4 @@ export const AuthActions: React.FC<AuthActionsProps> = ({ size = 'medium' }) => 
       </DropdownMenuContent>
     </DropdownMenu>
   ) : null
-
-  // return token ? (
-  //   <Button
-  //     variant="outlined"
-  //     startIcon={<AccountCircleIcon />}
-  //     component={Link}
-  //     to={LOGOUT_PAGE}
-  //     color={color}
-  //     size={size}
-  //   >
-  //     Logout
-  //   </Button>
-  // ) : null
 }

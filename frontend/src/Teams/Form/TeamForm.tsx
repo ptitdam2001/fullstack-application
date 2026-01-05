@@ -26,7 +26,7 @@ type TeamFormProps = {
   className?: string
 }
 
-export const TeamForm: React.FC<TeamFormProps> = ({ defaultValues, teamId, onFinish, className }) => {
+export const TeamForm = ({ defaultValues, teamId, onFinish, className }: TeamFormProps) => {
   const toast = Toast.useToast()
 
   // Use updateTeamBody for updates, createTeamBody for creation

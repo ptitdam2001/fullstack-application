@@ -4,23 +4,26 @@ import { useCountTeams } from '@Sdk/teams/teams'
 import { TableLoader } from '@Common/Loading'
 import { TablePagination } from '@Common/Table/TablePagination'
 import { GameListRaw } from '@Game/ListRaw/GameListRaw'
+import { Suspense, use } from 'react'
+import { ErrorBoundary } from '@Common/ErrorBoundary'
 
 export const GameList = () => {
   const { changePage, changeRowsPerPage, ...pagination } = usePagination()
 
-  const { data, isLoading } = useGetGames({
-    page: pagination.page,
-    limit: pagination.rowsPerPage,
-  })
-  const { data: count, isLoading: isCountLoading } = useCountTeams()
+  const games = use(
+    useGetGames({
+      page: pagination.page,
+      limit: pagination.rowsPerPage,
+    }).promise
+  )
+
+  const count = use(useCountTeams().promise)
 
   return (
     <section data-testid="GameList" className="flex flex-col h-full">
-      {isLoading && isCountLoading ? (
-        <TableLoader nbCols={1} nbRows={10} />
-      ) : (
-        <>
-          <GameListRaw games={data ?? []} />
+      <ErrorBoundary>
+        <Suspense fallback={<TableLoader nbCols={1} nbRows={10} />}>
+          <GameListRaw games={games ?? []} />
 
           <TablePagination
             count={count ?? 0}
@@ -30,8 +33,8 @@ export const GameList = () => {
             onRowsPerPageChange={event => changeRowsPerPage(parseInt(event.target.value, 10))}
             className="w-full"
           />
-        </>
-      )}
+        </Suspense>
+      </ErrorBoundary>
     </section>
   )
 }

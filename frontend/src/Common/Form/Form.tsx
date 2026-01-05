@@ -7,7 +7,7 @@ type FormProps = {
   devToolsProps?: DevtoolUIProps
 } & React.HTMLProps<HTMLFormElement>
 
-export const Form: React.FC<FormProps> = ({ enableDevTools, devToolsProps, children, ...props }) => (
+export const Form = ({ enableDevTools, devToolsProps, children, ...props }: FormProps) => (
   <form {...props}>
     {children}
     {enableDevTools && <DevTool {...devToolsProps} />}

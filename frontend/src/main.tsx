@@ -2,6 +2,7 @@ import React, { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { AuthProvider } from '@Auth/AuthProvider'
 import { AppRouting } from '@Application/AppRouting'
+import { PageLoader } from '@Common/Loading'
 
 import { OpenProvider } from '@Providers/OpenProvider'
 import { ThemeProvider } from '@Theme/Provider/ThemeProvider'
@@ -28,7 +29,7 @@ async function enableMocking() {
 enableMocking().then(() => {
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
-      <React.Suspense fallback="loading">
+      <React.Suspense fallback={<PageLoader />}>
         <Toast.Provider>
           <QueryClientProvider client={reactQueryClient}>
             <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-right" />
