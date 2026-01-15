@@ -6,6 +6,7 @@ export default {
       target: '../backend/openapi.yml',
     },
     output: {
+      httpClient: 'axios',
       client: 'react-query',
       target: './src/sdk/generated/sdk.ts',
       schemas: './src/sdk/generated/model',

@@ -1,7 +1,7 @@
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { className as cn } from '@Common/utils/className'
-import { createAreaBody } from '@Sdk/area/area.zod'
+import { CreateAreaBody } from '@Sdk/area/area.zod'
 import { CreateAreaMutationBody } from '@Sdk/area/area'
 import { useAreaForm } from './useAreaForm'
 import Toast from '@Common/Toast/Toast'
@@ -21,7 +21,7 @@ export const AreaForm = ({ defaultValues, areaId, onFinish, className }: AreaFor
   const toast = Toast.useToast()
   const { control, handleSubmit, formState } = useForm<CreateAreaMutationBody>({
     defaultValues,
-    resolver: zodResolver(createAreaBody),
+    resolver: zodResolver(CreateAreaBody),
     mode: 'all',
   })
   const { isPending, submit } = useAreaForm()

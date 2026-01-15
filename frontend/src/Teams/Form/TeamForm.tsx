@@ -2,7 +2,7 @@ import { CreateTeamMutationBody } from '@Sdk/team/team'
 import { className as cn } from '@Common/utils/className'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { createTeamBody, updateTeamBody } from '@Sdk/team/team.zod'
+import { CreateTeamBody, UpdateTeamBody } from '@Sdk/team/team.zod'
 import { useTeamForm } from './useTeamForm'
 import Toast from '@Common/Toast/Toast'
 import { ControlledTextInput } from '@Common/Input/TextInput/ControlledTextInput'
@@ -30,7 +30,7 @@ export const TeamForm = ({ defaultValues, teamId, onFinish, className }: TeamFor
   const toast = Toast.useToast()
 
   // Use updateTeamBody for updates, createTeamBody for creation
-  const schema = useMemo(() => (teamId ? updateTeamBody : createTeamBody), [teamId])
+  const schema = useMemo(() => (teamId ? UpdateTeamBody : CreateTeamBody), [teamId])
   type FormValue = z.infer<typeof schema>
 
   // Prepare default values based on context

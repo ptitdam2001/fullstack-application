@@ -1,7 +1,7 @@
 import Toast from '@Common/Toast/Toast'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForgotPassword } from '@Sdk/authentication/authentication'
-import { forgotPasswordBody } from '@Sdk/authentication/authentication.zod'
+import { ForgotPasswordBody } from '@Sdk/authentication/authentication.zod'
 import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { className as cn } from '@Common/utils/className'
@@ -10,7 +10,7 @@ import { Form } from '@Common/Form/Form'
 import { Button } from '@/components/ui/button'
 import { Loader2 } from 'lucide-react'
 
-type FormValue = z.infer<typeof forgotPasswordBody>
+type FormValue = z.infer<typeof ForgotPasswordBody>
 
 type ForgottenPasswordFormProps = {
   onFinish?: () => void
@@ -22,7 +22,7 @@ export const ForgottenPasswordForm: React.FC<ForgottenPasswordFormProps> = ({ on
   const toast = Toast.useToast()
 
   const { control, handleSubmit, formState } = useForm({
-    resolver: zodResolver(forgotPasswordBody),
+    resolver: zodResolver(ForgotPasswordBody),
     mode: 'all',
   })
 
