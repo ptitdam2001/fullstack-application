@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button'
 import { Table } from '@Common/Table/Table'
 import { Team } from '@Sdk/model'
-import { Eye, Palette, Pencil, Users } from 'lucide-react'
+import { Eye, Pencil, Users, Volleyball } from 'lucide-react'
 import { Link } from 'react-router'
 
 type TeamTableProps = {
@@ -20,7 +20,7 @@ export const TeamTable = ({ teams }: TeamTableProps) => {
           <Table.TableRow key={team.id}>
             <Table.TableCell>{team.name}</Table.TableCell>
             <Table.TableCell>
-              <Palette style={{ color: team.color ?? 'inherit', width: '2rem', height: '2rem' }} />
+              <Volleyball style={{ color: team.color ?? 'inherit', width: '2rem', height: '2rem' }} />
             </Table.TableCell>
             <Table.TableCell>
               <Button variant="outline" size="icon" aria-label="More" color="primary" asChild>
