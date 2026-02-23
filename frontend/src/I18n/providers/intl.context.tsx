@@ -4,7 +4,7 @@ import { useLocalStorage } from '@Common/hooks/useLocalstorage'
 import { DEFAULT_LOCALE, LOCALE_STORAGE_KEY, SupportedLocale } from '../intl.config'
 import { IntlProvider as ReactIntlProvider } from 'react-intl'
 import { getDictionary } from './intl.helper'
-import { Suspense, use } from 'react'
+import { use, useMemo } from 'react'
 import { reactQueryClient } from '@Config/reactQueryClient'
 
 type IntlContextType = {
@@ -47,19 +47,21 @@ type IntlProviderProps = {
 const IntlProvider = ({ children }: IntlProviderProps) => {
   const [lsLocale] = useLocalStorage(LOCALE_STORAGE_KEY, DEFAULT_LOCALE)
 
-  const dictionaryPromise = reactQueryClient.ensureQueryData({
-    queryKey: ['i18n', 'messages', lsLocale],
-    queryFn: () => getDictionary(lsLocale),
-  })
+  const dictionaryPromise = useMemo(
+    () =>
+      reactQueryClient.ensureQueryData({
+        queryKey: ['i18n', 'messages', lsLocale],
+        queryFn: () => getDictionary(lsLocale),
+      }),
+    [lsLocale]
+  )
 
   const currentDictionary = use(dictionaryPromise)
 
   return (
-    <Suspense fallback={<div>Loading Locale Messages...</div>}>
-      <BaseIntlContext.Provider value={{ locale: lsLocale, localeMessages: currentDictionary }}>
-        <IntlStateProvider>{children}</IntlStateProvider>
-      </BaseIntlContext.Provider>
-    </Suspense>
+    <BaseIntlContext.Provider value={{ locale: lsLocale, localeMessages: currentDictionary }}>
+      <IntlStateProvider>{children}</IntlStateProvider>
+    </BaseIntlContext.Provider>
   )
 }
 
