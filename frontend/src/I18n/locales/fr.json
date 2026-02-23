@@ -1,0 +1,62 @@
+{
+  "common": {
+    "welcome": "Bienvenue",
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "create": "Créer",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "close": "Fermer",
+    "confirm": "Confirmer",
+    "yes": "Oui",
+    "no": "Non"
+  },
+  "auth": {
+    "signin": "Se connecter",
+    "signout": "Se déconnecter",
+    "login": "Connexion",
+    "password": "Mot de passe",
+    "email": "Email",
+    "forgottenPassword": "Mot de passe oublié",
+    "resetPassword": "Réinitialiser le mot de passe"
+  },
+  "navigation": {
+    "dashboard": "Tableau de bord",
+    "profile": "Profil",
+    "teams": "Équipes",
+    "players": "Joueurs",
+    "games": "Matchs",
+    "calendar": "Calendrier",
+    "settings": "Paramètres"
+  },
+  "teams": {
+    "title": "Équipes",
+    "createTeam": "Créer une équipe",
+    "editTeam": "Modifier l'équipe",
+    "teamList": "Liste des équipes",
+    "teamDetails": "Détails de l'équipe",
+    "teamPlayers": "Joueurs de l'équipe"
+  },
+  "players": {
+    "title": "Joueurs",
+    "playerList": "Liste des joueurs",
+    "playerDetails": "Détails du joueur"
+  },
+  "games": {
+    "title": "Matchs",
+    "gameList": "Liste des matchs",
+    "gameDetails": "Détails du match"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "areas": "Zones",
+    "editArea": "Modifier la zone",
+    "createArea": "Créer une zone",
+    "account": "Compte"
+  }
+}

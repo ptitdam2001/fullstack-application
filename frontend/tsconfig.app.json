@@ -38,6 +38,7 @@
       "@Settings/*": ["./src/Settings/*", "./src/Settings/"],
       "@Sdk/*": ["./src/sdk/generated/", "./src/sdk/generated/*"],
       "@Config/*": ["./config/*", "./config/"],
+      "@I18n/*": ["src/I18n/*", "src/I18n"],
       "@/*": ["./src/*"]
     }
   },

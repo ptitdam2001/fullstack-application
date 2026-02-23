@@ -4,6 +4,7 @@ import { AuthActions } from '@Auth/AuthActions'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import { Separator } from '@/components/ui/separator'
 import { Title } from './Title'
+import { LanguageSwitcher } from '@I18n/'
 
 type TopBarProps = {
   title: ReactNode
@@ -12,13 +13,14 @@ type TopBarProps = {
 }
 
 export const TopBar: FC<TopBarProps> = ({ title, children, isAnonymous }) => (
-  <header className="flex h-[5vh] shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+  <header className="flex h-[5vh] shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
     {!isAnonymous && <SidebarTrigger />}
     <Separator orientation="vertical" className="mr-2 h-4" />
 
-    <div className="flex-grow-1">{children}</div>
+    <div className="grow">{children}</div>
     {title && <Title className="mx-2">{title}</Title>}
     <div className="flex pr-4 gap-2 items-center">
+      <LanguageSwitcher />
       <ToggleThemeMode />
       {!isAnonymous && <AuthActions />}
     </div>

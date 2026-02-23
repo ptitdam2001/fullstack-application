@@ -1,0 +1,62 @@
+{
+  "common": {
+    "welcome": "Welcome",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "search": "Search",
+    "filter": "Filter",
+    "close": "Close",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "auth": {
+    "signin": "Sign In",
+    "signout": "Sign Out",
+    "login": "Login",
+    "password": "Password",
+    "email": "Email",
+    "forgottenPassword": "Forgotten Password",
+    "resetPassword": "Reset Password"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "profile": "Profile",
+    "teams": "Teams",
+    "players": "Players",
+    "games": "Games",
+    "calendar": "Calendar",
+    "settings": "Settings"
+  },
+  "teams": {
+    "title": "Teams",
+    "createTeam": "Create Team",
+    "editTeam": "Edit Team",
+    "teamList": "Team List",
+    "teamDetails": "Team Details",
+    "teamPlayers": "Team Players"
+  },
+  "players": {
+    "title": "Players",
+    "playerList": "Player List",
+    "playerDetails": "Player Details"
+  },
+  "games": {
+    "title": "Games",
+    "gameList": "Game List",
+    "gameDetails": "Game Details"
+  },
+  "settings": {
+    "title": "Settings",
+    "areas": "Areas",
+    "editArea": "Edit Area",
+    "createArea": "Create Area",
+    "account": "Account"
+  }
+}

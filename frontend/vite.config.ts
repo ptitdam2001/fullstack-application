@@ -20,6 +20,7 @@ const ALIASES = {
   '@Settings': path.resolve(__dirname, './src/Settings'),
   '@': path.resolve(__dirname, './src'),
   '@Config': path.resolve(__dirname, './config'),
+  '@I18n': path.resolve(__dirname, './src/I18n'),
 }
 
 // https://vite.dev/config/

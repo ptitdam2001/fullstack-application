@@ -14,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { FormattedMessage } from '@/I18n/translation'
 
 type AuthActionsProps = {
   size?: 'small' | 'medium' | 'large'
@@ -23,11 +24,20 @@ export const AuthActions: React.FC<AuthActionsProps> = ({ size = 'medium' }) => 
   const { token, user } = AuthProvider.useAuthValue()
   const navigate = useNavigate()
 
-  return token && user ? (
+  if (!token || !user) {
+    return null
+  }
+
+  return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Avatar
-          className={cn('rounded-lg', size === 'small' ? 'h-6 w-6' : size === 'medium' ? 'h-8 w-8' : 'h-10 w-10')}
+          className={cn(
+            'rounded-lg',
+            'cursor-pointer',
+            size === 'small' ? 'h-6 w-6' : size === 'medium' ? 'h-8 w-8' : 'h-10 w-10'
+          )}
+          role="button"
         >
           <AvatarImage src={user?.avatar} alt={user.firstname} />
           <AvatarFallback className="rounded-lg">{`${user.firstname?.at(0)}${user.lastname?.at(0)}`}</AvatarFallback>
@@ -55,15 +65,15 @@ export const AuthActions: React.FC<AuthActionsProps> = ({ size = 'medium' }) => 
         <DropdownMenuGroup>
           <DropdownMenuItem onClick={() => navigate('/app/my-profile')}>
             <BadgeCheck />
-            Account
+            <FormattedMessage id="settings.account" />
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => navigate(LOGOUT_PAGE)}>
           <LogOut />
-          Log out
+          <FormattedMessage id="auth.signout" />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  ) : null
+  )
 }
