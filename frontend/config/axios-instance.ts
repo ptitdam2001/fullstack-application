@@ -3,7 +3,7 @@
  *
  * @see https://orval.dev/guides/custom-axios
  */
-import Axios, { AxiosError, AxiosRequestConfig } from 'axios'
+import Axios, { AxiosRequestConfig } from 'axios'
 
 // const getBaseUrl = () => import.meta.env.BACKEND_BASEURL
 const getBaseUrl = () => 'http://localhost:3000/'
@@ -37,8 +37,3 @@ export const customAxiosInstance = <T>(config: AxiosRequestConfig, options?: Axi
     cancelToken: source.token,
   }).then(({ data }) => data)
 }
-
-// In some case with react-query and swr you want to be able to override the return error type so you can also do it here like this
-export type ErrorType<Error> = AxiosError<Error>
-
-export type BodyType<BodyData> = BodyData

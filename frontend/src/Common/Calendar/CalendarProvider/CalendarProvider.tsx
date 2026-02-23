@@ -13,7 +13,7 @@ type CalendarConfig = {
   firstDayOfMonth: number
 }
 
-export const DEFAULT_CALENDAR_CONFIG: CalendarConfig = {
+const DEFAULT_CALENDAR_CONFIG: CalendarConfig = {
   currentMonth: dayjs().month(),
   currentYear: dayjs().year(),
   daysInMonth: dayjs().daysInMonth(),
