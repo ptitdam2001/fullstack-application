@@ -850,12 +850,10 @@ components:
         address:
           type: string
           nullable: false
-          format: streetName
           minLength: 1
         city:
           type: string
           nullable: false
-          format: city
           minLength: 1
         longitude:
           type: number
@@ -910,7 +908,6 @@ components:
         firstname:
           nullable: false
           type: string
-          format: firstName
           minLength: 1
         email:
           nullable: false
@@ -942,12 +939,10 @@ components:
       properties:
         lastname:
           nullable: false
-          type: "string"
-          format: lastName
+          type: string
         firstname:
           nullable: false
           type: "string"
-          format: firstName
         email:
           nullable: false
           type: "string"
@@ -1016,9 +1011,15 @@ components:
           type: string
           example: "#222abb"
           format: color
+        areas:
+          type: array
+          minItems: 1
+          items:
+            $ref: "#/components/schemas/Area"
       required:
         - id
         - name
+        - areas
     Player:
       type: object
       properties:
@@ -1038,12 +1039,10 @@ components:
         lastname:
           nullable: false
           type: string
-          format: lastName
           minLength: 1
         firstname:
           nullable: false
           type: string
-          format: firstName
           minLength: 1
         avatar:
           type: string

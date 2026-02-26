@@ -1,9 +1,8 @@
-import { Player, PrismaClient } from "@prisma/client";
+import { PrismaClient, type Player } from "@prisma/client";
 import { Request, Response } from "express";
 import { Context } from "openapi-backend";
 import { ErrorOutput } from "./types";
-
-const prisma = new PrismaClient({});
+import { prisma } from "../utils/prismaClient";
 
 type GetUserParams = { userId: string };
 type CreatePlayerBody = Partial<Omit<Player, "id" | "userId">>;

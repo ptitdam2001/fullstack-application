@@ -1,11 +1,10 @@
 import cors from 'cors';
 import express, { Request, Response } from "express";
 import dotenv from "dotenv";
-import OpenAPIBackend from 'openapi-backend';
 import morgan from 'morgan';
-import jwt from 'jsonwebtoken';
+import jwt, { Secret } from 'jsonwebtoken';
 
-import type { Request as RequestOpenApi } from 'openapi-backend';
+import { OpenAPIBackend, type Request as RequestOpenApi } from 'openapi-backend';
 import helmet from "helmet";
 
 import * as userHandlers from './controllers/users'
@@ -16,6 +15,7 @@ import * as userTeamHandler from './controllers/userTeam'
 import * as playerHandler from './controllers/player'
 
 import { logger } from './config/logger';
+import addFormats from 'ajv-formats';
 
 // configures dotenv to work in your application
 dotenv.config();
@@ -35,6 +35,16 @@ app.use(cors({
 
 const api = new OpenAPIBackend({
   definition: '../openapi.yml',
+  customizeAjv: (ajv: any) => {
+    // add standard formats (date-time, email, hostname, ipv4, etc.)
+    addFormats(ajv);
+
+    // custom formats (øsee https://ajv.js.org/guide/formats.html for more details)
+    ajv.addFormat('color', /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/);
+    ajv.addFormat('score', {type: 'number', minimum: 0, maximum: 100});
+
+    return ajv;
+  },
   handlers: {
     ...userHandlers,
     ...loginHandlers,
@@ -48,6 +58,7 @@ const api = new OpenAPIBackend({
     notImplemented: (_, _1, res: Response) => res.status(404).json({ status: 501, err: "No handler registered for operation" }),
     unauthorizedHandler: (_, _0, res: Response) => res.status(401).json({ status: 401, err: "Please authenticate first" })
   },
+  
 });
 
 api.registerSecurityHandler("jwtAuth", (ctx) => {
@@ -56,7 +67,7 @@ api.registerSecurityHandler("jwtAuth", (ctx) => {
     throw new Error("Missing authorization header");
   }
   const token = authHeader.replace("Bearer ", '');
-  return jwt.verify(token, process.env.JWT_SECRET);
+  return jwt.verify(token, process.env.JWT_SECRET as Secret);
 });
 
 api.init();

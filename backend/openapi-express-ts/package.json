@@ -2,6 +2,7 @@
   "name": "openapi-express-ts",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "check:type": "tsc --noEmit",
     "generate:prisma": "prisma generate",
@@ -16,31 +17,28 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@prisma/client": "^5.21.1",
+    "@prisma/client": "6.19",
     "bcrypt": "^5.1.1",
-    "chalk": "^5.3.0",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
+    "chalk": "^5.6.2",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
     "express": "^4.21.1",
-    "helmet": "^8.0.0",
-    "jsonwebtoken": "^9.0.2",
-    "morgan": "^1.10.0",
-    "openapi-backend": "^5.11.0",
-    "prisma": "^5.21.1",
-    "winston": "^3.15.0"
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.3",
+    "morgan": "^1.10.1",
+    "openapi-backend": "^5.16.1",
+    "prisma": "^6.19.2",
+    "winston": "^3.19.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
-    "@types/chalk": "^0.4.31",
-    "@types/cors": "^2.8.17",
-    "@types/dotenv": "^6.1.1",
-    "@types/express": "^5.0.0",
-    "@types/helmet": "^0.0.48",
-    "@types/jsonwebtoken": "^9.0.7",
-    "@types/morgan": "^1.9.9",
-    "@types/node": "^22.8.2",
-    "esbuild": "0.24.0",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/morgan": "^1.9.10",
+    "@types/node": "^25.3.1",
+    "esbuild": "0.27.3",
     "tsx": "^4.19.1",
-    "typescript": "^5.6.3"
+    "typescript": "^5.9.3"
   }
 }
