@@ -2,7 +2,7 @@ import cors from 'cors';
 import express, { Request, Response } from "express";
 import dotenv from "dotenv";
 import morgan from 'morgan';
-import jwt, { Secret } from 'jsonwebtoken';
+import jwt, { Secret, TokenExpiredError } from 'jsonwebtoken';
 
 import { OpenAPIBackend, type Request as RequestOpenApi } from 'openapi-backend';
 import helmet from "helmet";
@@ -13,6 +13,7 @@ import * as meHandlers from './controllers/me'
 import * as teamHandlers from './controllers/teams'
 import * as userTeamHandler from './controllers/userTeam'
 import * as playerHandler from './controllers/player'
+import * as logoutHandler from './controllers/logout'
 
 import { logger } from './config/logger';
 import addFormats from 'ajv-formats';
@@ -52,6 +53,7 @@ const api = new OpenAPIBackend({
     ...teamHandlers,
     ...userTeamHandler,
     ...playerHandler,
+    ...logoutHandler,
     validationFail: (c, _: Request, res: Response) => res.status(400).json({ err: c.validation.errors }),
     notFound: (c, _: Request, res: Response) => res.status(404).json({ err: 'not found', operation: c.operation?.operationId, status: 404, path: c.operation?.path, method: c.operation?.method }),
     methodNotAllowed: (_, _1, res: Response) => res.status(405).json({ status: 405, err: "Method not allowed" }),
@@ -67,7 +69,14 @@ api.registerSecurityHandler("jwtAuth", (ctx) => {
     throw new Error("Missing authorization header");
   }
   const token = authHeader.replace("Bearer ", '');
-  return jwt.verify(token, process.env.JWT_SECRET as Secret);
+  try {
+    return jwt.verify(token, process.env.JWT_SECRET as Secret);
+  } catch (err) {
+    if (err instanceof TokenExpiredError) {
+      throw new Error("Token has expired");
+    }
+    throw err;
+  }
 });
 
 api.init();
