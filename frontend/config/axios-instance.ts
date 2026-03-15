@@ -6,7 +6,7 @@
 import Axios, { AxiosRequestConfig } from 'axios'
 
 // const getBaseUrl = () => import.meta.env.BACKEND_BASEURL
-const getBaseUrl = () => 'http://localhost:3000/'
+const getBaseUrl = () => 'http://localhost:4000/'
 
 const getAxiosConfig = (): AxiosRequestConfig => {
   const localstorageContent = localStorage.getItem('user')
@@ -29,11 +29,18 @@ const AXIOS_INSTANCE = Axios.create()
  */
 export const customAxiosInstance = <T>(config: AxiosRequestConfig, options?: AxiosRequestConfig): Promise<T> => {
   const source = Axios.CancelToken.source()
+  const baseRequestConfig = getAxiosConfig()
 
-  return AXIOS_INSTANCE({
-    ...getAxiosConfig(),
+  const requestConfig = {
+    ...baseRequestConfig,
     ...config,
     ...options,
+    headers: {
+      ...baseRequestConfig.headers,
+      ...config.headers,
+    },
     cancelToken: source.token,
-  }).then(({ data }) => data)
+  }
+
+  return AXIOS_INSTANCE(requestConfig).then(({ data }) => data)
 }
