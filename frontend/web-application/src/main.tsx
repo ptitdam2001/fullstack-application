@@ -16,6 +16,8 @@ import { reactQueryClient } from '@Config/reactQueryClient'
 import './index.css'
 
 async function enableMocking() {
+  return
+
   if (import.meta.env.PROD) {
     return
   }

@@ -42,8 +42,8 @@ export const TeamEditPage = () => {
           className={cn(
             { dark: currentTheme && ['dark', 'system'].includes(currentTheme) },
             'fixed left-1/2 top-1/2 flex flex-col',
-            'max-h-[85vh] w-[90vw] max-w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-md',
-            'dark:bg-gray-600 p-[25px] shadow-(--shadow-6) focus:outline-none data-[state=open]:animate-contentShow'
+            'max-h-[85vh] w-[90vw] max-w-125 -translate-x-1/2 -translate-y-1/2 rounded-md',
+            'dark:bg-gray-600 p-6.25 shadow-(--shadow-6) focus:outline-none data-[state=open]:animate-contentShow'
           )}
         >
           <DialogHeader>
@@ -58,8 +58,8 @@ export const TeamEditPage = () => {
               <TeamForm
                 defaultValues={currentTeam}
                 teamId={teamId}
-                onFinish={() => {
-                  queryClient.invalidateQueries({ queryKey: [getGetTeamsQueryKey()] })
+                onFinish={async () => {
+                  await queryClient.invalidateQueries({ queryKey: [getGetTeamsQueryKey()] })
                   navigate(-1)
                 }}
               />

@@ -6,7 +6,7 @@ export const useTeamForm = () => {
 
   return {
     submit: (data: CreateTeamMutationBody | UpdateTeamMutationBody, teamId?: string) =>
-      teamId ? updateFunc({ id: teamId, data: { ...data, id: teamId } }) : createFunc({ data }),
+      teamId ? updateFunc({ id: teamId, data: { ...data as UpdateTeamMutationBody, id: teamId } }) : createFunc({ data: data as CreateTeamMutationBody }),
     isPending: isPendingCreate || isPendingUpdate,
     isSuccess: isSuccessCreate || isSuccessUpdate,
   }

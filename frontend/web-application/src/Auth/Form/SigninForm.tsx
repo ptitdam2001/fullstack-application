@@ -7,11 +7,11 @@ import { className as cn } from '@Common/utils/className'
 import { Form } from '@Common/Form/Form'
 import { ControlledTextInput } from '@Common/Input/TextInput/ControlledTextInput'
 import { z } from 'zod'
-import { loginBody } from '@Sdk/authentication/authentication.zod'
+import { LoginBody } from '@Sdk/authentication/authentication.zod'
 import { Button } from '@/components/ui/button'
 import { Loader2 } from 'lucide-react'
 
-type FormValue = z.infer<typeof loginBody>
+type FormValue = z.infer<typeof LoginBody>
 
 type SigninFormProps = {
   className?: string
