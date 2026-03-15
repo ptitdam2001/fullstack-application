@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { Context } from "openapi-backend";
 import type { ErrorOutput } from "./types";
 
+/** Ends the current user session. */
 export const logout = async (_: Context, __: Request, res: Response<ErrorOutput | void>) => {
   try {
     return res.status(200).send();

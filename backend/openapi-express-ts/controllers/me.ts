@@ -1,22 +1,18 @@
-import { PrismaClient } from "@prisma/client";
-import type { Response, Request, NextFunction } from "express";
-import { Context } from "openapi-backend";
+import type { Response, Request } from "express";
+import type { Context } from "openapi-backend";
+import { prisma } from "../utils/prismaClient";
 
-const prisma = new PrismaClient({
-    omit: {
-        user: {
-            password: true,
-        },
-    },
-});
-
-export const me = async (ctx: Context, _: Request, res: Response, next: NextFunction) => {
+/** Returns the profile of the currently authenticated user. */
+export const me = async (ctx: Context, _: Request, res: Response) => {
     const userId = ctx.security.jwtAuth.data;
-    const existingUser = await prisma.user.findUnique({ where: { id: userId } });
+    const existingUser = await prisma.user.findUnique({
+        where: { id: userId },
+        omit: { password: true },
+    });
 
     if (!existingUser) {
-        return next(Error("User not found"));
+        return res.status(404).json({ message: "User not found", status: 404 });
     }
 
-    res.status(200).json(existingUser)
+    return res.status(200).json(existingUser);
 }

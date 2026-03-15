@@ -2,7 +2,9 @@ import cors from 'cors';
 import express, { Request, Response } from "express";
 import dotenv from "dotenv";
 import morgan from 'morgan';
-import jwt, { Secret, TokenExpiredError } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
+const { TokenExpiredError } = jwt;
+type Secret = jwt.Secret;
 
 import { OpenAPIBackend, type Request as RequestOpenApi } from 'openapi-backend';
 import helmet from "helmet";

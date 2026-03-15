@@ -6,11 +6,14 @@ import bcrypt from "bcrypt";
 import { logger } from "../config/logger";
 import { prisma } from "../utils/prismaClient";
 
+type ForgotPasswordInput = { email: string };
+
 type SigninInput = {
     email: string
     password: string
   }
 
+/** Authenticates a user with email and password, returns a signed JWT token. */
 export const login = async (_: Context, req: Request<SigninInput>, res: Response<SigninOuput | ErrorOutput>) => {
   const { email, password } = req.body;
 
@@ -39,6 +42,27 @@ export const login = async (_: Context, req: Request<SigninInput>, res: Response
       email: existingUser.email,
       token,
     });
+  } catch (err) {
+    logger.error(err);
+    return res.status(500).json({ message: "Error! Something went wrong.", status: 500 });
+  }
+};
+
+/** Initiates a password reset flow for the given email address. */
+export const forgotPassword = async (_: Context, req: Request<ForgotPasswordInput>, res: Response<ErrorOutput | void>) => {
+  try {
+    const { email } = req.body;
+    const user = await prisma.user.findUnique({ where: { email } });
+
+    // On répond 200 même si l'email n'existe pas (sécurité : ne pas divulguer les comptes)
+    if (!user) {
+      return res.status(200).send();
+    }
+
+    // TODO: envoyer un email de réinitialisation de mot de passe
+    logger.info("Password reset requested for %s", email);
+
+    return res.status(200).send();
   } catch (err) {
     logger.error(err);
     return res.status(500).json({ message: "Error! Something went wrong.", status: 500 });
