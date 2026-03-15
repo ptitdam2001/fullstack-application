@@ -7,7 +7,7 @@
     "check:type": "tsc --noEmit",
     "generate:prisma": "prisma generate",
     "format:prisma": "prisma format",
-    "build": "esbuild index.ts --platform=node --bundle --outfile=./dist/index.js",
+    "build": "esbuild index.ts --platform=node --format=esm --bundle --packages=external --outfile=./dist/index.js",
     "start:dev": "tsx watch index.ts",
     "start:prod": "node ./dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -18,6 +18,7 @@
   "description": "",
   "dependencies": {
     "@prisma/client": "6.19",
+    "ajv-formats": "^2.1.1",
     "bcrypt": "^5.1.1",
     "chalk": "^5.6.2",
     "cors": "^2.8.6",
@@ -29,6 +30,9 @@
     "openapi-backend": "^5.16.1",
     "prisma": "^6.19.2",
     "winston": "^3.19.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["bcrypt", "@prisma/client", "@prisma/engines", "esbuild", "prisma"]
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
