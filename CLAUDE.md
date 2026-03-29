@@ -27,17 +27,21 @@ pnpm generate:prisma # Regenerate Prisma client after schema changes
 ```
 
 ### Frontend (`frontend/`)
+
+> **Important**: The `frontend/` directory is the pnpm workspace root but has no `package.json`. Always run scripts using `pnpm --filter application-material <script>` from `frontend/`, or run them directly from `frontend/web-application/`. Never run `pnpm install` from `frontend/web-application/` — it will fail to resolve workspace packages like `@repo/design-system`.
+
 ```bash
-pnpm dev             # Vite dev server (MSW mocks enabled in dev)
-pnpm build           # tsc + vite build
-pnpm test            # Vitest (jsdom environment)
-pnpm test:ui         # Vitest with UI and coverage
-pnpm lint            # ESLint
-pnpm check:types     # TypeScript check (no emit)
-pnpm check:format    # Prettier check
-pnpm check:dead-code # Knip dead code analysis
-pnpm gen:sdk         # Regenerate SDK from openapi.yml via orval
-pnpm storybook       # Storybook dev server on port 6006
+# Run from frontend/ using filter, or directly from frontend/web-application/
+pnpm --filter application-material dev             # Vite dev server (MSW mocks enabled in dev)
+pnpm --filter application-material build           # tsc + vite build
+pnpm --filter application-material test            # Vitest (jsdom environment)
+pnpm --filter application-material test:ui         # Vitest with UI and coverage
+pnpm --filter application-material lint            # ESLint
+pnpm --filter application-material check:types     # TypeScript check (no emit)
+pnpm --filter application-material check:format    # Prettier check
+pnpm --filter application-material check:dead-code # Knip dead code analysis
+pnpm --filter application-material gen:sdk         # Regenerate SDK from openapi.yml via orval
+pnpm --filter application-material storybook       # Storybook dev server on port 6006
 ```
 
 ### Root
