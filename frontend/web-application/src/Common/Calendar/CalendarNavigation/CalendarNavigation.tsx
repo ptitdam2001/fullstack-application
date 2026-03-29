@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 import { CalendarProvider } from '../CalendarProvider/CalendarProvider'
-import { Button } from '@/components/ui/button'
+import { Button } from '@repo/design-system'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import React from 'react'
 

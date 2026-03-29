@@ -8,16 +8,14 @@ import { OpenProvider } from '@Providers/OpenProvider'
 import { ThemeProvider } from '@Theme/Provider/ThemeProvider'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import Toast from '@Common/Toast/Toast'
 import { IntlProvider } from '@I18n/'
 
 import { reactQueryClient } from '@Config/reactQueryClient'
 
 import './index.css'
+import { Toast } from '@repo/design-system'
 
 async function enableMocking() {
-  return
-
   if (import.meta.env.PROD) {
     return
   }

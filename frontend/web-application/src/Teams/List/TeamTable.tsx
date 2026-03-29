@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button'
+import { Button } from '@repo/design-system'
 import { Table } from '@Common/Table/Table'
 import { Team } from '@Sdk/model'
 import { Eye, Pencil, Users, Volleyball } from 'lucide-react'

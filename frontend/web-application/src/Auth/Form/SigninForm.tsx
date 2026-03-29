@@ -1,15 +1,14 @@
 import { Controller, useForm } from 'react-hook-form'
 import { useLoginAction } from '@Auth/hooks/useLoginAction'
 import React from 'react'
-import Toast from '@Common/Toast/Toast'
 import { AuthProvider } from '@Auth/AuthProvider'
-import { className as cn } from '@Common/utils/className'
 import { Form } from '@Common/Form/Form'
 import { ControlledTextInput } from '@Common/Input/TextInput/ControlledTextInput'
 import { z } from 'zod'
 import { LoginBody } from '@Sdk/authentication/authentication.zod'
-import { Button } from '@/components/ui/button'
+import { Button, cn, Toast } from '@repo/design-system'
 import { Loader2 } from 'lucide-react'
+import { FormattedMessage } from 'react-intl'
 
 type FormValue = z.infer<typeof LoginBody>
 
@@ -63,9 +62,9 @@ export const SigninForm: React.FC<SigninFormProps> = ({ className, onSuccess }) 
       />
 
       <div>
-        <Button type="submit" variant="outline" color="primary" disabled={isPending}>
+        <Button type="submit" variant="outline" color="primary" disabled={isPending} className="flex flex-row gap-1">
           {isPending && <Loader2 className="animate-spin" />}
-          Login
+          <FormattedMessage id="auth.login" />
         </Button>
       </div>
     </Form>

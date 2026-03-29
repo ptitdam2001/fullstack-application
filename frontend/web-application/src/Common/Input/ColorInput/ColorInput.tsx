@@ -1,8 +1,8 @@
 import React, { ReactNode } from 'react'
 import { BaseInputProps } from '../BaseInputProps.type'
 import { HexColorPicker } from 'react-colorful'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { cn } from '@/lib/utils'
+import { Popover, PopoverContent, PopoverTrigger } from '@repo/design-system'
+import { cn } from '@repo/design-system'
 import { useTheme } from '@Theme/Provider/ThemeProvider'
 import { useTestId } from '@Common/hooks/useTestId'
 

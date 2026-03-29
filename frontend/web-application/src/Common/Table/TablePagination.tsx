@@ -1,5 +1,5 @@
-import { Button } from '@/components/ui/button'
-import { className as cn } from '@Common/utils/className'
+import { Button } from '@repo/design-system'
+import { cn } from '@repo/design-system'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 type TablePaginationProps = {

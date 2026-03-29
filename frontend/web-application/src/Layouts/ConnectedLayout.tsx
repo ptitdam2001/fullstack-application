@@ -3,10 +3,10 @@ import { Outlet } from 'react-router'
 import { ConnectedAppSidebar } from './components/ConnectedAppSidebar'
 import { LATERAL_MENU } from '@Application/lateralMenu.config'
 import { Breadcrumbs } from '@Common/Breadcrumbs/Breadcrumbs'
-import { className as cn } from '@Common/utils/className'
+import { cn } from '@repo/design-system'
 
-import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
-import { Separator } from '@/components/ui/separator'
+import { SidebarInset, SidebarProvider } from '@repo/design-system'
+import { Separator } from '@repo/design-system'
 import { TopBar } from '@Common/TopBar'
 import { useTheme } from '@Theme/Provider/ThemeProvider'
 

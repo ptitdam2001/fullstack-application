@@ -1,8 +1,8 @@
 import { InputHTMLAttributes, ReactNode } from 'react'
 import { ControllerFieldState } from 'react-hook-form'
 import { BaseInputProps } from '../BaseInputProps.type'
-import { Input } from '@/components/ui/input'
-import { className as cn } from '@Common/utils/className'
+import { Input } from '@repo/design-system'
+import { cn } from '@repo/design-system'
 import { useTestId } from '@Common/hooks/useTestId'
 
 type Props = InputHTMLAttributes<unknown> &

@@ -1,5 +1,5 @@
-import { Skeleton } from '@/components/ui/skeleton'
-import { cn } from '@/lib/utils'
+import { Skeleton } from '@repo/design-system'
+import { cn } from '@repo/design-system'
 
 type TableLoaderProps = {
   className?: string

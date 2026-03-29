@@ -1,5 +1,5 @@
 import React from 'react'
-import { className as cn } from '@Common/utils/className'
+import { cn } from '@repo/design-system'
 
 type TableCellProps = React.TdHTMLAttributes<HTMLTableCellElement> & {
   className?: string

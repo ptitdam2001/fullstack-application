@@ -9,10 +9,10 @@ import {
   DialogHeader,
   DialogPortal,
   DialogTitle,
-} from '@/components/ui/dialog'
+} from '@repo/design-system'
 import React from 'react'
 import { useQueryClient } from '@tanstack/react-query'
-import { cn } from '@/lib/utils'
+import { cn } from '@repo/design-system'
 import { useTheme } from '@Theme/Provider/ThemeProvider'
 import { LinearProgress } from '@Common/Loading/LinearProgress'
 

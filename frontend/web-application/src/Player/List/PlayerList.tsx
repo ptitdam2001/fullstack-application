@@ -1,10 +1,8 @@
-import { AvatarWithBadge } from '@Common/Avatar/AvatarWithBadge'
-
 import { BaseTeamType } from '@Teams/types'
-import { className as cn } from '@Common/utils/className'
+import { cn } from '@repo/design-system'
 import { useGetTeamPlayers } from '@Sdk/teams/teams'
 import { TableLoader } from '@Common/Loading'
-import { TooltipTrigger, TooltipProvider, TooltipContent, Tooltip } from '@/components/ui/tooltip'
+import { TooltipTrigger, TooltipProvider, TooltipContent, Tooltip, AvatarWithBadge } from '@repo/design-system'
 import { Suspense, use } from 'react'
 import { ErrorBoundary } from '@Common/ErrorBoundary'
 

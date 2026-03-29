@@ -1,3 +1,3 @@
-import { createContextWithWrite } from '@Common/Context/createContextWithWrite'
+import { createContextWithWrite } from "@repo/design-system";
 
 export const OpenProvider = createContextWithWrite<boolean, boolean>('Open')

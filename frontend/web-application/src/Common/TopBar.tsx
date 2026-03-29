@@ -1,8 +1,7 @@
 import { ToggleThemeMode } from '@Theme/ToggleThemeMode'
 import { FC, ReactNode } from 'react'
 import { AuthActions } from '@Auth/AuthActions'
-import { SidebarTrigger } from '@/components/ui/sidebar'
-import { Separator } from '@/components/ui/separator'
+import { SidebarTrigger, Separator } from '@repo/design-system'
 import { Title } from './Title'
 import { LanguageSwitcher } from '@I18n/'
 

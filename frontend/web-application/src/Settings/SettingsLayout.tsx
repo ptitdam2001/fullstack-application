@@ -2,8 +2,8 @@ import { Outlet } from 'react-router'
 import { useSettingsMenu } from './hooks/useSettingsMenu'
 import { LinkTabs } from '@Common/LinkTabs/LinkTabs'
 import { LinkTab } from '@Common/LinkTabs/LinkTab'
-import { Separator } from '@/components/ui/separator'
-import { TabsList } from '@/components/ui/tabs'
+import { Separator } from '@repo/design-system'
+import { TabsList } from '@repo/design-system'
 
 export const SettingsLayout = () => {
   const { list } = useSettingsMenu()

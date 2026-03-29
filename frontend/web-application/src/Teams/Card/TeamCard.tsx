@@ -1,6 +1,6 @@
-import { Button } from '@/components/ui/button'
-import { Card, CardAction, CardContent, CardTitle } from '@/components/ui/card'
-import { Skeleton } from '@/components/ui/skeleton'
+import { Button } from '@repo/design-system'
+import { Card } from '@repo/design-system'
+import { Skeleton } from '@repo/design-system'
 import { ErrorBoundary } from '@Common/ErrorBoundary'
 import { Team } from '@Sdk/model'
 import { useGetTeam } from '@Sdk/team/team'
@@ -10,17 +10,17 @@ import { Suspense, use } from 'react'
 type TeamCardProps = BaseTeamType
 
 const TeamCardSkeleton = () => (
-  <Card className="py-2 gap-1.5">
-    <CardTitle className="text-lg px-2">
+  <Card.Container className="py-2 gap-1.5">
+    <Card.Title className="text-lg px-2">
       <Skeleton className="w-full h-4" />
-    </CardTitle>
-    <CardContent>
+    </Card.Title>
+    <Card.Content>
       <Skeleton className="w-full h-4" />
-    </CardContent>
-    <CardAction>
+    </Card.Content>
+    <Card.Action>
       <Skeleton className="w-full h-4" />
-    </CardAction>
-  </Card>
+    </Card.Action>
+  </Card.Container>
 )
 
 type TeamCardRenderProps = {
@@ -28,13 +28,13 @@ type TeamCardRenderProps = {
 }
 
 const TeamCardRender = ({ team }: TeamCardRenderProps) => (
-  <Card className="py-2 gap-1.5">
-    <CardTitle className="text-lg px-2">{team.name}</CardTitle>
-    <CardContent></CardContent>
-    <CardAction>
+  <Card.Container className="py-2 gap-1.5">
+    <Card.Title className="text-lg px-2">{team.name}</Card.Title>
+    <Card.Content></Card.Content>
+    <Card.Action>
       <Button>Learn More</Button>
-    </CardAction>
-  </Card>
+    </Card.Action>
+  </Card.Container>
 )
 
 export const TeamCard = ({ teamId }: TeamCardProps) => {

@@ -1,4 +1,4 @@
-import { Card, CardContent } from '@/components/ui/card'
+import { Card } from '@repo/design-system'
 import { Address } from '@Common/Address/Address'
 import { Game } from '@Sdk/model'
 
@@ -13,8 +13,8 @@ export const GameShortDescription = ({ game }: GameListItemProps) => {
     area,
   } = game
   return (
-    <Card>
-      <CardContent>
+    <Card.Container>
+      <Card.Content>
         <div className="flex flex-col items-center">
           <div className="flex flex-row gap-3 w-full">
             <div className="w-1/3">{homeTeam.name}</div>
@@ -28,7 +28,7 @@ export const GameShortDescription = ({ game }: GameListItemProps) => {
           <p>{date}</p>
           {area && <Address address={area} />}
         </div>
-      </CardContent>
-    </Card>
+      </Card.Content>
+    </Card.Container>
   )
 }

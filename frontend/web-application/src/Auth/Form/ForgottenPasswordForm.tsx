@@ -1,13 +1,11 @@
-import Toast from '@Common/Toast/Toast'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForgotPassword } from '@Sdk/authentication/authentication'
 import { ForgotPasswordBody } from '@Sdk/authentication/authentication.zod'
 import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { className as cn } from '@Common/utils/className'
 import { ControlledTextInput } from '@Common/Input/TextInput/ControlledTextInput'
 import { Form } from '@Common/Form/Form'
-import { Button } from '@/components/ui/button'
+import { Button, cn, Toast } from '@repo/design-system'
 import { Loader2 } from 'lucide-react'
 
 type FormValue = z.infer<typeof ForgotPasswordBody>

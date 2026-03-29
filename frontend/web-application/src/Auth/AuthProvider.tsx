@@ -1,8 +1,8 @@
 import { ReactNode } from 'react'
 
 import { UserWithoutPassword } from '@Sdk/model'
-import { createContextWithWrite } from '@Common/Context/createContextWithWrite'
 import { useCheckAuthLocalStorage } from './hooks/useCheckAuthLocalStorage'
+import { createContextWithWrite } from '@repo/design-system'
 
 type AuthData = {
   user?: UserWithoutPassword

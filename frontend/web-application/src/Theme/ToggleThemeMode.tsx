@@ -1,6 +1,6 @@
-import { Button } from '@/components/ui/button'
+import { Button } from '@repo/design-system'
 import { Theme, useSetTheme, useTheme } from './Provider/ThemeProvider'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@repo/design-system'
 import { ContrastIcon, MoonIcon, SunIcon, SunMoonIcon } from 'lucide-react'
 
 type ThemeListItem = {

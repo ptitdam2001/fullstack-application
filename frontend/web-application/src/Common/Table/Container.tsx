@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { className as cn } from '@Common/utils/className'
+import { cn } from '@repo/design-system'
 import { TableProvider } from './TableContext'
 
 export const TableContainer = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>(

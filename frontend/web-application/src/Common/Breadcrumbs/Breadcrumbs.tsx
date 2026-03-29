@@ -4,7 +4,7 @@ import {
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'
+} from '@repo/design-system'
 import React from 'react'
 
 import { useLocation } from 'react-router'

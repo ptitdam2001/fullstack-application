@@ -26,6 +26,9 @@ const ALIASES = {
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [tailwindcss(), react()],
+  optimizeDeps: {
+    include: ['@repo/design-system'],
+  },
   resolve: {
     alias: {
       ...ALIASES,

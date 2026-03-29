@@ -1,7 +1,7 @@
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Popover, PopoverContent, PopoverTrigger } from '@repo/design-system'
 import { useLocale, useSetLocale } from '../providers/intl.context'
 import React from 'react'
-import { Button } from '@/components/ui/button'
+import { Button } from '@repo/design-system'
 import { CheckIcon, GlobeIcon } from 'lucide-react'
 import getUnicodeFlagIcon from 'country-flag-icons/unicode'
 import { LOCALE_NAMES, SUPPORTED_LOCALES, SupportedLocale } from '../intl.config'
@@ -22,9 +22,7 @@ export const LanguageSwitcher = () => {
         <Button variant="outline" size="icon">
           <span className="relative">
             <GlobeIcon />
-            <span className="absolute bottom-1/4 right-1/2">
-              {getUnicodeFlagIcon(LOCALE_NAMES[locale].countryCode)}
-            </span>
+            <span className="absolute -bottom-2 -right-2">{getUnicodeFlagIcon(LOCALE_NAMES[locale].countryCode)}</span>
           </span>
         </Button>
       </PopoverTrigger>

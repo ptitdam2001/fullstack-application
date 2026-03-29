@@ -1,5 +1,6 @@
-import { createContextWithWrite } from '@Common/Context/createContextWithWrite'
+
 import { useLocalStorage } from '@Common/hooks/useLocalstorage'
+import { createContextWithWrite } from '@repo/design-system'
 import React from 'react'
 
 export type Theme = 'light' | 'dark' | 'system'

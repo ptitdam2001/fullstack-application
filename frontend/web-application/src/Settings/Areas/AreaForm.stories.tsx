@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { fn } from 'storybook/test'
 import { AreaForm } from './AreaForm'
-import Toast from '@Common/Toast/Toast'
 import { faker } from '@faker-js/faker'
 import { getCreateAreaMockHandler, getUpdateAreaMockHandler } from '@Sdk/area/area.msw'
+import { Toast } from '@repo/design-system'
 
 const meta = {
   component: AreaForm,

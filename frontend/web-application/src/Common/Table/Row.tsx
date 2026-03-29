@@ -1,5 +1,5 @@
 import React from 'react'
-import { className as cn } from '@Common/utils/className'
+import { cn } from '@repo/design-system'
 
 export const TableRow = React.forwardRef<HTMLTableRowElement, React.HTMLAttributes<HTMLTableRowElement>>(
   ({ className, ...props }, ref) => (

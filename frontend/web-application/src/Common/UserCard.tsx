@@ -1,7 +1,7 @@
 import { FunctionComponent } from 'react'
-import { Button } from '@/components/ui/button'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@repo/design-system'
+import { Avatar, AvatarFallback } from '@repo/design-system'
+import { Card } from '@repo/design-system'
 import { Share2, Star } from 'lucide-react'
 
 type UserCardProps = {
@@ -11,28 +11,28 @@ type UserCardProps = {
 }
 
 export const UserCard: FunctionComponent<UserCardProps> = ({ user }) => (
-  <Card className="max-w-80">
-    <CardHeader>
-      <CardTitle>
+  <Card.Container className="max-w-80">
+    <Card.Header>
+      <Card.Title>
         <Avatar className="bg-red-500" aria-label="recipe">
           <AvatarFallback>R</AvatarFallback>
         </Avatar>
         {user.login}
-      </CardTitle>
-    </CardHeader>
-    <CardContent>
+      </Card.Title>
+    </Card.Header>
+    <Card.Content>
       <p className="text-justify" style={{ color: 'text.secondary' }}>
         This impressive paella is a perfect party dish and a fun meal to cook together with your guests. Add 1 cup of
         frozen peas along with the mussels, if you like.
       </p>
-    </CardContent>
-    <CardFooter>
+    </Card.Content>
+    <Card.Footer>
       <Button variant="outline" size="icon" aria-label="add to favorites">
         <Star />
       </Button>
       <Button variant="outline" size="icon" aria-label="share">
         <Share2 />
       </Button>
-    </CardFooter>
-  </Card>
+    </Card.Footer>
+  </Card.Container>
 )

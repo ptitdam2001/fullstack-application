@@ -1,4 +1,4 @@
-import { className as cn } from '@Common/utils/className'
+import { cn } from '@repo/design-system'
 
 type TitleProps = {
   children: React.ReactNode

@@ -1,10 +1,10 @@
-import { className as cn } from '@Common/utils/className'
 import { AuthProvider } from './AuthProvider'
 import { useNavigate } from 'react-router'
 import { LOGOUT_PAGE } from './constant'
 
 import { BadgeCheck, LogOut } from 'lucide-react'
 import {
+  cn,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
@@ -12,8 +12,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+} from '@repo/design-system'
+import { Avatar, AvatarFallback, AvatarImage } from '@repo/design-system'
 import { FormattedMessage } from '@/I18n/translation'
 
 type AuthActionsProps = {

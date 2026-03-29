@@ -10,9 +10,9 @@ import {
   DialogHeader,
   DialogPortal,
   DialogTitle,
-} from '@/components/ui/dialog'
+} from '@repo/design-system'
 import React from 'react'
-import { cn } from '@/lib/utils'
+import { cn } from '@repo/design-system'
 import { useTheme } from '@Theme/Provider/ThemeProvider'
 import { LinearProgress } from '@Common/Loading/LinearProgress'
 import { TeamForm } from '@Teams/Form/TeamForm'

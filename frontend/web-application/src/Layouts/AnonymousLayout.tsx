@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router'
 import { TopBar } from '@Common/TopBar'
 import { Main } from './components/Main'
-import { className as cn } from '@Common/utils/className'
+import { cn } from '@repo/design-system'
 import { useTheme } from '@Theme/Provider/ThemeProvider'
 
 export const AnonymousLayout = () => {

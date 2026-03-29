@@ -1,6 +1,6 @@
 import { Link } from 'react-router'
 import { TabContext } from './TabsContext'
-import { TabsTrigger } from '@/components/ui/tabs'
+import { TabsTrigger } from '@repo/design-system'
 import { ReactElement } from 'react'
 
 export type TabProps = {
