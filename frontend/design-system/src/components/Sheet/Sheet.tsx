@@ -1,8 +1,22 @@
 import * as React from 'react'
-import * as SheetPrimitive from '@radix-ui/react-dialog'
+import { DialogTrigger as AriaDialogTrigger } from 'react-aria-components'
 
-function Sheet({ ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) {
-  return <SheetPrimitive.Root data-slot="sheet" {...props} />
+type SheetProps = Omit<React.ComponentProps<typeof AriaDialogTrigger>, 'isOpen'> & {
+  open?: boolean
+  defaultOpen?: boolean
+  onOpenChange?: (open: boolean) => void
+}
+
+function Sheet({ open, defaultOpen, onOpenChange, ...props }: SheetProps) {
+  return (
+    <AriaDialogTrigger
+      data-slot="sheet"
+      isOpen={open}
+      defaultOpen={defaultOpen}
+      onOpenChange={onOpenChange}
+      {...props}
+    />
+  )
 }
 
 export { Sheet }

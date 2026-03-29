@@ -1,8 +1,28 @@
 import * as React from 'react'
-import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu'
 
-function DropdownMenuRadioGroup({ ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.RadioGroup>) {
-  return <DropdownMenuPrimitive.RadioGroup data-slot="dropdown-menu-radio-group" {...props} />
+type DropdownMenuRadioGroupProps = {
+  value?: string
+  onValueChange?: (value: string) => void
+  children: React.ReactNode
 }
 
-export { DropdownMenuRadioGroup }
+const DropdownMenuRadioGroupContext = React.createContext<{
+  value?: string
+  onValueChange?: (value: string) => void
+} | null>(null)
+
+function useDropdownMenuRadioGroup() {
+  return React.useContext(DropdownMenuRadioGroupContext)
+}
+
+function DropdownMenuRadioGroup({ value, onValueChange, children }: DropdownMenuRadioGroupProps) {
+  return (
+    <DropdownMenuRadioGroupContext.Provider value={{ value, onValueChange }}>
+      <div data-slot="dropdown-menu-radio-group" role="group">
+        {children}
+      </div>
+    </DropdownMenuRadioGroupContext.Provider>
+  )
+}
+
+export { DropdownMenuRadioGroup, useDropdownMenuRadioGroup }

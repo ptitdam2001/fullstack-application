@@ -1,11 +1,10 @@
 import * as React from 'react'
-import * as LabelPrimitive from '@radix-ui/react-label'
 
 import { cn } from '../../utils/cn'
 import { Label } from '../Label/Label'
 import { useFormField } from './Form'
 
-function FormLabel({ className, ...props }: React.ComponentProps<typeof LabelPrimitive.Root>) {
+function FormLabel({ className, ...props }: React.ComponentProps<typeof Label>) {
   const { error, formItemId } = useFormField()
 
   return (

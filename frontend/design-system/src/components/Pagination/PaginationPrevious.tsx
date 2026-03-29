@@ -2,7 +2,7 @@ import * as React from "react";
 import { ChevronLeftIcon } from "lucide-react";
 
 import { cn } from "../../utils/cn";
-import { PaginationLink, type PaginationLinkProps } from "./PaginationLink";
+import { PaginationLink } from "./PaginationLink";
 
 function PaginationPrevious({
   className,

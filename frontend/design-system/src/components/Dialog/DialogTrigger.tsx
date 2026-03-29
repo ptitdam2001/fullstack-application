@@ -1,8 +1,13 @@
 import * as React from 'react'
-import * as DialogPrimitive from '@radix-ui/react-dialog'
 
-function DialogTrigger({ ...props }: React.ComponentProps<typeof DialogPrimitive.Trigger>) {
-  return <DialogPrimitive.Trigger data-slot="dialog-trigger" {...props} />
+/**
+ * Passes children through as the trigger element.
+ * react-aria-components' DialogTrigger identifies the first focusable child
+ * as the trigger automatically. The `asChild` prop is accepted for backward
+ * compatibility but has no effect.
+ */
+function DialogTrigger({ asChild: _asChild, children }: { asChild?: boolean; children?: React.ReactNode }) {
+  return <>{children}</>
 }
 
 export { DialogTrigger }

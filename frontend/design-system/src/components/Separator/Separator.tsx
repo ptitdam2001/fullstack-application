@@ -1,9 +1,11 @@
 import * as React from "react";
-import * as SeparatorPrimitive from "@radix-ui/react-separator";
 
 import { cn } from "../../utils/cn";
 
-type SeparatorProps = React.ComponentProps<typeof SeparatorPrimitive.Root>;
+type SeparatorProps = React.ComponentProps<"div"> & {
+  orientation?: "horizontal" | "vertical";
+  decorative?: boolean;
+};
 
 export const Separator = ({
   className,
@@ -11,10 +13,11 @@ export const Separator = ({
   decorative = true,
   ...props
 }: SeparatorProps) => (
-  <SeparatorPrimitive.Root
+  <div
     data-slot="separator-root"
-    decorative={decorative}
-    orientation={orientation}
+    role={decorative ? "none" : "separator"}
+    aria-orientation={!decorative ? orientation : undefined}
+    data-orientation={orientation}
     className={cn(
       "bg-border shrink-0 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px",
       className,

@@ -1,8 +1,7 @@
 import * as React from 'react'
-import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu'
 
-function DropdownMenuTrigger({ ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.Trigger>) {
-  return <DropdownMenuPrimitive.Trigger data-slot="dropdown-menu-trigger" {...props} />
+function DropdownMenuTrigger({ asChild: _asChild, children }: { asChild?: boolean; children?: React.ReactNode }) {
+  return <>{children}</>
 }
 
 export { DropdownMenuTrigger }

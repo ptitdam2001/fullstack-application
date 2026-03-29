@@ -1,0 +1,9 @@
+packages:
+  - 'design-system'
+  - 'web-application'
+
+onlyBuiltDependencies:
+  - '@tailwindcss/oxide'
+  - esbuild
+  - msw
+  - storybook-addon-remix-react-router

@@ -1,8 +1,8 @@
 import * as React from 'react'
-import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu'
+import { SubmenuTrigger } from 'react-aria-components'
 
-function DropdownMenuSub({ ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.Sub>) {
-  return <DropdownMenuPrimitive.Sub data-slot="dropdown-menu-sub" {...props} />
+function DropdownMenuSub({ ...props }: React.ComponentProps<typeof SubmenuTrigger>) {
+  return <SubmenuTrigger data-slot="dropdown-menu-sub" {...props} />
 }
 
 export { DropdownMenuSub }

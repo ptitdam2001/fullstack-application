@@ -1,11 +1,11 @@
 import * as React from 'react'
-import * as TabsPrimitive from '@radix-ui/react-tabs'
+import { TabList } from 'react-aria-components'
 
 import { cn } from '../../utils/cn'
 
-function TabsList({ className, ...props }: React.ComponentProps<typeof TabsPrimitive.List>) {
+function TabsList({ className, ...props }: React.ComponentProps<typeof TabList>) {
   return (
-    <TabsPrimitive.List
+    <TabList
       data-slot="tabs-list"
       className={cn(
         'bg-muted text-muted-foreground inline-flex h-9 w-fit items-center justify-center p-[3px]',

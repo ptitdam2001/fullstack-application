@@ -1,8 +1,8 @@
 import * as React from 'react'
-import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu'
+import { Section } from 'react-aria-components'
 
-function DropdownMenuGroup({ ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.Group>) {
-  return <DropdownMenuPrimitive.Group data-slot="dropdown-menu-group" {...props} />
+function DropdownMenuGroup({ ...props }: React.ComponentProps<typeof Section>) {
+  return <Section data-slot="dropdown-menu-group" {...props} />
 }
 
 export { DropdownMenuGroup }

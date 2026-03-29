@@ -1,11 +1,10 @@
 import * as React from 'react'
-import * as DialogPrimitive from '@radix-ui/react-dialog'
 
 import { cn } from '../../utils/cn'
 
-function DialogDescription({ className, ...props }: React.ComponentProps<typeof DialogPrimitive.Description>) {
+function DialogDescription({ className, ...props }: React.ComponentProps<'p'>) {
   return (
-    <DialogPrimitive.Description
+    <p
       data-slot="dialog-description"
       className={cn('text-muted-foreground text-sm', className)}
       {...props}

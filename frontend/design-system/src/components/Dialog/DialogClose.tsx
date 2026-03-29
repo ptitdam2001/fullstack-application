@@ -1,8 +1,8 @@
 import * as React from 'react'
-import * as DialogPrimitive from '@radix-ui/react-dialog'
+import { Button } from 'react-aria-components'
 
-function DialogClose({ ...props }: React.ComponentProps<typeof DialogPrimitive.Close>) {
-  return <DialogPrimitive.Close data-slot="dialog-close" {...props} />
+function DialogClose({ className, ...props }: React.ComponentProps<typeof Button>) {
+  return <Button slot="close" data-slot="dialog-close" className={className} {...props} />
 }
 
 export { DialogClose }

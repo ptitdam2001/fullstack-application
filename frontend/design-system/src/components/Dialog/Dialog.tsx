@@ -1,8 +1,23 @@
 import * as React from 'react'
-import * as DialogPrimitive from '@radix-ui/react-dialog'
+import { DialogTrigger as AriaDialogTrigger } from 'react-aria-components'
 
-function Dialog({ ...props }: React.ComponentProps<typeof DialogPrimitive.Root>) {
-  return <DialogPrimitive.Root data-slot="dialog" {...props} />
+type DialogProps = Omit<React.ComponentProps<typeof AriaDialogTrigger>, 'isOpen'> & {
+  open?: boolean
+  defaultOpen?: boolean
+  onOpenChange?: (open: boolean) => void
+  modal?: boolean
+}
+
+function Dialog({ open, defaultOpen, onOpenChange, modal: _modal, ...props }: DialogProps) {
+  return (
+    <AriaDialogTrigger
+      data-slot="dialog"
+      isOpen={open}
+      defaultOpen={defaultOpen}
+      onOpenChange={onOpenChange}
+      {...props}
+    />
+  )
 }
 
 export { Dialog }

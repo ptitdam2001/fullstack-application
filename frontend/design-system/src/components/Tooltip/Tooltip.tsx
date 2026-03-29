@@ -1,14 +1,10 @@
 import * as React from 'react'
-import * as TooltipPrimitive from '@radix-ui/react-tooltip'
+import { TooltipTrigger as AriaTooltipTrigger } from 'react-aria-components'
 
-import { TooltipProvider } from './TooltipProvider'
+type TooltipProps = React.ComponentProps<typeof AriaTooltipTrigger>
 
-function Tooltip({ ...props }: React.ComponentProps<typeof TooltipPrimitive.Root>) {
-  return (
-    <TooltipProvider>
-      <TooltipPrimitive.Root data-slot="tooltip" {...props} />
-    </TooltipProvider>
-  )
+function Tooltip({ ...props }: TooltipProps) {
+  return <AriaTooltipTrigger data-slot="tooltip" {...props} />
 }
 
 export { Tooltip }

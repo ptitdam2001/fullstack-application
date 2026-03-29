@@ -1,8 +1,24 @@
 import * as React from 'react'
-import * as CollapsiblePrimitive from '@radix-ui/react-collapsible'
 
-function CollapsibleContent({ ...props }: React.ComponentProps<typeof CollapsiblePrimitive.CollapsibleContent>) {
-  return <CollapsiblePrimitive.CollapsibleContent data-slot="collapsible-content" {...props} />
+import { useCollapsibleContext } from './CollapsibleContext'
+
+type CollapsibleContentProps = React.ComponentProps<'div'>
+
+function CollapsibleContent({ children, ...props }: CollapsibleContentProps) {
+  const { open, contentId } = useCollapsibleContext()
+
+  if (!open) return null
+
+  return (
+    <div
+      id={contentId}
+      data-slot="collapsible-content"
+      data-state={open ? 'open' : 'closed'}
+      {...props}
+    >
+      {children}
+    </div>
+  )
 }
 
 export { CollapsibleContent }

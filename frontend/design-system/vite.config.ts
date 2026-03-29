@@ -6,6 +6,14 @@ import { resolve } from 'path'
 
 export default defineConfig({
   plugins: [tailwindcss(), react()],
+  resolve: {
+    alias: [
+      {
+        find: /^use-sync-external-store(\/.*)?$/,
+        replacement: resolve(__dirname, 'src/stubs/use-sync-external-store.ts'),
+      },
+    ],
+  },
   build: {
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),

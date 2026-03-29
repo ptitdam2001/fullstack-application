@@ -1,29 +1,58 @@
 import * as React from 'react'
-import * as TooltipPrimitive from '@radix-ui/react-tooltip'
+import { Tooltip as AriaTooltip, OverlayArrow } from 'react-aria-components'
 
 import { cn } from '../../utils/cn'
+
+type Side = 'top' | 'bottom' | 'left' | 'right'
+type Align = 'start' | 'center' | 'end'
+
+function buildPlacement(side?: Side, align?: Align) {
+  if (!side) return undefined
+  if (!align || align === 'center') return side
+  return `${side} ${align}` as React.ComponentProps<typeof AriaTooltip>['placement']
+}
+
+type TooltipContentProps = Omit<React.ComponentProps<typeof AriaTooltip>, 'placement' | 'offset' | 'children'> & {
+  side?: Side
+  align?: Align
+  sideOffset?: number
+  hidden?: boolean
+  children?: React.ReactNode
+}
 
 function TooltipContent({
   className,
   sideOffset = 0,
+  side,
+  align,
+  hidden,
   children,
   ...props
-}: React.ComponentProps<typeof TooltipPrimitive.Content>) {
+}: TooltipContentProps) {
   return (
-    <TooltipPrimitive.Portal>
-      <TooltipPrimitive.Content
-        data-slot="tooltip-content"
-        sideOffset={sideOffset}
-        className={cn(
-          'bg-primary text-primary-foreground animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 w-fit origin-(--radix-tooltip-content-transform-origin) rounded-md px-3 py-1.5 text-xs text-balance',
-          className
-        )}
-        {...props}
-      >
-        {children}
-        <TooltipPrimitive.Arrow className="bg-primary fill-primary z-50 size-2.5 translate-y-[calc(-50%_-_2px)] rotate-45 rounded-[2px]" />
-      </TooltipPrimitive.Content>
-    </TooltipPrimitive.Portal>
+    <AriaTooltip
+      data-slot="tooltip-content"
+      placement={buildPlacement(side, align)}
+      offset={sideOffset}
+      className={cn(
+        'bg-primary text-primary-foreground animate-in fade-in-0 zoom-in-95 placement-bottom:slide-in-from-top-2 placement-left:slide-in-from-right-2 placement-right:slide-in-from-left-2 placement-top:slide-in-from-bottom-2 z-50 w-fit rounded-md px-3 py-1.5 text-xs text-balance will-change-transform',
+        hidden && 'hidden',
+        className
+      )}
+      {...props}
+    >
+      {children}
+      <OverlayArrow>
+        <svg
+          width={8}
+          height={8}
+          viewBox="0 0 8 8"
+          className="bg-primary fill-primary z-50 rotate-45 rounded-[2px]"
+        >
+          <path d="M0 0 L4 4 L8 0" />
+        </svg>
+      </OverlayArrow>
+    </AriaTooltip>
   )
 }
 

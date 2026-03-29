@@ -1,8 +1,12 @@
 import * as React from 'react'
-import * as TooltipPrimitive from '@radix-ui/react-tooltip'
 
-function TooltipProvider({ delayDuration = 0, ...props }: React.ComponentProps<typeof TooltipPrimitive.Provider>) {
-  return <TooltipPrimitive.Provider data-slot="tooltip-provider" delayDuration={delayDuration} {...props} />
+/**
+ * No-op passthrough — react-aria-components does not require a provider.
+ * Kept for backward compatibility with existing consumers.
+ */
+function TooltipProvider({ children, ...props }: { children: React.ReactNode; [key: string]: unknown }) {
+  void props
+  return <>{children}</>
 }
 
 export { TooltipProvider }
