@@ -19,7 +19,7 @@ export const LanguageSwitcher = () => {
   return (
     <Popover open={openPopover} onOpenChange={setOpenPopover}>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="icon">
+        <Button variant="ghost" size="icon">
           <span className="relative">
             <GlobeIcon />
             <span className="absolute -bottom-2 -right-2">{getUnicodeFlagIcon(LOCALE_NAMES[locale].countryCode)}</span>

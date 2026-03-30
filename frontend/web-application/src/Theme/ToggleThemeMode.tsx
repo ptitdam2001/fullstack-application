@@ -34,7 +34,7 @@ export const ToggleThemeMode = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon" aria-label="Toggle Theme">
+        <Button variant="ghost" size="icon" aria-label="Toggle Theme">
           <ContrastIcon />
         </Button>
       </DropdownMenuTrigger>
