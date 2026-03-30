@@ -28,7 +28,7 @@ export const ConnectedAppSidebar: FC<ConnectedAppSidebarProps> = ({ links }) => 
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
-        <Link to="/">
+        <Link to="/" className="px-1 pt-1">
           <House />
         </Link>
       </SidebarHeader>

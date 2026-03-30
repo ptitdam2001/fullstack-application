@@ -25,11 +25,13 @@ export const ConnectedLayout = () => {
 
       {/* Right Block */}
       <SidebarInset className="h-full scrollbar-track-background">
-        <TopBar title="Connected App">
-          <Breadcrumbs />
-        </TopBar>
-
+        <TopBar title="Connected App" />
         <Separator orientation="horizontal" className="h-[1vh]" />
+        <section className="p-1">
+          <Breadcrumbs />
+        </section>
+        <Separator orientation="horizontal" className="h-[1vh]" />
+
         <article className="h-[93.5vh] overflow-auto scrollbar-track-background scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800 dark:scrollbar-thumb-gray-500">
           <Outlet />
         </article>

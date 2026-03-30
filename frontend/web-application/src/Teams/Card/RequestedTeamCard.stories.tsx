@@ -2,11 +2,11 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
-import { TeamCard } from './TeamCard'
+import { RequestedTeamCard } from './RequestedTeamCard'
 import { getGetTeamMockHandler } from '@Sdk/team/team.msw'
 
 const meta = {
-  component: TeamCard,
+  component: RequestedTeamCard,
   title: 'Teams/TeamCard',
   tags: ['autodocs'],
   parameters: {
@@ -16,7 +16,7 @@ const meta = {
       },
     },
   },
-} satisfies Meta<typeof TeamCard>
+} satisfies Meta<typeof RequestedTeamCard>
 
 export default meta
 
