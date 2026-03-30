@@ -2,7 +2,7 @@
 @import '@repo/design-system/styles';
 
 /* Scan design-system source for Tailwind classes */
-@source '../../node_modules/@repo/design-system/src';
+@source '../node_modules/@repo/design-system/src';
 
 @plugin "tailwind-scrollbar";
 
@@ -12,8 +12,6 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -27,17 +25,4 @@ body {
   min-width: 320px;
   height: 100vh;
   width: 100vw;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: var(--primary-foreground);
-    background-color: var(--primary);
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
 }
