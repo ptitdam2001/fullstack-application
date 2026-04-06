@@ -15,11 +15,15 @@ type MenuBarProps = {
 
 export const MenuBar: FC<MenuBarProps> = ({ children, leftActions, rightActions }) => {
   return (
-    <section className="MenuBar w-full flex flex-row gap-1 py-1">
+    <section className="MenuBar w-full flex flex-row gap-1 py-1 px-1.5">
       {leftActions && leftActions?.length > 0 && (
-        <div>
-          {leftActions.map(action => (isBarLink(action) ? <LinkAction {...action} key={action.url} /> : action))}
-        </div>
+        <ul className="flex gap-0.5">
+          {leftActions.map(action => (
+            <li className="flex items-center px-1">
+              {isBarLink(action) ? <LinkAction {...action} key={action.url} /> : action}
+            </li>
+          ))}
+        </ul>
       )}
 
       <div className="w-full">{children}</div>
