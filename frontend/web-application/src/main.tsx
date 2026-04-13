@@ -16,7 +16,7 @@ import './index.css'
 import { Toast } from '@repo/design-system'
 
 async function enableMocking() {
-  if (import.meta.env.PROD) {
+  if (import.meta.env.PROD || import.meta.env.VITE_MOCKED_BACKEND === 'false') {
     return
   }
 
