@@ -3,7 +3,9 @@
  *
  * @see https://orval.dev/guides/custom-axios
  */
-import Axios, { AxiosRequestConfig } from 'axios'
+import Axios, { AxiosError, AxiosRequestConfig } from 'axios'
+import { clearAuthStorage } from '@Auth/authStorage'
+import { redirectToLogin } from '@Auth/authNavigation'
 
 // const getBaseUrl = () => import.meta.env.BACKEND_BASEURL
 const getBaseUrl = () => 'http://localhost:4000/'
@@ -23,6 +25,17 @@ const getAxiosConfig = (): AxiosRequestConfig => {
 }
 
 const AXIOS_INSTANCE = Axios.create()
+
+AXIOS_INSTANCE.interceptors.response.use(
+  (response) => response,
+  (error: AxiosError) => {
+    if (error.response?.status === 401) {
+      clearAuthStorage()
+      redirectToLogin()
+    }
+    return Promise.reject(error)
+  }
+)
 
 /**
  * Create custom Axios instance with credentials/cookie handled.
