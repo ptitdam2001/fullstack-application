@@ -2,8 +2,8 @@ import { Card } from '@repo/design-system'
 import { NotFound } from '@Pages/NotFound'
 import { PlayerList } from '@Player/index'
 import { TeamCalendar } from '@Teams/Calendar/TeamCalendar'
-import { TeamCard } from '@Teams/Card/TeamCard'
 import { useParams } from 'react-router'
+import { RequestedTeamCard } from '@Teams/Card/RequestedTeamCard'
 
 export const TeamPage = () => {
   const { teamId } = useParams()
@@ -15,7 +15,7 @@ export const TeamPage = () => {
   return (
     <article className="w-full h-full p-2 flex gap-1">
       <section className="grow flex flex-col gap-1">
-        <TeamCard teamId={teamId} />
+        <RequestedTeamCard teamId={teamId} />
 
         <Card.Container className="grow py-2 gap-1.5 h-72">
           <Card.Title className="text-lg px-2">Calendar</Card.Title>

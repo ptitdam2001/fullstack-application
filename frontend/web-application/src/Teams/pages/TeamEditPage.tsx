@@ -1,16 +1,7 @@
 import { NotFound } from '@Pages/NotFound'
 import { useGetTeam } from '@Sdk/team/team'
-import { getGetTeamsQueryKey } from '@Sdk/teams/teams'
-import { useQueryClient } from '@tanstack/react-query'
 import { useNavigate, useParams } from 'react-router'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogPortal,
-  DialogTitle,
-} from '@repo/design-system'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogPortal, DialogTitle } from '@repo/design-system'
 import React from 'react'
 import { cn } from '@repo/design-system'
 import { useTheme } from '@Theme/Provider/ThemeProvider'
@@ -23,7 +14,6 @@ export const TeamEditPage = () => {
 
   const { teamId } = useParams()
   const navigate = useNavigate()
-  const queryClient = useQueryClient()
 
   const { data: currentTeam, isLoading, isError } = useGetTeam(teamId, { query: { enabled: Boolean(teamId) } })
 
@@ -58,8 +48,7 @@ export const TeamEditPage = () => {
               <TeamForm
                 defaultValues={currentTeam}
                 teamId={teamId}
-                onFinish={async () => {
-                  await queryClient.invalidateQueries({ queryKey: [getGetTeamsQueryKey()] })
+                onFinish={() => {
                   navigate(-1)
                 }}
               />

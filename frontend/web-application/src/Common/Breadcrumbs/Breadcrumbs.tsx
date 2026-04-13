@@ -3,15 +3,15 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
+  BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@repo/design-system'
 import React from 'react'
 
-import { useLocation } from 'react-router'
+import { useBreadcrumbs } from './useBreadcrumbs'
 
 export const Breadcrumbs = () => {
-  const location = useLocation()
-  const pathnames = location.pathname.split('/').filter(x => x)
+  const entries = useBreadcrumbs()
 
   return (
     <Breadcrumb>
@@ -19,27 +19,19 @@ export const Breadcrumbs = () => {
         <BreadcrumbItem>
           <BreadcrumbLink href="/app">Home</BreadcrumbLink>
         </BreadcrumbItem>
-        <BreadcrumbSeparator />
 
-        {pathnames
-          .filter(path => path !== 'app')
-          .map((value, index) => {
-            const last = index === pathnames.length - 1
-            const to = `/${pathnames.slice(0, index + 1).join('/')}`
-
-            return last ? (
-              <BreadcrumbItem key={to}>
-                <BreadcrumbLink className="dark:text-gray-200 text-gray-400">{value}</BreadcrumbLink>
-              </BreadcrumbItem>
-            ) : (
-              <React.Fragment key={to}>
-                <BreadcrumbItem>
-                  <BreadcrumbLink href={to}>{value}</BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator />
-              </React.Fragment>
-            )
-          })}
+        {entries.map(({ node, to, isLast }) => (
+          <React.Fragment key={to}>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              {isLast ? (
+                <BreadcrumbPage>{node}</BreadcrumbPage>
+              ) : (
+                <BreadcrumbLink href={to}>{node}</BreadcrumbLink>
+              )}
+            </BreadcrumbItem>
+          </React.Fragment>
+        ))}
       </BreadcrumbList>
     </Breadcrumb>
   )

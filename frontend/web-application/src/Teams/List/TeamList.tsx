@@ -1,14 +1,20 @@
 import { usePagination } from '@Common/hooks/usePagination'
-
 import { useCountTeams, useGetTeams } from '@Sdk/teams/teams'
 import { TableLoader } from '@Common/Loading'
-import { TablePagination } from '@Common/Table/TablePagination'
-import { TeamTable } from './TeamTable'
-import { Suspense, use } from 'react'
 import { ErrorBoundary } from '@Common/ErrorBoundary'
+import { TeamCardGrid } from './TeamCardGrid'
+import { TeamCardList } from './TeamCardList'
+import { TeamListPagination } from './TeamListPagination'
+import { Suspense, use } from 'react'
 
-export const TeamList = () => {
-  const { changePage, changeRowsPerPage, ...pagination } = usePagination()
+type ViewMode = 'grid' | 'list'
+
+type TeamListProps = {
+  viewMode: ViewMode
+}
+
+export const TeamList = ({ viewMode }: TeamListProps) => {
+  const { changePage, ...pagination } = usePagination({ page: 0, rowsPerPage: 12 })
 
   const teams = use(
     useGetTeams({
@@ -18,22 +24,17 @@ export const TeamList = () => {
   )
   const count = use(useCountTeams().promise)
 
+  const totalPages = Math.ceil((count ?? 0) / pagination.rowsPerPage)
+
   return (
-    <section data-testid="TeamList" className="w-full h-full flex flex-col gap-0.5 overflow-hidden">
+    <section data-testid="TeamList" className="w-full flex-1 flex flex-col overflow-hidden">
       <ErrorBoundary>
-        <Suspense fallback={<TableLoader nbCols={3} nbRows={10} />}>
-          <TeamTable teams={teams} />
-          <div className="min-h-10">
-            <TablePagination
-              count={count ?? 0}
-              page={pagination.page}
-              onPageChange={(_: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => changePage(newPage)}
-              rowsPerPage={pagination.rowsPerPage}
-              onRowsPerPageChange={(event: React.ChangeEvent<HTMLSelectElement>) =>
-                changeRowsPerPage(parseInt(event.target.value, 10))
-              }
-              className="w-full"
-            />
+        <Suspense fallback={<TableLoader nbCols={3} nbRows={12} />}>
+          <div key={pagination.page} className="flex-1 overflow-auto p-4">
+            {viewMode === 'grid' ? <TeamCardGrid teams={teams} /> : <TeamCardList teams={teams} />}
+          </div>
+          <div className="border-t bg-background py-2 h-18">
+            <TeamListPagination page={pagination.page} totalPages={totalPages} onPageChange={changePage} />
           </div>
         </Suspense>
       </ErrorBoundary>
