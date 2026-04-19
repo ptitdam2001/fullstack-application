@@ -22,6 +22,7 @@ No test runner is configured.
 **Request flow**: `index.ts` → OpenAPI Backend middleware (validates + matches operationId) → controller handler
 
 **Handler signature** (all handlers follow this pattern):
+
 ```typescript
 export const operationName = async (ctx: Context, req: Request, res: Response) => { ... }
 ```
@@ -39,17 +40,18 @@ Handlers are registered in `index.ts` via `api.register({ operationId: handlerFn
 ## Environment
 
 Copy `.env.sample` → `.env` and configure:
+
 - `DATABASE_URL` — MongoDB connection string
 - `JWT_SECRET` — JWT signing secret
-- `PORT` — defaults to 3000
+- `PORT` — defaults to 3000. **Note**: the frontend `config/axios-instance.ts` hardcodes port `4000` — align your `.env` or update the axios instance if you change this.
 - `JWT_EXPIRE` — defaults to `'2h'`
 
 ## Key Files
 
-| File | Purpose |
-|------|---------|
-| `index.ts` | App entry: middleware, OpenAPI init, handler registration |
-| `../openapi.yml` | Source of truth for all routes and schemas |
-| `prisma/schema.prisma` | Database models |
-| `controllers/types.ts` | Shared TypeScript types for controllers |
-| `config/logger.ts` | Winston logger setup |
+| File                   | Purpose                                                   |
+| ---------------------- | --------------------------------------------------------- |
+| `index.ts`             | App entry: middleware, OpenAPI init, handler registration |
+| `../openapi.yml`       | Source of truth for all routes and schemas                |
+| `prisma/schema.prisma` | Database models                                           |
+| `controllers/types.ts` | Shared TypeScript types for controllers                   |
+| `config/logger.ts`     | Winston logger setup                                      |
