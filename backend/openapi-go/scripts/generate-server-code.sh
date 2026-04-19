@@ -1,1 +1,0 @@
-openapi-generator generate -i ../../openapi.yml -g go-server -o ../api --additional-properties=featureCORS=true
