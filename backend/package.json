@@ -35,6 +35,8 @@
     "onlyBuiltDependencies": ["bcrypt", "@prisma/client", "@prisma/engines", "esbuild", "prisma"]
   },
   "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "@repo/prettier-config": "workspace:*",
     "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
@@ -42,7 +44,10 @@
     "@types/morgan": "^1.9.10",
     "@types/node": "^25.3.1",
     "esbuild": "0.27.3",
+    "eslint": "^10.0.0",
+    "prettier": "^3.0.0",
     "tsx": "^4.19.1",
     "typescript": "^5.9.3"
-  }
+  },
+  "prettier": "@repo/prettier-config"
 }

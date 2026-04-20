@@ -28,7 +28,7 @@ services:
     image: mongo-express
     restart: always
     env_file:
-      - ./backend/openapi-express-ts/.env
+      - ./backend/.env
     ports:
       - "8083:8081"
     environment:
@@ -41,11 +41,11 @@ services:
   api:
     build:
       context: .
-      dockerfile: backend/openapi-express-ts/Dockerfile
+      dockerfile: backend/Dockerfile
     ports:
       - "4000:3000"
     env_file:
-      - ./backend/openapi-express-ts/.env
+      - ./backend/.env
     environment:
       DATABASE_URL: mongodb://root:example@mongodb:27017/app?authSource=admin&directConnection=true
     depends_on:

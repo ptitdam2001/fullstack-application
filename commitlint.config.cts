@@ -1,6 +1,5 @@
-import type {UserConfig} from '@commitlint/types'; 
-import {RuleConfigSeverity} from '@commitlint/types'; 
-
+import type { UserConfig } from "@commitlint/types";
+import { RuleConfigSeverity } from "@commitlint/types";
 
 const Configuration: UserConfig = {
   extends: ["@commitlint/config-conventional"],
@@ -11,7 +10,11 @@ const Configuration: UserConfig = {
    */
   formatter: "@commitlint/format",
   rules: {
-    'subject-case': [RuleConfigSeverity.Warning, 'always', ['sentence-case', 'start-case', 'pascal-case', 'upper-case']], 
+    "subject-case": [
+      RuleConfigSeverity.Warning,
+      "always",
+      ["sentence-case", "start-case", "pascal-case", "upper-case"],
+    ],
   },
 };
 

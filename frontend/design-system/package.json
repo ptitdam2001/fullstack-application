@@ -40,8 +40,12 @@
     "react-dom": ">=19",
     "tailwindcss": ">=4"
   },
+  "prettier": "@repo/prettier-config",
   "devDependencies": {
+    "@repo/eslint-config": "file:../../tooling/eslint-config",
+    "@repo/prettier-config": "file:../../tooling/prettier-config",
     "@faker-js/faker": "10.4.0",
+    "eslint": "^10.0.0",
     "@storybook/addon-docs": "^10.3.3",
     "@storybook/addon-vitest": "^10.3.3",
     "@storybook/react-vite": "^10.3.3",
