@@ -9,33 +9,38 @@ pnpm start:dev       # Run dev server with hot reload (tsx watch)
 pnpm build           # Bundle with esbuild → dist/index.js
 pnpm start:prod      # Run production build
 pnpm check:type      # TypeScript type checking (no emit)
+pnpm vitest run      # Run all unit tests
 pnpm generate:prisma # Regenerate Prisma client after schema changes
 pnpm format:prisma   # Format prisma/schema.prisma
 ```
 
-No test runner is configured.
-
 ## Architecture
 
-**OpenAPI-first**: Routes, validation, and request/response schemas are defined in `../openapi.yml` (one level up). The [openapi-backend](https://github.com/anttiviljami/openapi-backend) library validates all incoming requests against the spec and routes them by `operationId`.
+**OpenAPI-first**: Routes, validation, and request/response schemas are defined in `openapi.yml`. The [openapi-backend](https://github.com/anttiviljami/openapi-backend) library validates all incoming requests against the spec and routes them by `operationId`.
 
-**Request flow**: `index.ts` → OpenAPI Backend middleware (validates + matches operationId) → controller handler
+**Hexagonal architecture** (Ports & Adapters) — one folder per domain under `src/`:
 
-**Handler signature** (all handlers follow this pattern):
+```
+src/<domain>/
+├── domain/         # Pure types, value objects, errors (no Prisma, no Express)
+├── ports/          # TypeScript interfaces (output ports = repositories)
+├── application/    # Use cases + Vitest unit tests
+└── infrastructure/ # PrismaRepository + HttpHandlers (adapters)
+```
+
+**Domains**: `auth`, `user`, `team`, `player` (inside team), `match`, `championship`
+
+**Request flow**: `index.ts` → OpenAPI Backend (validates + routes by operationId) → HttpHandler → UseCases → Repository → Prisma
+
+**Handler signature**:
 
 ```typescript
 export const operationName = async (ctx: Context, req: Request, res: Response) => { ... }
 ```
 
-Handlers are registered in `index.ts` via `api.register({ operationId: handlerFn, ... })`.
+**Auth**: JWT Bearer token. `requireRoles(ctx, Role.X)` enforces role-based access — throws `ForbiddenError`/`UnauthorizedError`, never caught in try/catch. Public endpoints have `security: []` in the spec.
 
-**Auth**: JWT Bearer token. The security handler in `index.ts` verifies the token and attaches `ctx.security.jwt`. Token payload: `{ data: userId }`. Public endpoints are marked `security: []` in the spec.
-
-**Data model source of truth**: `../openapi.yml` defines the canonical schemas (User, Player, Team, Game, GameTeam, Area, etc.). `prisma/schema.prisma` is the MongoDB persistence layer — it must stay in sync with the OpenAPI schemas, but the OpenAPI spec is what drives the API contract and TypeScript types used in controllers.
-
-**Database**: Prisma ORM + MongoDB. Singleton client in `utils/prismaClient.ts`. When adding or changing a model, update `openapi.yml` first, then `prisma/schema.prisma`, then run `pnpm generate:prisma`.
-
-**Not yet implemented**: Many endpoints exist in `openapi.yml` but have no handler (logout, forgotPassword, areas CRUD, games CRUD, team players, team calendar). These return a 501 error.
+**ESM strict**: all TypeScript imports must use `.js` extensions.
 
 ## Environment
 
@@ -51,7 +56,7 @@ Copy `.env.sample` → `.env` and configure:
 | File                   | Purpose                                                   |
 | ---------------------- | --------------------------------------------------------- |
 | `index.ts`             | App entry: middleware, OpenAPI init, handler registration |
-| `../openapi.yml`       | Source of truth for all routes and schemas                |
-| `prisma/schema.prisma` | Database models                                           |
-| `controllers/types.ts` | Shared TypeScript types for controllers                   |
+| `openapi.yml`          | Source of truth for all routes and schemas                |
+| `prisma/schema.prisma` | Source of truth for database structure                    |
+| `utils/prismaClient.ts`| Singleton Prisma client                                   |
 | `config/logger.ts`     | Winston logger setup                                      |
