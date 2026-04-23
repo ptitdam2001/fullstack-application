@@ -1,0 +1,20 @@
+meta {
+  name: Get Matches
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/matches
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:query {
+  page: 1
+  count: 20
+}

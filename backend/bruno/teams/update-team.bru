@@ -1,0 +1,22 @@
+meta {
+  name: Update Team
+  type: http
+  seq: 5
+}
+
+patch {
+  url: {{baseUrl}}/team/{{teamId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "FC Example Updated",
+    "color": "#ff0000"
+  }
+}

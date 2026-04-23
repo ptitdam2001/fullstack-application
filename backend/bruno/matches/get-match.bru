@@ -1,0 +1,15 @@
+meta {
+  name: Get Match
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/match/{{matchId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

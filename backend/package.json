@@ -10,7 +10,10 @@
     "build": "esbuild index.ts --platform=node --format=esm --bundle --packages=external --outfile=./dist/index.js",
     "start:dev": "tsx watch index.ts",
     "start:prod": "node ./dist/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint .",
+    "check:format": "prettier --check .",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "keywords": [],
   "author": "",
@@ -35,8 +38,8 @@
     "onlyBuiltDependencies": ["bcrypt", "@prisma/client", "@prisma/engines", "esbuild", "prisma"]
   },
   "devDependencies": {
-    "@repo/eslint-config": "workspace:*",
-    "@repo/prettier-config": "workspace:*",
+    "@repo/eslint-config": "file:../tooling/eslint-config",
+    "@repo/prettier-config": "file:../tooling/prettier-config",
     "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
@@ -47,7 +50,8 @@
     "eslint": "^10.0.0",
     "prettier": "^3.0.0",
     "tsx": "^4.19.1",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.5"
   },
   "prettier": "@repo/prettier-config"
 }

@@ -1,0 +1,15 @@
+meta {
+  name: Count Teams
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/teams/count
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

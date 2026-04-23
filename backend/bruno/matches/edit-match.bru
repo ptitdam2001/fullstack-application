@@ -1,0 +1,25 @@
+meta {
+  name: Edit Match
+  type: http
+  seq: 5
+}
+
+patch {
+  url: {{baseUrl}}/match/{{matchId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "date": "2026-05-10T17:00:00.000Z",
+    "teams": [
+      { "teamId": "team-id-1", "score": 2 },
+      { "teamId": "team-id-2", "score": 1 }
+    ]
+  }
+}

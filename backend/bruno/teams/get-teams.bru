@@ -1,0 +1,20 @@
+meta {
+  name: Get Teams
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/teams
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:query {
+  page: 1
+  limit: 20
+}

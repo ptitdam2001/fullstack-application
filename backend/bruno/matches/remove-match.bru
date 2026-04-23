@@ -1,0 +1,15 @@
+meta {
+  name: Remove Match
+  type: http
+  seq: 6
+}
+
+delete {
+  url: {{baseUrl}}/match/{{matchId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

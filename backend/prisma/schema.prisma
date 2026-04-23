@@ -17,6 +17,13 @@ datasource db {
 // USER
 // ─────────────────────────────────────────
 
+enum Role {
+  ADMIN
+  COACH
+  REFEREE
+  PLAYER
+}
+
 model User {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   lastName  String?
@@ -24,7 +31,7 @@ model User {
   email     String   @unique
   password  String
   avatar    String?
-  roles     String[]
+  role      Role     @default(COACH)
   createdAt DateTime @default(now())
 
   player Player?
@@ -47,7 +54,7 @@ model Area {
 // EMBEDDED TYPES
 // ─────────────────────────────────────────
 
-// Area embarquée dans Team et Game (dénormalisation MongoDB)
+// Area dénormalisée dans Team et Match (snapshot au moment de l'enregistrement)
 type EmbeddedArea {
   id        String
   name      String?
@@ -57,8 +64,8 @@ type EmbeddedArea {
   latitude  Float
 }
 
-// Score d'une équipe dans un match (embarqué dans Game)
-type EmbeddedGameTeam {
+// Score d'une équipe dans un match (embarqué dans Match)
+type EmbeddedMatchTeam {
   teamId String @db.ObjectId
   score  Int    @default(0)
 }
@@ -73,8 +80,8 @@ model Team {
   color String?
   areas EmbeddedArea[]
 
-  players   Player[]
-  gameTeams GameTeam[]
+  players    Player[]
+  matchTeams MatchTeam[]
 }
 
 // ─────────────────────────────────────────
@@ -96,31 +103,34 @@ model Player {
 }
 
 // ─────────────────────────────────────────
-// GAME
+// MATCH
 // ─────────────────────────────────────────
 
-model Game {
-  id    String             @id @default(auto()) @map("_id") @db.ObjectId
+model Match {
+  id    String              @id @default(auto()) @map("_id") @db.ObjectId
   date  DateTime?
-  area  EmbeddedArea?
+  area  EmbeddedArea
   // Les 2 équipes + scores sont embarqués directement dans le document
-  teams EmbeddedGameTeam[]
+  teams EmbeddedMatchTeam[]
 
-  // Relation Prisma pour permettre les requêtes game <-> team
-  gameTeams GameTeam[]
+  // Relation Prisma pour permettre les requêtes match <-> team
+  matchTeams MatchTeam[]
+
+  @@map("games")
 }
 
-// Liaison explicite Game <-> Team
+// Liaison explicite Match <-> Team
 // Permet à Prisma de résoudre les relations et de faire des requêtes
-// du type : prisma.team.findMany({ include: { gameTeams: { include: { game: true } } } })
-model GameTeam {
-  id     String @id @default(auto()) @map("_id") @db.ObjectId
-  gameId String @db.ObjectId
-  teamId String @db.ObjectId
-  score  Int    @default(0)
+// du type : prisma.team.findMany({ include: { matchTeams: { include: { match: true } } } })
+model MatchTeam {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  matchId String @db.ObjectId
+  teamId  String @db.ObjectId
+  score   Int    @default(0)
 
-  game Game @relation(fields: [gameId], references: [id], onDelete: Cascade)
-  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  match Match @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  team  Team  @relation(fields: [teamId], references: [id], onDelete: Cascade)
 
-  @@unique([gameId, teamId])
+  @@unique([matchId, teamId])
+  @@map("gameTeams")
 }

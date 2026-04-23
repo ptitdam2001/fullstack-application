@@ -1,0 +1,15 @@
+meta {
+  name: Count Matches
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/matches/count
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
