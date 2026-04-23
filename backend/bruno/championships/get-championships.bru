@@ -1,0 +1,16 @@
+meta {
+  name: Get Championships
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/championships
+  body: none
+  auth: none
+}
+
+params:query {
+  page: 1
+  count: 20
+}

@@ -825,6 +825,142 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorOutput"
 
+  /championships:
+    get:
+      operationId: getChampionships
+      description: "Get list of championships"
+      tags:
+        - Championship
+      security: []
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+        - in: query
+          name: count
+          schema:
+            type: integer
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Championship"
+
+  /championships/count:
+    get:
+      operationId: countChampionships
+      description: "Count championships"
+      tags:
+        - Championship
+      security: []
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Count"
+
+  /championship:
+    post:
+      operationId: createChampionship
+      description: "Create a championship"
+      tags:
+        - Championship
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChampionshipInput"
+      responses:
+        201:
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Championship"
+
+  /championship/{id}:
+    get:
+      operationId: getChampionship
+      description: "Get a championship"
+      tags:
+        - Championship
+      security: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Championship"
+        404:
+          description: "Not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorOutput"
+    patch:
+      operationId: updateChampionship
+      description: "Update a championship"
+      tags:
+        - Championship
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChampionshipInput"
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Championship"
+        404:
+          description: "Not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorOutput"
+    delete:
+      operationId: removeChampionship
+      description: "Delete a championship"
+      tags:
+        - Championship
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        204:
+          description: "Deleted"
+        404:
+          description: "Not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorOutput"
+
   /matches:
     get:
       operationId: getMatches
@@ -1293,6 +1429,69 @@ components:
     Match:
       allOf:
         - $ref: "#/components/schemas/MatchInput"
+        - type: object
+          required:
+            - id
+          properties:
+            id:
+              type: string
+              format: uuid
+
+    AgeCategory:
+      type: string
+      enum:
+        - U9
+        - U11
+        - U13
+        - U15
+        - U18
+        - Senior
+
+    PointsConfig:
+      type: object
+      required:
+        - win
+        - draw
+        - loss
+        - forfeit
+      properties:
+        win:
+          type: integer
+        draw:
+          type: integer
+        loss:
+          type: integer
+        forfeit:
+          type: integer
+
+    ChampionshipInput:
+      type: object
+      required:
+        - ageCategory
+        - season
+        - pointsConfig
+      properties:
+        name:
+          type: string
+          nullable: true
+        ageCategory:
+          $ref: "#/components/schemas/AgeCategory"
+        season:
+          type: string
+        startDate:
+          type: string
+          format: date-time
+          nullable: true
+        endDate:
+          type: string
+          format: date-time
+          nullable: true
+        pointsConfig:
+          $ref: "#/components/schemas/PointsConfig"
+
+    Championship:
+      allOf:
+        - $ref: "#/components/schemas/ChampionshipInput"
         - type: object
           required:
             - id

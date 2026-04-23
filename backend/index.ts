@@ -13,6 +13,7 @@ import * as authHandlers from './src/auth/infrastructure/AuthHttpHandlers'
 import * as userHandlers from './src/user/infrastructure/UserHttpHandlers'
 import * as teamHandlers from './src/team/infrastructure/TeamHttpHandlers'
 import * as matchHandlers from './src/match/infrastructure/MatchHttpHandlers'
+import * as championshipHandlers from './src/championship/infrastructure/ChampionshipHttpHandlers'
 
 import { logger } from './config/logger'
 import { prisma } from './utils/prismaClient'
@@ -54,6 +55,7 @@ const api = new OpenAPIBackend({
     ...userHandlers,
     ...teamHandlers,
     ...matchHandlers,
+    ...championshipHandlers,
     validationFail: (c, _: Request, res: Response) => res.status(400).json({ err: c.validation.errors }),
     notFound: (c, _: Request, res: Response) =>
       res

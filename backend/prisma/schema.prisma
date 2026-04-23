@@ -14,6 +14,36 @@ datasource db {
 }
 
 // ─────────────────────────────────────────
+// CHAMPIONSHIP
+// ─────────────────────────────────────────
+
+enum AgeCategory {
+  U9
+  U11
+  U13
+  U15
+  U18
+  Senior
+}
+
+type PointsConfig {
+  win     Int
+  draw    Int
+  loss    Int
+  forfeit Int
+}
+
+model Championship {
+  id           String       @id @default(auto()) @map("_id") @db.ObjectId
+  name         String?
+  ageCategory  AgeCategory
+  season       String
+  startDate    DateTime?
+  endDate      DateTime?
+  pointsConfig PointsConfig
+}
+
+// ─────────────────────────────────────────
 // USER
 // ─────────────────────────────────────────
 

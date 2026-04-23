@@ -1,0 +1,27 @@
+meta {
+  name: Edit Championship
+  type: http
+  seq: 5
+}
+
+patch {
+  url: {{baseUrl}}/championship/{{championshipId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "Championnat U13 2024-2025 (modifié)",
+    "pointsConfig": {
+      "win": 3,
+      "draw": 2,
+      "loss": 1,
+      "forfeit": 0
+    }
+  }
+}
