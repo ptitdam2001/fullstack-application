@@ -4,6 +4,8 @@
 
 - Mettre le git privé
 - feature flag
+- Migration MongoDB vers une PostgreSQL ?
+- mettre en place un systeme de log file JSON pour les agregrateurss anonymisés
 
 ## Fonctionnalités
 
@@ -12,3 +14,4 @@
 - Affiner la gestion des points pour les matchs (ex: règle U11 - 3 tiers temps, 1 point par tier temps gagné, 4 match gagné)
 - Feuille de match (gros sujet)
 - Convocations
+- Stat des joueurs (lié a la feuille de match et au championnat)

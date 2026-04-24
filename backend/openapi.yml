@@ -398,6 +398,200 @@ paths:
             application/json:
               schema:
                 type: boolean
+  /team/{teamId}/coaches:
+    get:
+      operationId: getTeamCoaches
+      description: "List coaches assigned to a team"
+      tags:
+        - UserTeam
+      parameters:
+        - in: path
+          name: teamId
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserTeam"
+  /team/{teamId}/coach/{userId}:
+    post:
+      operationId: assignCoach
+      description: "Assign a coach to a team"
+      tags:
+        - UserTeam
+      parameters:
+        - in: path
+          name: teamId
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      responses:
+        201:
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserTeam"
+        409:
+          description: "Coach already assigned to this team"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorOutput"
+    delete:
+      operationId: removeCoach
+      description: "Remove a coach from a team"
+      tags:
+        - UserTeam
+      parameters:
+        - in: path
+          name: teamId
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      responses:
+        204:
+          description: "Removed"
+        404:
+          description: "Assignment not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorOutput"
+  /user/{userId}/coach-teams:
+    get:
+      operationId: getCoachTeams
+      description: "List teams managed by a coach"
+      tags:
+        - UserTeam
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserTeam"
+  /match/{matchId}/referees:
+    get:
+      operationId: getMatchReferees
+      description: "List referees assigned to a match"
+      tags:
+        - UserMatch
+      parameters:
+        - in: path
+          name: matchId
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserMatch"
+  /match/{matchId}/referee/{userId}:
+    post:
+      operationId: assignReferee
+      description: "Assign a referee to a match"
+      tags:
+        - UserMatch
+      parameters:
+        - in: path
+          name: matchId
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      responses:
+        201:
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserMatch"
+        409:
+          description: "Referee already assigned to this match"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorOutput"
+    delete:
+      operationId: removeReferee
+      description: "Remove a referee from a match"
+      tags:
+        - UserMatch
+      parameters:
+        - in: path
+          name: matchId
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      responses:
+        204:
+          description: "Removed"
+        404:
+          description: "Assignment not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorOutput"
+  /user/{userId}/referee-matches:
+    get:
+      operationId: getUserMatches
+      description: "List matches where a user is referee"
+      tags:
+        - UserMatch
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserMatch"
   /user/{id}:
     delete:
       operationId: "removeUser"
@@ -439,7 +633,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/User"
+              $ref: "#/components/schemas/UpdateUserInput"
       responses:
         200:
           description: ""
@@ -1168,13 +1362,62 @@ components:
       required:
         - email
         - password
-    Role:
+    TeamRole:
       type: string
       enum:
-        - ADMIN
         - COACH
-        - REFEREE
         - PLAYER
+    UserTeam:
+      type: object
+      required:
+        - id
+        - userId
+        - teamId
+        - role
+      properties:
+        id:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
+        teamId:
+          type: string
+          format: uuid
+        role:
+          $ref: "#/components/schemas/TeamRole"
+    UserMatch:
+      type: object
+      required:
+        - id
+        - userId
+        - matchId
+      properties:
+        id:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
+        matchId:
+          type: string
+          format: uuid
+    UpdateUserInput:
+      properties:
+        lastname:
+          nullable: false
+          type: string
+          minLength: 1
+        firstname:
+          nullable: false
+          type: string
+          minLength: 1
+        email:
+          nullable: false
+          type: string
+          format: email
+        avatar:
+          type: string
     User:
       properties:
         lastname:
@@ -1192,15 +1435,13 @@ components:
         _id:
           type: string
           format: uuid
-        role:
-          $ref: "#/components/schemas/Role"
+        isAdmin:
+          type: boolean
+          nullable: false
         createdAt:
           nullable: false
           type: string
           format: date-time
-        password:
-          nullable: false
-          type: string
         avatar:
           type: string
       required:
@@ -1208,6 +1449,7 @@ components:
         - email
         - lastname
         - firstname
+        - isAdmin
     UserWithoutPassword:
       properties:
         lastname:
@@ -1224,8 +1466,9 @@ components:
           nullable: false
           type: "string"
           format: uuid
-        role:
-          $ref: "#/components/schemas/Role"
+        isAdmin:
+          type: boolean
+          nullable: false
         createdAt:
           nullable: false
           type: string
@@ -1237,7 +1480,7 @@ components:
       required:
         - userId
         - email
-        - role
+        - isAdmin
         - token
       properties:
         userId:
@@ -1250,8 +1493,9 @@ components:
           nullable: false
           example:
             - john@example.com
-        role:
-          $ref: "#/components/schemas/Role"
+        isAdmin:
+          type: boolean
+          nullable: false
         token:
           type: string
           nullable: false
@@ -1303,29 +1547,19 @@ components:
         userId:
           type: string
           format: uuid
-        jersey:
-          type: integer
-        position:
-          type: string
         teamId:
           type: string
-        lastname:
-          nullable: false
-          type: string
-          minLength: 1
-        firstname:
-          nullable: false
-          type: string
-          minLength: 1
-        avatar:
+          format: uuid
+        jersey:
+          type: integer
+          nullable: true
+        position:
           type: string
           nullable: true
       required:
         - id
         - userId
         - teamId
-        - lastname
-        - firstname
     GameTeam:
       allOf:
         - $ref: "#/components/schemas/Team"
