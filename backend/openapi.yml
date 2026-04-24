@@ -1155,6 +1155,269 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorOutput"
 
+  /championship/{championshipId}/phases:
+    get:
+      operationId: getChampionshipPhases
+      description: "Get phases of a championship"
+      tags:
+        - Phase
+      security: []
+      parameters:
+        - in: path
+          name: championshipId
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Phase"
+
+  /phase:
+    post:
+      operationId: createPhase
+      description: "Create a phase"
+      tags:
+        - Phase
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PhaseInput"
+      responses:
+        201:
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Phase"
+
+  /phase/{id}:
+    get:
+      operationId: getPhase
+      description: "Get a phase"
+      tags:
+        - Phase
+      security: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Phase"
+        404:
+          description: "Not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorOutput"
+    patch:
+      operationId: updatePhase
+      description: "Update a phase"
+      tags:
+        - Phase
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PhaseInput"
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Phase"
+        404:
+          description: "Not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorOutput"
+    delete:
+      operationId: removePhase
+      description: "Delete a phase"
+      tags:
+        - Phase
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        204:
+          description: "Deleted"
+        404:
+          description: "Not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorOutput"
+
+  /phase/{phaseId}/groups:
+    get:
+      operationId: getPhaseGroups
+      description: "Get groups (poules) of a phase"
+      tags:
+        - Group
+      security: []
+      parameters:
+        - in: path
+          name: phaseId
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Group"
+
+  /group:
+    post:
+      operationId: createGroup
+      description: "Create a group (poule)"
+      tags:
+        - Group
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GroupInput"
+      responses:
+        201:
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Group"
+
+  /group/{id}:
+    get:
+      operationId: getGroup
+      description: "Get a group (poule)"
+      tags:
+        - Group
+      security: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Group"
+        404:
+          description: "Not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorOutput"
+    patch:
+      operationId: updateGroup
+      description: "Update a group (poule)"
+      tags:
+        - Group
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GroupInput"
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Group"
+        404:
+          description: "Not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorOutput"
+    delete:
+      operationId: removeGroup
+      description: "Delete a group (poule)"
+      tags:
+        - Group
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        204:
+          description: "Deleted"
+        404:
+          description: "Not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorOutput"
+
+  /group/{groupId}/standings:
+    get:
+      operationId: getGroupStandings
+      description: "Get standings for a group (poule)"
+      tags:
+        - Standings
+      security: []
+      parameters:
+        - in: path
+          name: groupId
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GroupStandings"
+        404:
+          description: "Not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorOutput"
+
   /matches:
     get:
       operationId: getMatches
@@ -1605,19 +1868,6 @@ components:
           nullable: false
           type: "string"
 
-    MatchTeam:
-      type: object
-      required:
-        - teamId
-        - score
-      properties:
-        teamId:
-          type: string
-          format: uuid
-        score:
-          type: integer
-          default: 0
-
     MatchArea:
       type: object
       required:
@@ -1643,22 +1893,49 @@ components:
           type: number
           format: float
 
+    MatchStatus:
+      type: string
+      enum:
+        - SCHEDULED
+        - PLAYED
+        - FORFEITED
+        - CANCELLED
+
     MatchInput:
       type: object
+      required:
+        - homeTeamId
+        - awayTeamId
+        - area
       properties:
-        date:
+        groupId:
+          type: string
+          format: uuid
+          nullable: true
+        status:
+          $ref: "#/components/schemas/MatchStatus"
+        scheduledAt:
           type: string
           format: date-time
           nullable: true
         area:
           $ref: "#/components/schemas/MatchArea"
-        teams:
-          type: array
-          items:
-            $ref: "#/components/schemas/MatchTeam"
-      required:
-        - area
-        - teams
+        homeTeamId:
+          type: string
+          format: uuid
+        awayTeamId:
+          type: string
+          format: uuid
+        homeGoals:
+          type: integer
+          nullable: true
+        awayGoals:
+          type: integer
+          nullable: true
+        forfeitedBy:
+          type: string
+          format: uuid
+          nullable: true
 
     Match:
       allOf:
@@ -1670,6 +1947,132 @@ components:
             id:
               type: string
               format: uuid
+
+    PhaseType:
+      type: string
+      enum:
+        - GROUP
+        - KNOCKOUT
+
+    PhaseInput:
+      type: object
+      required:
+        - championshipId
+        - type
+        - order
+      properties:
+        championshipId:
+          type: string
+          format: uuid
+        type:
+          $ref: "#/components/schemas/PhaseType"
+        order:
+          type: integer
+        name:
+          type: string
+          nullable: true
+
+    Phase:
+      allOf:
+        - $ref: "#/components/schemas/PhaseInput"
+        - type: object
+          required:
+            - id
+          properties:
+            id:
+              type: string
+              format: uuid
+
+    MatchMode:
+      type: string
+      enum:
+        - SINGLE
+        - HOME_AND_AWAY
+
+    GroupInput:
+      type: object
+      required:
+        - phaseId
+        - name
+        - matchMode
+        - teamIds
+      properties:
+        phaseId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        matchMode:
+          $ref: "#/components/schemas/MatchMode"
+        teamIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+
+    Group:
+      allOf:
+        - $ref: "#/components/schemas/GroupInput"
+        - type: object
+          required:
+            - id
+          properties:
+            id:
+              type: string
+              format: uuid
+
+    StandingRow:
+      type: object
+      required:
+        - rank
+        - teamId
+        - played
+        - won
+        - drawn
+        - lost
+        - forfeited
+        - goalsFor
+        - goalsAgainst
+        - goalDifference
+        - points
+      properties:
+        rank:
+          type: integer
+        teamId:
+          type: string
+          format: uuid
+        played:
+          type: integer
+        won:
+          type: integer
+        drawn:
+          type: integer
+        lost:
+          type: integer
+        forfeited:
+          type: integer
+        goalsFor:
+          type: integer
+        goalsAgainst:
+          type: integer
+        goalDifference:
+          type: integer
+        points:
+          type: integer
+
+    GroupStandings:
+      type: object
+      required:
+        - groupId
+        - rows
+      properties:
+        groupId:
+          type: string
+          format: uuid
+        rows:
+          type: array
+          items:
+            $ref: "#/components/schemas/StandingRow"
 
     AgeCategory:
       type: string
