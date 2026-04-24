@@ -3,8 +3,7 @@ import type { Context } from 'openapi-backend'
 import { ChampionshipUseCases } from '../application/ChampionshipUseCases.js'
 import { PrismaChampionshipRepository } from './PrismaChampionshipRepository.js'
 import { ChampionshipNotFoundError } from '../domain/ChampionshipErrors.js'
-import { requireRoles } from '../../auth/application/requireRoles.js'
-import { Role } from '../../user/domain/User.js'
+import { requireAdmin } from '../../auth/application/requireRoles.js'
 
 const useCases = new ChampionshipUseCases(new PrismaChampionshipRepository())
 
@@ -28,12 +27,12 @@ export const getChampionship = async (ctx: Context, _: Request, res: Response) =
 }
 
 export const createChampionship = async (ctx: Context, req: Request, res: Response) => {
-  requireRoles(ctx, Role.ADMIN)
+  requireAdmin(ctx)
   res.status(201).json(await useCases.create(req.body))
 }
 
 export const updateChampionship = async (ctx: Context, req: Request, res: Response) => {
-  requireRoles(ctx, Role.ADMIN)
+  requireAdmin(ctx)
   try {
     res.json(await useCases.update(ctx.request.params.id, req.body))
   } catch (err) {
@@ -43,7 +42,7 @@ export const updateChampionship = async (ctx: Context, req: Request, res: Respon
 }
 
 export const removeChampionship = async (ctx: Context, _: Request, res: Response) => {
-  requireRoles(ctx, Role.ADMIN)
+  requireAdmin(ctx)
   try {
     await useCases.delete(ctx.request.params.id)
     res.status(204).send()

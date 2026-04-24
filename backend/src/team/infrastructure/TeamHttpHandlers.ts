@@ -6,11 +6,15 @@ import { PlayerUseCases } from '../../player/application/PlayerUseCases.js'
 import { PrismaPlayerRepository } from '../../player/infrastructure/PrismaPlayerRepository.js'
 import { TeamNotFoundError } from '../domain/TeamErrors.js'
 import { PlayerNotFoundError } from '../../player/domain/PlayerErrors.js'
-import { requireRoles } from '../../auth/application/requireRoles.js'
-import { Role } from '../../user/domain/User.js'
+import { requireAdmin, getAuthPayload } from '../../auth/application/requireRoles.js'
+import { ForbiddenError } from '../../auth/domain/AuthErrors.js'
+import { UserTeamUseCases } from '../../userTeam/application/UserTeamUseCases.js'
+import { PrismaUserTeamRepository } from '../../userTeam/infrastructure/PrismaUserTeamRepository.js'
+import { TeamRole } from '../../userTeam/domain/UserTeam.js'
 
 const teamUseCases = new TeamUseCases(new PrismaTeamRepository())
 const playerUseCases = new PlayerUseCases(new PrismaPlayerRepository())
+const userTeamUseCases = new UserTeamUseCases(new PrismaUserTeamRepository())
 
 export const countTeams = async (_: Context, __: Request, res: Response) => {
   res.json(await teamUseCases.count())
@@ -30,12 +34,12 @@ export const getTeam = async (ctx: Context, _: Request, res: Response) => {
 }
 
 export const createTeam = async (ctx: Context, req: Request, res: Response) => {
-  requireRoles(ctx, Role.ADMIN)
+  requireAdmin(ctx)
   res.status(201).json(await teamUseCases.create(req.body))
 }
 
 export const updateTeam = async (ctx: Context, req: Request, res: Response) => {
-  requireRoles(ctx, Role.ADMIN)
+  requireAdmin(ctx)
   try {
     res.json(await teamUseCases.update(ctx.request.params.id, req.body))
   } catch (err) {
@@ -45,7 +49,7 @@ export const updateTeam = async (ctx: Context, req: Request, res: Response) => {
 }
 
 export const removeTeam = async (ctx: Context, _: Request, res: Response) => {
-  requireRoles(ctx, Role.ADMIN)
+  requireAdmin(ctx)
   try {
     await teamUseCases.delete(ctx.request.params.id)
     res.status(204).send()
@@ -55,8 +59,8 @@ export const removeTeam = async (ctx: Context, _: Request, res: Response) => {
   }
 }
 
+// Tout utilisateur authentifié peut voir les joueurs d'une équipe
 export const getTeamPlayers = async (ctx: Context, _: Request, res: Response) => {
-  requireRoles(ctx, Role.ADMIN, Role.COACH)
   const teamId = ctx.request.params.teamId
   const page = Number(ctx.request.query.page) || 1
   const count = Number(ctx.request.query.count) || 20
@@ -83,10 +87,14 @@ export const getTeamCalendar = async (ctx: Context, _: Request, res: Response) =
 }
 
 export const putUserToTeam = async (ctx: Context, _: Request, res: Response) => {
-  requireRoles(ctx, Role.ADMIN, Role.COACH)
+  const auth = getAuthPayload(ctx)
+  if (!auth.isAdmin) {
+    const canAccess = await userTeamUseCases.hasRole(auth.userId, ctx.request.params.teamId, TeamRole.COACH)
+    if (!canAccess) throw new ForbiddenError()
+  }
   const { teamId, userId } = ctx.request.params
   try {
-    await playerUseCases.assignToTeam(userId, teamId)
+    await playerUseCases.create({ userId, teamId, jersey: null, position: null })
     res.json(true)
   } catch (err) {
     if (err instanceof PlayerNotFoundError) return res.status(404).json({ status: 404, message: err.message })
@@ -96,11 +104,11 @@ export const putUserToTeam = async (ctx: Context, _: Request, res: Response) => 
 }
 
 export const createPlayer = async (ctx: Context, req: Request, res: Response) => {
-  requireRoles(ctx, Role.ADMIN, Role.COACH)
-  const userId = ctx.request.params.userId
-  try {
-    res.status(201).json(await playerUseCases.create({ ...req.body, userId }))
-  } catch (err) {
-    throw err
+  const auth = getAuthPayload(ctx)
+  if (!auth.isAdmin) {
+    const canAccess = await userTeamUseCases.hasRole(auth.userId, req.body.teamId, TeamRole.COACH)
+    if (!canAccess) throw new ForbiddenError()
   }
+  const userId = ctx.request.params.userId
+  res.status(201).json(await playerUseCases.create({ ...req.body, userId }))
 }
