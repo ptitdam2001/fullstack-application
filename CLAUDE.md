@@ -2,6 +2,11 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Architecture Patterns
+
+- This is a pnpm monorepo with a design-system package; rebuild the design-system (`pnpm --filter @repo/design-system build`) before consuming apps when CSS or exports change.
+- Backend uses Prisma + MongoDB; always regenerate the Prisma client (`pnpm generate:prisma`) after schema changes to avoid stale-client 500s.
+
 ## Repository Structure
 
 Monorepo with a React frontend and a Node.js/Express backend sharing a single OpenAPI spec:
@@ -186,6 +191,18 @@ ESLint and Prettier configs are shared via `tooling/` packages:
 
 Backend references tooling via `workspace:*`. Frontend packages use `file:../../tooling/<pkg>`.
 
-## Commits
+## Testing
+
+- Run the full test suite (`pnpm vitest run` in `backend/`) after any domain model or role/permission refactor.
+- When scaffolding a new domain, include unit tests and ensure they pass before committing.
+
+## Commits & Workflow
 
 This repo uses [Conventional Commits](https://www.conventionalcommits.org/) enforced by commitlint + husky. Use `git cz` for an interactive prompt instead of `git commit`.
+
+- Create structured, atomic commits grouped by concern (e.g., security fixes, refactor, tests) rather than single large commits.
+- Push to main after the user confirms completion.
+
+## Skill Authoring Standards
+
+- When creating or refining skills that generate Prisma code, always include: correct nullable syntax, required `select` clauses, and domain-consistent naming conventions.
