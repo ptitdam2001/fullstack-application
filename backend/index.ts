@@ -1,19 +1,23 @@
 import cors from 'cors'
-import express, { Request, Response } from 'express'
+import express, { type NextFunction, Request, Response } from 'express'
 import dotenv from 'dotenv'
 import morgan from 'morgan'
 import jwt from 'jsonwebtoken'
+import { rateLimit } from 'express-rate-limit'
 const { TokenExpiredError } = jwt
 type Secret = jwt.Secret
 
 import { OpenAPIBackend, type Request as RequestOpenApi } from 'openapi-backend'
 import helmet from 'helmet'
 
+import { UnauthorizedError, ForbiddenError } from './src/auth/domain/AuthErrors'
 import * as authHandlers from './src/auth/infrastructure/AuthHttpHandlers'
 import * as userHandlers from './src/user/infrastructure/UserHttpHandlers'
 import * as teamHandlers from './src/team/infrastructure/TeamHttpHandlers'
 import * as matchHandlers from './src/match/infrastructure/MatchHttpHandlers'
 import * as championshipHandlers from './src/championship/infrastructure/ChampionshipHttpHandlers'
+import * as userTeamHandlers from './src/userTeam/infrastructure/UserTeamHttpHandlers'
+import * as userMatchHandlers from './src/userMatch/infrastructure/UserMatchHttpHandlers'
 
 import { logger } from './config/logger'
 import { prisma } from './utils/prismaClient'
@@ -29,13 +33,20 @@ app.use(express.json())
 app.use(helmet())
 app.use(
   cors({
-    // origin: 'http://localhost:5173',
-    origin: '*',
+    origin: process.env.FRONTEND_URL ?? '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
-    // credentials: true,
   })
 )
+
+const loginRateLimit = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 10,
+  standardHeaders: 'draft-8',
+  legacyHeaders: false,
+  message: { status: 429, message: 'Too many login attempts, please try again later.' },
+})
+app.post('/login', loginRateLimit)
 
 const api = new OpenAPIBackend({
   definition: './openapi.yml',
@@ -56,6 +67,8 @@ const api = new OpenAPIBackend({
     ...teamHandlers,
     ...matchHandlers,
     ...championshipHandlers,
+    ...userTeamHandlers,
+    ...userMatchHandlers,
     validationFail: (c, _: Request, res: Response) => res.status(400).json({ err: c.validation.errors }),
     notFound: (c, _: Request, res: Response) =>
       res
@@ -98,6 +111,13 @@ app.use(morgan('combined'))
 
 // use as express middleware
 app.use((req: RequestOpenApi, res: Request) => api.handleRequest(req, req, res))
+
+app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
+  if (err instanceof UnauthorizedError) return res.status(401).json({ status: 401, message: 'Unauthorized' })
+  if (err instanceof ForbiddenError) return res.status(403).json({ status: 403, message: 'Forbidden' })
+  logger.error(err)
+  return res.status(500).json({ status: 500, message: 'Internal server error' })
+})
 
 prisma
   .$connect()
