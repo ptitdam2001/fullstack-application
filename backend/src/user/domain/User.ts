@@ -1,16 +1,9 @@
-export enum Role {
-  ADMIN = 'ADMIN',
-  COACH = 'COACH',
-  REFEREE = 'REFEREE',
-  PLAYER = 'PLAYER',
-}
-
 export type UserProfile = {
   id: string
   firstName: string
   lastName: string | null
   email: string
-  role: Role
+  isAdmin: boolean
   avatar: string | null
   createdAt: Date
 }
@@ -20,8 +13,13 @@ export type CreateUserInput = {
   lastName?: string
   email: string
   password: string
-  role?: Role
+  isAdmin?: boolean
   avatar?: string
 }
 
-export type UpdateUserInput = Partial<Omit<CreateUserInput, 'password'>>
+export type UpdateUserInput = {
+  firstName?: string
+  lastName?: string
+  email?: string
+  avatar?: string
+}

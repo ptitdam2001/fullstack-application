@@ -1,7 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { UserUseCases } from './UserUseCases.js'
 import type { IUserRepository } from '../ports/IUserRepository.js'
-import { Role } from '../domain/User.js'
 import { UserNotFoundError } from '../domain/UserErrors.js'
 
 const mockUser = {
@@ -9,7 +8,7 @@ const mockUser = {
   firstName: 'Bob',
   lastName: 'Martin',
   email: 'bob@example.com',
-  role: Role.COACH,
+  isAdmin: false,
   avatar: null,
   createdAt: new Date(),
 }
@@ -28,9 +27,7 @@ const hashFn = vi.fn().mockResolvedValue('hashed-password')
 
 describe('UserUseCases.getAll', () => {
   it('returns all users', async () => {
-    const useCases = new UserUseCases(makeRepo())
-    const users = await useCases.getAll()
-
+    const users = await new UserUseCases(makeRepo()).getAll()
     expect(users).toHaveLength(1)
     expect(users[0].id).toBe('user-1')
   })
@@ -38,26 +35,20 @@ describe('UserUseCases.getAll', () => {
 
 describe('UserUseCases.getById', () => {
   it('returns user when found', async () => {
-    const useCases = new UserUseCases(makeRepo())
-    const user = await useCases.getById('user-1')
-
+    const user = await new UserUseCases(makeRepo()).getById('user-1')
     expect(user.email).toBe('bob@example.com')
   })
 
   it('throws UserNotFoundError when not found', async () => {
     const repo = makeRepo({ findById: vi.fn().mockResolvedValue(null) })
-    const useCases = new UserUseCases(repo)
-
-    await expect(useCases.getById('unknown')).rejects.toThrow(UserNotFoundError)
+    await expect(new UserUseCases(repo).getById('unknown')).rejects.toThrow(UserNotFoundError)
   })
 })
 
 describe('UserUseCases.create', () => {
   it('hashes password before creating user', async () => {
     const repo = makeRepo()
-    const useCases = new UserUseCases(repo)
-    await useCases.create({ firstName: 'Bob', email: 'bob@example.com', password: 'plain' }, hashFn)
-
+    await new UserUseCases(repo).create({ firstName: 'Bob', email: 'bob@example.com', password: 'plain' }, hashFn)
     expect(hashFn).toHaveBeenCalledWith('plain')
     expect(repo.create).toHaveBeenCalledWith(expect.objectContaining({ password: 'hashed-password' }))
   })
@@ -65,33 +56,25 @@ describe('UserUseCases.create', () => {
 
 describe('UserUseCases.update', () => {
   it('updates user when found', async () => {
-    const useCases = new UserUseCases(makeRepo())
-    const result = await useCases.update('user-1', { firstName: 'Updated' })
-
+    const result = await new UserUseCases(makeRepo()).update('user-1', { firstName: 'Updated' })
     expect(result.firstName).toBe('Updated')
   })
 
   it('throws UserNotFoundError when user does not exist', async () => {
     const repo = makeRepo({ findById: vi.fn().mockResolvedValue(null) })
-    const useCases = new UserUseCases(repo)
-
-    await expect(useCases.update('unknown', { firstName: 'X' })).rejects.toThrow(UserNotFoundError)
+    await expect(new UserUseCases(repo).update('unknown', { firstName: 'X' })).rejects.toThrow(UserNotFoundError)
   })
 })
 
 describe('UserUseCases.delete', () => {
   it('deletes user when found', async () => {
     const repo = makeRepo()
-    const useCases = new UserUseCases(repo)
-    await useCases.delete('user-1')
-
+    await new UserUseCases(repo).delete('user-1')
     expect(repo.delete).toHaveBeenCalledWith('user-1')
   })
 
   it('throws UserNotFoundError when user does not exist', async () => {
     const repo = makeRepo({ findById: vi.fn().mockResolvedValue(null) })
-    const useCases = new UserUseCases(repo)
-
-    await expect(useCases.delete('unknown')).rejects.toThrow(UserNotFoundError)
+    await expect(new UserUseCases(repo).delete('unknown')).rejects.toThrow(UserNotFoundError)
   })
 })

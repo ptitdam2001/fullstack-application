@@ -1,73 +1,56 @@
 import { prisma } from '../../../utils/prismaClient.js'
 import type { IUserRepository } from '../ports/IUserRepository.js'
 import type { UserProfile, CreateUserInput, UpdateUserInput } from '../domain/User.js'
-import { Role } from '../domain/User.js'
 
-function mapUser(user: {
-  id: string
-  firstName: string
-  lastName: string | null
-  email: string
-  role: string
-  avatar: string | null
-  createdAt: Date
-}): UserProfile {
-  return {
-    id: user.id,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    email: user.email,
-    role: user.role as Role,
-    avatar: user.avatar,
-    createdAt: user.createdAt,
-  }
-}
+const select = {
+  id: true,
+  firstName: true,
+  lastName: true,
+  email: true,
+  isAdmin: true,
+  avatar: true,
+  createdAt: true,
+} as const
 
 export class PrismaUserRepository implements IUserRepository {
   async findById(id: string): Promise<UserProfile | null> {
-    const user = await prisma.user.findUnique({ where: { id }, omit: { password: true } })
-    return user ? mapUser(user) : null
+    return prisma.user.findUnique({ where: { id }, select })
   }
 
   async findByEmailWithPassword(email: string): Promise<(UserProfile & { password: string }) | null> {
-    const user = await prisma.user.findUnique({ where: { email } })
-    if (!user) return null
-    return { ...mapUser(user), password: user.password }
+    const user = await prisma.user.findUnique({ where: { email }, select: { ...select, password: true } })
+    return user ?? null
   }
 
   async findAll(): Promise<UserProfile[]> {
-    const users = await prisma.user.findMany({ omit: { password: true } })
-    return users.map(mapUser)
+    return prisma.user.findMany({ select })
   }
 
   async create(input: CreateUserInput): Promise<UserProfile> {
-    const user = await prisma.user.create({
+    return prisma.user.create({
       data: {
         firstName: input.firstName,
         lastName: input.lastName,
         email: input.email,
         password: input.password,
-        role: input.role ?? 'COACH',
+        isAdmin: input.isAdmin ?? false,
         avatar: input.avatar,
       },
-      omit: { password: true },
+      select,
     })
-    return mapUser(user)
   }
 
   async update(id: string, input: UpdateUserInput): Promise<UserProfile> {
-    const user = await prisma.user.update({
+    return prisma.user.update({
       where: { id },
       data: {
         ...(input.firstName !== undefined && { firstName: input.firstName }),
         ...(input.lastName !== undefined && { lastName: input.lastName }),
         ...(input.email !== undefined && { email: input.email }),
-        ...(input.role !== undefined && { role: input.role }),
         ...(input.avatar !== undefined && { avatar: input.avatar }),
       },
-      omit: { password: true },
+      select,
     })
-    return mapUser(user)
   }
 
   async delete(id: string): Promise<void> {

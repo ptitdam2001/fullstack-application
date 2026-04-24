@@ -3,8 +3,7 @@ import type { Context } from 'openapi-backend'
 import { UserUseCases } from '../application/UserUseCases.js'
 import { UserNotFoundError } from '../domain/UserErrors.js'
 import { PrismaUserRepository } from './PrismaUserRepository.js'
-import { requireRoles } from '../../auth/application/requireRoles.js'
-import { Role } from '../domain/User.js'
+import { requireAdmin, getAuthUserId } from '../../auth/application/requireRoles.js'
 import { ForbiddenError, UnauthorizedError } from '../../auth/domain/AuthErrors.js'
 import { JwtAuthService } from '../../auth/infrastructure/JwtAuthService.js'
 import { logger } from '../../../config/logger.js'
@@ -15,7 +14,7 @@ const useCases = new UserUseCases(repo)
 
 export const getUsers = async (ctx: Context, _: Request, res: Response) => {
   try {
-    requireRoles(ctx, Role.ADMIN)
+    requireAdmin(ctx)
     return res.status(200).json(await useCases.getAll())
   } catch (err) {
     if (err instanceof ForbiddenError) return res.status(403).json({ message: 'Forbidden', status: 403 })
@@ -27,7 +26,7 @@ export const getUsers = async (ctx: Context, _: Request, res: Response) => {
 
 export const getUser = async (ctx: Context, _: Request, res: Response) => {
   try {
-    requireRoles(ctx, Role.ADMIN)
+    requireAdmin(ctx)
     return res.status(200).json(await useCases.getById(ctx.request.params.id as string))
   } catch (err) {
     if (err instanceof ForbiddenError) return res.status(403).json({ message: 'Forbidden', status: 403 })
@@ -40,7 +39,7 @@ export const getUser = async (ctx: Context, _: Request, res: Response) => {
 
 export const createUser = async (ctx: Context, req: Request, res: Response) => {
   try {
-    requireRoles(ctx, Role.ADMIN)
+    requireAdmin(ctx)
     const user = await useCases.create(req.body, p => authService.hashPassword(p))
     return res.status(201).json(user)
   } catch (err) {
@@ -53,7 +52,7 @@ export const createUser = async (ctx: Context, req: Request, res: Response) => {
 
 export const updateUser = async (ctx: Context, req: Request, res: Response) => {
   try {
-    requireRoles(ctx, Role.ADMIN)
+    requireAdmin(ctx)
     return res.status(200).json(await useCases.update(ctx.request.params.id as string, req.body))
   } catch (err) {
     if (err instanceof ForbiddenError) return res.status(403).json({ message: 'Forbidden', status: 403 })
@@ -66,7 +65,7 @@ export const updateUser = async (ctx: Context, req: Request, res: Response) => {
 
 export const removeUser = async (ctx: Context, _: Request, res: Response) => {
   try {
-    requireRoles(ctx, Role.ADMIN)
+    requireAdmin(ctx)
     await useCases.delete(ctx.request.params.id as string)
     return res.status(204).send()
   } catch (err) {
