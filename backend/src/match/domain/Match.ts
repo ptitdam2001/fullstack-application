@@ -1,4 +1,9 @@
-export type MatchTeam = { teamId: string; score: number }
+export enum MatchStatus {
+  SCHEDULED = 'SCHEDULED',
+  PLAYED = 'PLAYED',
+  FORFEITED = 'FORFEITED',
+  CANCELLED = 'CANCELLED',
+}
 
 export type MatchArea = {
   id: string
@@ -11,10 +16,16 @@ export type MatchArea = {
 
 export type Match = {
   id: string
-  date: Date | null
+  groupId: string | null
+  status: MatchStatus
+  scheduledAt: Date | null
   area: MatchArea
-  teams: MatchTeam[]
+  homeTeamId: string
+  awayTeamId: string
+  homeGoals: number | null
+  awayGoals: number | null
+  forfeitedBy: string | null
 }
 
-export type CreateMatchInput = Omit<Match, 'id'>
+export type CreateMatchInput = Omit<Match, 'id' | 'status'> & { status?: MatchStatus }
 export type UpdateMatchInput = Partial<CreateMatchInput>

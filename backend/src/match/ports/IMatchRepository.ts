@@ -6,6 +6,7 @@ export interface IMatchRepository {
   count(): Promise<number>
   findAll(options: PaginationOptions): Promise<Match[]>
   findById(id: string): Promise<Match | null>
+  findByGroupId(groupId: string): Promise<Match[]>
   create(input: CreateMatchInput): Promise<Match>
   update(id: string, input: UpdateMatchInput): Promise<Match>
   delete(id: string): Promise<void>

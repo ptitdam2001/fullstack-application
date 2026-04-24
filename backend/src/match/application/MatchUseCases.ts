@@ -19,6 +19,10 @@ export class MatchUseCases {
     return match
   }
 
+  getByGroupId(groupId: string) {
+    return this.repo.findByGroupId(groupId)
+  }
+
   create(input: CreateMatchInput) {
     return this.repo.create(input)
   }

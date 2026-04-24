@@ -2,7 +2,18 @@ import { prisma } from '../../../utils/prismaClient.js'
 import type { IMatchRepository, PaginationOptions } from '../ports/IMatchRepository.js'
 import type { Match, CreateMatchInput, UpdateMatchInput } from '../domain/Match.js'
 
-const select = { id: true, date: true, area: true, teams: true } as const
+const select = {
+  id: true,
+  groupId: true,
+  status: true,
+  scheduledAt: true,
+  area: true,
+  homeTeamId: true,
+  awayTeamId: true,
+  homeGoals: true,
+  awayGoals: true,
+  forfeitedBy: true,
+} as const
 
 export class PrismaMatchRepository implements IMatchRepository {
   count(): Promise<number> {
@@ -15,6 +26,10 @@ export class PrismaMatchRepository implements IMatchRepository {
 
   async findById(id: string): Promise<Match | null> {
     return prisma.match.findUnique({ where: { id }, select }) as Promise<Match | null>
+  }
+
+  async findByGroupId(groupId: string): Promise<Match[]> {
+    return prisma.match.findMany({ where: { groupId }, select }) as Promise<Match[]>
   }
 
   async create(input: CreateMatchInput): Promise<Match> {
