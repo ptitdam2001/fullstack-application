@@ -18,6 +18,9 @@ import * as matchHandlers from './src/match/infrastructure/MatchHttpHandlers'
 import * as championshipHandlers from './src/championship/infrastructure/ChampionshipHttpHandlers'
 import * as userTeamHandlers from './src/userTeam/infrastructure/UserTeamHttpHandlers'
 import * as userMatchHandlers from './src/userMatch/infrastructure/UserMatchHttpHandlers'
+import * as phaseHandlers from './src/phase/infrastructure/PhaseHttpHandlers'
+import * as groupHandlers from './src/group/infrastructure/GroupHttpHandlers'
+import * as standingsHandlers from './src/standings/infrastructure/StandingsHttpHandlers'
 
 import { logger } from './config/logger'
 import { prisma } from './utils/prismaClient'
@@ -69,6 +72,9 @@ const api = new OpenAPIBackend({
     ...championshipHandlers,
     ...userTeamHandlers,
     ...userMatchHandlers,
+    ...phaseHandlers,
+    ...groupHandlers,
+    ...standingsHandlers,
     validationFail: (c, _: Request, res: Response) => res.status(400).json({ err: c.validation.errors }),
     notFound: (c, _: Request, res: Response) =>
       res
