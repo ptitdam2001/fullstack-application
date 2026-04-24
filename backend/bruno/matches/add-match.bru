@@ -16,7 +16,8 @@ auth:bearer {
 
 body:json {
   {
-    "date": "2026-05-10T15:00:00.000Z",
+    "groupId": "{{groupId}}",
+    "scheduledAt": "2026-05-10T15:00:00.000Z",
     "area": {
       "id": "area-id-here",
       "name": "Stade Municipal",
@@ -25,10 +26,11 @@ body:json {
       "longitude": 2.3522,
       "latitude": 48.8566
     },
-    "teams": [
-      { "teamId": "team-id-1", "score": 0 },
-      { "teamId": "team-id-2", "score": 0 }
-    ]
+    "homeTeamId": "{{teamId}}",
+    "awayTeamId": "team-id-2",
+    "homeGoals": null,
+    "awayGoals": null,
+    "forfeitedBy": null
   }
 }
 

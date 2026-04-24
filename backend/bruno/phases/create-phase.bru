@@ -1,0 +1,30 @@
+meta {
+  name: Create Phase
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/phase
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "championshipId": "{{championshipId}}",
+    "type": "GROUP",
+    "order": 1,
+    "name": "Phase de poules"
+  }
+}
+
+script:post-response {
+  if (res.status === 201 && res.body.id) {
+    bru.setVar("phaseId", res.body.id);
+  }
+}

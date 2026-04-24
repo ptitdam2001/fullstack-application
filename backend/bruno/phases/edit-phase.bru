@@ -1,0 +1,21 @@
+meta {
+  name: Edit Phase
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{baseUrl}}/phase/{{phaseId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "Phase de poules — modifiée"
+  }
+}

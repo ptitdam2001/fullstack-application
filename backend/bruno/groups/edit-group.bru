@@ -1,0 +1,21 @@
+meta {
+  name: Edit Group
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{baseUrl}}/group/{{groupId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "Poule B"
+  }
+}
