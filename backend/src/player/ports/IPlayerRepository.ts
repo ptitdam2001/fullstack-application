@@ -2,8 +2,9 @@ import type { Player, CreatePlayerInput, UpdatePlayerInput } from '../domain/Pla
 
 export interface IPlayerRepository {
   findById(id: string): Promise<Player | null>
-  findByUserId(userId: string): Promise<Player | null>
+  findByUserAndTeam(userId: string, teamId: string): Promise<Player | null>
+  findByUserId(userId: string): Promise<Player[]>
   create(input: CreatePlayerInput): Promise<Player>
   update(id: string, input: UpdatePlayerInput): Promise<Player>
-  assignToTeam(userId: string, teamId: string): Promise<void>
+  delete(id: string): Promise<void>
 }

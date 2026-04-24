@@ -1,5 +1,5 @@
 import type { IPlayerRepository } from '../ports/IPlayerRepository.js'
-import type { CreatePlayerInput } from '../domain/Player.js'
+import type { CreatePlayerInput, UpdatePlayerInput } from '../domain/Player.js'
 import { PlayerNotFoundError } from '../domain/PlayerErrors.js'
 
 export class PlayerUseCases {
@@ -9,9 +9,15 @@ export class PlayerUseCases {
     return this.repo.create(input)
   }
 
-  async assignToTeam(userId: string, teamId: string) {
-    const player = await this.repo.findByUserId(userId)
-    if (!player) throw new PlayerNotFoundError(userId)
-    return this.repo.assignToTeam(userId, teamId)
+  async update(id: string, input: UpdatePlayerInput) {
+    const player = await this.repo.findById(id)
+    if (!player) throw new PlayerNotFoundError(id)
+    return this.repo.update(id, input)
+  }
+
+  async delete(id: string) {
+    const player = await this.repo.findById(id)
+    if (!player) throw new PlayerNotFoundError(id)
+    return this.repo.delete(id)
   }
 }
