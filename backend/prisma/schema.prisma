@@ -38,6 +38,52 @@ model Championship {
   startDate    DateTime?
   endDate      DateTime?
   pointsConfig PointsConfig
+
+  phases Phase[]
+}
+
+// ─────────────────────────────────────────
+// PHASE
+// ─────────────────────────────────────────
+
+enum PhaseType {
+  GROUP
+  KNOCKOUT
+}
+
+model Phase {
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  championshipId String    @db.ObjectId
+  type           PhaseType
+  order          Int
+  name           String?
+
+  championship Championship @relation(fields: [championshipId], references: [id], onDelete: Cascade)
+  groups       Group[]
+
+  @@map("phases")
+}
+
+// ─────────────────────────────────────────
+// GROUP (poule)
+// ─────────────────────────────────────────
+
+enum MatchMode {
+  SINGLE
+  HOME_AND_AWAY
+}
+
+model Group {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  phaseId   String    @db.ObjectId
+  name      String
+  matchMode MatchMode
+  teamIds   String[]  @db.ObjectId
+
+  phase   Phase   @relation(fields: [phaseId], references: [id], onDelete: Cascade)
+  matches Match[]
+
+  @@map("poules")
 }
 
 // ─────────────────────────────────────────
@@ -86,12 +132,6 @@ type EmbeddedArea {
   latitude  Float
 }
 
-// Score d'une équipe dans un match (embarqué dans Match)
-type EmbeddedMatchTeam {
-  teamId String @db.ObjectId
-  score  Int    @default(0)
-}
-
 // ─────────────────────────────────────────
 // TEAM
 // ─────────────────────────────────────────
@@ -102,9 +142,8 @@ model Team {
   color String?
   areas EmbeddedArea[]
 
-  players    Player[]
-  matchTeams MatchTeam[]
-  userTeams  UserTeam[]
+  players   Player[]
+  userTeams UserTeam[]
 }
 
 // ─────────────────────────────────────────
@@ -153,32 +192,29 @@ model UserTeam {
 // MATCH
 // ─────────────────────────────────────────
 
-model Match {
-  id    String              @id @default(auto()) @map("_id") @db.ObjectId
-  date  DateTime?
-  area  EmbeddedArea
-  // Les 2 équipes + scores sont embarqués directement dans le document
-  teams EmbeddedMatchTeam[]
+enum MatchStatus {
+  SCHEDULED
+  PLAYED
+  FORFEITED
+  CANCELLED
+}
 
-  // Relation Prisma pour permettre les requêtes match <-> team
-  matchTeams  MatchTeam[]
+model Match {
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  groupId     String?     @db.ObjectId
+  status      MatchStatus @default(SCHEDULED)
+  scheduledAt DateTime?
+  area        EmbeddedArea
+  homeTeamId  String      @db.ObjectId
+  awayTeamId  String      @db.ObjectId
+  homeGoals   Int?
+  awayGoals   Int?
+  forfeitedBy String?     @db.ObjectId
+
+  group       Group?    @relation(fields: [groupId], references: [id])
   userMatches UserMatch[]
 
   @@map("games")
-}
-
-// Liaison explicite Match <-> Team
-model MatchTeam {
-  id      String @id @default(auto()) @map("_id") @db.ObjectId
-  matchId String @db.ObjectId
-  teamId  String @db.ObjectId
-  score   Int    @default(0)
-
-  match Match @relation(fields: [matchId], references: [id], onDelete: Cascade)
-  team  Team  @relation(fields: [teamId], references: [id], onDelete: Cascade)
-
-  @@unique([matchId, teamId])
-  @@map("gameTeams")
 }
 
 // ─────────────────────────────────────────
