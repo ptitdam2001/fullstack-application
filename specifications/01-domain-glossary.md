@@ -32,11 +32,11 @@ Participant au championnat, représenté par une couleur et associé à un lieu 
 
 ### Match (Match)
 
-Rencontre entre deux équipes (un hôte et un visiteur) dans le cadre d'une phase. Produit un score final.
+Rencontre entre deux équipes dans le cadre d'une phase. Produit un score final.
 
 ### Score (Score)
 
-Résultat d'un match exprimé en nombre de buts marqués par chaque équipe (`homeGoals`, `awayGoals`). Peut être absent si le match n'a pas encore été joué.
+Résultat d'un match exprimé en nombre de buts marqués par chaque équipe. Peut être absent si le match n'a pas encore été joué.
 
 ### Forfait (Forfeit)
 
@@ -44,7 +44,7 @@ Situation où une équipe déclare forfait avant ou pendant un match. La configu
 
 ### Classement (Standings)
 
-Tableau ordonné des équipes d'une poule, calculé à partir des résultats de tous les matchs de la poule selon la configuration des points du championnat.
+Tableau ordonné des équipes d'une poule, calculé à partir des résultats de tous les matchs selon la configuration des points du championnat.
 
 ### Qualification inter-phases (PhaseQualification)
 
@@ -56,13 +56,40 @@ Paramètre du championnat définissant combien de points sont attribués selon l
 
 ---
 
+## Entités utilisateur
+
+### Utilisateur (User)
+
+Compte applicatif. Possède un flag `isAdmin` pour les droits système. Les rôles métier (coach, joueur, arbitre) sont portés par les relations `UserTeam` et `UserMatch`, pas par `User` directement.
+
+### Appartenance équipe (UserTeam)
+
+Relation entre un `User` et une `Team` avec un rôle contextuel (`COACH` ou `PLAYER`). Contrainte d'unicité sur `[userId, teamId, role]` : un même utilisateur peut être COACH et PLAYER de la même équipe simultanément, mais ne peut pas avoir le même rôle deux fois dans la même équipe.
+
+### Rôle d'équipe (TeamRole)
+
+Enum contextuel porté par `UserTeam`. Valeurs : `COACH`, `PLAYER`.
+
+### Profil joueur (Player)
+
+Données spécifiques au rôle joueur dans une équipe : numéro de maillot (`jersey`), poste (`position`). Distinct de `User` (prénom, nom, avatar restent sur `User`). Clé d'unicité : `[userId, teamId]`. Socle pour les futures statistiques par joueur.
+
+### Arbitrage match (UserMatch)
+
+Relation entre un `User` et un `Match` pour désigner un arbitre. Un match peut avoir plusieurs arbitres. Contrainte d'unicité sur `[userId, matchId]`.
+
+---
+
 ## Relations clés
 
 ```text
 AgeCategory
-    └── Championship (1 catégorie → N championnats, ex. saisons différentes)
-            └── Phase (ordonné, ex. Phase 1 = poules, Phase 2 = élimination)
+    └── Championship
+            └── Phase
                     ├── Group / Bracket
-                    │       └── Match (hôte, visiteur, score)
-                    └── PhaseQualification (règle de passage vers la phase suivante)
+                    │       └── Match ←── UserMatch ──→ User (arbitres)
+                    └── PhaseQualification
+
+Team ←── UserTeam ──→ User (coaches, joueurs)
+Team ←── Player   ──→ User (profil joueur : maillot, poste)
 ```

@@ -1,15 +1,42 @@
 # Profils utilisateurs
 
-## Rôles
+## Modèle de rôles
 
-L'application définit quatre rôles, activés progressivement.
+Le modèle distingue deux niveaux de rôles :
 
-| Rôle      | Statut                   |
-| --------- | ------------------------ |
-| `ADMIN`   | Actif                    |
-| `COACH`   | Actif                    |
-| `REFEREE` | Actif                    |
-| `PLAYER`  | Prévu (évolution future) |
+### Niveau système — `User.isAdmin`
+
+`isAdmin: boolean` sur l'entité `User`. Un admin gère la plateforme dans son ensemble. C'est le seul privilège global ; tous les autres rôles sont **contextuels**.
+
+### Niveau contextuel — `UserTeam` et `UserMatch`
+
+Les rôles COACH, PLAYER et REFEREE ne sont pas stockés sur `User` mais dans des tables de relation :
+
+| Table       | Relation     | Rôle porté          |
+| ----------- | ------------ | ------------------- |
+| `UserTeam`  | User ↔ Team  | `COACH` ou `PLAYER` |
+| `UserMatch` | User ↔ Match | Arbitre (implicite) |
+
+---
+
+## Use cases d'appartenance
+
+Un même utilisateur peut cumuler plusieurs rôles sans conflit. Toutes ces combinaisons sont supportées :
+
+| Use case | Enregistrements |
+|---|---|
+| Coach d'une équipe | `UserTeam(COACH, team-A)` |
+| Joueur d'une équipe | `UserTeam(PLAYER, team-A)` + `Player` |
+| Coach ET joueur de la **même** équipe | `UserTeam(COACH, team-A)` + `UserTeam(PLAYER, team-A)` + `Player` |
+| Coach d'une équipe, joueur d'une autre | `UserTeam(COACH, team-A)` + `UserTeam(PLAYER, team-B)` + `Player` |
+| Coach de plusieurs équipes | `UserTeam(COACH, team-A)` + `UserTeam(COACH, team-B)` |
+| Arbitre d'un match | `UserMatch(match-1)` |
+| Arbitre + coach d'une équipe | `UserMatch` + `UserTeam(COACH)` |
+| Arbitre + joueur d'une équipe | `UserMatch` + `UserTeam(PLAYER)` + `Player` |
+| Arbitre + joueur + coach d'équipes différentes | `UserMatch` + `UserTeam(PLAYER)` + `UserTeam(COACH)` + `Player` |
+| Admin | `User.isAdmin = true` — aucun `UserTeam` requis |
+
+> **Contrainte d'unicité** : `UserTeam` a `@@unique([userId, teamId, role])`. Un utilisateur peut être COACH et PLAYER de la même équipe simultanément, mais pas COACH deux fois de la même équipe.
 
 ---
 
@@ -17,19 +44,19 @@ L'application définit quatre rôles, activés progressivement.
 
 ### Admin
 
-Gestionnaire de la plateforme. Accès complet en lecture et écriture sur toutes les entités. Seul rôle capable de créer des utilisateurs, d'assigner des arbitres à des matchs et d'associer des coachs à des équipes.
+Gestionnaire de la plateforme. Accès complet en lecture et écriture sur toutes les entités. Seul capable de créer des utilisateurs, d'assigner des arbitres à des matchs et d'associer des coachs ou joueurs à des équipes.
 
 ### Coach
 
-Responsable d'une équipe. Accès en lecture sur l'ensemble des données publiques (championnats, classements, matchs). Accès en écriture limité à la gestion des joueurs de son propre équipe. Un coach est associé à une seule équipe à la fois (association gérée par un Admin).
+Responsable d'une ou plusieurs équipes. Identifié par un enregistrement `UserTeam(COACH, teamId)`. Accès en lecture sur toutes les données. Accès en écriture limité aux joueurs des équipes dont il est coach — vérifié en base de données à chaque opération.
+
+### Joueur
+
+Participant inscrit dans une équipe via `UserTeam(PLAYER, teamId)`. Possède un profil joueur (`Player`) avec numéro de maillot et poste. Un utilisateur peut être joueur dans plusieurs équipes (un `UserTeam(PLAYER)` + `Player` par équipe). Accès en lecture seule.
 
 ### Arbitre
 
-Officiel désigné pour un ou plusieurs matchs. Accès en lecture sur l'ensemble des données publiques. Peut saisir et valider le score des matchs qui lui sont explicitement assignés. Ne peut pas modifier d'autres données.
-
-### Joueur _(évolution future)_
-
-Participant inscrit dans une équipe. Accès en lecture seule sur ses propres données (ses matchs, le classement de son équipe, son profil). Ne peut rien modifier. L'activation de ce rôle est conditionnée par une décision de déploiement.
+Officiel désigné pour un ou plusieurs matchs via `UserMatch`. Accès en lecture sur toutes les données publiques. Peut saisir et valider les scores des matchs qui lui sont assignés.
 
 ---
 
@@ -37,14 +64,13 @@ Participant inscrit dans une équipe. Accès en lecture seule sur ses propres do
 
 ### Gestion des utilisateurs
 
-| Action                     | Admin | Coach | Arbitre | Joueur |
-| -------------------------- | ----- | ----- | ------- | ------ |
-| Lister les utilisateurs    | ✅    | ❌    | ❌      | ❌     |
-| Créer un utilisateur       | ✅    | ❌    | ❌      | ❌     |
-| Modifier un utilisateur    | ✅    | ❌    | ❌      | ❌     |
-| Supprimer un utilisateur   | ✅    | ❌    | ❌      | ❌     |
-| Voir son propre profil     | ✅    | ✅    | ✅      | ✅     |
-| Modifier son propre profil | ✅    | ✅    | ✅      | ❌     |
+| Action                  | Admin | Coach | Arbitre | Joueur |
+| ----------------------- | ----- | ----- | ------- | ------ |
+| Lister les utilisateurs | ✅    | ❌    | ❌      | ❌     |
+| Créer un utilisateur    | ✅    | ❌    | ❌      | ❌     |
+| Modifier un utilisateur | ✅    | ❌    | ❌      | ❌     |
+| Supprimer un utilisateur| ✅    | ❌    | ❌      | ❌     |
+| Voir son propre profil  | ✅    | ✅    | ✅      | ✅     |
 
 ### Championnats
 
@@ -54,34 +80,35 @@ Participant inscrit dans une équipe. Accès en lecture seule sur ses propres do
 | Créer              | ✅    | ❌    | ❌      | ❌     |
 | Modifier           | ✅    | ❌    | ❌      | ❌     |
 | Supprimer          | ✅    | ❌    | ❌      | ❌     |
-| Gérer les phases   | ✅    | ❌    | ❌      | ❌     |
 
 ### Équipes
 
-| Action                                | Admin | Coach | Arbitre | Joueur |
-| ------------------------------------- | ----- | ----- | ------- | ------ |
-| Lister / consulter toutes les équipes | ✅    | ✅    | ✅      | ✅     |
-| Créer une équipe                      | ✅    | ❌    | ❌      | ❌     |
-| Modifier une équipe                   | ✅    | ❌    | ❌      | ❌     |
-| Supprimer une équipe                  | ✅    | ❌    | ❌      | ❌     |
-| Gérer les joueurs de son équipe       | ✅    | ✅    | ❌      | ❌     |
-| Consulter les joueurs de son équipe   | ✅    | ✅    | ❌      | ✅     |
+| Action                                | Admin | Coach (son équipe) | Coach (autre) | Arbitre | Joueur |
+| ------------------------------------- | ----- | ------------------ | ------------- | ------- | ------ |
+| Lister / consulter                    | ✅    | ✅                 | ✅            | ✅      | ✅     |
+| Créer                                 | ✅    | ❌                 | ❌            | ❌      | ❌     |
+| Modifier                              | ✅    | ❌                 | ❌            | ❌      | ❌     |
+| Supprimer                             | ✅    | ❌                 | ❌            | ❌      | ❌     |
+| Voir les joueurs d'une équipe         | ✅    | ✅                 | ✅            | ✅      | ✅     |
+| Gérer les joueurs d'une équipe        | ✅    | ✅                 | ❌            | ❌      | ❌     |
+| Assigner un coach à une équipe        | ✅    | ❌                 | ❌            | ❌      | ❌     |
 
-> Un coach ne peut gérer les joueurs que de l'équipe à laquelle il est associé. Il ne peut pas voir la liste des joueurs des équipes adverses.
+> La vérification "son équipe" est effectuée en DB via `UserTeamUseCases.hasRole(userId, teamId, COACH)` dans le use case.
 
 ### Matchs
 
-| Action                              | Admin | Coach | Arbitre | Joueur |
-| ----------------------------------- | ----- | ----- | ------- | ------ |
-| Lister / consulter                  | ✅    | ✅    | ✅      | ✅     |
-| Créer / générer des matchs          | ✅    | ❌    | ❌      | ❌     |
-| Modifier les métadonnées d'un match | ✅    | ❌    | ❌      | ❌     |
-| Saisir le score d'un match assigné  | ✅    | ❌    | ✅      | ❌     |
-| Valider le score d'un match assigné | ✅    | ❌    | ✅      | ❌     |
-| Déclarer un forfait                 | ✅    | ❌    | ❌      | ❌     |
-| Assigner un arbitre à un match      | ✅    | ❌    | ❌      | ❌     |
+| Action                              | Admin | Coach | Arbitre (assigné) | Joueur |
+| ----------------------------------- | ----- | ----- | ----------------- | ------ |
+| Lister / consulter                  | ✅    | ✅    | ✅                | ✅     |
+| Créer / générer                     | ✅    | ❌    | ❌                | ❌     |
+| Modifier les métadonnées            | ✅    | ❌    | ❌                | ❌     |
+| Saisir le score                     | ✅    | ❌    | ✅                | ❌     |
+| Valider le score                    | ✅    | ❌    | ✅                | ❌     |
+| Déclarer un forfait                 | ✅    | ❌    | ❌                | ❌     |
+| Assigner un arbitre                 | ✅    | ❌    | ❌                | ❌     |
 
-> Un arbitre ne peut saisir un score que pour les matchs qui lui sont explicitement assignés (relation `match.refereeId = user.id`).
+> Un arbitre ne peut saisir un score que pour les matchs où il a un enregistrement `UserMatch(userId, matchId)`.
+> Un match peut avoir plusieurs arbitres.
 
 ### Classements
 
@@ -95,34 +122,28 @@ Participant inscrit dans une équipe. Accès en lecture seule sur ses propres do
 
 ### Coach ↔ Équipe
 
-- Un coach est associé à **une seule équipe** à la fois.
-- L'association est créée et modifiée exclusivement par un Admin.
-- Un coach sans équipe associée a un accès en lecture seule (comme un arbitre sans match).
-- Un Admin peut réassigner un coach à une autre équipe (rompt l'association précédente).
+- Un coach peut gérer **plusieurs équipes** simultanément.
+- L'association est créée et supprimée exclusivement par un Admin via `POST/DELETE /team/{teamId}/coach/{userId}`.
+- Un coach sans équipe associée a accès en lecture seule.
+
+### Joueur ↔ Équipe
+
+- Un joueur peut appartenir à **plusieurs équipes** (un `UserTeam(PLAYER)` + `Player` par équipe).
+- Un utilisateur peut être COACH et PLAYER de la **même** équipe.
+- Le profil `Player` stocke uniquement le numéro de maillot et le poste (prénom, nom, avatar proviennent de `User`).
 
 ### Arbitre ↔ Match
 
 - Un arbitre peut être assigné à **plusieurs matchs**.
-- L'assignation est réalisée exclusivement par un Admin.
-- Un match peut n'avoir aucun arbitre assigné (le score est alors saisi par un Admin).
-- Un arbitre voit uniquement les matchs qui lui sont assignés dans son espace personnel, mais peut consulter tous les matchs en lecture.
-
----
-
-## Évolution : rôle Joueur
-
-L'activation du rôle `PLAYER` est conditionnée à la décision de déploiement. Avant activation :
-
-- Le type `PLAYER` existe dans le modèle de données mais ne peut pas être attribué via l'interface.
-- Lorsque le rôle est activé, un joueur est associé à une équipe (via la relation existante `Player`).
-- Scope d'accès : lecture seule sur ses propres matchs, le classement de son équipe, et son profil.
-- Le joueur ne peut pas modifier son profil.
+- Un match peut avoir **plusieurs arbitres**.
+- L'assignation est réalisée exclusivement par un Admin via `POST /match/{matchId}/referee/{userId}`.
+- Un match sans arbitre voit son score saisi par un Admin.
 
 ---
 
 ## Contraintes de sécurité
 
-- Toutes les routes de l'API vérifient le rôle via un middleware de guard après validation du JWT.
-- Les vérifications de propriété (ex. coach → son équipe, arbitre → son match) sont effectuées au niveau de la couche application (use cases), pas uniquement au niveau du middleware.
-- Un utilisateur sans rôle valide ou avec un token expiré reçoit une réponse `401 Unauthorized`.
-- Un utilisateur avec un rôle insuffisant reçoit une réponse `403 Forbidden`.
+- Toutes les routes requièrent un JWT valide (sauf `POST /login` et `POST /forgot-password`).
+- Les vérifications de propriété (coach → son équipe, arbitre → son match) sont effectuées dans les use cases via les repositories `UserTeam` et `UserMatch`.
+- Token absent ou expiré → `401 Unauthorized`.
+- Droits insuffisants → `403 Forbidden`.

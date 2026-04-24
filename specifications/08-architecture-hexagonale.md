@@ -28,65 +28,38 @@ backend/src/<domain>/
 ├── ports/
 │   └── I<Entity>Repository.ts   # Interface output port
 ├── application/
-│   └── <Entity>UseCases.ts      # Use cases injectés via interface
+│   ├── <Entity>UseCases.ts      # Use cases injectés via interface
+│   └── <Entity>UseCases.test.ts # Tests unitaires (mocks d'interfaces)
 └── infrastructure/
     ├── Prisma<Entity>Repository.ts  # Implémente le port via Prisma
     └── <Entity>HttpHandlers.ts      # Adaptateur HTTP Express
 ```
 
+### Domaines implémentés
+
+| Domaine      | Description                                              |
+| ------------ | -------------------------------------------------------- |
+| `auth`       | Login, JWT, me                                           |
+| `user`       | CRUD utilisateurs                                        |
+| `team`       | CRUD équipes + joueurs + calendrier                      |
+| `player`     | Profils joueurs (maillot, poste)                         |
+| `match`      | CRUD matchs + scores                                     |
+| `championship` | CRUD championnats                                      |
+| `userTeam`   | Appartenance User ↔ Team avec rôle (COACH ou PLAYER)     |
+| `userMatch`  | Assignation arbitres User ↔ Match                        |
+
 ### Contrats d'interfaces par domaine
-
-#### `ITeamRepository`
-
-```ts
-interface ITeamRepository {
-  count(): Promise<number>;
-  findAll(params: PaginationParams): Promise<Team[]>;
-  findById(id: string): Promise<Team | null>;
-  create(input: CreateTeamInput): Promise<Team>;
-  update(id: string, input: UpdateTeamInput): Promise<Team>;
-  delete(id: string): Promise<void>;
-  findPlayers(teamId: string): Promise<Player[]>;
-  findCalendar(teamId: string): Promise<Match[]>;
-}
-```
-
-#### `IMatchRepository`
-
-```ts
-interface IMatchRepository {
-  findAll(params: PaginationParams): Promise<Match[]>;
-  findById(id: string): Promise<Match | null>;
-  create(input: CreateMatchInput): Promise<Match>;
-  update(id: string, input: UpdateMatchInput): Promise<Match>;
-  updateScore(id: string, score: Score): Promise<Match>;
-  findByChampionship(championshipId: string): Promise<Match[]>;
-  assignReferee(matchId: string, refereeId: string): Promise<Match>;
-}
-```
-
-#### `IChampionshipRepository`
-
-```ts
-interface IChampionshipRepository {
-  findAll(): Promise<Championship[]>;
-  findById(id: string): Promise<Championship | null>;
-  create(input: CreateChampionshipInput): Promise<Championship>;
-  update(id: string, input: UpdateChampionshipInput): Promise<Championship>;
-  delete(id: string): Promise<void>;
-  findPhases(championshipId: string): Promise<Phase[]>;
-}
-```
 
 #### `IUserRepository`
 
 ```ts
 interface IUserRepository {
-  findById(id: string): Promise<User | null>;
-  findByEmail(email: string): Promise<User | null>;
-  create(input: CreateUserInput): Promise<User>;
-  update(id: string, input: UpdateUserInput): Promise<User>;
-  delete(id: string): Promise<void>;
+  findById(id: string): Promise<UserProfile | null>
+  findByEmailWithPassword(email: string): Promise<(UserProfile & { password: string }) | null>
+  findAll(): Promise<UserProfile[]>
+  create(input: CreateUserInput): Promise<UserProfile>
+  update(id: string, input: UpdateUserInput): Promise<UserProfile>
+  delete(id: string): Promise<void>
 }
 ```
 
@@ -94,35 +67,107 @@ interface IUserRepository {
 
 ```ts
 interface IAuthService {
-  generateToken(payload: TokenPayload): string;
-  verifyToken(token: string): TokenPayload;
-  hashPassword(password: string): Promise<string>;
-  comparePassword(password: string, hash: string): Promise<boolean>;
+  generateToken(userId: string, isAdmin: boolean): string
+  verifyToken(token: string): TokenPayload
+  hashPassword(password: string): Promise<string>
+  comparePassword(password: string, hash: string): Promise<boolean>
 }
 ```
 
-#### `IStandingsRepository`
+#### `ITeamRepository`
 
 ```ts
-interface IStandingsRepository {
-  findByGroup(groupId: string): Promise<StandingsRow[]>;
-  recalculate(groupId: string): Promise<StandingsRow[]>;
+interface ITeamRepository {
+  count(): Promise<number>
+  findAll(params: PaginationParams): Promise<Team[]>
+  findById(id: string): Promise<Team | null>
+  create(input: CreateTeamInput): Promise<Team>
+  update(id: string, input: UpdateTeamInput): Promise<Team>
+  delete(id: string): Promise<void>
+  findPlayers(teamId: string, options: PaginationOptions): Promise<Player[]>
+  findCalendar(teamId: string, options: CalendarOptions): Promise<Match[]>
 }
 ```
 
-### Règle d'activation (strangler fig)
-
-Chaque domaine migré est activé par **un seul changement d'import** dans `index.ts` :
+#### `IPlayerRepository`
 
 ```ts
-// Avant (legacy)
-import * as teamHandlers from "./controllers/teams";
-
-// Après (hexagonal)
-import * as teamHandlers from "./src/teams/infrastructure/TeamHttpHandlers";
+interface IPlayerRepository {
+  findById(id: string): Promise<Player | null>
+  findByUserAndTeam(userId: string, teamId: string): Promise<Player | null>
+  findByUserId(userId: string): Promise<Player[]>
+  create(input: CreatePlayerInput): Promise<Player>
+  update(id: string, input: UpdatePlayerInput): Promise<Player>
+  delete(id: string): Promise<void>
+}
 ```
 
-Le fichier legacy reste sur disque jusqu'à validation complète.
+#### `IUserTeamRepository`
+
+```ts
+interface IUserTeamRepository {
+  assign(userId: string, teamId: string, role: TeamRole): Promise<UserTeam>
+  remove(userId: string, teamId: string, role: TeamRole): Promise<void>
+  findByTeamAndRole(teamId: string, role: TeamRole): Promise<UserTeam[]>
+  findByUserAndRole(userId: string, role: TeamRole): Promise<UserTeam[]>
+  hasRole(userId: string, teamId: string, role: TeamRole): Promise<boolean>
+}
+```
+
+#### `IUserMatchRepository`
+
+```ts
+interface IUserMatchRepository {
+  assign(userId: string, matchId: string): Promise<UserMatch>
+  remove(userId: string, matchId: string): Promise<void>
+  findByMatch(matchId: string): Promise<UserMatch[]>
+  findByUser(userId: string): Promise<UserMatch[]>
+  isReferee(userId: string, matchId: string): Promise<boolean>
+}
+```
+
+#### `IMatchRepository`
+
+```ts
+interface IMatchRepository {
+  count(): Promise<number>
+  findAll(options: PaginationOptions): Promise<Match[]>
+  findById(id: string): Promise<Match | null>
+  create(input: CreateMatchInput): Promise<Match>
+  update(id: string, input: UpdateMatchInput): Promise<Match>
+  delete(id: string): Promise<void>
+}
+```
+
+#### `IChampionshipRepository`
+
+```ts
+interface IChampionshipRepository {
+  count(): Promise<number>
+  findAll(options: PaginationOptions): Promise<Championship[]>
+  findById(id: string): Promise<Championship | null>
+  create(input: CreateChampionshipInput): Promise<Championship>
+  update(id: string, input: UpdateChampionshipInput): Promise<Championship>
+  delete(id: string): Promise<void>
+}
+```
+
+### Authentification et guards
+
+Le JWT contient `{ userId, isAdmin }`. Deux guards sont disponibles dans `src/auth/application/requireRoles.ts` :
+
+```ts
+// Vérifie que le token est valide et retourne le payload
+getAuthPayload(ctx: Context): TokenPayload
+
+// Lève ForbiddenError si isAdmin est false
+requireAdmin(ctx: Context): void
+
+// Retourne l'userId du token
+getAuthUserId(ctx: Context): string
+```
+
+Pour les vérifications de propriété (ex. coach → son équipe), les handlers appellent directement `UserTeamUseCases.hasRole()` ou `UserMatchUseCases.isReferee()` — la vérification passe par la base de données.
 
 ---
 
@@ -151,20 +196,19 @@ infrastructure/ →  @Sdk (hooks orval générés)
 domain/      →  @Sdk (re-export types uniquement)
 ```
 
-> Les composants `ui/` ne doivent **jamais** importer directement depuis `@Sdk`. Toute la logique de fetching passe par la couche `application/`.
+> Les composants `ui/` ne doivent **jamais** importer directement depuis `@Sdk`.
 
 ### Couche `infrastructure/` — pourquoi ?
 
-Les hooks orval sont régénérés automatiquement depuis `openapi.yml`. Leurs noms peuvent changer. La couche `infrastructure/` crée une indirection stable :
+Les hooks orval sont régénérés depuis `openapi.yml`. La couche `infrastructure/` crée une indirection stable :
 
 ```ts
 // src/Teams/infrastructure/teamRepository.ts
-export { useGetTeams as useTeamListQuery } from "@Sdk";
-export { useGetTeamsCount as useTeamCountQuery } from "@Sdk";
-export { useCreateTeam as useCreateTeamMutation } from "@Sdk";
+export { useGetTeams as useTeamListQuery } from "@Sdk"
+export { useCreateTeam as useCreateTeamMutation } from "@Sdk"
 ```
 
-Si orval renomme `useGetTeams` en `useListTeams`, seul ce fichier change.
+Si orval renomme un hook, seul ce fichier change.
 
 ### Couche `domain/` — pourquoi ?
 
@@ -172,30 +216,33 @@ Re-exporte les types SDK sous des noms métier stables et ajoute les types déri
 
 ```ts
 // src/Teams/domain/Team.ts
-export type { Team, TeamWithoutId } from "@Sdk";
-export type TeamId = string;
-export type TeamListResult = { teams: Team[]; total: number };
-```
-
-### Exemple de flux complet
-
-```text
-TeamListPage (ui)
-  └── useTeamList() (application)
-        ├── useTeamListQuery() (infrastructure → @Sdk)
-        └── useTeamCountQuery() (infrastructure → @Sdk)
+export type { Team } from "@Sdk"
+export type TeamId = string
 ```
 
 ---
 
-## Ordre de migration des domaines
+## État d'avancement backend
 
-| Ordre | Domaine       | Complexité backend             | Complexité frontend           |
-| ----- | ------------- | ------------------------------ | ----------------------------- |
-| 1     | teams         | Moyenne                        | Haute (le plus de composants) |
-| 2     | player        | Basse                          | Moyenne                       |
-| 3     | users         | Moyenne                        | Basse                         |
-| 4     | auth          | Haute (JWT + bcrypt)           | Moyenne                       |
-| 5     | matches       | Moyenne                        | Moyenne                       |
-| 6     | championships | Haute (phases, qualifications) | Haute                         |
-| 7     | standings     | Basse (calcul Prisma)          | Moyenne                       |
+| Domaine        | Statut     | Tests |
+| -------------- | ---------- | ----- |
+| `auth`         | ✅ Complet | ✅    |
+| `user`         | ✅ Complet | ✅    |
+| `team`         | ✅ Complet | ✅    |
+| `player`       | ✅ Complet | ✅    |
+| `match`        | ✅ Complet | ✅    |
+| `championship` | ✅ Complet | ✅    |
+| `userTeam`     | ✅ Complet | ✅    |
+| `userMatch`    | ✅ Complet | ✅    |
+| `standings`    | ⏳ À faire | —     |
+
+## État d'avancement frontend
+
+| Feature        | Statut     |
+| -------------- | ---------- |
+| Auth           | ⏳ À faire |
+| Teams          | ⏳ À faire |
+| Players        | ⏳ À faire |
+| Matches        | ⏳ À faire |
+| Championships  | ⏳ À faire |
+| Standings      | ⏳ À faire |

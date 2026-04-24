@@ -58,18 +58,18 @@ Mettre en place le système d'authentification JWT et les guards de rôles. Pré
 
 **Backend**
 
-- [ ] Modèle Prisma `User` avec champ `role: Role` (`ADMIN | COACH | REFEREE | PLAYER`)
-- [ ] Domaine `auth` (hexagonal) :
-  - `domain/User.ts` : types purs
+- [x] Modèle Prisma `User` avec flag `isAdmin: boolean`
+- [x] Domaine `auth` (hexagonal) :
+  - `domain/User.ts` : `TokenPayload { userId, isAdmin }`, `LoginResult`
   - `ports/IAuthService.ts` : interface JWT + bcrypt
   - `ports/IUserRepository.ts` : interface CRUD
-  - `application/AuthUseCases.ts` : login, logout, me
+  - `application/AuthUseCases.ts` : login, me
   - `infrastructure/JwtAuthService.ts` : implémentation JWT + bcrypt
   - `infrastructure/PrismaUserRepository.ts`
   - `infrastructure/AuthHttpHandlers.ts`
-- [ ] Endpoints : `POST /auth/login`, `POST /auth/logout`, `GET /auth/me`
-- [ ] Middleware `requireAuth(roles: Role[])` appliqué sur toutes les routes protégées
-- [ ] OpenAPI spec : documenter les schémas `LoginRequest`, `AuthResponse`, `UserProfile`
+- [x] Endpoints : `POST /login`, `POST /forgot-password`, `GET /me`
+- [x] Guards : `requireAdmin(ctx)` + `getAuthPayload(ctx)` (vérification propriété en DB)
+- [x] OpenAPI spec : `Login`, `TokenData`, `UserWithoutPassword`
 
 **Frontend**
 
@@ -106,14 +106,17 @@ Pour chaque domaine, appliquer les étapes suivantes :
 5. **Activation** : changer l'import dans `index.ts`
 6. **Vérification** : `pnpm check:type` + test manuel des endpoints
 
-| Domaine         | Endpoints principaux               | Dépendances            |
-| --------------- | ---------------------------------- | ---------------------- |
-| `teams`         | CRUD + joueurs + calendrier        | —                      |
-| `player`        | CRUD joueur                        | teams                  |
-| `users`         | CRUD utilisateur + assignations    | auth                   |
-| `matches`       | CRUD + score + assignation arbitre | teams, users           |
-| `championships` | CRUD + phases + qualifications     | teams, matches         |
-| `standings`     | Lecture + recalcul                 | matches, championships |
+| Domaine         | Endpoints principaux                          | Statut     |
+| --------------- | --------------------------------------------- | ---------- |
+| `auth`          | login, me                                     | ✅ Complet |
+| `user`          | CRUD utilisateurs                             | ✅ Complet |
+| `team`          | CRUD + joueurs + calendrier                   | ✅ Complet |
+| `player`        | Profils joueurs (maillot, poste)              | ✅ Complet |
+| `match`         | CRUD matchs + scores                          | ✅ Complet |
+| `championship`  | CRUD championnats                             | ✅ Complet |
+| `userTeam`      | Assignation coach/joueur ↔ équipe             | ✅ Complet |
+| `userMatch`     | Assignation arbitre ↔ match                  | ✅ Complet |
+| `standings`     | Calcul classement par poule                  | ⏳ À faire |
 
 ### Critères de validation par domaine
 
