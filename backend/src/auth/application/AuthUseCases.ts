@@ -18,8 +18,8 @@ export class AuthUseCases {
     const isMatch = await this.authService.comparePassword(password, user.password)
     if (!isMatch) throw new InvalidCredentialsError()
 
-    const token = this.authService.generateToken(user.id, user.role)
-    return { userId: user.id, email: user.email, role: user.role, token }
+    const token = this.authService.generateToken(user.id, user.isAdmin)
+    return { userId: user.id, email: user.email, isAdmin: user.isAdmin, token }
   }
 
   async me(userId: string): Promise<UserProfile> {

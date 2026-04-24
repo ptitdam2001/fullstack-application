@@ -9,11 +9,11 @@ export class JwtAuthService implements IAuthService {
 
   constructor() {
     this.secret = process.env.JWT_SECRET as string
-    this.expiresIn = Number(process.env.JWT_EXPIRES || 7200)
+    this.expiresIn = Number(process.env.JWT_EXPIRE || 7200)
   }
 
-  generateToken(userId: string, role: string): string {
-    return jwt.sign({ data: userId, role }, this.secret, { expiresIn: this.expiresIn })
+  generateToken(userId: string, isAdmin: boolean): string {
+    return jwt.sign({ userId, isAdmin }, this.secret, { expiresIn: this.expiresIn })
   }
 
   verifyToken(token: string): TokenPayload {

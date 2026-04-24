@@ -16,15 +16,15 @@ export const login = async (_: Context, req: Request, res: Response) => {
     const { email, password } = req.body
     return res.status(200).json(await useCases.login(email, password))
   } catch (err) {
-    if (err instanceof UserNotFoundError) return res.status(404).json({ message: 'User not found', status: 404 })
-    if (err instanceof InvalidCredentialsError) return res.status(403).json({ message: 'Bad password', status: 403 })
+    if (err instanceof UserNotFoundError || err instanceof InvalidCredentialsError)
+      return res.status(403).json({ message: 'Invalid credentials', status: 403 })
     logger.error(err)
     return res.status(500).json({ message: 'Error! Something went wrong.', status: 500 })
   }
 }
 
 export const forgotPassword = async (_: Context, __: Request, res: Response) => {
-  return res.status(200).send()
+  return res.status(501).json({ message: 'Not implemented', status: 501 })
 }
 
 export const logout = async (_: Context, __: Request, res: Response) => {

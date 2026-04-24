@@ -1,16 +1,18 @@
 import type { Context } from 'openapi-backend'
-import { Role } from '../../user/domain/User.js'
 import type { TokenPayload } from '../domain/User.js'
 import { ForbiddenError, UnauthorizedError } from '../domain/AuthErrors.js'
 
-export function requireRoles(ctx: Context, ...roles: Role[]): void {
+export function getAuthPayload(ctx: Context): TokenPayload {
   const payload = ctx.security?.jwtAuth as TokenPayload | undefined
-  if (!payload?.data) throw new UnauthorizedError()
-  if (!roles.includes(payload.role as Role)) throw new ForbiddenError()
+  if (!payload?.userId) throw new UnauthorizedError()
+  return payload
+}
+
+export function requireAdmin(ctx: Context): void {
+  const payload = getAuthPayload(ctx)
+  if (!payload.isAdmin) throw new ForbiddenError()
 }
 
 export function getAuthUserId(ctx: Context): string {
-  const payload = ctx.security?.jwtAuth as TokenPayload | undefined
-  if (!payload?.data) throw new UnauthorizedError()
-  return payload.data
+  return getAuthPayload(ctx).userId
 }

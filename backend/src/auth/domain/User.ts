@@ -1,8 +1,6 @@
-import type { Role } from '../../user/domain/User.js'
-
 export type TokenPayload = {
-  data: string
-  role: Role
+  userId: string
+  isAdmin: boolean
   iat?: number
   exp?: number
 }
@@ -10,6 +8,6 @@ export type TokenPayload = {
 export type LoginResult = {
   userId: string
   email: string
-  role: Role
+  isAdmin: boolean
   token: string
 }

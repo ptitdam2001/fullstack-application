@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { requireRoles, getAuthUserId } from './requireRoles.js'
-import { Role } from '../../user/domain/User.js'
+import { requireAdmin, getAuthPayload, getAuthUserId } from './requireRoles.js'
 import { ForbiddenError, UnauthorizedError } from '../domain/AuthErrors.js'
 import type { Context } from 'openapi-backend'
 
@@ -8,31 +7,40 @@ function makeCtx(jwtAuth?: object): Context {
   return { security: { jwtAuth } } as unknown as Context
 }
 
-describe('requireRoles', () => {
-  it('passes when role matches', () => {
-    const ctx = makeCtx({ data: 'user-1', role: Role.ADMIN })
-    expect(() => requireRoles(ctx, Role.ADMIN)).not.toThrow()
+describe('requireAdmin', () => {
+  it('passes when user is admin', () => {
+    const ctx = makeCtx({ userId: 'user-1', isAdmin: true })
+    expect(() => requireAdmin(ctx)).not.toThrow()
   })
 
-  it('passes when role is in the allowed list', () => {
-    const ctx = makeCtx({ data: 'user-1', role: Role.COACH })
-    expect(() => requireRoles(ctx, Role.ADMIN, Role.COACH)).not.toThrow()
-  })
-
-  it('throws ForbiddenError when role is not allowed', () => {
-    const ctx = makeCtx({ data: 'user-1', role: Role.REFEREE })
-    expect(() => requireRoles(ctx, Role.ADMIN)).toThrow(ForbiddenError)
+  it('throws ForbiddenError when user is not admin', () => {
+    const ctx = makeCtx({ userId: 'user-1', isAdmin: false })
+    expect(() => requireAdmin(ctx)).toThrow(ForbiddenError)
   })
 
   it('throws UnauthorizedError when security payload is missing', () => {
     const ctx = makeCtx(undefined)
-    expect(() => requireRoles(ctx, Role.ADMIN)).toThrow(UnauthorizedError)
+    expect(() => requireAdmin(ctx)).toThrow(UnauthorizedError)
+  })
+})
+
+describe('getAuthPayload', () => {
+  it('returns payload when present', () => {
+    const ctx = makeCtx({ userId: 'user-42', isAdmin: false })
+    const payload = getAuthPayload(ctx)
+    expect(payload.userId).toBe('user-42')
+    expect(payload.isAdmin).toBe(false)
+  })
+
+  it('throws UnauthorizedError when payload is absent', () => {
+    const ctx = makeCtx(undefined)
+    expect(() => getAuthPayload(ctx)).toThrow(UnauthorizedError)
   })
 })
 
 describe('getAuthUserId', () => {
   it('returns userId from token payload', () => {
-    const ctx = makeCtx({ data: 'user-42', role: Role.COACH })
+    const ctx = makeCtx({ userId: 'user-42', isAdmin: false })
     expect(getAuthUserId(ctx)).toBe('user-42')
   })
 
