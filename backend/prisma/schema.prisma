@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -47,13 +44,6 @@ model Championship {
 // USER
 // ─────────────────────────────────────────
 
-enum Role {
-  ADMIN
-  COACH
-  REFEREE
-  PLAYER
-}
-
 model User {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   lastName  String?
@@ -61,10 +51,12 @@ model User {
   email     String   @unique
   password  String
   avatar    String?
-  role      Role     @default(COACH)
+  isAdmin   Boolean  @default(false)
   createdAt DateTime @default(now())
 
-  player Player?
+  players     Player[]
+  userTeams   UserTeam[]
+  userMatches UserMatch[]
 }
 
 // ─────────────────────────────────────────
@@ -112,24 +104,49 @@ model Team {
 
   players    Player[]
   matchTeams MatchTeam[]
+  userTeams  UserTeam[]
 }
 
 // ─────────────────────────────────────────
-// PLAYER
+// PLAYER (profil joueur dans une équipe)
 // ─────────────────────────────────────────
 
 model Player {
-  id        String  @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String  @unique @db.ObjectId
-  teamId    String  @db.ObjectId
-  jersey    Int?
-  position  String?
-  lastname  String
-  firstname String
-  avatar    String?
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId   String  @db.ObjectId
+  teamId   String  @db.ObjectId
+  jersey   Int?
+  position String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, teamId])
+  @@map("players")
+}
+
+// ─────────────────────────────────────────
+// USER <-> TEAM (coaches et joueurs)
+// ─────────────────────────────────────────
+
+enum TeamRole {
+  COACH
+  PLAYER
+}
+
+// Liaison User <-> Team avec rôle contextuel.
+// @@unique([userId, teamId, role]) permet à un même user d'être COACH et PLAYER de la même équipe.
+model UserTeam {
+  id     String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId String   @db.ObjectId
+  teamId String   @db.ObjectId
+  role   TeamRole
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, teamId, role])
+  @@map("userTeams")
 }
 
 // ─────────────────────────────────────────
@@ -144,14 +161,13 @@ model Match {
   teams EmbeddedMatchTeam[]
 
   // Relation Prisma pour permettre les requêtes match <-> team
-  matchTeams MatchTeam[]
+  matchTeams  MatchTeam[]
+  userMatches UserMatch[]
 
   @@map("games")
 }
 
 // Liaison explicite Match <-> Team
-// Permet à Prisma de résoudre les relations et de faire des requêtes
-// du type : prisma.team.findMany({ include: { matchTeams: { include: { match: true } } } })
 model MatchTeam {
   id      String @id @default(auto()) @map("_id") @db.ObjectId
   matchId String @db.ObjectId
@@ -163,4 +179,21 @@ model MatchTeam {
 
   @@unique([matchId, teamId])
   @@map("gameTeams")
+}
+
+// ─────────────────────────────────────────
+// USER <-> MATCH (arbitres)
+// ─────────────────────────────────────────
+
+// Liaison User <-> Match pour les arbitres d'un match.
+model UserMatch {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  userId  String @db.ObjectId
+  matchId String @db.ObjectId
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  match Match @relation(fields: [matchId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, matchId])
+  @@map("userMatches")
 }
