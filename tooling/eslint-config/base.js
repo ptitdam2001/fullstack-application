@@ -15,6 +15,7 @@ export default tseslint.config(
       'object-shorthand': ['error', 'always'],
       'prefer-template': 'error',
       'arrow-body-style': ['error', 'as-needed'],
+      'no-nested-ternary': 'error',
     },
   }
 )
