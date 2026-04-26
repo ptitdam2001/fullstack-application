@@ -112,12 +112,12 @@ Defines every collection, embedded type, relation, and index stored in MongoDB.
 
 ### Rules for keeping them in sync
 
-| Scenario | What to update |
-| --- | --- |
-| New API field returned to frontend | `openapi.yml` schema + `prisma/schema.prisma` + domain type |
-| Field becomes required (not nullable) | `openapi.yml` required array + `prisma/schema.prisma` nullability + domain type |
-| New collection / model | `prisma/schema.prisma` first, then expose via `openapi.yml` |
-| Rename a model or field | `prisma/schema.prisma` + `@@map` to preserve the MongoDB collection name + `openapi.yml` + domain type |
+| Scenario                              | What to update                                                                                         |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| New API field returned to frontend    | `openapi.yml` schema + `prisma/schema.prisma` + domain type                                            |
+| Field becomes required (not nullable) | `openapi.yml` required array + `prisma/schema.prisma` nullability + domain type                        |
+| New collection / model                | `prisma/schema.prisma` first, then expose via `openapi.yml`                                            |
+| Rename a model or field               | `prisma/schema.prisma` + `@@map` to preserve the MongoDB collection name + `openapi.yml` + domain type |
 
 ### Propagation workflow
 
@@ -203,6 +203,82 @@ This repo uses [Conventional Commits](https://www.conventionalcommits.org/) enfo
 - Create structured, atomic commits grouped by concern (e.g., security fixes, refactor, tests) rather than single large commits.
 - Push to main after the user confirms completion.
 
+## Monorepo Layout
+
+```text
+fullstack-application/          # pnpm workspace root (pnpm@10.13.1)
+├── package.json                # devDeps: commitlint, husky, commitizen
+├── pnpm-workspace.yaml         # workspace: tooling/*
+│
+├── tooling/
+│   ├── eslint-config/          # @repo/eslint-config — exports: ./base, ./node, ./react
+│   └── prettier-config/        # @repo/prettier-config — singleQuote, semi:false, printWidth:120
+│
+├── backend/                    # openapi-express-ts (standalone, not in workspace)
+│   └── package.json
+│
+└── frontend/                   # separate pnpm workspace root (no package.json)
+    ├── design-system/          # @repo/design-system
+    │   └── package.json
+    └── web-application/        # application-material
+        └── package.json
+```
+
+### Package registry
+
+| Package         | Name                    | Location                    |
+| --------------- | ----------------------- | --------------------------- |
+| Root            | `fullstack-application` | `/`                         |
+| Backend         | `openapi-express-ts`    | `backend/`                  |
+| Design system   | `@repo/design-system`   | `frontend/design-system/`   |
+| Web app         | `application-material`  | `frontend/web-application/` |
+| ESLint config   | `@repo/eslint-config`   | `tooling/eslint-config/`    |
+| Prettier config | `@repo/prettier-config` | `tooling/prettier-config/`  |
+
+### Inter-package dependencies
+
+```text
+application-material
+  ├── @repo/design-system      (workspace:*)
+  ├── @repo/eslint-config      (file:../../tooling/eslint-config)
+  └── @repo/prettier-config    (file:../../tooling/prettier-config)
+
+@repo/design-system
+  ├── @repo/eslint-config      (file:../../tooling/eslint-config)
+  └── @repo/prettier-config    (file:../../tooling/prettier-config)
+
+openapi-express-ts (backend)
+  ├── @repo/eslint-config      (file:../tooling/eslint-config)
+  └── @repo/prettier-config    (file:../tooling/prettier-config)
+```
+
+### Build and dev commands per package
+
+| Package                | Build                                      | Dev / watch                                                               | Test                                      |
+| ---------------------- | ------------------------------------------ | ------------------------------------------------------------------------- | ----------------------------------------- |
+| `@repo/design-system`  | `pnpm --filter @repo/design-system build`  | `pnpm --filter @repo/design-system dev` (vite --watch)                    | `pnpm --filter @repo/design-system test`  |
+| `application-material` | `pnpm --filter application-material build` | `pnpm --filter application-material dev` _(rebuilds design-system first)_ | `pnpm --filter application-material test` |
+| `openapi-express-ts`   | `pnpm --filter openapi-express-ts build`   | `pnpm --filter openapi-express-ts start:dev` (tsx watch)                  | `pnpm --filter openapi-express-ts test`   |
+
+> `application-material`'s `dev` script runs `(cd ../design-system && pnpm build) && vite` — it always rebuilds the design system before starting Vite. For faster iteration when only touching the app, skip the prefix rebuild by running `vite` directly inside `frontend/web-application/`.
+
+### Install rules
+
+- Always install from `frontend/` (workspace root), **never** from `frontend/web-application/` — workspace packages (`@repo/design-system`) won't resolve otherwise.
+- Root installs (`/`) cover `tooling/*` only; backend and frontend are independent install roots.
+
 ## Skill Authoring Standards
 
 - When creating or refining skills that generate Prisma code, always include: correct nullable syntax, required `select` clauses, and domain-consistent naming conventions.
+
+## Project Skills
+
+| Skill | Trigger | Description |
+| --- | --- | --- |
+| `create-backend-domain` | "créer un domaine", "scaffolder X" | Scaffolds a hexagonal backend domain (domain/ports/application/infrastructure + tests + OpenAPI) |
+| `design-system-component` | "créer un composant", "ajouter au design system" | Creates a component in `@repo/design-system` (react-aria + Tailwind + Storybook + co-located tests) |
+| `frontend-feature-module` | "créer le module X", "ajouter une feature" | Scaffolds a frontend feature module following hexagonal architecture (domain/infrastructure/application/ui) |
+
+> Frontend component and module guidance is also available in package-level CLAUDE.md files:
+>
+> - `frontend/design-system/CLAUDE.md` — design system conventions (react-aria, CVA, stories, tests)

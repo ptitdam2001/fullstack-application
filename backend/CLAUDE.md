@@ -53,10 +53,10 @@ Copy `.env.sample` → `.env` and configure:
 
 ## Key Files
 
-| File                   | Purpose                                                   |
-| ---------------------- | --------------------------------------------------------- |
-| `index.ts`             | App entry: middleware, OpenAPI init, handler registration |
-| `openapi.yml`          | Source of truth for all routes and schemas                |
-| `prisma/schema.prisma` | Source of truth for database structure                    |
-| `utils/prismaClient.ts`| Singleton Prisma client                                   |
-| `config/logger.ts`     | Winston logger setup                                      |
+| File                    | Purpose                                                   |
+| ----------------------- | --------------------------------------------------------- |
+| `index.ts`              | App entry: middleware, OpenAPI init, handler registration |
+| `openapi.yml`           | Source of truth for all routes and schemas                |
+| `prisma/schema.prisma`  | Source of truth for database structure                    |
+| `utils/prismaClient.ts` | Singleton Prisma client                                   |
+| `config/logger.ts`      | Winston logger setup                                      |
