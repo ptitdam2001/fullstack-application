@@ -1,6 +1,6 @@
 import { Button } from '@repo/design-system'
 import { Table } from '@Common/Table/Table'
-import { Team } from '@Sdk/model'
+import { type Team } from '@Sdk/model'
 import { Eye, Pencil, Users, Volleyball } from 'lucide-react'
 import { Link } from 'react-router'
 

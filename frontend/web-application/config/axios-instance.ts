@@ -3,7 +3,7 @@
  *
  * @see https://orval.dev/guides/custom-axios
  */
-import Axios, { AxiosError, AxiosRequestConfig } from 'axios'
+import Axios, { type AxiosError, type AxiosRequestConfig } from 'axios'
 import { clearAuthStorage } from '@Auth/authStorage'
 import { redirectToLogin } from '@Auth/authNavigation'
 
@@ -27,7 +27,7 @@ const getAxiosConfig = (): AxiosRequestConfig => {
 const AXIOS_INSTANCE = Axios.create()
 
 AXIOS_INSTANCE.interceptors.response.use(
-  (response) => response,
+  response => response,
   (error: AxiosError) => {
     if (error.response?.status === 401) {
       clearAuthStorage()

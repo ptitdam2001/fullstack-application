@@ -9,9 +9,9 @@ import {
   SidebarRail,
 } from '@repo/design-system'
 
-import { FC } from 'react'
+import { type FC } from 'react'
 import { Link, useNavigate } from 'react-router'
-import { LateralMenu } from '@Application/lateralMenu.config'
+import { type LateralMenu } from '@Application/lateralMenu.config'
 import { House } from 'lucide-react'
 
 type ConnectedAppSidebarProps = {

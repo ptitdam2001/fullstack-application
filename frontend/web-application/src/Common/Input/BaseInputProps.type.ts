@@ -1,4 +1,4 @@
-import { FieldPath, FieldPathValue, FieldValues, Noop, RefCallBack } from 'react-hook-form'
+import { type FieldPath, type FieldPathValue, type FieldValues, type Noop, type RefCallBack } from 'react-hook-form'
 
 export type BaseInputProps = {
   onChange: (...event: unknown[]) => void

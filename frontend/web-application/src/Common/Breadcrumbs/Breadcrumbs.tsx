@@ -24,11 +24,7 @@ export const Breadcrumbs = () => {
           <React.Fragment key={to}>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              {isLast ? (
-                <BreadcrumbPage>{node}</BreadcrumbPage>
-              ) : (
-                <BreadcrumbLink href={to}>{node}</BreadcrumbLink>
-              )}
+              {isLast ? <BreadcrumbPage>{node}</BreadcrumbPage> : <BreadcrumbLink href={to}>{node}</BreadcrumbLink>}
             </BreadcrumbItem>
           </React.Fragment>
         ))}

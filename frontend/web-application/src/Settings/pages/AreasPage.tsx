@@ -3,7 +3,7 @@ import { Link, Outlet } from 'react-router'
 import { Edit, HousePlus } from 'lucide-react'
 
 export const AreaPages = () => (
-  <article data-testid="AreaAdminPage" className="w-full h-full p-2 flex flex-col gap-1">
+  <article data-testid="AreaAdminPage" className="flex h-full w-full flex-col gap-1 p-2">
     <div className="px-1">
       <Link to="create">
         <HousePlus />

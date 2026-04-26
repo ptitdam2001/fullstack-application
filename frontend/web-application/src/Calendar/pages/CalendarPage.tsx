@@ -6,7 +6,7 @@ export const CalendarPage = () => {
       <Calendar.Navigation />
       <Calendar.Content
         children={date => (
-          <div className="bg-amber-500 text-orange-700 w-full h-15 border-orange-700 border rounded-sm flex items-center justify-center">
+          <div className="flex h-15 w-full items-center justify-center rounded-sm border border-orange-700 bg-amber-500 text-orange-700">
             {date.toLocaleDateString()}
           </div>
         )}

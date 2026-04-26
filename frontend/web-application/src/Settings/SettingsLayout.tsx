@@ -9,7 +9,7 @@ export const SettingsLayout = () => {
   const { list } = useSettingsMenu()
 
   return (
-    <section className="w-full h-full flex flex-col">
+    <section className="flex h-full w-full flex-col">
       <LinkTabs name="Settings" defaultValue="areas">
         <TabsList>
           {list.map(elt => (

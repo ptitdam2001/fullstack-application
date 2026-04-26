@@ -5,7 +5,7 @@ import { TableLoader } from '@Common/Loading'
 import { Table } from '@Common/Table/Table'
 import { TablePagination } from '@Common/Table/TablePagination'
 import { useCountAllAreas, useGetAreaList } from '@Sdk/area/area'
-import { Area } from '@Sdk/model'
+import { type Area } from '@Sdk/model'
 import React, { Suspense, use } from 'react'
 
 type AeraListProps = {
@@ -24,7 +24,7 @@ const BaseAreaList = ({ actions }: AeraListProps) => {
   const count = use(useCountAllAreas().promise)
 
   return (
-    <section className="w-full h-full flex flex-col gap-0.5">
+    <section className="flex h-full w-full flex-col gap-0.5">
       <Table.TableContainer>
         <Table.TableHeader>
           <Table.TableHead>Address</Table.TableHead>

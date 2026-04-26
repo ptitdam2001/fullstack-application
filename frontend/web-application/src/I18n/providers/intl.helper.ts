@@ -1,4 +1,4 @@
-import { SupportedLocale } from '../intl.config'
+import { type SupportedLocale } from '../intl.config'
 import { flatten } from 'flat'
 
 type NestedMessages = Record<string, Record<string, string> | string>

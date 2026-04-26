@@ -1,5 +1,5 @@
 import { DevTool } from '@hookform/devtools'
-import { DevtoolUIProps } from '@hookform/devtools/dist/devToolUI'
+import { type DevtoolUIProps } from '@hookform/devtools/dist/devToolUI'
 
 type FormProps = {
   children: React.ReactNode

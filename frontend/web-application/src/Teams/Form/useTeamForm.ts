@@ -1,4 +1,4 @@
-import { CreateTeamMutationBody, UpdateTeamMutationBody, useCreateTeam, useUpdateTeam } from '@Sdk/team/team'
+import { type CreateTeamMutationBody, type UpdateTeamMutationBody, useCreateTeam, useUpdateTeam } from '@Sdk/team/team'
 import { getCountTeamsQueryKey, getGetTeamsQueryKey } from '@Sdk/teams/teams'
 
 export const useTeamForm = () => {

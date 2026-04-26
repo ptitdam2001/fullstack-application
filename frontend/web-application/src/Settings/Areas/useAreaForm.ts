@@ -1,4 +1,4 @@
-import { CreateAreaMutationBody, UpdateAreaMutationBody, useCreateArea, useUpdateArea } from '@Sdk/area/area'
+import { type CreateAreaMutationBody, type UpdateAreaMutationBody, useCreateArea, useUpdateArea } from '@Sdk/area/area'
 
 export const useAreaForm = () => {
   const { mutateAsync: createFunc, isPending: isPendingCreate, isSuccess: isSuccessCreate } = useCreateArea()

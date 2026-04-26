@@ -1,5 +1,5 @@
-import React, { ReactNode } from 'react'
-import { BaseInputProps } from '../BaseInputProps.type'
+import React, { type ReactNode } from 'react'
+import { type BaseInputProps } from '../BaseInputProps.type'
 import { HexColorPicker } from 'react-colorful'
 import { Popover, PopoverContent, PopoverTrigger } from '@repo/design-system'
 import { cn } from '@repo/design-system'
@@ -39,7 +39,7 @@ export const ColorInput = ({
   }
 
   return (
-    <div className="ColorInput flex gap-2 content-center py-2">
+    <div className="ColorInput flex content-center gap-2 py-2">
       {label && (
         <label htmlFor={props.name} className="align-middle" data-testid={testIds.label}>
           {label}
@@ -49,14 +49,14 @@ export const ColorInput = ({
         <PopoverTrigger asChild>
           <button
             className={cn(
-              'border-rounded rounded-lg w-9 h-9 pointer-events-auto dark:border-white border border-black'
+              'border-rounded pointer-events-auto h-9 w-9 rounded-lg border border-black dark:border-white'
             )}
             style={{ background: color }}
             data-testid={testIds.trigger}
           />
         </PopoverTrigger>
         <PopoverContent
-          className={cn('p-2 w-52 h-52', { dark: currentTheme && ['dark', 'system'].includes(currentTheme) })}
+          className={cn('h-52 w-52 p-2', { dark: currentTheme && ['dark', 'system'].includes(currentTheme) })}
           forceMount
         >
           <HexColorPicker color={value} onChange={handleChange} {...props} />

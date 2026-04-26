@@ -2,16 +2,6 @@
   "$schema": "https://unpkg.com/knip@5/schema.json",
   "tags": ["-lintignore"],
   "project": ["**/*.{js,ts,tsx}"],
-  "ignore": [
-    "orval.config.ts",
-    "src/mocks/node.ts",
-    "src/mocks/server.ts",
-    "vitest.shims.d.ts"
-  ],
-  "ignoreDependencies": [
-    "@vitest/coverage-v8",
-    "playwright",
-    "autoprefixer",
-    "postcss"
-  ]
+  "ignore": ["orval.config.ts", "src/mocks/node.ts", "src/mocks/server.ts", "vitest.shims.d.ts"],
+  "ignoreDependencies": ["@vitest/coverage-v8", "playwright", "autoprefixer", "postcss"]
 }

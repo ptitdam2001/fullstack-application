@@ -27,7 +27,7 @@ export const CalendarContent: React.FC<CalendarContentProps> = ({ children, clas
         {Array.from({ length: daysInMonth }, (_, dayNumber) => (
           <div
             key={`${currentYear}-${currentMonth}-${dayNumber + 1}`}
-            className="full-w min-h-16 flex items-center justify-center"
+            className="full-w flex min-h-16 items-center justify-center"
           >
             {children ? (
               children(

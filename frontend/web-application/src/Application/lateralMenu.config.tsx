@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { type ReactNode } from 'react'
 import { CalendarDays, CircleUserRound, Settings, Users, Volleyball } from 'lucide-react'
 
 type MenuElt = {

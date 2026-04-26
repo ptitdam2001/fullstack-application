@@ -29,12 +29,12 @@ export class ErrorBoundary extends Component<Props> {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="border border-red-200 rounded-lg p-4 bg-red-50">
-          <h2 className="text-red-800 font-semibold mb-2">Something went wrong</h2>
-          <p className="text-red-600 text-sm mb-3">{this.state.error?.message || 'An unexpected error occurred'}</p>
+        <div className="rounded-lg border border-red-200 bg-red-50 p-4">
+          <h2 className="mb-2 font-semibold text-red-800">Something went wrong</h2>
+          <p className="mb-3 text-sm text-red-600">{this.state.error?.message || 'An unexpected error occurred'}</p>
           <button
             onClick={() => this.setState({ hasError: false, error: null })}
-            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+            className="rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700"
           >
             Try Again
           </button>

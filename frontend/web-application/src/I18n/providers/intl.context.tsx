@@ -1,6 +1,5 @@
-
 import { useLocalStorage } from '@Common/hooks/useLocalstorage'
-import { DEFAULT_LOCALE, LOCALE_STORAGE_KEY, SupportedLocale } from '../intl.config'
+import { DEFAULT_LOCALE, LOCALE_STORAGE_KEY, type SupportedLocale } from '../intl.config'
 import { IntlProvider as ReactIntlProvider } from 'react-intl'
 import { getDictionary } from './intl.helper'
 import { use, useMemo } from 'react'

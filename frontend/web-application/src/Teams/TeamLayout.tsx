@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router'
 
 export const TeamLayout = () => (
-  <section className="w-full h-full flex flex-col">
+  <section className="flex h-full w-full flex-col">
     <Outlet />
   </section>
 )

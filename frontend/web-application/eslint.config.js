@@ -1,3 +1,3 @@
 import reactConfig from '@repo/eslint-config/react'
 
-export default reactConfig
+export default [{ ignores: ['public/mockServiceWorker.js'] }, ...reactConfig]

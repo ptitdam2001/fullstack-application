@@ -1,4 +1,4 @@
-import { FunctionComponent } from 'react'
+import { type FunctionComponent } from 'react'
 import { Button } from '@repo/design-system'
 import { Avatar, AvatarFallback } from '@repo/design-system'
 import { Card } from '@repo/design-system'

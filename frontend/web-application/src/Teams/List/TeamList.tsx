@@ -27,13 +27,13 @@ export const TeamList = ({ viewMode }: TeamListProps) => {
   const totalPages = Math.ceil((count ?? 0) / pagination.rowsPerPage)
 
   return (
-    <section data-testid="TeamList" className="w-full flex-1 flex flex-col overflow-hidden">
+    <section data-testid="TeamList" className="flex w-full flex-1 flex-col overflow-hidden">
       <ErrorBoundary>
         <Suspense fallback={<TableLoader nbCols={3} nbRows={12} />}>
           <div key={pagination.page} className="flex-1 overflow-auto p-4">
             {viewMode === 'grid' ? <TeamCardGrid teams={teams} /> : <TeamCardList teams={teams} />}
           </div>
-          <div className="border-t bg-background py-2 h-18">
+          <div className="bg-background h-18 border-t py-2">
             <TeamListPagination page={pagination.page} totalPages={totalPages} onPageChange={changePage} />
           </div>
         </Suspense>

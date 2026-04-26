@@ -1,15 +1,15 @@
 import { Card, Skeleton } from '@repo/design-system'
 
 export const TeamCardSkeleton = () => (
-  <Card.Container className="py-2 gap-1.5">
-    <Card.Title className="text-lg px-2">
-      <Skeleton className="w-full h-4" />
+  <Card.Container className="gap-1.5 py-2">
+    <Card.Title className="px-2 text-lg">
+      <Skeleton className="h-4 w-full" />
     </Card.Title>
     <Card.Content>
-      <Skeleton className="w-full h-4" />
+      <Skeleton className="h-4 w-full" />
     </Card.Content>
     <Card.Action>
-      <Skeleton className="w-full h-4" />
+      <Skeleton className="h-4 w-full" />
     </Card.Action>
   </Card.Container>
 )

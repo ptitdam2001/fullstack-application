@@ -48,11 +48,11 @@ export const TablePagination: React.FunctionComponent<TablePaginationProps> = ({
   rowsPerPageOptions = [10, 25, 50, 100],
   onRowsPerPageChange,
 }) => (
-  <div className={cn('flex items-center justify-between p-4 max-w-sm', className)}>
+  <div className={cn('flex max-w-sm items-center justify-between p-4', className)}>
     <Button variant="outline" size="icon" onClick={evt => onPageChange?.(evt, page - 1)} disabled={page === 0}>
       <ChevronLeft />
     </Button>
-    <select onChange={onRowsPerPageChange} value={rowsPerPage} className="border rounded p-2">
+    <select onChange={onRowsPerPageChange} value={rowsPerPage} className="rounded border p-2">
       {rowsPerPageOptions.map((option, index) => {
         if (typeof option === 'number') {
           return (

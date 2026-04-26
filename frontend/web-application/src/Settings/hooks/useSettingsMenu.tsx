@@ -1,4 +1,4 @@
-import { TabProps } from '@Common/LinkTabs/LinkTab'
+import { type TabProps } from '@Common/LinkTabs/LinkTab'
 import { MapPinHouse } from 'lucide-react'
 
 /**

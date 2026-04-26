@@ -2,14 +2,7 @@ import { NotFound } from '@Pages/NotFound'
 import { getCountAllAreasQueryKey, getGetAreaListQueryKey, useGetArea } from '@Sdk/area/area'
 import { AreaForm } from '@Settings/Areas/AreaForm'
 import { useNavigate, useParams } from 'react-router'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogPortal,
-  DialogTitle,
-} from '@repo/design-system'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogPortal, DialogTitle } from '@repo/design-system'
 import React from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { cn } from '@repo/design-system'
@@ -40,16 +33,16 @@ export const AreaEditPage = () => {
         <DialogContent
           className={cn(
             { dark: currentTheme && ['dark', 'system'].includes(currentTheme) },
-            'fixed left-1/2 top-1/2 flex flex-col',
+            'fixed top-1/2 left-1/2 flex flex-col',
             'max-h-[85vh] w-[90vw] max-w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-md',
-            'dark:bg-gray-600 p-[25px] shadow-[var(--shadow-6)] focus:outline-none data-[state=open]:animate-contentShow'
+            'data-[state=open]:animate-contentShow p-[25px] shadow-[var(--shadow-6)] focus:outline-none dark:bg-gray-600'
           )}
         >
           <DialogHeader>
             <DialogTitle>{areaId ? 'Edit' : 'Create'}</DialogTitle>
             <DialogDescription></DialogDescription>
           </DialogHeader>
-          <div className="flex-grow flex flex-col">
+          <div className="flex flex-grow flex-col">
             {isError && <NotFound />}
             {isLoading ? (
               <LinearProgress />
@@ -63,7 +56,7 @@ export const AreaEditPage = () => {
 
                   navigate(-1)
                 }}
-                className="flex-1 fex flex-col gap-26"
+                className="fex flex-1 flex-col gap-26"
               />
             )}
           </div>

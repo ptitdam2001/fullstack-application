@@ -1,5 +1,5 @@
-import { FC, ReactNode } from 'react'
-import { MenuBarActionLink } from './types'
+import { type FC, type ReactNode } from 'react'
+import { type MenuBarActionLink } from './types'
 import { LinkAction } from './LinkAction'
 
 const isBarLink = (elt: ReactNode | MenuBarActionLink): elt is MenuBarActionLink =>
@@ -15,7 +15,7 @@ type MenuBarProps = {
 
 export const MenuBar: FC<MenuBarProps> = ({ children, leftActions, rightActions }) => {
   return (
-    <section className="MenuBar w-full flex flex-row gap-1 py-1 px-1.5">
+    <section className="MenuBar flex w-full flex-row gap-1 px-1.5 py-1">
       {leftActions && leftActions?.length > 0 && (
         <ul className="flex gap-0.5">
           {leftActions.map((action, idx) => (

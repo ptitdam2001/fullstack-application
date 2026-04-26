@@ -8,7 +8,7 @@ export const AnonymousLayout = () => {
   const currentTheme = useTheme()
   return (
     <section
-      className={cn('h-full w-full flex flex-col', { dark: currentTheme && ['dark', 'system'].includes(currentTheme) })}
+      className={cn('flex h-full w-full flex-col', { dark: currentTheme && ['dark', 'system'].includes(currentTheme) })}
     >
       <TopBar title={'Anonymous'} isAnonymous />
 

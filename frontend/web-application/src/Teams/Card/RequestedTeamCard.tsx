@@ -1,6 +1,6 @@
 import { ErrorBoundary } from '@Common/ErrorBoundary'
 import { useGetTeam } from '@Sdk/team/team'
-import { BaseTeamType } from '@Teams/types'
+import { type BaseTeamType } from '@Teams/types'
 import { Suspense, use } from 'react'
 import { TeamCardSkeleton } from './TeamCardSkeleton'
 import { TeamCard } from './TeamCard'

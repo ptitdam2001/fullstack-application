@@ -24,7 +24,7 @@ export const ConnectedLayout = () => {
       <ConnectedAppSidebar links={LATERAL_MENU} />
 
       {/* Right Block */}
-      <SidebarInset className="h-full min-w-0 scrollbar-track-background">
+      <SidebarInset className="scrollbar-track-background h-full min-w-0">
         <TopBar title="Connected App" />
         <Separator orientation="horizontal" className="h-[1vh]" />
         <section className="p-1">
@@ -34,7 +34,7 @@ export const ConnectedLayout = () => {
 
         <article
           data-testid="connected-layout-page"
-          className="h-[93.5vh] overflow-auto scrollbar-track-background scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800 dark:scrollbar-thumb-gray-500 w-full flex flex-col"
+          className="scrollbar-track-background scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800 dark:scrollbar-thumb-gray-500 flex h-[93.5vh] w-full flex-col overflow-auto"
         >
           <Outlet />
         </article>

@@ -1,5 +1,5 @@
 import { Button } from '@repo/design-system'
-import { Theme, useSetTheme, useTheme } from './Provider/ThemeProvider'
+import { type Theme, useSetTheme, useTheme } from './Provider/ThemeProvider'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@repo/design-system'
 import { ContrastIcon, MoonIcon, SunIcon, SunMoonIcon } from 'lucide-react'
 

@@ -1,6 +1,6 @@
 import { Card } from '@repo/design-system'
 import { Address } from '@Common/Address/Address'
-import { Game } from '@Sdk/model'
+import { type Game } from '@Sdk/model'
 
 type GameListItemProps = {
   game: Game
@@ -16,7 +16,7 @@ export const GameShortDescription = ({ game }: GameListItemProps) => {
     <Card.Container>
       <Card.Content>
         <div className="flex flex-col items-center">
-          <div className="flex flex-row gap-3 w-full">
+          <div className="flex w-full flex-row gap-3">
             <div className="w-1/3">{homeTeam.name}</div>
             <div className="w-1/3 text-center">
               <h6>

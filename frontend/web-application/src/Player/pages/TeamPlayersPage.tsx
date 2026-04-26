@@ -10,9 +10,9 @@ export const TeamPlayersPage = () => {
   }
 
   return (
-    <article className="w-full h-full flex">
+    <article className="flex h-full w-full">
       <section className="flex-1">
-        <PlayerList teamId={teamId} className="overflow-auto scrollbar-thin" />
+        <PlayerList teamId={teamId} className="scrollbar-thin overflow-auto" />
       </section>
     </article>
   )

@@ -1,4 +1,4 @@
-import { Area } from '@Sdk/model'
+import { type Area } from '@Sdk/model'
 
 type AddressProps = {
   address: Area

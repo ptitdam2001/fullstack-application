@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { type ReactNode } from 'react'
 import { Navigate } from 'react-router'
 import { LOGIN_PAGE } from '@Auth/constant'
 import { AuthProvider } from '@Auth/AuthProvider'

@@ -9,7 +9,7 @@ type CalendarContainerProps = {
 
 export const CalendarContainer: React.FC<CalendarContainerProps> = ({ children, className }) => {
   return (
-    <div className={cn('w-full h-full flex flex-col gap-2', className)}>
+    <div className={cn('flex h-full w-full flex-col gap-2', className)}>
       <CalendarProvider.Provider>{children}</CalendarProvider.Provider>
     </div>
   )

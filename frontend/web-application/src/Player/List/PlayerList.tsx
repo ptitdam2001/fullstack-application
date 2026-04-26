@@ -1,4 +1,4 @@
-import { BaseTeamType } from '@Teams/types'
+import { type BaseTeamType } from '@Teams/types'
 import { cn } from '@repo/design-system'
 import { useGetTeamPlayers } from '@Sdk/teams/teams'
 import { TableLoader } from '@Common/Loading'
@@ -12,9 +12,9 @@ const FetchPlayerList = ({ teamId, className }: PlayerListProps) => {
   const players = use(useGetTeamPlayers(teamId).promise)
 
   return (
-    <ul className={cn('w-full overflow-y-scroll h-full', className)}>
+    <ul className={cn('h-full w-full overflow-y-scroll', className)}>
       {players?.map(player => (
-        <li className="flex flex-start py-2" key={player.id}>
+        <li className="flex-start flex py-2" key={player.id}>
           <div className="px-4">
             <TooltipProvider>
               <Tooltip>

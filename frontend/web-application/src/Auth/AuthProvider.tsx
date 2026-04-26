@@ -1,6 +1,6 @@
-import { ReactNode } from 'react'
+import { type ReactNode } from 'react'
 
-import { UserWithoutPassword } from '@Sdk/model'
+import { type UserWithoutPassword } from '@Sdk/model'
 import { useCheckAuthLocalStorage } from './hooks/useCheckAuthLocalStorage'
 import { createContextWithWrite } from '@repo/design-system'
 

@@ -10,9 +10,7 @@ export default [
   'vite.config.ts',
   {
     extends: 'vite.config.ts',
-    plugins: [
-      storybookTest({ configDir: path.join(dirname, '.storybook') }),
-    ],
+    plugins: [storybookTest({ configDir: path.join(dirname, '.storybook') })],
     test: {
       name: 'storybook',
       browser: {

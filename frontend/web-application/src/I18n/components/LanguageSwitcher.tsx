@@ -4,7 +4,7 @@ import React from 'react'
 import { Button } from '@repo/design-system'
 import { CheckIcon, GlobeIcon } from 'lucide-react'
 import getUnicodeFlagIcon from 'country-flag-icons/unicode'
-import { LOCALE_NAMES, SUPPORTED_LOCALES, SupportedLocale } from '../intl.config'
+import { LOCALE_NAMES, SUPPORTED_LOCALES, type SupportedLocale } from '../intl.config'
 
 export const LanguageSwitcher = () => {
   const locale = useLocale()
@@ -22,16 +22,16 @@ export const LanguageSwitcher = () => {
         <Button variant="ghost" size="icon">
           <span className="relative">
             <GlobeIcon />
-            <span className="absolute -bottom-2 -right-2">{getUnicodeFlagIcon(LOCALE_NAMES[locale].countryCode)}</span>
+            <span className="absolute -right-2 -bottom-2">{getUnicodeFlagIcon(LOCALE_NAMES[locale].countryCode)}</span>
           </span>
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-40" sideOffset={5}>
-        <ul className="list-none p-0 m-0" role="listbox">
+        <ul className="m-0 list-none p-0" role="listbox">
           {SUPPORTED_LOCALES.map(loc => (
             <li
               key={`${loc}-${LOCALE_NAMES[loc].countryCode}`}
-              className="flex items-center gap-2 cursor-pointer"
+              className="flex cursor-pointer items-center gap-2"
               role="button"
               onClick={() => handleLanguageChange(loc)}
               aria-selected={locale === loc}

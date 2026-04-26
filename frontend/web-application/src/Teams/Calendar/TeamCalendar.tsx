@@ -2,7 +2,7 @@ import { ErrorBoundary } from '@Common/ErrorBoundary'
 import { ListLoader } from '@Common/Loading'
 import { GameListRaw } from '@Game/ListRaw/GameListRaw'
 import { useGetTeamCalendar } from '@Sdk/teams/teams'
-import { BaseTeamType } from '@Teams/types'
+import { type BaseTeamType } from '@Teams/types'
 import dayjs from 'dayjs'
 import { Suspense, use } from 'react'
 
@@ -30,8 +30,8 @@ const BaseTeamCalendar = ({ teamId }: TeamCalendarProps) => {
   )
 
   return (
-    <div className="w-full h-full flex flex-col gap-2 overflow-auto">
-      <div className="grow rounded-md shadow-md py-1">
+    <div className="flex h-full w-full flex-col gap-2 overflow-auto">
+      <div className="grow rounded-md py-1 shadow-md">
         <GameListRaw games={games ?? []} />
       </div>
     </div>

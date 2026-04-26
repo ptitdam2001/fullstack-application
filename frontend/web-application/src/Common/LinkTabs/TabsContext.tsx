@@ -1,4 +1,4 @@
-import { createContextWithWrite } from "@repo/design-system"
+import { createContextWithWrite } from '@repo/design-system'
 
 type TabContextType = {
   currentValue?: string

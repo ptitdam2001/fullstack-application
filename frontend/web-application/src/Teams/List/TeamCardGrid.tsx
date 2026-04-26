@@ -1,5 +1,5 @@
 import { Card, Button } from '@repo/design-system'
-import { Team } from '@Sdk/model'
+import { type Team } from '@Sdk/model'
 import { Eye, Pencil, Users, Volleyball } from 'lucide-react'
 import { Link } from 'react-router'
 
@@ -8,12 +8,12 @@ type TeamCardGridProps = {
 }
 
 export const TeamCardGrid = ({ teams }: TeamCardGridProps) => (
-  <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+  <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
     {teams.map(team => (
       <li key={team.id}>
-        <Card.Container className="items-center text-center gap-4">
+        <Card.Container className="items-center gap-4 text-center">
           <Card.Content className="flex flex-col items-center gap-3">
-            <Volleyball style={{ color: team.color ?? 'currentColor' }} className="w-16 h-16" />
+            <Volleyball style={{ color: team.color ?? 'currentColor' }} className="h-16 w-16" />
             <Card.Title>{team.name}</Card.Title>
           </Card.Content>
           <Card.Footer className="justify-center gap-1">

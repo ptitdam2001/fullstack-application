@@ -20,7 +20,7 @@ export const GameList = () => {
   const count = use(useCountTeams().promise)
 
   return (
-    <section data-testid="GameList" className="flex flex-col h-full">
+    <section data-testid="GameList" className="flex h-full flex-col">
       <ErrorBoundary>
         <Suspense fallback={<TableLoader nbCols={1} nbRows={10} />}>
           <GameListRaw games={games ?? []} />

@@ -1,6 +1,6 @@
 import { OpenProvider } from '@Providers/OpenProvider'
 import clsx from 'clsx'
-import { FC, ReactNode } from 'react'
+import { type FC, type ReactNode } from 'react'
 
 type MainProps = {
   menuWidth?: string

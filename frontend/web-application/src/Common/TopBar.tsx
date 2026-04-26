@@ -1,5 +1,5 @@
 import { ToggleThemeMode } from '@Theme/ToggleThemeMode'
-import { FC, ReactNode } from 'react'
+import { type FC, type ReactNode } from 'react'
 import { AuthActions } from '@Auth/AuthActions'
 import { SidebarTrigger, Separator } from '@repo/design-system'
 import { Title } from './Title'
@@ -18,7 +18,7 @@ export const TopBar: FC<TopBarProps> = ({ title, children, isAnonymous }) => (
 
     <div className="grow">{children}</div>
     {title && <Title className="mx-2">{title}</Title>}
-    <div className="flex pr-4 gap-2 items-center">
+    <div className="flex items-center gap-2 pr-4">
       <LanguageSwitcher />
       <ToggleThemeMode />
       {!isAnonymous && <AuthActions />}
