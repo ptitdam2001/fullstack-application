@@ -1,5 +1,5 @@
 import cors from 'cors'
-import express, { type NextFunction, Request, Response } from 'express'
+import express, { type NextFunction, type Request, type Response } from 'express'
 import dotenv from 'dotenv'
 import morgan from 'morgan'
 import jwt from 'jsonwebtoken'
@@ -77,15 +77,13 @@ const api = new OpenAPIBackend({
     ...standingsHandlers,
     validationFail: (c, _: Request, res: Response) => res.status(400).json({ err: c.validation.errors }),
     notFound: (c, _: Request, res: Response) =>
-      res
-        .status(404)
-        .json({
-          err: 'not found',
-          operation: c.operation?.operationId,
-          status: 404,
-          path: c.operation?.path,
-          method: c.operation?.method,
-        }),
+      res.status(404).json({
+        err: 'not found',
+        operation: c.operation?.operationId,
+        status: 404,
+        path: c.operation?.path,
+        method: c.operation?.method,
+      }),
     methodNotAllowed: (_, _1, res: Response) => res.status(405).json({ status: 405, err: 'Method not allowed' }),
     notImplemented: (_, _1, res: Response) =>
       res.status(404).json({ status: 501, err: 'No handler registered for operation' }),

@@ -1,22 +1,16 @@
-import chalk from 'chalk';
-import winston from 'winston';
+import chalk from 'chalk'
+import winston from 'winston'
 
-const colorize = winston.format((info) => {
-    const level = info.level;
-    const color =
-      level === "error"
-        ? chalk.red
-        : level === "warn"
-        ? chalk.yellow
-        : level === "info"
-        ? chalk.green
-        : chalk.white;
-    info.message = color(info.message);
-    return info;
-  });
+const colorize = winston.format(info => {
+  const level = info.level
+  const color =
+    level === 'error' ? chalk.red : level === 'warn' ? chalk.yellow : level === 'info' ? chalk.green : chalk.white
+  info.message = color(info.message)
+  return info
+})
 
 export const logger = winston.createLogger({
-    level: "info",
-    format: winston.format.combine(winston.format.splat(), colorize(), winston.format.simple()),
-    transports: [new winston.transports.Console()],
-  });
+  level: 'info',
+  format: winston.format.combine(winston.format.splat(), colorize(), winston.format.simple()),
+  transports: [new winston.transports.Console()],
+})

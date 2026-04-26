@@ -18,7 +18,17 @@ type TeamStats = {
 function buildStatsMap(teamIds: string[], matches: Match[], pointsConfig: PointsConfig): Map<string, TeamStats> {
   const map = new Map<string, TeamStats>()
   for (const teamId of teamIds) {
-    map.set(teamId, { teamId, played: 0, won: 0, drawn: 0, lost: 0, forfeited: 0, goalsFor: 0, goalsAgainst: 0, points: 0 })
+    map.set(teamId, {
+      teamId,
+      played: 0,
+      won: 0,
+      drawn: 0,
+      lost: 0,
+      forfeited: 0,
+      goalsFor: 0,
+      goalsAgainst: 0,
+      points: 0,
+    })
   }
 
   for (const match of matches) {
@@ -77,13 +87,16 @@ function buildStatsMap(teamIds: string[], matches: Match[], pointsConfig: Points
 }
 
 function headToHeadStats(teamIds: string[], matches: Match[], pointsConfig: PointsConfig): Map<string, TeamStats> {
-  const relevantMatches = matches.filter(
-    (m) => teamIds.includes(m.homeTeamId) && teamIds.includes(m.awayTeamId),
-  )
+  const relevantMatches = matches.filter(m => teamIds.includes(m.homeTeamId) && teamIds.includes(m.awayTeamId))
   return buildStatsMap(teamIds, relevantMatches, pointsConfig)
 }
 
-function compareStats(a: TeamStats, b: TeamStats, h2h: Map<string, TeamStats>, overall: Map<string, TeamStats>): number {
+function compareStats(
+  a: TeamStats,
+  b: TeamStats,
+  h2h: Map<string, TeamStats>,
+  overall: Map<string, TeamStats>
+): number {
   const ah2h = h2h.get(a.teamId)!
   const bh2h = h2h.get(b.teamId)!
   const ao = overall.get(a.teamId)!
@@ -118,7 +131,7 @@ function sortWithTiebreakers(statsArray: TeamStats[], matches: Match[], pointsCo
     if (group.length === 1) {
       result.push(group[0])
     } else {
-      const tiedIds = group.map((s) => s.teamId)
+      const tiedIds = group.map(s => s.teamId)
       const h2h = headToHeadStats(tiedIds, matches, pointsConfig)
       const overall = buildStatsMap(tiedIds, matches, pointsConfig)
       group.sort((a, b) => compareStats(a, b, h2h, overall))

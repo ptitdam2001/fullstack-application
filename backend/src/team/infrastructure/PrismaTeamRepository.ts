@@ -48,6 +48,6 @@ export class PrismaTeamRepository implements ITeamRepository {
       take: count,
       orderBy: { date: 'asc' },
     })
-    return games.map((g) => ({ id: g.id, date: g.date, teams: g.teams }))
+    return games.map(g => ({ id: g.id, date: g.date, teams: g.teams }))
   }
 }

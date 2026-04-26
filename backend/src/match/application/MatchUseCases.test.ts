@@ -4,7 +4,14 @@ import type { IMatchRepository } from '../ports/IMatchRepository.js'
 import { MatchNotFoundError } from '../domain/MatchErrors.js'
 import { MatchStatus } from '../domain/Match.js'
 
-const mockArea = { id: 'area-1', name: 'Stade', address: '1 rue du sport', city: 'Lyon', longitude: 4.83, latitude: 45.75 }
+const mockArea = {
+  id: 'area-1',
+  name: 'Stade',
+  address: '1 rue du sport',
+  city: 'Lyon',
+  longitude: 4.83,
+  latitude: 45.75,
+}
 
 const mockMatch = {
   id: 'match-1',
@@ -82,7 +89,9 @@ describe('MatchUseCases.create', () => {
 
 describe('MatchUseCases.update', () => {
   it('updates match when found', async () => {
-    const result = await new MatchUseCases(makeRepo()).update('match-1', { scheduledAt: new Date('2026-05-02T15:00:00Z') })
+    const result = await new MatchUseCases(makeRepo()).update('match-1', {
+      scheduledAt: new Date('2026-05-02T15:00:00Z'),
+    })
     expect(result.scheduledAt).toEqual(new Date('2026-05-02T15:00:00Z'))
   })
   it('throws MatchNotFoundError when not found', async () => {

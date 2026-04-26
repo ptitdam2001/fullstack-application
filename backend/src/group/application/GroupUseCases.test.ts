@@ -43,7 +43,12 @@ describe('GroupUseCases.getById', () => {
 describe('GroupUseCases.create', () => {
   it('creates a group', async () => {
     const repo = makeRepo()
-    const input = { phaseId: 'phase-1', name: 'Poule A', matchMode: MatchMode.HOME_AND_AWAY, teamIds: ['team-1', 'team-2'] }
+    const input = {
+      phaseId: 'phase-1',
+      name: 'Poule A',
+      matchMode: MatchMode.HOME_AND_AWAY,
+      teamIds: ['team-1', 'team-2'],
+    }
     await new GroupUseCases(repo).create(input)
     expect(repo.create).toHaveBeenCalledWith(input)
   })

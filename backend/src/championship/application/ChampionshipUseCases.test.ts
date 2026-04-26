@@ -72,7 +72,9 @@ describe('ChampionshipUseCases.update', () => {
   })
   it('throws ChampionshipNotFoundError when not found', async () => {
     const repo = makeRepo({ findById: vi.fn().mockResolvedValue(null) })
-    await expect(new ChampionshipUseCases(repo).update('unknown', { name: 'x' })).rejects.toThrow(ChampionshipNotFoundError)
+    await expect(new ChampionshipUseCases(repo).update('unknown', { name: 'x' })).rejects.toThrow(
+      ChampionshipNotFoundError
+    )
   })
 })
 
