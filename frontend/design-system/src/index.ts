@@ -129,8 +129,14 @@ export * from "./components/Tooltip/Tooltip";
 export * from "./components/Tooltip/TooltipTrigger";
 export * from "./components/Tooltip/TooltipContent";
 
+export * from "./components/ThemeToggle/ThemeToggle";
+
+// Providers
+export * from "./providers/ThemeProvider/ThemeProvider";
+
 // Hooks
 export * from "./hooks/use-mobile";
+export * from "./hooks/use-theme-config";
 
 // Utils
 export * from "./utils/cn";
@@ -138,3 +144,10 @@ export * from "./utils/cn";
 // Context
 export * from "./contexts/createContextWithRead";
 export * from "./contexts/createContextWithWrite";
+
+// Theme
+export * from "./theme/types";
+export * from "./theme/defaultTheme";
+export * from "./theme/tokenMap";
+export * from "./theme/applyTheme";
+export * from "./theme/storage/LocalStorageThemeStorage";

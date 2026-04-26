@@ -148,6 +148,140 @@ export * from './components/NomComposant/NomComposant'
 export * from './components/NomComposant/NomComposantVariants'
 ```
 
+## Système de thèmes
+
+### Architecture
+
+```
+src/theme/
+├── types.ts                          # ThemeConfig, ThemeTokens, IThemeStorage
+├── defaultTheme.ts                   # Thème "default" (tokens vides)
+├── tokenMap.ts                       # Mapping camelCase → nom CSS var
+├── applyTheme.ts                     # Injecte <style id="ds-theme-override"> dans document.head
+└── storage/
+    └── LocalStorageThemeStorage.ts   # Implémentation localStorage (clé: "ds-theme-config")
+
+src/providers/ThemeProvider/
+└── ThemeProvider.tsx                 # next-themes + ThemeConfigContext
+
+src/hooks/
+└── use-theme-config.ts               # useThemeConfig — hook principal
+```
+
+### Concepts clés
+
+**Deux couches indépendantes :**
+1. **Mode couleur** (`light` / `dark` / `system`) — géré par `next-themes`. Applique la classe `.dark` sur `document.documentElement`. Persisté par next-themes dans `localStorage` sous la clé `theme`.
+2. **Tokens personnalisés** — overrides CSS injestés via `<style id="ds-theme-override">`. Persistés par `IThemeStorage` (défaut : `LocalStorageThemeStorage` sous la clé `ds-theme-config`).
+
+**`ThemeConfig` :**
+```typescript
+type ThemeConfig = {
+  name: string
+  tokens: {
+    light: Partial<ThemeTokens>  // overrides pour le mode clair
+    dark: Partial<ThemeTokens>   // overrides pour le mode sombre
+  }
+}
+```
+Tokens vides = CSS variables de `src/styles/index.css` s'appliquent sans modification.
+
+### Usage
+
+**Wrapper racine de l'application :**
+```tsx
+import { ThemeProvider } from '@repo/design-system'
+
+<ThemeProvider defaultMode="system">
+  <App />
+</ThemeProvider>
+```
+
+**Toggle dark/light :**
+```tsx
+import { ThemeToggle } from '@repo/design-system'
+
+<ThemeToggle />  // cycle light → dark → system
+```
+
+**Hook complet :**
+```tsx
+import { useThemeConfig } from '@repo/design-system'
+
+const {
+  colorMode,           // 'light' | 'dark' | 'system' | undefined
+  setColorMode,        // (mode: string) => void
+  themeConfig,         // ThemeConfig courant
+  updateTokens,        // (tokens: Partial<ThemeTokens>, mode?: 'light' | 'dark') => void
+  resetTheme,          // () => void — retour au thème default
+  setThemeConfig,      // (config: ThemeConfig) => void — remplacement complet
+} = useThemeConfig()
+
+// Exemple : changer la couleur primaire
+updateTokens({ primary: 'oklch(0.6 0.2 200)' }, 'light')
+updateTokens({ primary: 'oklch(0.8 0.2 200)' }, 'dark')
+```
+
+### Swap localStorage → API
+
+Implémenter l'interface `IThemeStorage` et la fournir à `ThemeProvider` :
+
+```typescript
+import type { IThemeStorage, ThemeConfig } from '@repo/design-system'
+
+class ApiThemeStorage implements IThemeStorage {
+  async load(): ThemeConfig | null { /* GET /api/theme */ }
+  async save(config: ThemeConfig): void { /* PUT /api/theme */ }
+  async clear(): void { /* DELETE /api/theme */ }
+}
+
+<ThemeProvider storage={new ApiThemeStorage()}>
+  <App />
+</ThemeProvider>
+```
+
+> Note : quand l'API est synchrone (return de Promise), les méthodes de `IThemeStorage` peuvent être async — `ThemeProvider` appelle `load()` dans `useState` init donc la version API nécessitera un chargement asynchrone séparé (useEffect + état loading). Prévoir cet ajustement au moment du swap.
+
+### Tokens disponibles
+
+Voir `src/theme/types.ts` pour la liste complète (`ThemeTokens`). Principaux :
+
+| Token camelCase | CSS var | Usage |
+|---|---|---|
+| `primary` | `--primary` | Couleur d'action principale |
+| `secondary` | `--secondary` | Couleur secondaire |
+| `accent` | `--accent` | Mise en avant subtile |
+| `background` | `--background` | Fond de page |
+| `foreground` | `--foreground` | Texte principal |
+| `destructive` | `--destructive` | Danger / suppression |
+| `radius` | `--radius` | Arrondi de base (ex: `0.5rem`) |
+| `sidebar` | `--sidebar` | Fond du sidebar |
+
+### Ajouter un thème prédéfini
+
+```typescript
+import type { ThemeConfig } from '@repo/design-system'
+
+export const BLUE_THEME: ThemeConfig = {
+  name: 'blue',
+  tokens: {
+    light: {
+      primary: 'oklch(0.546 0.245 262.881)',
+      primaryForeground: 'oklch(0.985 0 0)',
+      ring: 'oklch(0.546 0.245 262.881)',
+    },
+    dark: {
+      primary: 'oklch(0.707 0.165 254.624)',
+      primaryForeground: 'oklch(0.205 0 0)',
+    },
+  },
+}
+
+// Appliquer :
+const { setThemeConfig } = useThemeConfig()
+setThemeConfig(BLUE_THEME)
+```
+
 ## Commandes
 
 ```bash
