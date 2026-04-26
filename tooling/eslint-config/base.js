@@ -9,5 +9,12 @@ export default tseslint.config(
     languageOptions: {
       ecmaVersion: 2020,
     },
+    rules: {
+      '@typescript-eslint/consistent-type-imports': ['error', { prefer: 'type-imports', fixStyle: 'inline-type-imports' }],
+      curly: ['error', 'all'],
+      'object-shorthand': ['error', 'always'],
+      'prefer-template': 'error',
+      'arrow-body-style': ['error', 'as-needed'],
+    },
   }
 )
