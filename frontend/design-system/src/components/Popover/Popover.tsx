@@ -9,13 +9,7 @@ type PopoverProps = Omit<React.ComponentProps<typeof DialogTrigger>, 'isOpen'> &
 
 function Popover({ open, defaultOpen, onOpenChange, ...props }: PopoverProps) {
   return (
-    <DialogTrigger
-      data-slot="popover"
-      isOpen={open}
-      defaultOpen={defaultOpen}
-      onOpenChange={onOpenChange}
-      {...props}
-    />
+    <DialogTrigger data-slot="popover" isOpen={open} defaultOpen={defaultOpen} onOpenChange={onOpenChange} {...props} />
   )
 }
 

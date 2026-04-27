@@ -10,15 +10,10 @@ function mergeProps(slotProps: AnyProps, childProps: AnyProps): AnyProps {
     const childValue = childProps[key]
 
     if (key === 'className') {
-      merged[key] =
-        slotValue && childValue
-          ? `${slotValue} ${childValue}`
-          : slotValue || childValue
+      merged[key] = slotValue && childValue ? `${slotValue} ${childValue}` : slotValue || childValue
     } else if (key === 'style') {
       merged[key] =
-        slotValue && childValue
-          ? { ...(slotValue as object), ...(childValue as object) }
-          : slotValue || childValue
+        slotValue && childValue ? { ...(slotValue as object), ...(childValue as object) } : slotValue || childValue
     } else if (typeof slotValue === 'function' && typeof childValue === 'function') {
       merged[key] = (...args: unknown[]) => {
         childValue(...args)
@@ -34,7 +29,9 @@ function mergeProps(slotProps: AnyProps, childProps: AnyProps): AnyProps {
 
 const Slot = React.forwardRef<Element, React.HTMLAttributes<HTMLElement> & { children?: React.ReactNode }>(
   ({ children, ...slotProps }, forwardedRef) => {
-    if (!React.isValidElement(children)) return null
+    if (!React.isValidElement(children)) {
+      return null
+    }
 
     const childProps = children.props as AnyProps
     const merged = mergeProps(slotProps as AnyProps, childProps)

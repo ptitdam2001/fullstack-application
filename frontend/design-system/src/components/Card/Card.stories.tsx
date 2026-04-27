@@ -1,21 +1,21 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
+import type { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Card } from "./Card";
+import { Card } from './Card'
 
 const meta = {
   component: Card.Container,
   decorators: [
-    (Story) => (
+    Story => (
       <div className="w-80">
         <Story />
       </div>
     ),
   ],
-} satisfies Meta<typeof Card.Container>;
+} satisfies Meta<typeof Card.Container>
 
-export default meta;
+export default meta
 
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof meta>
 
 // ─── Compositions ─────────────────────────────────────────────────────────────
 
@@ -30,11 +30,11 @@ export const Default: Story = {
         <p>Main content goes here.</p>
       </Card.Content>
       <Card.Footer>
-        <span className="text-sm text-muted-foreground">Footer text</span>
+        <span className="text-muted-foreground text-sm">Footer text</span>
       </Card.Footer>
     </Card.Container>
   ),
-};
+}
 
 export const WithAction: Story = {
   render: () => (
@@ -51,7 +51,7 @@ export const WithAction: Story = {
       </Card.Content>
     </Card.Container>
   ),
-};
+}
 
 export const HeaderOnly: Story = {
   render: () => (
@@ -62,7 +62,7 @@ export const HeaderOnly: Story = {
       </Card.Header>
     </Card.Container>
   ),
-};
+}
 
 export const ContentOnly: Story = {
   render: () => (
@@ -72,7 +72,7 @@ export const ContentOnly: Story = {
       </Card.Content>
     </Card.Container>
   ),
-};
+}
 
 export const WithFooterActions: Story = {
   render: () => (
@@ -87,9 +87,9 @@ export const WithFooterActions: Story = {
       <Card.Footer>
         <div className="flex gap-2">
           <button className="text-sm font-medium">Cancel</button>
-          <button className="text-sm font-medium text-destructive">Confirm</button>
+          <button className="text-destructive text-sm font-medium">Confirm</button>
         </div>
       </Card.Footer>
     </Card.Container>
   ),
-};
+}

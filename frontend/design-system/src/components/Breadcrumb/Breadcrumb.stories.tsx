@@ -1,21 +1,21 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
-import { HomeIcon } from "lucide-react";
+import type { Meta, StoryObj } from '@storybook/react-vite'
+import { HomeIcon } from 'lucide-react'
 
-import { Breadcrumb } from "./Breadcrumb";
-import { BreadcrumbEllipsis } from "./BreadcrumbEllipsis";
-import { BreadcrumbItem } from "./BreadcrumbItem";
-import { BreadcrumbLink } from "./BreadcrumbLink";
-import { BreadcrumbList } from "./BreadcrumbList";
-import { BreadcrumbPage } from "./BreadcrumbPage";
-import { BreadcrumbSeparator } from "./BreadcrumbSeparator";
+import { Breadcrumb } from './Breadcrumb'
+import { BreadcrumbEllipsis } from './BreadcrumbEllipsis'
+import { BreadcrumbItem } from './BreadcrumbItem'
+import { BreadcrumbLink } from './BreadcrumbLink'
+import { BreadcrumbList } from './BreadcrumbList'
+import { BreadcrumbPage } from './BreadcrumbPage'
+import { BreadcrumbSeparator } from './BreadcrumbSeparator'
 
 const meta = {
   component: Breadcrumb,
-} satisfies Meta<typeof Breadcrumb>;
+} satisfies Meta<typeof Breadcrumb>
 
-export default meta;
+export default meta
 
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   render: () => (
@@ -35,7 +35,7 @@ export const Default: Story = {
       </BreadcrumbList>
     </Breadcrumb>
   ),
-};
+}
 
 export const WithEllipsis: Story = {
   render: () => (
@@ -59,7 +59,7 @@ export const WithEllipsis: Story = {
       </BreadcrumbList>
     </Breadcrumb>
   ),
-};
+}
 
 export const WithIcon: Story = {
   render: () => (
@@ -78,4 +78,4 @@ export const WithIcon: Story = {
       </BreadcrumbList>
     </Breadcrumb>
   ),
-};
+}

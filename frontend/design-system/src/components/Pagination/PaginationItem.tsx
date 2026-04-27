@@ -1,7 +1,7 @@
-import * as React from "react";
+import * as React from 'react'
 
-function PaginationItem({ ...props }: React.ComponentProps<"li">) {
-  return <li data-slot="pagination-item" {...props} />;
+function PaginationItem({ ...props }: React.ComponentProps<'li'>) {
+  return <li data-slot="pagination-item" {...props} />
 }
 
 export { PaginationItem }

@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-function DropdownMenuTrigger({ asChild: _asChild, children }: { asChild?: boolean; children?: React.ReactNode }) {
+function DropdownMenuTrigger({ children }: { children?: React.ReactNode }) {
   return <>{children}</>
 }
 

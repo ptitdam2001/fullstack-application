@@ -54,11 +54,7 @@ describe('ThemeProvider', () => {
     const SetterConsumer = () => {
       const ctx = useContext(ThemeConfigContext)
       return (
-        <button
-          onClick={() => ctx?.setThemeConfig({ name: 'custom', tokens: { light: {}, dark: {} } })}
-        >
-          update
-        </button>
+        <button onClick={() => ctx?.setThemeConfig({ name: 'custom', tokens: { light: {}, dark: {} } })}>update</button>
       )
     }
     const { getByText } = render(
@@ -67,9 +63,7 @@ describe('ThemeProvider', () => {
       </ThemeProvider>
     )
     act(() => getByText('update').click())
-    expect(storage.save).toHaveBeenCalledWith(
-      expect.objectContaining({ name: 'custom' })
-    )
+    expect(storage.save).toHaveBeenCalledWith(expect.objectContaining({ name: 'custom' }))
   })
 
   it('injects style tag when theme has token overrides', () => {

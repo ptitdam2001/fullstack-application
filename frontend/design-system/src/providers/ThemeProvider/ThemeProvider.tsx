@@ -20,13 +20,7 @@ type ThemeProviderProps = {
   storage?: IThemeStorage
 }
 
-const ThemeConfigProvider = ({
-  children,
-  storage,
-}: {
-  children: React.ReactNode
-  storage: IThemeStorage
-}) => {
+const ThemeConfigProvider = ({ children, storage }: { children: React.ReactNode; storage: IThemeStorage }) => {
   const [themeConfig, setThemeConfigState] = React.useState<ThemeConfig>(() => storage.load() ?? DEFAULT_THEME)
 
   const setThemeConfig = React.useCallback(
@@ -43,18 +37,10 @@ const ThemeConfigProvider = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  return (
-    <ThemeConfigContext.Provider value={{ themeConfig, setThemeConfig }}>
-      {children}
-    </ThemeConfigContext.Provider>
-  )
+  return <ThemeConfigContext.Provider value={{ themeConfig, setThemeConfig }}>{children}</ThemeConfigContext.Provider>
 }
 
-export const ThemeProvider = ({
-  children,
-  defaultMode = 'system',
-  storage = defaultStorage,
-}: ThemeProviderProps) => (
+export const ThemeProvider = ({ children, defaultMode = 'system', storage = defaultStorage }: ThemeProviderProps) => (
   <NextThemesProvider attribute="class" defaultTheme={defaultMode} enableSystem disableTransitionOnChange>
     <ThemeConfigProvider storage={storage}>{children}</ThemeConfigProvider>
   </NextThemesProvider>

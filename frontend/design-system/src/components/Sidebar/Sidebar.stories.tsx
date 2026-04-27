@@ -1,50 +1,50 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Home, Settings, Users } from "lucide-react";
+import type { Meta, StoryObj } from '@storybook/react-vite'
+import { Home, Settings, Users } from 'lucide-react'
 
-import { Sidebar } from "./Sidebar";
-import { SidebarContent } from "./SidebarContent";
-import { SidebarFooter } from "./SidebarFooter";
-import { SidebarGroup } from "./SidebarGroup";
-import { SidebarGroupContent } from "./SidebarGroupContent";
-import { SidebarGroupLabel } from "./SidebarGroupLabel";
-import { SidebarHeader } from "./SidebarHeader";
-import { SidebarInset } from "./SidebarInset";
-import { SidebarMenu } from "./SidebarMenu";
-import { SidebarMenuButton } from "./SidebarMenuButton";
-import { SidebarMenuItem } from "./SidebarMenuItem";
-import { SidebarProvider } from "./SidebarProvider";
-import { SidebarTrigger } from "./SidebarTrigger";
+import { Sidebar } from './Sidebar'
+import { SidebarContent } from './SidebarContent'
+import { SidebarFooter } from './SidebarFooter'
+import { SidebarGroup } from './SidebarGroup'
+import { SidebarGroupContent } from './SidebarGroupContent'
+import { SidebarGroupLabel } from './SidebarGroupLabel'
+import { SidebarHeader } from './SidebarHeader'
+import { SidebarInset } from './SidebarInset'
+import { SidebarMenu } from './SidebarMenu'
+import { SidebarMenuButton } from './SidebarMenuButton'
+import { SidebarMenuItem } from './SidebarMenuItem'
+import { SidebarProvider } from './SidebarProvider'
+import { SidebarTrigger } from './SidebarTrigger'
 
 const meta = {
   component: SidebarProvider,
   parameters: {
-    layout: "fullscreen",
+    layout: 'fullscreen',
   },
-} satisfies Meta<typeof SidebarProvider>;
+} satisfies Meta<typeof SidebarProvider>
 
-export default meta;
+export default meta
 
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof meta>
 
 const items = [
-  { title: "Home", icon: Home, url: "#" },
-  { title: "Users", icon: Users, url: "#" },
-  { title: "Settings", icon: Settings, url: "#" },
-];
+  { title: 'Home', icon: Home, url: '#' },
+  { title: 'Users', icon: Users, url: '#' },
+  { title: 'Settings', icon: Settings, url: '#' },
+]
 
 export const Default: Story = {
   render: () => (
     <SidebarProvider>
       <Sidebar>
         <SidebarHeader>
-          <span className="font-semibold text-sm px-2">My App</span>
+          <span className="px-2 text-sm font-semibold">My App</span>
         </SidebarHeader>
         <SidebarContent>
           <SidebarGroup>
             <SidebarGroupLabel>Navigation</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {items.map((item) => (
+                {items.map(item => (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild>
                       <a href={item.url}>
@@ -59,7 +59,7 @@ export const Default: Story = {
           </SidebarGroup>
         </SidebarContent>
         <SidebarFooter>
-          <p className="text-xs text-muted-foreground px-2">v1.0.0</p>
+          <p className="text-muted-foreground px-2 text-xs">v1.0.0</p>
         </SidebarFooter>
       </Sidebar>
       <SidebarInset>
@@ -73,7 +73,7 @@ export const Default: Story = {
       </SidebarInset>
     </SidebarProvider>
   ),
-};
+}
 
 export const Collapsed: Story = {
   render: () => (
@@ -83,7 +83,7 @@ export const Collapsed: Story = {
           <SidebarGroup>
             <SidebarGroupContent>
               <SidebarMenu>
-                {items.map((item) => (
+                {items.map(item => (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton tooltip={item.title} asChild>
                       <a href={item.url}>
@@ -106,4 +106,4 @@ export const Collapsed: Story = {
       </SidebarInset>
     </SidebarProvider>
   ),
-};
+}

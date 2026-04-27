@@ -1,34 +1,34 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
-import { CircleCheck, AlertTriangle, Info } from "lucide-react";
+import type { Meta, StoryObj } from '@storybook/react-vite'
+import { CircleCheck, AlertTriangle, Info } from 'lucide-react'
 
-import { Badge } from "./Badge";
+import { Badge } from './Badge'
 
 const meta = {
   component: Badge,
   args: {
-    children: "Badge",
+    children: 'Badge',
   },
-} satisfies Meta<typeof Badge>;
+} satisfies Meta<typeof Badge>
 
-export default meta;
+export default meta
 
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof meta>
 
 // ─── Variants ────────────────────────────────────────────────────────────────
 
-export const Default: Story = {};
+export const Default: Story = {}
 
 export const Secondary: Story = {
-  args: { variant: "secondary" },
-};
+  args: { variant: 'secondary' },
+}
 
 export const Destructive: Story = {
-  args: { variant: "destructive", children: "Error" },
-};
+  args: { variant: 'destructive', children: 'Error' },
+}
 
 export const Outline: Story = {
-  args: { variant: "outline" },
-};
+  args: { variant: 'outline' },
+}
 
 // ─── With icons ───────────────────────────────────────────────────────────────
 
@@ -40,9 +40,9 @@ export const WithLeadingIcon: Story = {
         Success
       </>
     ),
-    variant: "default",
+    variant: 'default',
   },
-};
+}
 
 export const WithIconDestructive: Story = {
   args: {
@@ -52,9 +52,9 @@ export const WithIconDestructive: Story = {
         Warning
       </>
     ),
-    variant: "destructive",
+    variant: 'destructive',
   },
-};
+}
 
 export const WithIconOutline: Story = {
   args: {
@@ -64,19 +64,19 @@ export const WithIconOutline: Story = {
         Info
       </>
     ),
-    variant: "outline",
+    variant: 'outline',
   },
-};
+}
 
 // ─── asChild ─────────────────────────────────────────────────────────────────
 
 export const AsLink: Story = {
   args: {
     asChild: true,
-    variant: "outline",
+    variant: 'outline',
     children: <a href="#">Link badge</a>,
   },
-};
+}
 
 // ─── All variants ─────────────────────────────────────────────────────────────
 
@@ -89,4 +89,4 @@ export const AllVariants: Story = {
       <Badge variant="outline">Outline</Badge>
     </div>
   ),
-};
+}

@@ -10,7 +10,9 @@ function buildPlacement(
   side: Side = 'bottom',
   align: Align = 'center'
 ): React.ComponentProps<typeof AriaPopover>['placement'] {
-  if (align === 'center') return side
+  if (align === 'center') {
+    return side
+  }
   return `${side} ${align}` as React.ComponentProps<typeof AriaPopover>['placement']
 }
 

@@ -1,31 +1,19 @@
-import * as React from "react";
-import { Slot } from "../../utils/Slot";
-import { type VariantProps } from "class-variance-authority";
+import * as React from 'react'
+import { Slot } from '../../utils/Slot'
+import { type VariantProps } from 'class-variance-authority'
 
-import { cn } from "../../utils/cn";
-import { ButtonVariants } from "./ButtonVariants";
+import { cn } from '../../utils/cn'
+import { ButtonVariants } from './ButtonVariants'
 
-export const buttonVariants = ButtonVariants;
+export const buttonVariants = ButtonVariants
 
-type ButtonProps = React.ComponentProps<"button"> &
+type ButtonProps = React.ComponentProps<'button'> &
   VariantProps<typeof ButtonVariants> & {
-    asChild?: boolean;
-  };
+    asChild?: boolean
+  }
 
-export const Button = ({
-  className,
-  variant,
-  size,
-  asChild = false,
-  ...props
-}: ButtonProps) => {
-  const Comp = asChild ? Slot : "button";
+export const Button = ({ className, variant, size, asChild = false, ...props }: ButtonProps) => {
+  const Comp = asChild ? Slot : 'button'
 
-  return (
-    <Comp
-      data-slot="button"
-      className={cn(ButtonVariants({ variant, size, className }))}
-      {...props}
-    />
-  );
-};
+  return <Comp data-slot="button" className={cn(ButtonVariants({ variant, size, className }))} {...props} />
+}

@@ -10,7 +10,9 @@ const CollapsibleContext = React.createContext<CollapsibleContextValue | null>(n
 
 function useCollapsibleContext() {
   const ctx = React.useContext(CollapsibleContext)
-  if (!ctx) throw new Error('Collapsible sub-components must be used within <Collapsible>')
+  if (!ctx) {
+    throw new Error('Collapsible sub-components must be used within <Collapsible>')
+  }
   return ctx
 }
 

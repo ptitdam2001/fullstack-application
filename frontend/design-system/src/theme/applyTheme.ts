@@ -28,10 +28,7 @@ export function applyTheme(config: ThemeConfig): void {
   const lightBlock = buildVarBlock(config.tokens.light)
   const darkBlock = buildVarBlock(config.tokens.dark)
 
-  style.textContent = [
-    lightBlock ? `:root {\n${lightBlock}\n}` : '',
-    darkBlock ? `.dark {\n${darkBlock}\n}` : '',
-  ]
+  style.textContent = [lightBlock ? `:root {\n${lightBlock}\n}` : '', darkBlock ? `.dark {\n${darkBlock}\n}` : '']
     .filter(Boolean)
     .join('\n')
 }

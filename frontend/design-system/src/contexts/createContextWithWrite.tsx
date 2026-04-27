@@ -1,4 +1,4 @@
-import React, { createContext, Dispatch, ProviderProps, useContext, useReducer } from 'react'
+import React, { createContext, type Dispatch, type ProviderProps, useContext, useReducer } from 'react'
 
 const noProvider = Symbol('no provider')
 

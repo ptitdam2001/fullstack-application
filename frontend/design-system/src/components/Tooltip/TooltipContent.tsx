@@ -7,8 +7,12 @@ type Side = 'top' | 'bottom' | 'left' | 'right'
 type Align = 'start' | 'center' | 'end'
 
 function buildPlacement(side?: Side, align?: Align) {
-  if (!side) return undefined
-  if (!align || align === 'center') return side
+  if (!side) {
+    return undefined
+  }
+  if (!align || align === 'center') {
+    return side
+  }
   return `${side} ${align}` as React.ComponentProps<typeof AriaTooltip>['placement']
 }
 
@@ -20,15 +24,7 @@ type TooltipContentProps = Omit<React.ComponentProps<typeof AriaTooltip>, 'place
   children?: React.ReactNode
 }
 
-function TooltipContent({
-  className,
-  sideOffset = 0,
-  side,
-  align,
-  hidden,
-  children,
-  ...props
-}: TooltipContentProps) {
+function TooltipContent({ className, sideOffset = 0, side, align, hidden, children, ...props }: TooltipContentProps) {
   return (
     <AriaTooltip
       data-slot="tooltip-content"
@@ -43,12 +39,7 @@ function TooltipContent({
     >
       {children}
       <OverlayArrow>
-        <svg
-          width={8}
-          height={8}
-          viewBox="0 0 8 8"
-          className="bg-primary fill-primary z-50 rotate-45 rounded-[2px]"
-        >
+        <svg width={8} height={8} viewBox="0 0 8 8" className="bg-primary fill-primary z-50 rotate-45 rounded-[2px]">
           <path d="M0 0 L4 4 L8 0" />
         </svg>
       </OverlayArrow>

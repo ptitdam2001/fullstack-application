@@ -1,34 +1,34 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Cloud, CreditCard, Github, Keyboard, LifeBuoy, LogOut, Mail, MessageSquare, Plus, PlusCircle, Settings, User, UserPlus, Users } from "lucide-react";
+import type { Meta, StoryObj } from '@storybook/react-vite'
+import { CreditCard, LogOut, Mail, MessageSquare, Settings, User, UserPlus } from 'lucide-react'
 
-import { DropdownMenu } from "./DropdownMenu";
-import { DropdownMenuCheckboxItem } from "./DropdownMenuCheckboxItem";
-import { DropdownMenuContent } from "./DropdownMenuContent";
-import { DropdownMenuGroup } from "./DropdownMenuGroup";
-import { DropdownMenuItem } from "./DropdownMenuItem";
-import { DropdownMenuLabel } from "./DropdownMenuLabel";
-import { DropdownMenuRadioGroup } from "./DropdownMenuRadioGroup";
-import { DropdownMenuRadioItem } from "./DropdownMenuRadioItem";
-import { DropdownMenuSeparator } from "./DropdownMenuSeparator";
-import { DropdownMenuShortcut } from "./DropdownMenuShortcut";
-import { DropdownMenuSub } from "./DropdownMenuSub";
-import { DropdownMenuSubContent } from "./DropdownMenuSubContent";
-import { DropdownMenuSubTrigger } from "./DropdownMenuSubTrigger";
-import { DropdownMenuTrigger } from "./DropdownMenuTrigger";
+import { DropdownMenu } from './DropdownMenu'
+import { DropdownMenuCheckboxItem } from './DropdownMenuCheckboxItem'
+import { DropdownMenuContent } from './DropdownMenuContent'
+import { DropdownMenuGroup } from './DropdownMenuGroup'
+import { DropdownMenuItem } from './DropdownMenuItem'
+import { DropdownMenuLabel } from './DropdownMenuLabel'
+import { DropdownMenuRadioGroup } from './DropdownMenuRadioGroup'
+import { DropdownMenuRadioItem } from './DropdownMenuRadioItem'
+import { DropdownMenuSeparator } from './DropdownMenuSeparator'
+import { DropdownMenuShortcut } from './DropdownMenuShortcut'
+import { DropdownMenuSub } from './DropdownMenuSub'
+import { DropdownMenuSubContent } from './DropdownMenuSubContent'
+import { DropdownMenuSubTrigger } from './DropdownMenuSubTrigger'
+import { DropdownMenuTrigger } from './DropdownMenuTrigger'
 
 const meta = {
   component: DropdownMenu,
-} satisfies Meta<typeof DropdownMenu>;
+} satisfies Meta<typeof DropdownMenu>
 
-export default meta;
+export default meta
 
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   render: () => (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="px-4 py-2 text-sm border rounded">Open menu</button>
+        <button className="rounded border px-4 py-2 text-sm">Open menu</button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
@@ -59,13 +59,13 @@ export const Default: Story = {
       </DropdownMenuContent>
     </DropdownMenu>
   ),
-};
+}
 
 export const WithSubMenu: Story = {
   render: () => (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="px-4 py-2 text-sm border rounded">With submenu</button>
+        <button className="rounded border px-4 py-2 text-sm">With submenu</button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
         <DropdownMenuGroup>
@@ -89,13 +89,13 @@ export const WithSubMenu: Story = {
       </DropdownMenuContent>
     </DropdownMenu>
   ),
-};
+}
 
 export const WithCheckboxItems: Story = {
   render: () => (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="px-4 py-2 text-sm border rounded">Checkboxes</button>
+        <button className="rounded border px-4 py-2 text-sm">Checkboxes</button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
         <DropdownMenuLabel>Appearance</DropdownMenuLabel>
@@ -106,13 +106,13 @@ export const WithCheckboxItems: Story = {
       </DropdownMenuContent>
     </DropdownMenu>
   ),
-};
+}
 
 export const WithRadioItems: Story = {
   render: () => (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="px-4 py-2 text-sm border rounded">Radio items</button>
+        <button className="rounded border px-4 py-2 text-sm">Radio items</button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
         <DropdownMenuLabel>Panel position</DropdownMenuLabel>
@@ -125,4 +125,4 @@ export const WithRadioItems: Story = {
       </DropdownMenuContent>
     </DropdownMenu>
   ),
-};
+}

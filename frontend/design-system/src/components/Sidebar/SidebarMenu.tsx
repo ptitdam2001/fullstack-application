@@ -1,16 +1,16 @@
-import * as React from "react";
+import * as React from 'react'
 
-import { cn } from "../../utils/cn";
+import { cn } from '../../utils/cn'
 
-function SidebarMenu({ className, ...props }: React.ComponentProps<"ul">) {
+function SidebarMenu({ className, ...props }: React.ComponentProps<'ul'>) {
   return (
     <ul
       data-slot="sidebar-menu"
       data-sidebar="menu"
-      className={cn("flex w-full min-w-0 flex-col gap-1", className)}
+      className={cn('flex w-full min-w-0 flex-col gap-1', className)}
       {...props}
     />
-  );
+  )
 }
 
 export { SidebarMenu }

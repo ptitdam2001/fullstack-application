@@ -1,37 +1,37 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
+import type { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Separator } from "./Separator";
+import { Separator } from './Separator'
 
 const meta = {
   component: Separator,
-} satisfies Meta<typeof Separator>;
+} satisfies Meta<typeof Separator>
 
-export default meta;
+export default meta
 
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof meta>
 
 // ─── Orientations ─────────────────────────────────────────────────────────────
 
 export const Horizontal: Story = {
   decorators: [
-    (Story) => (
+    Story => (
       <div className="w-64">
         <Story />
       </div>
     ),
   ],
-};
+}
 
 export const Vertical: Story = {
-  args: { orientation: "vertical" },
+  args: { orientation: 'vertical' },
   decorators: [
-    (Story) => (
-      <div className="h-16 flex">
+    Story => (
+      <div className="flex h-16">
         <Story />
       </div>
     ),
   ],
-};
+}
 
 // ─── In context ───────────────────────────────────────────────────────────────
 
@@ -43,7 +43,7 @@ export const BetweenTextBlocks: Story = {
       <p className="text-sm">Second section content.</p>
     </div>
   ),
-};
+}
 
 export const BetweenInlineItems: Story = {
   render: () => (
@@ -55,22 +55,18 @@ export const BetweenInlineItems: Story = {
       <span>Logout</span>
     </div>
   ),
-};
+}
 
 export const WithLabeledSections: Story = {
   render: () => (
     <div className="w-64 space-y-3">
-      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-        Section A
-      </p>
+      <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">Section A</p>
       <Separator />
       <p className="text-sm">Content for section A.</p>
       <Separator />
-      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-        Section B
-      </p>
+      <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">Section B</p>
       <Separator />
       <p className="text-sm">Content for section B.</p>
     </div>
   ),
-};
+}

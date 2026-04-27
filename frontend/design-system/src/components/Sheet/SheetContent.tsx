@@ -7,13 +7,10 @@ import { cn } from '../../utils/cn'
 type SheetSide = 'top' | 'right' | 'bottom' | 'left'
 
 const sideClasses: Record<SheetSide, string> = {
-  right:
-    'entering:slide-in-from-right exiting:slide-out-to-right inset-y-0 right-0 h-full w-3/4 border-l sm:max-w-sm',
-  left:
-    'entering:slide-in-from-left exiting:slide-out-to-left inset-y-0 left-0 h-full w-3/4 border-r sm:max-w-sm',
+  right: 'entering:slide-in-from-right exiting:slide-out-to-right inset-y-0 right-0 h-full w-3/4 border-l sm:max-w-sm',
+  left: 'entering:slide-in-from-left exiting:slide-out-to-left inset-y-0 left-0 h-full w-3/4 border-r sm:max-w-sm',
   top: 'entering:slide-in-from-top exiting:slide-out-to-top inset-x-0 top-0 h-auto border-b',
-  bottom:
-    'entering:slide-in-from-bottom exiting:slide-out-to-bottom inset-x-0 bottom-0 h-auto border-t',
+  bottom: 'entering:slide-in-from-bottom exiting:slide-out-to-bottom inset-x-0 bottom-0 h-auto border-t',
 }
 
 type SheetContentProps = React.ComponentProps<typeof AriaDialog> & {
@@ -28,13 +25,13 @@ function SheetContent({ className, children, side = 'right', ...props }: SheetCo
     >
       <Modal
         className={cn(
-          'bg-background entering:animate-in exiting:animate-out fixed z-50 flex flex-col gap-4 shadow-lg transition ease-in-out entering:duration-500 exiting:duration-300',
+          'bg-background entering:animate-in exiting:animate-out entering:duration-500 exiting:duration-300 fixed z-50 flex flex-col gap-4 shadow-lg transition ease-in-out',
           sideClasses[side],
           className
         )}
       >
-        <AriaDialog data-slot="sheet-content" className="outline-none flex flex-col gap-4 h-full" {...props}>
-          {(renderProps) => (
+        <AriaDialog data-slot="sheet-content" className="flex h-full flex-col gap-4 outline-none" {...props}>
+          {renderProps => (
             <>
               {typeof children === 'function' ? children(renderProps) : children}
               <Button

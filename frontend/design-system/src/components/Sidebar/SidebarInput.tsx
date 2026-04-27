@@ -1,20 +1,17 @@
-import * as React from "react";
+import * as React from 'react'
 
-import { cn } from "../../utils/cn";
-import { Input } from "../Input/Input";
+import { cn } from '../../utils/cn'
+import { Input } from '../Input/Input'
 
-function SidebarInput({
-  className,
-  ...props
-}: React.ComponentProps<typeof Input>) {
+function SidebarInput({ className, ...props }: React.ComponentProps<typeof Input>) {
   return (
     <Input
       data-slot="sidebar-input"
       data-sidebar="input"
-      className={cn("bg-background h-8 w-full shadow-none", className)}
+      className={cn('bg-background h-8 w-full shadow-none', className)}
       {...props}
     />
-  );
+  )
 }
 
 export { SidebarInput }

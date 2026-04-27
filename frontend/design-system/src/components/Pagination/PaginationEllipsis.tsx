@@ -1,23 +1,21 @@
-import * as React from "react";
-import { MoreHorizontalIcon } from "lucide-react";
+import * as React from 'react'
+import { MoreHorizontalIcon } from 'lucide-react'
 
-import { cn } from "../../utils/cn";
+import { cn } from '../../utils/cn'
 
-function PaginationEllipsis({
-  className,
-  ...props
-}: React.ComponentProps<"span">) {
+function PaginationEllipsis({ className, ...props }: React.ComponentProps<'span'>) {
   return (
     <span
       aria-hidden
+      role="presentation"
       data-slot="pagination-ellipsis"
-      className={cn("flex size-9 items-center justify-center", className)}
+      className={cn('flex size-9 items-center justify-center', className)}
       {...props}
     >
       <MoreHorizontalIcon className="size-4" />
       <span className="sr-only">More pages</span>
     </span>
-  );
+  )
 }
 
 export { PaginationEllipsis }

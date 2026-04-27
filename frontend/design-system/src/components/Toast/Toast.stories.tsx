@@ -1,24 +1,24 @@
-import { Meta } from "@storybook/react-vite";
-import { Toast } from "./Toast";
+import { type Meta } from '@storybook/react-vite'
+import { Toast } from './Toast'
 
 const meta = {
-  title: "Common/Toast",
+  title: 'Common/Toast',
   parameters: {
-    layout: "fullscreen",
+    layout: 'fullscreen',
   },
   decorators: [
-    (Story) => (
+    Story => (
       <Toast.Provider>
         <Story />
       </Toast.Provider>
     ),
   ],
-} satisfies Meta<unknown>;
+} satisfies Meta<unknown>
 
-export default meta;
+export default meta
 
 export const Simple = () => {
-  const toast = Toast.useToast();
+  const toast = Toast.useToast()
 
-  return <button onClick={() => toast("One toast")}>Notify me</button>;
-};
+  return <button onClick={() => toast('One toast')}>Notify me</button>
+}

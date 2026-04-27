@@ -27,7 +27,9 @@ function Collapsible({
 
   const handleOpenChange = React.useCallback(
     (value: boolean) => {
-      if (!isControlled) setInternalOpen(value)
+      if (!isControlled) {
+        setInternalOpen(value)
+      }
       onOpenChange?.(value)
     },
     [isControlled, onOpenChange]

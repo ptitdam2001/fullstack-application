@@ -17,7 +17,7 @@ function DialogContent({ className, children, ...props }: React.ComponentProps<t
         )}
       >
         <AriaDialog data-slot="dialog-content" className="outline-none" {...props}>
-          {(renderProps) => (
+          {renderProps => (
             <>
               {typeof children === 'function' ? children(renderProps) : children}
               <Button

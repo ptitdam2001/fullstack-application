@@ -7,8 +7,12 @@ type Side = 'top' | 'bottom' | 'left' | 'right'
 type Align = 'start' | 'center' | 'end'
 
 function buildPlacement(side?: Side, align?: Align): React.ComponentProps<typeof Popover>['placement'] {
-  if (!side) return undefined
-  if (!align || align === 'center') return side
+  if (!side) {
+    return undefined
+  }
+  if (!align || align === 'center') {
+    return side
+  }
   return `${side} ${align}` as React.ComponentProps<typeof Popover>['placement']
 }
 

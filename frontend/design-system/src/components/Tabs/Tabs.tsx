@@ -3,7 +3,10 @@ import { Tabs as AriaTabs } from 'react-aria-components'
 
 import { cn } from '../../utils/cn'
 
-type TabsProps = Omit<React.ComponentProps<typeof AriaTabs>, 'selectedKey' | 'defaultSelectedKey' | 'onSelectionChange'> & {
+type TabsProps = Omit<
+  React.ComponentProps<typeof AriaTabs>,
+  'selectedKey' | 'defaultSelectedKey' | 'onSelectionChange'
+> & {
   value?: string
   defaultValue?: string
   onValueChange?: (value: string) => void
@@ -17,7 +20,7 @@ function Tabs({ className, value, defaultValue, onValueChange, role: _role, ...p
       className={cn('flex flex-col gap-2', className)}
       selectedKey={value}
       defaultSelectedKey={defaultValue}
-      onSelectionChange={(key) => onValueChange?.(key as string)}
+      onSelectionChange={key => onValueChange?.(key as string)}
       {...props}
     />
   )

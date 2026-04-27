@@ -1,10 +1,10 @@
-import { CardAction } from "./CarAction";
-import { CardContainer } from "./CardContainer";
-import { CardContent } from "./CardContent";
-import { CardDescription } from "./CardDescription";
-import { CardFooter } from "./CardFooter";
-import { CardHeader } from "./CardHeader";
-import { CardTitle } from "./CardTitle";
+import { CardAction } from './CarAction'
+import { CardContainer } from './CardContainer'
+import { CardContent } from './CardContent'
+import { CardDescription } from './CardDescription'
+import { CardFooter } from './CardFooter'
+import { CardHeader } from './CardHeader'
+import { CardTitle } from './CardTitle'
 
 export const Card = {
   Container: CardContainer,
@@ -14,4 +14,4 @@ export const Card = {
   Action: CardAction,
   Description: CardDescription,
   Content: CardContent,
-};
+}

@@ -15,7 +15,7 @@ function DropdownMenuSubTrigger({ className, inset, children, ...props }: Dropdo
       data-slot="dropdown-menu-sub-trigger"
       data-inset={inset}
       className={cn(
-        'data-[focused]:bg-accent data-[focused]:text-accent-foreground data-[open]:bg-accent data-[open]:text-accent-foreground flex cursor-default items-center rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-[inset]:pl-8',
+        'data-focused:bg-accent data-focused:text-accent-foreground data-open:bg-accent data-open:text-accent-foreground flex cursor-default items-center rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-inset:pl-8',
         className
       )}
       {...props}

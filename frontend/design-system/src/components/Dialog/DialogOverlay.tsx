@@ -7,13 +7,7 @@ import { cn } from '../../utils/cn'
  * via react-aria-components' ModalOverlay internally.
  */
 function DialogOverlay({ className, ...props }: React.ComponentProps<'div'>) {
-  return (
-    <div
-      data-slot="dialog-overlay"
-      className={cn('fixed inset-0 z-50 bg-black/80', className)}
-      {...props}
-    />
-  )
+  return <div data-slot="dialog-overlay" className={cn('fixed inset-0 z-50 bg-black/80', className)} {...props} />
 }
 
 export { DialogOverlay }

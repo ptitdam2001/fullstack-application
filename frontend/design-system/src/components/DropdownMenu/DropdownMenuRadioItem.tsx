@@ -3,7 +3,7 @@ import { MenuItem } from 'react-aria-components'
 import { CircleIcon } from 'lucide-react'
 
 import { cn } from '../../utils/cn'
-import { useDropdownMenuRadioGroup } from './DropdownMenuRadioGroup'
+import { useDropdownMenuRadioGroup } from './DropdownMenuRadioGroupContext'
 
 type DropdownMenuRadioItemProps = Omit<React.ComponentProps<typeof MenuItem>, 'id' | 'onAction' | 'children'> & {
   value: string
