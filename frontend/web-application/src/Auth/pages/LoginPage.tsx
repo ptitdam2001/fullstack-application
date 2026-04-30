@@ -1,5 +1,5 @@
-import { Card } from '@repo/design-system'
 import { CONNECTED_HOME } from '@Auth/constant'
+import { AuthLeftPanel } from '@Auth/components/AuthLeftPanel'
 import { SigninForm } from '@Auth/Form/SigninForm'
 import { Link, useNavigate } from 'react-router'
 
@@ -7,16 +7,30 @@ export const LoginPage = () => {
   const navigate = useNavigate()
 
   return (
-    <section className="flex h-full flex-col items-center justify-center">
-      <Card.Container className="min-h-1/3 w-1/3">
-        <Card.Header className="p-1 text-center">Login</Card.Header>
-        <Card.Content className="flex flex-col gap-4 px-2 py-1">
-          <SigninForm onSuccess={() => navigate(CONNECTED_HOME)} />
-          <section className="text-center">
-            <Link to="/auth/forgotten-password">Forgotten password</Link>
-          </section>
-        </Card.Content>
-      </Card.Container>
-    </section>
+    <div className="grid md:grid-cols-2 h-full w-full -m-1">
+      <AuthLeftPanel />
+
+      <div className="flex items-center justify-center p-8 bg-background">
+        <div className="w-full max-w-100">
+          <div className="mb-8">
+            <h1 className="text-2xl font-semibold tracking-tight mb-1.5">Welcome back</h1>
+            <p className="text-sm text-muted-foreground">Sign in to your account to continue.</p>
+          </div>
+
+          <SigninForm onSuccess={() => navigate(CONNECTED_HOME)} forgotPasswordPath="/auth/forgotten-password" />
+
+          <p className="text-center mt-6 text-sm text-muted-foreground">
+            Don&apos;t have an account?{' '}
+            <Link
+              to="/auth/register"
+              className="text-sm font-medium underline underline-offset-4 hover:opacity-75 transition-opacity"
+              style={{ color: 'var(--auth-accent)' }}
+            >
+              Create one
+            </Link>
+          </p>
+        </div>
+      </div>
+    </div>
   )
 }
