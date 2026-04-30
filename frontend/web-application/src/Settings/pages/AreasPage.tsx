@@ -1,4 +1,4 @@
-import { AreaList } from '@Settings/Areas/AreaList'
+import { AreaList } from '../ui/AreaList'
 import { Link, Outlet } from 'react-router'
 import { Edit, HousePlus } from 'lucide-react'
 

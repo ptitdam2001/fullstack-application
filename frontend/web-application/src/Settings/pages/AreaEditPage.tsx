@@ -1,6 +1,6 @@
 import { NotFound } from '@Pages/NotFound'
-import { getCountAllAreasQueryKey, getGetAreaListQueryKey, useGetArea } from '@Sdk/area/area'
-import { AreaForm } from '@Settings/Areas/AreaForm'
+import { useGetArea, getGetAreaListQueryKey, getCountAllAreasQueryKey } from '../infrastructure/useAreaApi'
+import { AreaForm } from '../ui/AreaForm'
 import { useNavigate, useParams } from 'react-router'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogPortal, DialogTitle } from '@repo/design-system'
 import React from 'react'

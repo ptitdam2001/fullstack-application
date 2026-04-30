@@ -17,8 +17,6 @@ type Output = {
   list: TabProps[]
 }
 
-export const useSettingsMenu = (): Output => {
-  return {
-    list: menu,
-  }
-}
+export const useSettingsMenu = (): Output => ({
+  list: menu,
+})
