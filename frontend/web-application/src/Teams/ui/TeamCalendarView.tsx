@@ -1,6 +1,6 @@
 import { ErrorBoundary } from '@Common/ErrorBoundary'
 import { ListLoader } from '@Common/Loading'
-import { GameListRaw } from '@Game/ListRaw/GameListRaw'
+import { GameListRaw } from '@Game/ui/GameListRaw'
 import { Suspense, use } from 'react'
 import { useTeamCalendar } from '../application/useTeamCalendar'
 

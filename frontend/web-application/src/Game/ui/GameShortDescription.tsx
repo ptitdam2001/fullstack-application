@@ -1,0 +1,32 @@
+import { Card } from '@repo/design-system'
+import { Address } from '@Common/Address/Address'
+import type { Game } from '../domain/Game'
+
+type GameListItemProps = { game: Game }
+
+export const GameShortDescription = ({ game }: GameListItemProps) => {
+  const {
+    teams: [homeTeam, awayTeam],
+    date,
+    area,
+  } = game
+  return (
+    <Card.Container>
+      <Card.Content>
+        <div className="flex flex-col items-center">
+          <div className="flex w-full flex-row gap-3">
+            <div className="w-1/3">{homeTeam.name}</div>
+            <div className="w-1/3 text-center">
+              <h6>
+                {homeTeam.score ?? 0} - {awayTeam.score ?? 0}
+              </h6>
+            </div>
+            <div className="w-1/3">{awayTeam.name}</div>
+          </div>
+          <p>{date}</p>
+          {area && <Address address={area} />}
+        </div>
+      </Card.Content>
+    </Card.Container>
+  )
+}

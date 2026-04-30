@@ -13,7 +13,7 @@ import { TeamLayout } from '@Teams/index'
 import { CheckAuthentication } from '@Auth/CheckAuthentication/CheckAuthentication'
 import { ForgottenPasswordPage, LoginPage, RegisterPage } from '@Auth/pages'
 import { TeamBreadcrumb } from '@Teams/TeamBreadcrumb'
-import { AreaBreadcrumb } from '@Settings/AreaBreadcrumb'
+import { AreaBreadcrumb } from '@Settings'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -95,6 +95,4 @@ const router = createBrowserRouter(
   )
 )
 
-export const AppRouting = () => {
-  return <RouterProvider router={router} />
-}
+export const AppRouting = () => <RouterProvider router={router} />
