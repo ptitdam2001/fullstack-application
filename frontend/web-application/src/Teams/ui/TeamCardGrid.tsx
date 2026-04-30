@@ -1,13 +1,11 @@
-import { Card, Button } from '@repo/design-system'
-import { type Team } from '@Sdk/model'
+import { Button, Card } from '@repo/design-system'
 import { Eye, Pencil, Users, Volleyball } from 'lucide-react'
 import { Link } from 'react-router'
+import type { Team } from '../domain/Team'
 
-type TeamCardGridProps = {
-  teams: Team[]
-}
+type Props = { teams: Team[] }
 
-export const TeamCardGrid = ({ teams }: TeamCardGridProps) => (
+export const TeamCardGrid = ({ teams }: Props) => (
   <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
     {teams.map(team => (
       <li key={team.id}>

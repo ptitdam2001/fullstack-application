@@ -1,13 +1,11 @@
-import { Card, Button } from '@repo/design-system'
-import { type Team } from '@Sdk/model'
+import { Button, Card } from '@repo/design-system'
 import { Eye, Pencil, Users, Volleyball } from 'lucide-react'
 import { Link } from 'react-router'
+import type { Team } from '../domain/Team'
 
-type TeamCardListProps = {
-  teams: Team[]
-}
+type Props = { teams: Team[] }
 
-export const TeamCardList = ({ teams }: TeamCardListProps) => (
+export const TeamCardList = ({ teams }: Props) => (
   <ul className="flex flex-col gap-3">
     {teams.map(team => (
       <li key={team.id}>

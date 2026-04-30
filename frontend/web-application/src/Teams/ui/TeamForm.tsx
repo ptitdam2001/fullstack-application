@@ -1,65 +1,45 @@
-import { type CreateTeamMutationBody } from '@Sdk/team/team'
 import { cn } from '@repo/design-system'
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CreateTeamBody, UpdateTeamBody } from '@Sdk/team/team.zod'
-import { useTeamForm } from './useTeamForm'
 import { ControlledTextInput } from '@Common/Input/TextInput/ControlledTextInput'
 import { ColorInput } from '@Common/Input/ColorInput/ColorInput'
 import { Form } from '@Common/Form/Form'
 import { type z } from 'zod'
-import { type Team, type TeamWithoutId } from '@Sdk/model'
 import { Button, Toast } from '@repo/design-system'
 import { Loader2 } from 'lucide-react'
 import { useMemo } from 'react'
+import type { CreateTeamMutationBody, Team, TeamWithoutId } from '../domain/Team'
+import { useTeamForm } from '../application/useTeamForm'
 
 const initialValues: TeamWithoutId = {
   name: '',
   color: '#000000',
 }
 
-type TeamFormProps = {
+type Props = {
   teamId?: string
   defaultValues?: CreateTeamMutationBody | Team
   onFinish?: VoidFunction
   className?: string
 }
 
-export const TeamForm = ({ defaultValues, teamId, onFinish, className }: TeamFormProps) => {
+export const TeamForm = ({ defaultValues, teamId, onFinish, className }: Props) => {
   const toast = Toast.useToast()
-
-  // Use updateTeamBody for updates, createTeamBody for creation
   const schema = useMemo(() => (teamId ? UpdateTeamBody : CreateTeamBody), [teamId])
   type FormValue = z.infer<typeof schema>
 
-  // Prepare default values based on context
   const formDefaultValues = useMemo((): FormValue => {
     if (teamId) {
-      // For update, ensure id is present from teamId
-      // updateTeamBody requires id, so we must provide it
       if (defaultValues) {
-        // If defaultValues has an id, use it; otherwise use teamId
         const hasId = 'id' in defaultValues && defaultValues.id
-        const updateValues = {
-          ...defaultValues,
-          id: hasId ? (defaultValues as Team).id : teamId,
-        }
-        return updateValues as unknown as FormValue
+        return { ...defaultValues, id: hasId ? (defaultValues as Team).id : teamId } as unknown as FormValue
       }
-      // If no defaultValues provided, create minimal object with id
-      const updateValues = {
-        ...initialValues,
-        id: teamId,
-      }
-      return updateValues as unknown as FormValue
+      return { ...initialValues, id: teamId } as unknown as FormValue
     }
-    // For create, use initialValues without id or provided defaultValues
-    // createTeamBody does not require id, so we remove it if present
     const values = defaultValues || initialValues
-
-    // Remove id if present for creation
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
-    const { id, ...rest } = values as any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { id: _id, ...rest } = values as any
     return rest as FormValue
   }, [defaultValues, teamId])
 
@@ -89,7 +69,6 @@ export const TeamForm = ({ defaultValues, teamId, onFinish, className }: TeamFor
         )}
         control={control}
       />
-
       <Controller
         name="color"
         render={({ field, fieldState }) => (
@@ -102,7 +81,6 @@ export const TeamForm = ({ defaultValues, teamId, onFinish, className }: TeamFor
         )}
         control={control}
       />
-
       <div className="flex flex-row-reverse py-1">
         <Button
           type="submit"

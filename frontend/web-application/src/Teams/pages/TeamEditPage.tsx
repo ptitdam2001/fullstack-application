@@ -1,12 +1,12 @@
 import { NotFound } from '@Pages/NotFound'
-import { useGetTeam } from '@Sdk/team/team'
 import { useNavigate, useParams } from 'react-router'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogPortal, DialogTitle } from '@repo/design-system'
 import React from 'react'
 import { cn } from '@repo/design-system'
 import { useTheme } from '@Theme/Provider/ThemeProvider'
 import { LinearProgress } from '@Common/Loading/LinearProgress'
-import { TeamForm } from '@Teams/Form/TeamForm'
+import { useTeamDetail } from '../application/useTeamDetail'
+import { TeamForm } from '../ui/TeamForm'
 
 export const TeamEditPage = () => {
   const currentTheme = useTheme()
@@ -15,7 +15,7 @@ export const TeamEditPage = () => {
   const { teamId } = useParams()
   const navigate = useNavigate()
 
-  const { data: currentTeam, isLoading, isError } = useGetTeam(teamId, { query: { enabled: Boolean(teamId) } })
+  const { data: currentTeam, isLoading, isError } = useTeamDetail(teamId)
 
   return (
     <Dialog

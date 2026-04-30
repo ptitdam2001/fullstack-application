@@ -1,5 +1,5 @@
 import { cn, Dialog, DialogContent, DialogHeader, DialogPortal, DialogTitle } from '@repo/design-system'
-import { TeamForm } from '@Teams/Form/TeamForm'
+import { TeamForm } from '../ui/TeamForm'
 import { useTheme } from '@Theme/Provider/ThemeProvider'
 import { useState } from 'react'
 import { useNavigate } from 'react-router'

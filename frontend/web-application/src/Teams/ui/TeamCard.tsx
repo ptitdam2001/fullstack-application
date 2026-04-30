@@ -1,11 +1,9 @@
 import { Button, Card } from '@repo/design-system'
-import { type Team } from '@Sdk/model'
+import type { Team } from '../domain/Team'
 
-type TeamCardRenderProps = {
-  team: Team
-}
+type Props = { team: Team }
 
-export const TeamCard = ({ team }: TeamCardRenderProps) => (
+export const TeamCard = ({ team }: Props) => (
   <Card.Container className="gap-1.5 py-2">
     <Card.Title className="px-2 text-lg">{team.name}</Card.Title>
     <Card.Content></Card.Content>

@@ -1,9 +1,9 @@
 import { Card } from '@repo/design-system'
 import { NotFound } from '@Pages/NotFound'
 import { PlayerList } from '@Player/index'
-import { TeamCalendar } from '@Teams/Calendar/TeamCalendar'
 import { useParams } from 'react-router'
-import { RequestedTeamCard } from '@Teams/Card/RequestedTeamCard'
+import { TeamCalendarView } from '../ui/TeamCalendarView'
+import { TeamDetailCard } from '../ui/TeamDetailCard'
 
 export const TeamPage = () => {
   const { teamId } = useParams()
@@ -15,13 +15,13 @@ export const TeamPage = () => {
   return (
     <article className="flex h-full w-full gap-1 p-2">
       <section className="flex grow flex-col gap-1">
-        <RequestedTeamCard teamId={teamId} />
+        <TeamDetailCard teamId={teamId} />
 
         <Card.Container className="h-72 grow gap-1.5 py-2">
           <Card.Title className="px-2 text-lg">Calendar</Card.Title>
 
           <Card.Content className="overflow-auto p-2">
-            <TeamCalendar teamId={teamId} />
+            <TeamCalendarView teamId={teamId} />
           </Card.Content>
         </Card.Container>
       </section>

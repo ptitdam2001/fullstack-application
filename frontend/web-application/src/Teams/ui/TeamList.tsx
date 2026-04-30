@@ -1,30 +1,19 @@
-import { usePagination } from '@Common/hooks/usePagination'
-import { useCountTeams, useGetTeams } from '@Sdk/teams/teams'
-import { TableLoader } from '@Common/Loading'
+import { Suspense, use } from 'react'
 import { ErrorBoundary } from '@Common/ErrorBoundary'
+import { TableLoader } from '@Common/Loading'
+import { useTeamList } from '../application/useTeamList'
 import { TeamCardGrid } from './TeamCardGrid'
 import { TeamCardList } from './TeamCardList'
 import { TeamListPagination } from './TeamListPagination'
-import { Suspense, use } from 'react'
 
 type ViewMode = 'grid' | 'list'
 
-type TeamListProps = {
-  viewMode: ViewMode
-}
+type Props = { viewMode: ViewMode }
 
-export const TeamList = ({ viewMode }: TeamListProps) => {
-  const { changePage, ...pagination } = usePagination({ page: 0, rowsPerPage: 12 })
+export const TeamList = ({ viewMode }: Props) => {
+  const { query, pagination, changePage, totalPages } = useTeamList()
 
-  const teams = use(
-    useGetTeams({
-      page: pagination.page,
-      limit: pagination.rowsPerPage,
-    }).promise
-  )
-  const count = use(useCountTeams().promise)
-
-  const totalPages = Math.ceil((count ?? 0) / pagination.rowsPerPage)
+  const teams = use(query.promise)
 
   return (
     <section data-testid="TeamList" className="flex w-full flex-1 flex-col overflow-hidden">
