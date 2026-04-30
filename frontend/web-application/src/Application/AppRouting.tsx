@@ -11,7 +11,7 @@ import { AreaEditPage, AreaPages, SettingsLayout } from '@Settings/index'
 import { TeamEditPage } from '@Teams/pages'
 import { TeamLayout } from '@Teams/index'
 import { CheckAuthentication } from '@Auth/CheckAuthentication/CheckAuthentication'
-import { ForgottenPasswordPage, LoginPage } from '@Auth/pages'
+import { ForgottenPasswordPage, LoginPage, RegisterPage } from '@Auth/pages'
 import { TeamBreadcrumb } from '@Teams/TeamBreadcrumb'
 import { AreaBreadcrumb } from '@Settings/AreaBreadcrumb'
 
@@ -89,6 +89,7 @@ const router = createBrowserRouter(
         <Route index path="signin" element={<LoginPage />} />
         <Route path="logout" element={<Logout />} />
         <Route path="forgotten-password" element={<ForgottenPasswordPage />} />
+        <Route path="register" element={<RegisterPage />} />
       </Route>
     </>
   )
