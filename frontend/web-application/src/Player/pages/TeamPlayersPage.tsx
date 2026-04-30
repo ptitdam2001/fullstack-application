@@ -1,5 +1,5 @@
 import { NotFound } from '@Pages/NotFound'
-import { PlayerList } from '@Player/List/PlayerList'
+import { PlayerList } from '../ui/PlayerList'
 import { useParams } from 'react-router'
 
 export const TeamPlayersPage = () => {
