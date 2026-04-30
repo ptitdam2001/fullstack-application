@@ -3,7 +3,7 @@ import { faker } from '@faker-js/faker'
 export default {
   sdk: {
     input: {
-      target: '../backend/openapi.yml',
+      target: '../../backend/openapi.yml',
     },
     output: {
       httpClient: 'axios',
@@ -67,7 +67,7 @@ export default {
   },
   'sdk-zod': {
     input: {
-      target: '../backend/openapi.yml',
+      target: '../../backend/openapi.yml',
     },
     output: {
       client: 'zod',
