@@ -7,7 +7,8 @@
 @plugin "tailwind-scrollbar";
 
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'DM Sans', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --auth-accent: oklch(0.55 0.18 175);
   line-height: 1.5;
   font-weight: 400;
 
