@@ -2,10 +2,13 @@ import { vi } from 'vitest'
 import { act } from '@testing-library/react'
 import { renderHookWithProviders } from '../../../tests/test-utils'
 
-const mockDispatch = vi.fn()
+const { mockDispatch, mockClearAuthStorage } = vi.hoisted(() => ({
+  mockDispatch: vi.fn(),
+  mockClearAuthStorage: vi.fn(),
+}))
 
-vi.mock('@Common/hooks/useLocalstorage', () => ({
-  useLocalStorage: vi.fn(),
+vi.mock('../infrastructure/authStorage', () => ({
+  clearAuthStorage: mockClearAuthStorage,
 }))
 
 vi.mock('./AuthProvider', () => ({
@@ -15,10 +18,9 @@ vi.mock('./AuthProvider', () => ({
   },
 }))
 
-import { useLocalStorage } from '@Common/hooks/useLocalstorage'
+import { AuthProvider } from './AuthProvider'
 import { useLogoutAction } from './useLogoutAction'
-
-const mockSetUser = vi.fn()
+import { DEFAULT_AUTH_DATA } from '../domain/Auth'
 
 describe('useLogoutAction', () => {
   beforeEach(() => {
@@ -26,21 +28,26 @@ describe('useLogoutAction', () => {
   })
 
   it('rejects when no token', async () => {
-    vi.mocked(useLocalStorage).mockReturnValue([{ token: undefined, user: undefined }, mockSetUser])
+    vi.mocked(AuthProvider.useAuthValue).mockReturnValue({ user: undefined, token: undefined })
 
     const { result } = renderHookWithProviders(() => useLogoutAction())
 
     await expect(act(() => result.current())).rejects.toBeUndefined()
-    expect(mockSetUser).not.toHaveBeenCalled()
+    expect(mockClearAuthStorage).not.toHaveBeenCalled()
+    expect(mockDispatch).not.toHaveBeenCalled()
   })
 
-  it('resolves and clears user when token present', async () => {
-    vi.mocked(useLocalStorage).mockReturnValue([{ token: 'abc', user: { id: '1' } }, mockSetUser])
+  it('resolves, clears storage and dispatches when token present', async () => {
+    vi.mocked(AuthProvider.useAuthValue).mockReturnValue({
+      user: { id: '1', email: 'a@b.com', firstname: 'A', lastname: 'B' },
+      token: 'abc',
+    })
 
     const { result } = renderHookWithProviders(() => useLogoutAction())
 
     await act(() => result.current())
 
-    expect(mockSetUser).toHaveBeenCalledWith({ user: undefined, token: undefined })
+    expect(mockClearAuthStorage).toHaveBeenCalledOnce()
+    expect(mockDispatch).toHaveBeenCalledWith(DEFAULT_AUTH_DATA)
   })
 })

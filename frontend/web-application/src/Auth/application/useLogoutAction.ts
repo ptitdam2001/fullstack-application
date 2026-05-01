@@ -1,19 +1,19 @@
 import { useCallback } from 'react'
-import { useLocalStorage } from '@Common/hooks/useLocalstorage'
 import { DEFAULT_AUTH_DATA } from '../domain/Auth'
+import { clearAuthStorage } from '../infrastructure/authStorage'
 import { AuthProvider } from './AuthProvider'
 
 export const useLogoutAction = () => {
-  const [user, setUser] = useLocalStorage('user', DEFAULT_AUTH_DATA)
+  const { token } = AuthProvider.useAuthValue()
   const dispatch = AuthProvider.useAuthDispatch()
 
   return useCallback(() => {
-    if (!user.token) {
+    if (!token) {
       return Promise.reject()
     }
 
-    setUser(DEFAULT_AUTH_DATA)
+    clearAuthStorage()
     dispatch(DEFAULT_AUTH_DATA)
     return Promise.resolve()
-  }, [dispatch, setUser, user.token])
+  }, [dispatch, token])
 }
