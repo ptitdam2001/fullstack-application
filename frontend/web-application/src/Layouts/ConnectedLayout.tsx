@@ -2,12 +2,12 @@ import { Outlet } from 'react-router'
 
 import { ConnectedAppSidebar } from './components/ConnectedAppSidebar'
 import { LATERAL_MENU } from '@Application/lateralMenu.config'
-import { Breadcrumbs } from '@Common/Breadcrumbs/Breadcrumbs'
+import { Breadcrumbs } from './Breadcrumbs/Breadcrumbs'
 import { cn } from '@repo/design-system'
 
 import { SidebarInset, SidebarProvider } from '@repo/design-system'
 import { Separator } from '@repo/design-system'
-import { TopBar } from '@Common/TopBar'
+import { TopBar } from './TopBar'
 import { useTheme } from '@Theme/Provider/ThemeProvider'
 
 export const ConnectedLayout = () => {

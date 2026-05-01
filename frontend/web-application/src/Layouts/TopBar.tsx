@@ -2,7 +2,7 @@ import { ToggleThemeMode } from '@Theme/ToggleThemeMode'
 import { type FC, type ReactNode } from 'react'
 import { AuthActions } from '@Auth/ui/AuthActions'
 import { SidebarTrigger, Separator } from '@repo/design-system'
-import { Title } from './Title'
+import { Title } from '@Common/Title'
 import { LanguageSwitcher } from '@I18n/'
 
 type TopBarProps = {

@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router'
-import { TopBar } from '@Common/TopBar'
+import { TopBar } from './TopBar'
 import { Main } from './components/Main'
 import { cn } from '@repo/design-system'
 import { useTheme } from '@Theme/Provider/ThemeProvider'
