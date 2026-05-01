@@ -1,4 +1,6 @@
 import { expect, afterEach, beforeAll, afterAll, vi } from 'vitest'
+
+vi.mock('react-intl')
 import { cleanup } from '@testing-library/react'
 import * as matchers from '@testing-library/jest-dom/matchers'
 import { server } from '../src/mocks/node'
