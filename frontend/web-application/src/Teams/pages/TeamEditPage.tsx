@@ -1,4 +1,4 @@
-import { NotFound } from '@Pages/NotFound'
+import { NotFound } from '@Common/NotFound'
 import { useNavigate, useParams } from 'react-router'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogPortal, DialogTitle } from '@repo/design-system'
 import React from 'react'

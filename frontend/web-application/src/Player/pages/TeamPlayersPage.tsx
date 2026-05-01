@@ -1,4 +1,4 @@
-import { NotFound } from '@Pages/NotFound'
+import { NotFound } from '@Common/NotFound'
 import { PlayerList } from '../ui/PlayerList'
 import { useParams } from 'react-router'
 

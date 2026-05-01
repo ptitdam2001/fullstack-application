@@ -1,4 +1,4 @@
-import { NotFound } from '@Pages/NotFound'
+import { NotFound } from '@Common/NotFound'
 import { useGetArea, getGetAreaListQueryKey, getCountAllAreasQueryKey } from '../infrastructure/useAreaApi'
 import { AreaForm } from '../ui/AreaForm'
 import { useNavigate, useParams } from 'react-router'

@@ -1,4 +1,4 @@
-import { OpenProvider } from '@Providers/OpenProvider'
+import { OpenProvider } from '@Common/OpenProvider'
 import clsx from 'clsx'
 import { type FC, type ReactNode } from 'react'
 

@@ -4,7 +4,7 @@ import { AuthProvider } from '@Auth/application/AuthProvider'
 import { AppRouting } from '@Application/AppRouting'
 import { PageLoader } from '@Common/Loading'
 
-import { OpenProvider } from '@Providers/OpenProvider'
+import { OpenProvider } from '@Common/OpenProvider'
 import { ThemeProvider } from '@Theme/Provider/ThemeProvider'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'

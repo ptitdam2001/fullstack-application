@@ -26,7 +26,6 @@
     "paths": {
       "@Auth/*": ["./src/Auth/*", "./src/Auth/"],
       "@Layouts/*": ["./src/Layouts/*", "./src/Layouts/"],
-      "@Pages/*": ["./src/pages/*", "./src/pages/"],
       "@Theme/*": ["./src/Theme/*", "./src/Theme/"],
       "@Common/*": ["./src/Common/*", "./src/Common/"],
       "@Teams/*": ["./src/Teams/*", "./src/Teams/"],
@@ -34,7 +33,6 @@
       "@Game/*": ["./src/Game/*", "./src/Game/"],
       "@Calendar/*": ["./src/Calendar/*", "./src/Calendar/"],
       "@Application/*": ["./src/Application/*", "./src/Application/"],
-      "@Providers/*": ["./src/Providers/*", "./src/Providers/"],
       "@Settings/*": ["./src/Settings/*", "./src/Settings/"],
       "@Sdk/*": ["./src/sdk/generated/", "./src/sdk/generated/*"],
       "@Config/*": ["./config/*", "./config/"],

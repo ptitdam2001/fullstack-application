@@ -1,5 +1,5 @@
 import { Card } from '@repo/design-system'
-import { NotFound } from '@Pages/NotFound'
+import { NotFound } from '@Common/NotFound'
 import { PlayerList } from '@Player/index'
 import { useParams } from 'react-router'
 import { TeamCalendarView } from '../ui/TeamCalendarView'

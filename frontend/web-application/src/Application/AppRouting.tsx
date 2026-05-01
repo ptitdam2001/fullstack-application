@@ -1,7 +1,9 @@
 import { createBrowserRouter, createRoutesFromElements, Navigate, Route, RouterProvider } from 'react-router'
 
 import { AnonymousLayout, ConnectedLayout, RootLayout } from '@Layouts/'
-import { Dashboard, MyProfile, NotFound } from '@Pages/'
+import { Dashboard } from './pages/Dashboard'
+import { MyProfile } from '@Auth/pages'
+import { NotFound } from '@Common/NotFound'
 import { Logout } from '@Auth/ui/Logout'
 import { GameDetail, GameList } from '@Game/index'
 import { CalendarPage } from '@Calendar/index'
