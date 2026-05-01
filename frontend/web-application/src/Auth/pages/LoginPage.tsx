@@ -1,6 +1,6 @@
-import { CONNECTED_HOME } from '@Auth/constant'
-import { AuthLeftPanel } from '@Auth/components/AuthLeftPanel'
-import { SigninForm } from '@Auth/Form/SigninForm'
+import { CONNECTED_HOME } from '../domain/Auth'
+import { AuthLeftPanel } from '../ui/AuthLeftPanel'
+import { SigninForm } from '../ui/SigninForm'
 import { Link, useNavigate } from 'react-router'
 
 export const LoginPage = () => {

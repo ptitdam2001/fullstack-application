@@ -1,4 +1,4 @@
-import { DEFAULT_AUTH_DATA } from './AuthProvider'
+import { DEFAULT_AUTH_DATA } from '../domain/Auth'
 
 export const getAuthToken = (): string | undefined => {
   const raw = localStorage.getItem('user')

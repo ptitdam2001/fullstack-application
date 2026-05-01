@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 import { useLocalStorage } from '@Common/hooks/useLocalstorage'
-import { AuthProvider, DEFAULT_AUTH_DATA } from '@Auth/AuthProvider'
+import { DEFAULT_AUTH_DATA } from '../domain/Auth'
+import { AuthProvider } from './AuthProvider'
 
 export const useLogoutAction = () => {
   const [user, setUser] = useLocalStorage('user', DEFAULT_AUTH_DATA)

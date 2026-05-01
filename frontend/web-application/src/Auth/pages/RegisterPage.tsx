@@ -1,6 +1,6 @@
-import { AuthLeftPanel } from '@Auth/components/AuthLeftPanel'
-import { RegisterForm } from '@Auth/Form/RegisterForm'
-import { LOGIN_PAGE } from '@Auth/constant'
+import { AuthLeftPanel } from '../ui/AuthLeftPanel'
+import { RegisterForm } from '../ui/RegisterForm'
+import { LOGIN_PAGE } from '../domain/Auth'
 import { Link, useNavigate } from 'react-router'
 
 export const RegisterPage = () => {

@@ -1,11 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForgotPassword } from '@Sdk/authentication/authentication'
-import { ForgotPasswordBody } from '@Sdk/authentication/authentication.zod'
 import { Controller, useForm } from 'react-hook-form'
 import { type z } from 'zod'
 import { Form } from '@Common/Form/Form'
 import { Button, Input, Toast } from '@repo/design-system'
 import { Loader2 } from 'lucide-react'
+import { ForgotPasswordBody } from '@Sdk/authentication/authentication.zod'
+import { useForgotPassword } from '../infrastructure/useAuthApi'
 
 type FormValue = z.infer<typeof ForgotPasswordBody>
 

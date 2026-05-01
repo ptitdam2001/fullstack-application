@@ -1,6 +1,7 @@
-import { AuthProvider, DEFAULT_AUTH_DATA } from '@Auth/AuthProvider'
 import { useLocalStorage } from '@Common/hooks/useLocalstorage'
-import { me, useLogin } from '@Sdk/authentication/authentication'
+import { DEFAULT_AUTH_DATA } from '../domain/Auth'
+import { useLogin, me } from '../infrastructure/useAuthApi'
+import { AuthProvider } from './AuthProvider'
 
 export const useLoginAction = () => {
   const dispatch = AuthProvider.useAuthDispatch()

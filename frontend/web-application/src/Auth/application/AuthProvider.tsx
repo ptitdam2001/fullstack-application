@@ -1,18 +1,7 @@
 import { type ReactNode } from 'react'
-
-import { type UserWithoutPassword } from '@Sdk/model'
-import { useCheckAuthLocalStorage } from './hooks/useCheckAuthLocalStorage'
 import { createContextWithWrite } from '@repo/design-system'
-
-type AuthData = {
-  user?: UserWithoutPassword
-  token?: string
-}
-
-export const DEFAULT_AUTH_DATA: AuthData = {
-  user: undefined,
-  token: undefined,
-}
+import { type AuthData } from '../domain/Auth'
+import { useCheckAuth } from './useCheckAuth'
 
 const AuthContext = createContextWithWrite<AuthData, AuthData>('Auth')
 
@@ -22,8 +11,7 @@ type AuthProviderProps = {
 
 export const AuthProvider = {
   Provider: ({ children }: AuthProviderProps) => {
-    const value = useCheckAuthLocalStorage()
-
+    const value = useCheckAuth()
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
   },
   useAuthValue: AuthContext.useValue,

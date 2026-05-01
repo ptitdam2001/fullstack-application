@@ -1,7 +1,4 @@
-import { AuthProvider } from './AuthProvider'
 import { useNavigate } from 'react-router'
-import { LOGOUT_PAGE } from './constant'
-
 import { BadgeCheck, LogOut } from 'lucide-react'
 import {
   cn,
@@ -12,9 +9,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
 } from '@repo/design-system'
-import { Avatar, AvatarFallback, AvatarImage } from '@repo/design-system'
 import { FormattedMessage } from '@/I18n/translation'
+import { AuthProvider } from '../application/AuthProvider'
+import { LOGOUT_PAGE } from '../domain/Auth'
 
 type AuthActionsProps = {
   size?: 'small' | 'medium' | 'large'

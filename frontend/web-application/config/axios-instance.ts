@@ -4,8 +4,8 @@
  * @see https://orval.dev/guides/custom-axios
  */
 import Axios, { type AxiosError, type AxiosRequestConfig } from 'axios'
-import { clearAuthStorage } from '@Auth/authStorage'
-import { redirectToLogin } from '@Auth/authNavigation'
+import { clearAuthStorage } from '@Auth/infrastructure/authStorage'
+import { redirectToLogin } from '@Auth/infrastructure/authNavigation'
 
 // const getBaseUrl = () => import.meta.env.BACKEND_BASEURL
 const getBaseUrl = () => 'http://localhost:4000/'

@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { Navigate } from 'react-router'
-import { LOGIN_PAGE } from './constant'
-import { useLogoutAction } from './hooks/useLogoutAction'
+import { LOGIN_PAGE } from '../domain/Auth'
+import { useLogoutAction } from '../application/useLogoutAction'
 
 export const Logout = () => {
   const logout = useLogoutAction()

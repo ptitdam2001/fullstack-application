@@ -1,6 +1,6 @@
 import React, { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { AuthProvider } from '@Auth/AuthProvider'
+import { AuthProvider } from '@Auth/application/AuthProvider'
 import { AppRouting } from '@Application/AppRouting'
 import { PageLoader } from '@Common/Loading'
 

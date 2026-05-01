@@ -1,7 +1,5 @@
 import { Controller, useForm } from 'react-hook-form'
-import { useLoginAction } from '@Auth/hooks/useLoginAction'
 import React, { useState } from 'react'
-import { AuthProvider } from '@Auth/AuthProvider'
 import { Form } from '@Common/Form/Form'
 import { type z } from 'zod'
 import { type LoginBody } from '@Sdk/authentication/authentication.zod'
@@ -9,6 +7,8 @@ import { Button, Input, Toast } from '@repo/design-system'
 import { Eye, EyeOff, Loader2 } from 'lucide-react'
 import { FormattedMessage } from 'react-intl'
 import { Link } from 'react-router'
+import { AuthProvider } from '../application/AuthProvider'
+import { useLoginAction } from '../application/useLoginAction'
 
 type FormValue = z.infer<typeof LoginBody>
 
