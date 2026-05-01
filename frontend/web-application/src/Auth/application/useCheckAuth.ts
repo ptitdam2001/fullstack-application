@@ -1,7 +1,3 @@
-import { useLocalStorage } from '@Common/hooks/useLocalstorage'
-import { DEFAULT_AUTH_DATA } from '../domain/Auth'
+import { readAuthStorage } from '../infrastructure/authStorage'
 
-export const useCheckAuth = () => {
-  const [user] = useLocalStorage('user', DEFAULT_AUTH_DATA)
-  return user
-}
+export const useCheckAuth = () => readAuthStorage()
