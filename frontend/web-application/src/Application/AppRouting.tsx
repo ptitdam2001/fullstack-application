@@ -1,4 +1,6 @@
-import { createBrowserRouter, createRoutesFromElements, Navigate, Route, RouterProvider } from 'react-router'
+import { useEffect } from 'react'
+import { createBrowserRouter, createRoutesFromElements, Navigate, Outlet, Route, RouterProvider, useNavigate } from 'react-router'
+import { setNavigateFn } from '@Common/navigation'
 
 import { AnonymousLayout, ConnectedLayout, RootLayout } from '@Layouts/'
 import { Dashboard } from './pages/Dashboard'
@@ -17,9 +19,17 @@ import { ForgottenPasswordPage, LoginPage, RegisterPage } from '@Auth/pages'
 import { TeamBreadcrumb } from '@Teams/TeamBreadcrumb'
 import { AreaBreadcrumb } from '@Settings'
 
+const AppLayout = () => {
+  const navigate = useNavigate()
+  useEffect(() => {
+    setNavigateFn((path, options) => navigate(path, { replace: options?.replace }))
+  }, [navigate])
+  return <Outlet />
+}
+
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <>
+    <Route element={<AppLayout />}>
       <Route path="/" element={<RootLayout />} />
 
       <Route
@@ -93,7 +103,7 @@ const router = createBrowserRouter(
         <Route path="forgotten-password" element={<ForgottenPasswordPage />} />
         <Route path="register" element={<RegisterPage />} />
       </Route>
-    </>
+    </Route>
   )
 )
 

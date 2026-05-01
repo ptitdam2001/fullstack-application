@@ -1,3 +1,5 @@
+import { navigateTo } from '@Common/navigation'
+
 export const redirectToLogin = (): void => {
-  window.location.replace('/auth/signin')
+  navigateTo('/auth/signin', { replace: true })
 }
