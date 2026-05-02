@@ -41,7 +41,6 @@ export * from './components/Dialog/DialogDescription'
 
 export * from './components/DropdownMenu/DropdownMenu'
 export * from './components/DropdownMenu/DropdownMenuPortal'
-export * from './components/DropdownMenu/DropdownMenuTrigger'
 export * from './components/DropdownMenu/DropdownMenuContent'
 export * from './components/DropdownMenu/DropdownMenuGroup'
 export * from './components/DropdownMenu/DropdownMenuItem'

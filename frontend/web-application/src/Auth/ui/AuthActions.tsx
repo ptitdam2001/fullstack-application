@@ -2,13 +2,13 @@ import { useNavigate } from 'react-router'
 import { BadgeCheck, LogOut } from 'lucide-react'
 import {
   cn,
+  Button,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
   Avatar,
   AvatarFallback,
   AvatarImage,
@@ -31,19 +31,25 @@ export const AuthActions: React.FC<AuthActionsProps> = ({ size = 'medium' }) => 
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+      <Button
+        variant="ghost"
+        size="icon"
+        className={cn(
+          'cursor-pointer rounded-full p-0',
+          size === 'small' ? 'h-6 w-6' : size === 'medium' ? 'h-8 w-8' : 'h-10 w-10'
+        )}
+        aria-label="User menu"
+      >
         <Avatar
           className={cn(
             'rounded-lg',
-            'cursor-pointer',
             size === 'small' ? 'h-6 w-6' : size === 'medium' ? 'h-8 w-8' : 'h-10 w-10'
           )}
-          role="button"
         >
           <AvatarImage src={user?.avatar} alt={user.firstname} />
           <AvatarFallback className="rounded-lg">{`${user.firstname?.at(0)}${user.lastname?.at(0)}`}</AvatarFallback>
         </Avatar>
-      </DropdownMenuTrigger>
+      </Button>
       <DropdownMenuContent
         className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
         side="bottom"

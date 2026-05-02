@@ -1,6 +1,5 @@
-import { Button } from '@repo/design-system'
+import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem } from '@repo/design-system'
 import { type Theme, useSetTheme, useTheme } from './Provider/ThemeProvider'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@repo/design-system'
 import { ContrastIcon, MoonIcon, SunIcon, SunMoonIcon } from 'lucide-react'
 
 type ThemeListItem = {
@@ -33,11 +32,9 @@ export const ToggleThemeMode = () => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" aria-label="Toggle Theme">
-          <ContrastIcon />
-        </Button>
-      </DropdownMenuTrigger>
+      <Button variant="ghost" size="icon" aria-label="Toggle Theme">
+        <ContrastIcon />
+      </Button>
       <DropdownMenuContent align="end">
         <p className="px-4 py-2">Select your theme</p>
         {AVAILABLE_THEMES.map(theme => (
