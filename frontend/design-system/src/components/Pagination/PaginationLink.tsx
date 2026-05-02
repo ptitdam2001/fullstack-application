@@ -1,7 +1,8 @@
 import * as React from 'react'
 
 import { cn } from '../../utils/cn'
-import { type Button, buttonVariants } from '../Button/Button'
+import { type Button } from '../Button/Button'
+import { ButtonVariants } from '../Button/ButtonVariants'
 
 type PaginationLinkProps = {
   isActive?: boolean
@@ -15,7 +16,7 @@ function PaginationLink({ className, isActive, size = 'icon', ...props }: Pagina
       data-slot="pagination-link"
       data-active={isActive}
       className={cn(
-        buttonVariants({
+        ButtonVariants({
           variant: isActive ? 'outline' : 'ghost',
           size,
         }),
