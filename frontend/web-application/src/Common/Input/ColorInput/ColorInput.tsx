@@ -46,19 +46,17 @@ export const ColorInput = ({
         </label>
       )}
       <Popover open={openPopover} onOpenChange={setOpenPopover}>
-        <PopoverTrigger asChild>
-          <button
-            className={cn(
-              'border-rounded pointer-events-auto h-9 w-9 rounded-lg border border-black dark:border-white'
-            )}
-            style={{ background: color }}
-            data-testid={testIds.trigger}
-          />
+        <PopoverTrigger>
+          {(triggerProps) => (
+            <button
+              {...triggerProps}
+              className={cn('border-rounded pointer-events-auto h-9 w-9 rounded-lg border border-black dark:border-white')}
+              style={{ background: color }}
+              data-testid={testIds.trigger}
+            />
+          )}
         </PopoverTrigger>
-        <PopoverContent
-          className={cn('h-52 w-52 p-2', { dark: currentTheme && ['dark', 'system'].includes(currentTheme) })}
-          forceMount
-        >
+        <PopoverContent className={cn('h-52 w-52 p-2', { dark: currentTheme && ['dark', 'system'].includes(currentTheme) })}>
           <HexColorPicker color={value} onChange={handleChange} {...props} />
         </PopoverContent>
       </Popover>

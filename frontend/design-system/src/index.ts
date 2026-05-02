@@ -77,7 +77,6 @@ export * from './components/Pagination/PaginationEllipsis'
 export * from './components/Popover/Popover'
 export * from './components/Popover/PopoverTrigger'
 export * from './components/Popover/PopoverContent'
-export * from './components/Popover/PopoverAnchor'
 
 export * from './components/Sheet/Sheet'
 export * from './components/Sheet/SheetTrigger'

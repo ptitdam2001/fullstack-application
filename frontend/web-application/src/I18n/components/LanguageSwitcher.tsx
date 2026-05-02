@@ -1,4 +1,4 @@
-import { Popover, PopoverContent, PopoverTrigger } from '@repo/design-system'
+import { Popover, PopoverContent } from '@repo/design-system'
 import { useLocale, useSetLocale } from '../providers/intl.context'
 import React from 'react'
 import { Button } from '@repo/design-system'
@@ -18,14 +18,12 @@ export const LanguageSwitcher = () => {
 
   return (
     <Popover open={openPopover} onOpenChange={setOpenPopover}>
-      <PopoverTrigger asChild>
-        <Button variant="ghost" size="icon">
-          <span className="relative">
-            <GlobeIcon />
-            <span className="absolute -right-2 -bottom-2">{getUnicodeFlagIcon(LOCALE_NAMES[locale].countryCode)}</span>
-          </span>
-        </Button>
-      </PopoverTrigger>
+      <Button variant="ghost" size="icon">
+        <span className="relative">
+          <GlobeIcon />
+          <span className="absolute -right-2 -bottom-2">{getUnicodeFlagIcon(LOCALE_NAMES[locale].countryCode)}</span>
+        </span>
+      </Button>
       <PopoverContent className="w-40" sideOffset={5}>
         <ul className="m-0 list-none p-0" role="listbox">
           {SUPPORTED_LOCALES.map(loc => (

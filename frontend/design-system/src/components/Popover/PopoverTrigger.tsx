@@ -1,12 +1,29 @@
 import * as React from 'react'
+import { ButtonContext, OverlayTriggerStateContext, useContextProps } from 'react-aria-components'
 
-/**
- * Passes children through as the trigger element.
- * react-aria-components' DialogTrigger identifies the first focusable child
- * as the trigger automatically.
- */
-function PopoverTrigger({ asChild: _asChild, children }: { asChild?: boolean; children: React.ReactNode }) {
-  return <>{children}</>
+type TriggerRenderProps = {
+  ref: React.Ref<HTMLButtonElement>
+  'aria-expanded'?: React.AriaAttributes['aria-expanded']
+  'aria-haspopup'?: React.AriaAttributes['aria-haspopup']
+  onClick: () => void
 }
 
-export { PopoverTrigger }
+type PopoverTriggerProps = { children: (props: TriggerRenderProps) => React.ReactNode }
+
+export const PopoverTrigger = ({ children }: PopoverTriggerProps) => {
+  const ref = React.useRef<HTMLButtonElement>(null)
+  const state = React.useContext(OverlayTriggerStateContext)
+
+  const [{ 'aria-expanded': ariaExpanded, 'aria-haspopup': ariaHasPopup }, mergedRef] = useContextProps(
+    {} as React.HTMLAttributes<HTMLButtonElement>,
+    ref,
+    ButtonContext
+  )
+
+  return children({
+    ref: mergedRef,
+    'aria-expanded': ariaExpanded,
+    'aria-haspopup': ariaHasPopup,
+    onClick: () => state?.toggle(),
+  })
+}
