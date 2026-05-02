@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import { expect, within, userEvent } from '@storybook/test'
+import { expect, within, userEvent } from 'storybook/test'
 import { ThemeToggle } from './ThemeToggle'
 import { ThemeProvider } from '../../providers/ThemeProvider/ThemeProvider'
+import { type Meta, type StoryObj } from '@storybook/react-vite'
 
 const meta: Meta<typeof ThemeToggle> = {
   title: 'Components/ThemeToggle',

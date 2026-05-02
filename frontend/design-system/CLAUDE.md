@@ -10,7 +10,6 @@ React Aria Components + Tailwind CSS v4. Composants accessibles, composables, do
 | `tailwindcss@4` + `@tailwindcss/vite` | Styles utilitaires                             |
 | `class-variance-authority`            | Variants typés (`cva()`)                       |
 | `cn()` (`clsx` + `tailwind-merge`)    | Fusion sécurisée de classes                    |
-| `Slot` (`src/utils/Slot.tsx`)         | Pattern `asChild` polymorphe                   |
 | Storybook 10                          | Documentation + tests d'interaction            |
 | Vitest + RTL                          | Tests unitaires                                |
 
@@ -18,7 +17,7 @@ React Aria Components + Tailwind CSS v4. Composants accessibles, composables, do
 
 ### Simple — wrapper HTML + CVA
 
-Utilisé pour : Button, Input, Label, Badge, Separator.
+Utilisé pour : Input, Label, Badge, Separator.
 
 ```text
 src/components/NomComposant/
@@ -37,18 +36,32 @@ export const NomComposant = ({ className, ...props }: React.ComponentProps<'div'
 
 ### Composé — primitives react-aria-components
 
-Utilisé pour : Dialog, DropdownMenu, Popover, Tooltip, Select, Combobox, Tabs.
+Utilisé pour : Button, Dialog, DropdownMenu, Popover, Tooltip, Select, Combobox, Tabs.
 
 Chaque sous-composant est un fichier séparé. Le primitif react-aria gère l'état et l'accessibilité.
 
 | Pattern UI     | Primitif react-aria                                              |
 | -------------- | ---------------------------------------------------------------- |
-| Dialog / Modal | `DialogTrigger` + `Dialog` + `Modal` + `ModalOverlay`            |
-| Menu déroulant | `MenuTrigger` + `Menu` + `Popover` + `MenuItem`                  |
+| Button         | `AriaButton` + `composeRenderProps` — lit `ButtonContext` automatiquement depuis `DialogTrigger` / `MenuTrigger` |
+| Dialog / Modal | `Button` + `Dialog` + `DialogContent` (pas de `DialogTrigger` wrapper — supprimé) |
+| Sheet          | `Button` + `Sheet` + `SheetContent` (pas de `SheetTrigger` wrapper — supprimé) |
+| Menu déroulant | `Button` + `DropdownMenu` + `DropdownMenuContent` (pas de `DropdownMenuTrigger` — supprimé) |
+| Popover        | `PopoverTrigger` (render prop) + `Popover` + `PopoverContent`   |
 | Select         | `Select` + `SelectValue` + `Popover` + `ListBox` + `ListBoxItem` |
 | Combobox       | `ComboBox` + `Input` + `Popover` + `ListBox`                     |
-| Tooltip        | `TooltipTrigger` + `Tooltip`                                     |
+| Tooltip        | `Tooltip` (= `AriaTooltipTrigger`) + `TooltipTrigger` (passthrough) + `TooltipContent` |
 | Tabs           | `Tabs` + `TabList` + `Tab` + `TabPanel`                          |
+
+**Règle clé — ButtonContext** : `AriaDialogTrigger` et `MenuTrigger` exposent un `ButtonContext`. `Button` (AriaButton) le lit automatiquement → placer `Button` directement comme premier enfant de `Dialog` / `Sheet` / `DropdownMenu`, sans wrapper intermédiaire.
+
+**PopoverTrigger — render prop** : seul composant du design system qui expose une API render prop (pas de Slot/asChild).
+```tsx
+<PopoverTrigger>
+  {(triggerProps) => <button {...triggerProps}>Open</button>}
+</PopoverTrigger>
+```
+
+**Interdit** : `asChild`, `Slot`, wrapper no-op qui casse le contexte react-aria.
 
 ```text
 src/components/NomComposant/
@@ -68,13 +81,6 @@ Utilisé pour : Sidebar, Calendar. État global via React Context.
 - **`data-slot="nom-composant"`** obligatoire sur chaque élément root (utilisé pour styling contextuel et tests)
 - **`cn()`** pour toutes les fusions de classes — jamais de concaténation directe
 - **`cva()`** dès qu'il y a plusieurs variants (>1 axe de variation)
-- **`asChild`** via `Slot` quand le composant doit être polymorphe :
-
-```tsx
-const Comp = asChild ? Slot : 'button'
-return <Comp className={cn(variants({ variant, size }), className)} {...props} />
-```
-
 - Importer react-aria en renommant pour éviter les conflits :
 
 ```tsx
@@ -85,7 +91,7 @@ import { Dialog as AriaDialog, Modal, ModalOverlay } from 'react-aria-components
 
 ```tsx
 // NomComposant.stories.tsx
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { fn, within, userEvent, expect } from 'storybook/test'
 import { NomComposant } from './NomComposant'
 
@@ -113,6 +119,8 @@ export const AvecInteraction: Story = {
 
 - Une story par variant significatif
 - `play` function obligatoire pour les composants interactifs (click, focus, keyboard nav)
+- Pour les composants dont `children` est requis (Dialog, Sheet, DropdownMenu) : utiliser `args: { children: (...) }` et non `render` — Storybook infère les types depuis le composant
+- Pour les composants overlay (Dialog, Sheet, Tooltip) : tester open/close/escape dans des stories dédiées avec `within(document.body)` car le contenu est rendu hors du canvas
 
 ## Tests unitaires
 

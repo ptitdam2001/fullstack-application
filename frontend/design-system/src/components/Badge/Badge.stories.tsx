@@ -68,16 +68,6 @@ export const WithIconOutline: Story = {
   },
 }
 
-// ─── asChild ─────────────────────────────────────────────────────────────────
-
-export const AsLink: Story = {
-  args: {
-    asChild: true,
-    variant: 'outline',
-    children: <a href="#">Link badge</a>,
-  },
-}
-
 // ─── All variants ─────────────────────────────────────────────────────────────
 
 export const AllVariants: Story = {
