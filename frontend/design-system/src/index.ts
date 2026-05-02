@@ -29,7 +29,6 @@ export * from './components/Collapsible/CollapsibleTrigger'
 export * from './components/Collapsible/CollapsibleContent'
 
 export * from './components/Dialog/Dialog'
-export * from './components/Dialog/DialogTrigger'
 export * from './components/Dialog/DialogPortal'
 export * from './components/Dialog/DialogClose'
 export * from './components/Dialog/DialogOverlay'

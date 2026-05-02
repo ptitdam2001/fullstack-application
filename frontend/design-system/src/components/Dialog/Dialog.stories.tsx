@@ -1,13 +1,13 @@
 import { expect, userEvent, within } from 'storybook/test'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
+import { Button } from '../Button/Button'
 import { Dialog } from './Dialog'
 import { DialogContent } from './DialogContent'
 import { DialogDescription } from './DialogDescription'
 import { DialogFooter } from './DialogFooter'
 import { DialogHeader } from './DialogHeader'
 import { DialogTitle } from './DialogTitle'
-import { DialogTrigger } from './DialogTrigger'
 
 const meta = {
   component: Dialog,
@@ -21,9 +21,7 @@ export const Default: Story = {
   args: {
     children: (
       <>
-        <DialogTrigger>
-          <button className="rounded border px-4 py-2 text-sm">Open dialog</button>
-        </DialogTrigger>
+        <Button variant="outline">Open dialog</Button>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Edit profile</DialogTitle>
@@ -33,8 +31,8 @@ export const Default: Story = {
             <p className="text-muted-foreground text-sm">Dialog body content goes here.</p>
           </div>
           <DialogFooter>
-            <button className="rounded border px-4 py-2 text-sm">Cancel</button>
-            <button className="bg-primary text-primary-foreground rounded px-4 py-2 text-sm">Save</button>
+            <Button variant="outline" slot="close">Cancel</Button>
+            <Button slot="close">Save</Button>
           </DialogFooter>
         </DialogContent>
       </>
@@ -46,9 +44,7 @@ export const WithoutFooter: Story = {
   args: {
     children: (
       <>
-        <DialogTrigger>
-          <button className="rounded border px-4 py-2 text-sm">Open dialog</button>
-        </DialogTrigger>
+        <Button variant="outline">Open dialog</Button>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Information</DialogTitle>

@@ -6,7 +6,6 @@ import { DialogDescription } from './DialogDescription'
 import { DialogFooter } from './DialogFooter'
 import { DialogOverlay } from './DialogOverlay'
 import { DialogClose } from './DialogClose'
-import { DialogTrigger } from './DialogTrigger'
 
 // ─── DialogHeader ─────────────────────────────────────────────────────────────
 
@@ -98,19 +97,6 @@ describe('DialogOverlay', () => {
   it('forwards className', () => {
     const { container } = render(<DialogOverlay className="custom" />)
     expect(container.firstChild).toHaveClass('custom')
-  })
-})
-
-// ─── DialogTrigger ────────────────────────────────────────────────────────────
-
-describe('DialogTrigger', () => {
-  it('renders children', () => {
-    const { getByText } = render(
-      <DialogTrigger>
-        <button>Open</button>
-      </DialogTrigger>
-    )
-    expect(getByText('Open')).toBeInTheDocument()
   })
 })
 
