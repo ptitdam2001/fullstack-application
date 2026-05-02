@@ -57,7 +57,6 @@ export * from './components/DropdownMenu/DropdownMenuSubContent'
 export * from './components/Form/Form'
 export * from './components/Form/FormItem'
 export * from './components/Form/FormLabel'
-export * from './components/Form/FormControl'
 export * from './components/Form/FormDescription'
 export * from './components/Form/FormMessage'
 
