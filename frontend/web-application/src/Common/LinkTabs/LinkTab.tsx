@@ -1,5 +1,4 @@
-import { Link } from 'react-router'
-import { TabContext } from './TabsContext'
+import { useNavigate } from 'react-router'
 import { TabsTrigger } from '@repo/design-system'
 import { type ReactElement } from 'react'
 
@@ -11,21 +10,11 @@ export type TabProps = {
 }
 
 export const LinkTab = ({ tabIndex, label, href, icon }: TabProps) => {
-  const { currentValue } = TabContext.useValue()
-  const dispatch = TabContext.useDispatch()
-
+  const navigate = useNavigate()
   return (
-    <TabsTrigger
-      id={`${tabIndex}`}
-      aria-current={tabIndex === currentValue}
-      value={href}
-      onClick={() => dispatch({ currentValue: tabIndex })}
-      asChild
-    >
-      <Link to={href}>
-        {icon}
-        {label}
-      </Link>
+    <TabsTrigger value={tabIndex} onPress={() => navigate(href)}>
+      {icon}
+      {label}
     </TabsTrigger>
   )
 }

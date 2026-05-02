@@ -6,10 +6,9 @@ import { cn } from '../../utils/cn'
 type TabsTriggerProps = Omit<React.ComponentProps<typeof Tab>, 'id'> & {
   value: string
   id?: string
-  asChild?: boolean
 }
 
-function TabsTrigger({ className, value, id: _id, asChild: _asChild, ...props }: TabsTriggerProps) {
+function TabsTrigger({ className, value, id: _id, ...props }: TabsTriggerProps) {
   return (
     <Tab
       id={value}
