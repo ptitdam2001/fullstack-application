@@ -40,25 +40,24 @@ Utilisé pour : Button, Dialog, DropdownMenu, Popover, Tooltip, Select, Combobox
 
 Chaque sous-composant est un fichier séparé. Le primitif react-aria gère l'état et l'accessibilité.
 
-| Pattern UI     | Primitif react-aria                                              |
-| -------------- | ---------------------------------------------------------------- |
+| Pattern UI     | Primitif react-aria                                                                                              |
+| -------------- | ---------------------------------------------------------------------------------------------------------------- |
 | Button         | `AriaButton` + `composeRenderProps` — lit `ButtonContext` automatiquement depuis `DialogTrigger` / `MenuTrigger` |
-| Dialog / Modal | `Button` + `Dialog` + `DialogContent` (pas de `DialogTrigger` wrapper — supprimé) |
-| Sheet          | `Button` + `Sheet` + `SheetContent` (pas de `SheetTrigger` wrapper — supprimé) |
-| Menu déroulant | `Button` + `DropdownMenu` + `DropdownMenuContent` (pas de `DropdownMenuTrigger` — supprimé) |
-| Popover        | `PopoverTrigger` (render prop) + `Popover` + `PopoverContent`   |
-| Select         | `Select` + `SelectValue` + `Popover` + `ListBox` + `ListBoxItem` |
-| Combobox       | `ComboBox` + `Input` + `Popover` + `ListBox`                     |
-| Tooltip        | `Tooltip` (= `AriaTooltipTrigger`) + `TooltipTrigger` (passthrough) + `TooltipContent` |
-| Tabs           | `Tabs` + `TabList` + `Tab` + `TabPanel`                          |
+| Dialog / Modal | `Button` + `Dialog` + `DialogContent` (pas de `DialogTrigger` wrapper — supprimé)                                |
+| Sheet          | `Button` + `Sheet` + `SheetContent` (pas de `SheetTrigger` wrapper — supprimé)                                   |
+| Menu déroulant | `Button` + `DropdownMenu` + `DropdownMenuContent` (pas de `DropdownMenuTrigger` — supprimé)                      |
+| Popover        | `PopoverTrigger` (render prop) + `Popover` + `PopoverContent`                                                    |
+| Select         | `Select` + `SelectValue` + `Popover` + `ListBox` + `ListBoxItem`                                                 |
+| Combobox       | `ComboBox` + `Input` + `Popover` + `ListBox`                                                                     |
+| Tooltip        | `Tooltip` (= `AriaTooltipTrigger`) + `TooltipTrigger` (passthrough) + `TooltipContent`                           |
+| Tabs           | `Tabs` + `TabList` + `Tab` + `TabPanel`                                                                          |
 
 **Règle clé — ButtonContext** : `AriaDialogTrigger` et `MenuTrigger` exposent un `ButtonContext`. `Button` (AriaButton) le lit automatiquement → placer `Button` directement comme premier enfant de `Dialog` / `Sheet` / `DropdownMenu`, sans wrapper intermédiaire.
 
 **PopoverTrigger — render prop** : seul composant du design system qui expose une API render prop (pas de Slot/asChild).
+
 ```tsx
-<PopoverTrigger>
-  {(triggerProps) => <button {...triggerProps}>Open</button>}
-</PopoverTrigger>
+<PopoverTrigger>{triggerProps => <button {...triggerProps}>Open</button>}</PopoverTrigger>
 ```
 
 **Interdit** : `asChild`, `Slot`, wrapper no-op qui casse le contexte react-aria.
