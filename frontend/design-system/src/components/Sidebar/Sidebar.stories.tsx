@@ -1,3 +1,4 @@
+import { expect, userEvent, within } from 'storybook/test'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Home, Settings, Users } from 'lucide-react'
 
@@ -27,9 +28,9 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 const items = [
-  { title: 'Home', icon: Home, url: '#' },
-  { title: 'Users', icon: Users, url: '#' },
-  { title: 'Settings', icon: Settings, url: '#' },
+  { title: 'Home', icon: Home },
+  { title: 'Users', icon: Users },
+  { title: 'Settings', icon: Settings },
 ]
 
 export const Default: Story = {
@@ -46,11 +47,9 @@ export const Default: Story = {
               <SidebarMenu>
                 {items.map(item => (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild>
-                      <a href={item.url}>
-                        <item.icon />
-                        <span>{item.title}</span>
-                      </a>
+                    <SidebarMenuButton>
+                      <item.icon />
+                      <span>{item.title}</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}
@@ -85,11 +84,9 @@ export const Collapsed: Story = {
               <SidebarMenu>
                 {items.map(item => (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton tooltip={item.title} asChild>
-                      <a href={item.url}>
-                        <item.icon />
-                        <span>{item.title}</span>
-                      </a>
+                    <SidebarMenuButton tooltip={item.title}>
+                      <item.icon />
+                      <span>{item.title}</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}
@@ -106,4 +103,47 @@ export const Collapsed: Story = {
       </SidebarInset>
     </SidebarProvider>
   ),
+}
+
+// ─── Interaction tests ────────────────────────────────────────────────────────
+
+export const TogglesOnTriggerClick: Story = {
+  render: () => (
+    <SidebarProvider>
+      <Sidebar>
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {items.map(item => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton>
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+      </Sidebar>
+      <SidebarInset>
+        <header className="flex h-14 items-center gap-2 border-b px-4">
+          <SidebarTrigger />
+        </header>
+      </SidebarInset>
+    </SidebarProvider>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const trigger = canvas.getByRole('button', { name: /toggle sidebar/i })
+    const sidebar = canvasElement.querySelector('[data-slot="sidebar"]')
+
+    await expect(sidebar).toHaveAttribute('data-state', 'expanded')
+    await userEvent.click(trigger)
+    await expect(sidebar).toHaveAttribute('data-state', 'collapsed')
+    await userEvent.click(trigger)
+    await expect(sidebar).toHaveAttribute('data-state', 'expanded')
+  },
 }

@@ -4,7 +4,6 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
 import { Form, FormField } from './Form'
-import { FormControl } from './FormControl'
 import { FormDescription } from './FormDescription'
 import { FormItem } from './FormItem'
 import { FormLabel } from './FormLabel'
@@ -15,12 +14,12 @@ const formSchema = z.object({
 })
 
 const meta = {
-  component: Form,
-} satisfies Meta<typeof Form>
+  title: 'components/Form',
+} satisfies Meta
 
 export default meta
 
-type Story = StoryObj<typeof meta>
+type Story = StoryObj
 
 function FormExample() {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -37,9 +36,7 @@ function FormExample() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Username</FormLabel>
-              <FormControl>
-                <input className="w-full rounded border px-3 py-1.5 text-sm" placeholder="Enter username" {...field} />
-              </FormControl>
+              <input className="w-full rounded border px-3 py-1.5 text-sm" placeholder="Enter username" {...field} />
               <FormDescription>This is your public display name.</FormDescription>
               <FormMessage />
             </FormItem>
@@ -74,13 +71,11 @@ export const WithValidationError: Story = {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Username</FormLabel>
-                  <FormControl>
-                    <input
-                      className="w-full rounded border px-3 py-1.5 text-sm"
-                      placeholder="Enter username"
-                      {...field}
-                    />
-                  </FormControl>
+                  <input
+                    className="w-full rounded border px-3 py-1.5 text-sm"
+                    placeholder="Enter username"
+                    {...field}
+                  />
                   <FormMessage />
                 </FormItem>
               )}

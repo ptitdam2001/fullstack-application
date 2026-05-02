@@ -1,3 +1,4 @@
+import { expect, userEvent, within } from 'storybook/test'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Sheet } from './Sheet'
@@ -19,7 +20,7 @@ type Story = StoryObj<typeof meta>
 export const Right: Story = {
   render: () => (
     <Sheet>
-      <SheetTrigger asChild>
+      <SheetTrigger>
         <button className="rounded border px-4 py-2 text-sm">Open sheet</button>
       </SheetTrigger>
       <SheetContent>
@@ -41,7 +42,7 @@ export const Right: Story = {
 export const Left: Story = {
   render: () => (
     <Sheet>
-      <SheetTrigger asChild>
+      <SheetTrigger>
         <button className="rounded border px-4 py-2 text-sm">Open left sheet</button>
       </SheetTrigger>
       <SheetContent side="left">
@@ -57,7 +58,7 @@ export const Left: Story = {
 export const Bottom: Story = {
   render: () => (
     <Sheet>
-      <SheetTrigger asChild>
+      <SheetTrigger>
         <button className="rounded border px-4 py-2 text-sm">Open bottom sheet</button>
       </SheetTrigger>
       <SheetContent side="bottom">
@@ -68,4 +69,50 @@ export const Bottom: Story = {
       </SheetContent>
     </Sheet>
   ),
+}
+
+// ─── Interaction tests ────────────────────────────────────────────────────────
+
+export const OpensOnClick: Story = {
+  render: () => (
+    <Sheet>
+      <SheetTrigger>
+        <button className="rounded border px-4 py-2 text-sm">Open sheet</button>
+      </SheetTrigger>
+      <SheetContent>
+        <SheetHeader>
+          <SheetTitle>Edit profile</SheetTitle>
+          <SheetDescription>Make changes to your profile here.</SheetDescription>
+        </SheetHeader>
+      </SheetContent>
+    </Sheet>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await userEvent.click(canvas.getByRole('button', { name: /open sheet/i }))
+    await expect(within(document.body).getByRole('dialog')).toBeVisible()
+  },
+}
+
+export const ClosesOnEscape: Story = {
+  render: () => (
+    <Sheet>
+      <SheetTrigger>
+        <button className="rounded border px-4 py-2 text-sm">Open sheet</button>
+      </SheetTrigger>
+      <SheetContent>
+        <SheetHeader>
+          <SheetTitle>Edit profile</SheetTitle>
+          <SheetDescription>Make changes to your profile here.</SheetDescription>
+        </SheetHeader>
+      </SheetContent>
+    </Sheet>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await userEvent.click(canvas.getByRole('button', { name: /open sheet/i }))
+    await expect(within(document.body).getByRole('dialog')).toBeVisible()
+    await userEvent.keyboard('{Escape}')
+    await expect(within(document.body).queryByRole('dialog')).not.toBeInTheDocument()
+  },
 }

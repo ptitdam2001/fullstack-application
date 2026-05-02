@@ -1,3 +1,4 @@
+import { expect, userEvent, within } from 'storybook/test'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { ChevronsUpDown } from 'lucide-react'
 
@@ -18,11 +19,8 @@ export const Default: Story = {
     <Collapsible className="w-64">
       <div className="flex items-center justify-between px-4">
         <h4 className="text-sm font-semibold">Repositories</h4>
-        <CollapsibleTrigger asChild>
-          <button className="hover:bg-accent rounded p-1">
-            <ChevronsUpDown className="size-4" />
-            <span className="sr-only">Toggle</span>
-          </button>
+        <CollapsibleTrigger className="hover:bg-accent rounded p-1" aria-label="Toggle repositories">
+          <ChevronsUpDown className="size-4" />
         </CollapsibleTrigger>
       </div>
       <div className="mt-2 rounded-md border px-4 py-2 text-sm">@radix-ui/react-collapsible</div>
@@ -39,10 +37,8 @@ export const DefaultOpen: Story = {
     <Collapsible defaultOpen className="w-64">
       <div className="flex items-center justify-between px-4">
         <h4 className="text-sm font-semibold">Open by default</h4>
-        <CollapsibleTrigger asChild>
-          <button className="hover:bg-accent rounded p-1">
-            <ChevronsUpDown className="size-4" />
-          </button>
+        <CollapsibleTrigger className="hover:bg-accent rounded p-1" aria-label="Toggle">
+          <ChevronsUpDown className="size-4" />
         </CollapsibleTrigger>
       </div>
       <CollapsibleContent className="mt-2">
@@ -50,4 +46,56 @@ export const DefaultOpen: Story = {
       </CollapsibleContent>
     </Collapsible>
   ),
+}
+
+// ─── Interaction tests ────────────────────────────────────────────────────────
+
+export const TogglesContent: Story = {
+  render: () => (
+    <Collapsible className="w-64">
+      <div className="flex items-center justify-between px-4">
+        <h4 className="text-sm font-semibold">Repositories</h4>
+        <CollapsibleTrigger className="hover:bg-accent rounded p-1" aria-label="Toggle repositories">
+          <ChevronsUpDown className="size-4" />
+        </CollapsibleTrigger>
+      </div>
+      <CollapsibleContent className="mt-2 space-y-2">
+        <div className="rounded-md border px-4 py-2 text-sm">Hidden item</div>
+      </CollapsibleContent>
+    </Collapsible>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const trigger = canvas.getByRole('button', { name: /toggle repositories/i })
+
+    await expect(canvas.queryByText('Hidden item')).not.toBeInTheDocument()
+    await userEvent.click(trigger)
+    await expect(canvas.getByText('Hidden item')).toBeVisible()
+    await userEvent.click(trigger)
+    await expect(canvas.queryByText('Hidden item')).not.toBeInTheDocument()
+  },
+}
+
+export const StartsOpen: Story = {
+  render: () => (
+    <Collapsible defaultOpen className="w-64">
+      <div className="flex items-center justify-between px-4">
+        <h4 className="text-sm font-semibold">Open by default</h4>
+        <CollapsibleTrigger className="hover:bg-accent rounded p-1" aria-label="Toggle">
+          <ChevronsUpDown className="size-4" />
+        </CollapsibleTrigger>
+      </div>
+      <CollapsibleContent className="mt-2">
+        <div className="rounded-md border px-4 py-2 text-sm">Visible content</div>
+      </CollapsibleContent>
+    </Collapsible>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const trigger = canvas.getByRole('button', { name: /toggle/i })
+
+    await expect(canvas.getByText('Visible content')).toBeVisible()
+    await userEvent.click(trigger)
+    await expect(canvas.queryByText('Visible content')).not.toBeInTheDocument()
+  },
 }
