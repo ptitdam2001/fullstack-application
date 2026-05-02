@@ -65,18 +65,17 @@ describe('Button', () => {
     expect(container.firstChild).toHaveClass('size-9')
   })
 
-  it('renders as child element when asChild=true', () => {
-    const { container } = render(
-      <Button asChild>
-        <a href="#">link</a>
+  it('is disabled when isDisabled prop is set', async () => {
+    const onClick = vi.fn()
+    const { getByRole } = render(
+      <Button isDisabled onClick={onClick}>
+        Disabled
       </Button>
     )
-    expect(container.firstChild?.nodeName).toBe('A')
-    expect(container.firstChild).toHaveAttribute('data-slot', 'button')
-  })
+    expect(getByRole('button')).toHaveAttribute('data-disabled')
 
-  it('is disabled when disabled prop is set', () => {
-    const { getByRole } = render(<Button disabled>Disabled</Button>)
-    expect(getByRole('button')).toBeDisabled()
+    fireEvent.click(getByRole('button'))
+
+    expect(onClick).not.toHaveBeenCalled()
   })
 })

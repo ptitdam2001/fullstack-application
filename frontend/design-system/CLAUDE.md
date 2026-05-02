@@ -4,22 +4,23 @@ React Aria Components + Tailwind CSS v4. Composants accessibles, composables, do
 
 ## Stack
 
-| Outil | Rôle |
-|---|---|
-| `react-aria-components@1.16` | Primitives accessibles (state, keyboard, ARIA) |
-| `tailwindcss@4` + `@tailwindcss/vite` | Styles utilitaires |
-| `class-variance-authority` | Variants typés (`cva()`) |
-| `cn()` (`clsx` + `tailwind-merge`) | Fusion sécurisée de classes |
-| `Slot` (`src/utils/Slot.tsx`) | Pattern `asChild` polymorphe |
-| Storybook 10 | Documentation + tests d'interaction |
-| Vitest + RTL | Tests unitaires |
+| Outil                                 | Rôle                                           |
+| ------------------------------------- | ---------------------------------------------- |
+| `react-aria-components@1.16`          | Primitives accessibles (state, keyboard, ARIA) |
+| `tailwindcss@4` + `@tailwindcss/vite` | Styles utilitaires                             |
+| `class-variance-authority`            | Variants typés (`cva()`)                       |
+| `cn()` (`clsx` + `tailwind-merge`)    | Fusion sécurisée de classes                    |
+| `Slot` (`src/utils/Slot.tsx`)         | Pattern `asChild` polymorphe                   |
+| Storybook 10                          | Documentation + tests d'interaction            |
+| Vitest + RTL                          | Tests unitaires                                |
 
 ## Anatomie d'un composant
 
 ### Simple — wrapper HTML + CVA
+
 Utilisé pour : Button, Input, Label, Badge, Separator.
 
-```
+```text
 src/components/NomComposant/
 ├── NomComposant.tsx          # Wrapper HTML avec data-slot + cn()
 ├── NomComposant.test.tsx     # Tests unitaires co-localisés
@@ -35,20 +36,21 @@ export const NomComposant = ({ className, ...props }: React.ComponentProps<'div'
 ```
 
 ### Composé — primitives react-aria-components
+
 Utilisé pour : Dialog, DropdownMenu, Popover, Tooltip, Select, Combobox, Tabs.
 
 Chaque sous-composant est un fichier séparé. Le primitif react-aria gère l'état et l'accessibilité.
 
-| Pattern UI | Primitif react-aria |
-|---|---|
-| Dialog / Modal | `DialogTrigger` + `Dialog` + `Modal` + `ModalOverlay` |
-| Menu déroulant | `MenuTrigger` + `Menu` + `Popover` + `MenuItem` |
-| Select | `Select` + `SelectValue` + `Popover` + `ListBox` + `ListBoxItem` |
-| Combobox | `ComboBox` + `Input` + `Popover` + `ListBox` |
-| Tooltip | `TooltipTrigger` + `Tooltip` |
-| Tabs | `Tabs` + `TabList` + `Tab` + `TabPanel` |
+| Pattern UI     | Primitif react-aria                                              |
+| -------------- | ---------------------------------------------------------------- |
+| Dialog / Modal | `DialogTrigger` + `Dialog` + `Modal` + `ModalOverlay`            |
+| Menu déroulant | `MenuTrigger` + `Menu` + `Popover` + `MenuItem`                  |
+| Select         | `Select` + `SelectValue` + `Popover` + `ListBox` + `ListBoxItem` |
+| Combobox       | `ComboBox` + `Input` + `Popover` + `ListBox`                     |
+| Tooltip        | `TooltipTrigger` + `Tooltip`                                     |
+| Tabs           | `Tabs` + `TabList` + `Tab` + `TabPanel`                          |
 
-```
+```text
 src/components/NomComposant/
 ├── NomComposant.tsx          # Root (wraps AriaXxxTrigger)
 ├── NomComposantContent.tsx   # Contenu (wraps AriaXxx + Popover/Modal)
@@ -58,6 +60,7 @@ src/components/NomComposant/
 ```
 
 ### Complexe — Context + Provider + sous-composants
+
 Utilisé pour : Sidebar, Calendar. État global via React Context.
 
 ## Conventions
@@ -66,22 +69,24 @@ Utilisé pour : Sidebar, Calendar. État global via React Context.
 - **`cn()`** pour toutes les fusions de classes — jamais de concaténation directe
 - **`cva()`** dès qu'il y a plusieurs variants (>1 axe de variation)
 - **`asChild`** via `Slot` quand le composant doit être polymorphe :
-  ```tsx
-  const Comp = asChild ? Slot : 'button'
-  return <Comp className={cn(variants({ variant, size }), className)} {...props} />
-  ```
+
+```tsx
+const Comp = asChild ? Slot : 'button'
+return <Comp className={cn(variants({ variant, size }), className)} {...props} />
+```
+
 - Importer react-aria en renommant pour éviter les conflits :
-  ```tsx
-  import { Dialog as AriaDialog, Modal, ModalOverlay } from 'react-aria-components'
-  ```
+
+```tsx
+import { Dialog as AriaDialog, Modal, ModalOverlay } from 'react-aria-components'
+```
 
 ## Storybook
 
 ```tsx
 // NomComposant.stories.tsx
 import type { Meta, StoryObj } from '@storybook/react'
-import { fn } from '@storybook/test'
-import { within, userEvent, expect } from '@storybook/test'
+import { fn, within, userEvent, expect } from 'storybook/test'
 import { NomComposant } from './NomComposant'
 
 const meta = {
@@ -142,6 +147,7 @@ Tester : présence du `data-slot`, forwarding de `className`, rendu des enfants,
 ## Export
 
 Ajouter dans `src/index.ts` après création :
+
 ```ts
 export * from './components/NomComposant/NomComposant'
 // Si variants exportés :
@@ -152,7 +158,7 @@ export * from './components/NomComposant/NomComposantVariants'
 
 ### Architecture
 
-```
+```text
 src/theme/
 ├── types.ts                          # ThemeConfig, ThemeTokens, IThemeStorage
 ├── defaultTheme.ts                   # Thème "default" (tokens vides)
@@ -171,50 +177,54 @@ src/hooks/
 ### Concepts clés
 
 **Deux couches indépendantes :**
+
 1. **Mode couleur** (`light` / `dark` / `system`) — géré par `next-themes`. Applique la classe `.dark` sur `document.documentElement`. Persisté par next-themes dans `localStorage` sous la clé `theme`.
 2. **Tokens personnalisés** — overrides CSS injestés via `<style id="ds-theme-override">`. Persistés par `IThemeStorage` (défaut : `LocalStorageThemeStorage` sous la clé `ds-theme-config`).
 
 **`ThemeConfig` :**
+
 ```typescript
 type ThemeConfig = {
   name: string
   tokens: {
-    light: Partial<ThemeTokens>  // overrides pour le mode clair
-    dark: Partial<ThemeTokens>   // overrides pour le mode sombre
+    light: Partial<ThemeTokens> // overrides pour le mode clair
+    dark: Partial<ThemeTokens> // overrides pour le mode sombre
   }
 }
 ```
+
 Tokens vides = CSS variables de `src/styles/index.css` s'appliquent sans modification.
 
 ### Usage
 
 **Wrapper racine de l'application :**
+
 ```tsx
 import { ThemeProvider } from '@repo/design-system'
-
-<ThemeProvider defaultMode="system">
+;<ThemeProvider defaultMode="system">
   <App />
 </ThemeProvider>
 ```
 
 **Toggle dark/light :**
+
 ```tsx
 import { ThemeToggle } from '@repo/design-system'
-
-<ThemeToggle />  // cycle light → dark → system
+;<ThemeToggle /> // cycle light → dark → system
 ```
 
 **Hook complet :**
+
 ```tsx
 import { useThemeConfig } from '@repo/design-system'
 
 const {
-  colorMode,           // 'light' | 'dark' | 'system' | undefined
-  setColorMode,        // (mode: string) => void
-  themeConfig,         // ThemeConfig courant
-  updateTokens,        // (tokens: Partial<ThemeTokens>, mode?: 'light' | 'dark') => void
-  resetTheme,          // () => void — retour au thème default
-  setThemeConfig,      // (config: ThemeConfig) => void — remplacement complet
+  colorMode, // 'light' | 'dark' | 'system' | undefined
+  setColorMode, // (mode: string) => void
+  themeConfig, // ThemeConfig courant
+  updateTokens, // (tokens: Partial<ThemeTokens>, mode?: 'light' | 'dark') => void
+  resetTheme, // () => void — retour au thème default
+  setThemeConfig, // (config: ThemeConfig) => void — remplacement complet
 } = useThemeConfig()
 
 // Exemple : changer la couleur primaire
@@ -246,16 +256,16 @@ class ApiThemeStorage implements IThemeStorage {
 
 Voir `src/theme/types.ts` pour la liste complète (`ThemeTokens`). Principaux :
 
-| Token camelCase | CSS var | Usage |
-|---|---|---|
-| `primary` | `--primary` | Couleur d'action principale |
-| `secondary` | `--secondary` | Couleur secondaire |
-| `accent` | `--accent` | Mise en avant subtile |
-| `background` | `--background` | Fond de page |
-| `foreground` | `--foreground` | Texte principal |
-| `destructive` | `--destructive` | Danger / suppression |
-| `radius` | `--radius` | Arrondi de base (ex: `0.5rem`) |
-| `sidebar` | `--sidebar` | Fond du sidebar |
+| Token camelCase | CSS var         | Usage                          |
+| --------------- | --------------- | ------------------------------ |
+| `primary`       | `--primary`     | Couleur d'action principale    |
+| `secondary`     | `--secondary`   | Couleur secondaire             |
+| `accent`        | `--accent`      | Mise en avant subtile          |
+| `background`    | `--background`  | Fond de page                   |
+| `foreground`    | `--foreground`  | Texte principal                |
+| `destructive`   | `--destructive` | Danger / suppression           |
+| `radius`        | `--radius`      | Arrondi de base (ex: `0.5rem`) |
+| `sidebar`       | `--sidebar`     | Fond du sidebar                |
 
 ### Ajouter un thème prédéfini
 

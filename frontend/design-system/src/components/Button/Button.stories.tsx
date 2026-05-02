@@ -69,7 +69,7 @@ export const WithIcon: Story = {
 }
 
 export const Disabled: Story = {
-  args: { children: 'Disabled', disabled: true },
+  args: { children: 'Disabled', isDisabled: true },
 }
 
 // ─── Interaction tests ────────────────────────────────────────────────────────
@@ -101,7 +101,7 @@ export const MultipleClicks: Story = {
 }
 
 export const DisabledDoesNotFire: Story = {
-  args: { children: 'Disabled', disabled: true },
+  args: { children: 'Disabled', isDisabled: true },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
     const button = canvas.getByRole('button', { name: /disabled/i })

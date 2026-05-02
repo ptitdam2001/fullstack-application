@@ -1,19 +1,16 @@
-import * as React from 'react'
-import { Slot } from '../../utils/Slot'
+import { Button as AriaButton, composeRenderProps } from 'react-aria-components'
+import type { ButtonProps as AriaButtonProps } from 'react-aria-components'
 import { type VariantProps } from 'class-variance-authority'
 
 import { cn } from '../../utils/cn'
 import { ButtonVariants } from './ButtonVariants'
 
-export const buttonVariants = ButtonVariants
+type ButtonProps = AriaButtonProps & VariantProps<typeof ButtonVariants>
 
-type ButtonProps = React.ComponentProps<'button'> &
-  VariantProps<typeof ButtonVariants> & {
-    asChild?: boolean
-  }
-
-export const Button = ({ className, variant, size, asChild = false, ...props }: ButtonProps) => {
-  const Comp = asChild ? Slot : 'button'
-
-  return <Comp data-slot="button" className={cn(ButtonVariants({ variant, size, className }))} {...props} />
-}
+export const Button = ({ className, variant, size, ...props }: ButtonProps) => (
+  <AriaButton
+    data-slot="button"
+    className={composeRenderProps(className, cls => cn(ButtonVariants({ variant, size }), cls))}
+    {...props}
+  />
+)
