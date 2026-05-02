@@ -2,11 +2,13 @@ import { useState } from 'react'
 import { AuthLeftPanel } from '../ui/AuthLeftPanel'
 import { ForgottenPasswordForm } from '../ui/ForgottenPasswordForm'
 import { LOGIN_PAGE } from '../domain/Auth'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import { ArrowLeft, Mail } from 'lucide-react'
 import { Button } from '@repo/design-system'
 
-const SuccessBox = ({ email, onResend }: { email: string; onResend: () => void }) => (
+const SuccessBox = ({ email, onResend }: { email: string; onResend: () => void }) => {
+  const navigate = useNavigate()
+  return (
   <div className="animate-in fade-in slide-in-from-bottom-2 duration-200">
     <div
       className="flex items-start gap-3 rounded-(--radius) border p-3.5 mb-5 text-sm leading-relaxed"
@@ -24,8 +26,8 @@ const SuccessBox = ({ email, onResend }: { email: string; onResend: () => void }
       </div>
     </div>
 
-    <Button asChild variant="default" className="w-full h-10">
-      <Link to={LOGIN_PAGE}>Back to sign in</Link>
+    <Button variant="default" className="w-full h-10" onPress={() => navigate(LOGIN_PAGE)}>
+      Back to sign in
     </Button>
 
     <p className="text-center mt-4 text-sm text-muted-foreground">
@@ -40,7 +42,8 @@ const SuccessBox = ({ email, onResend }: { email: string; onResend: () => void }
       </button>
     </p>
   </div>
-)
+  )
+}
 
 export const ForgottenPasswordPage = () => {
   const [sentTo, setSentTo] = useState<string | null>(null)
