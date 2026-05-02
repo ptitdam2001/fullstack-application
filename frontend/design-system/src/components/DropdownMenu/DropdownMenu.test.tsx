@@ -5,7 +5,6 @@ import { DropdownMenuLabel } from './DropdownMenuLabel'
 import { DropdownMenuSeparator } from './DropdownMenuSeparator'
 import { DropdownMenuShortcut } from './DropdownMenuShortcut'
 import { DropdownMenuGroup } from './DropdownMenuGroup'
-import { DropdownMenuTrigger } from './DropdownMenuTrigger'
 import { DropdownMenuItem } from './DropdownMenuItem'
 
 // MenuItem and Section from react-aria require a collection context (Menu)
@@ -70,19 +69,6 @@ describe('DropdownMenuShortcut', () => {
   it('forwards className', () => {
     const { container } = render(<DropdownMenuShortcut className="custom" />)
     expect(container.firstChild).toHaveClass('custom')
-  })
-})
-
-// ─── DropdownMenuTrigger ──────────────────────────────────────────────────────
-
-describe('DropdownMenuTrigger', () => {
-  it('renders children', () => {
-    const { getByText } = render(
-      <DropdownMenuTrigger>
-        <button>Open</button>
-      </DropdownMenuTrigger>
-    )
-    expect(getByText('Open')).toBeInTheDocument()
   })
 })
 

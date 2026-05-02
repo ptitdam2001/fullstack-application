@@ -1,29 +1,24 @@
 import * as React from 'react'
-
-import { Slot } from '../../utils/Slot'
 import { useCollapsibleContext } from './CollapsibleContext'
 
-type CollapsibleTriggerProps = React.ComponentProps<'button'> & {
-  asChild?: boolean
-}
+type CollapsibleTriggerProps = React.ComponentProps<'button'>
 
-function CollapsibleTrigger({ asChild = false, onClick, children, ...props }: CollapsibleTriggerProps) {
+function CollapsibleTrigger({ onClick, children, ...props }: CollapsibleTriggerProps) {
   const { open, setOpen, contentId } = useCollapsibleContext()
-  const Comp = asChild ? Slot : 'button'
 
   return (
-    <Comp
+    <button
       data-slot="collapsible-trigger"
       aria-expanded={open}
       aria-controls={contentId}
-      onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+      onClick={(e) => {
         setOpen(!open)
         onClick?.(e)
       }}
       {...props}
     >
       {children}
-    </Comp>
+    </button>
   )
 }
 
