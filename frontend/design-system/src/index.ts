@@ -76,7 +76,7 @@ export * from './components/Popover/PopoverTrigger'
 export * from './components/Popover/PopoverContent'
 
 export * from './components/Sheet/Sheet'
-export * from './components/Sheet/SheetTrigger'
+
 export * from './components/Sheet/SheetClose'
 export * from './components/Sheet/SheetPortal'
 export * from './components/Sheet/SheetOverlay'
