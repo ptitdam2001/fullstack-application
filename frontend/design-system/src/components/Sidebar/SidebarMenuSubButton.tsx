@@ -1,23 +1,18 @@
 import * as React from 'react'
-import { Slot } from '../../utils/Slot'
 
 import { cn } from '../../utils/cn'
 
 function SidebarMenuSubButton({
-  asChild = false,
   size = 'md',
   isActive = false,
   className,
   ...props
 }: React.ComponentProps<'a'> & {
-  asChild?: boolean
   size?: 'sm' | 'md'
   isActive?: boolean
 }) {
-  const Comp = asChild ? Slot : 'a'
-
   return (
-    <Comp
+    <a
       data-slot="sidebar-menu-sub-button"
       data-sidebar="menu-sub-button"
       data-size={size}

@@ -1,17 +1,10 @@
 import * as React from 'react'
-import { Slot } from '../../utils/Slot'
 
 import { cn } from '../../utils/cn'
 
-function SidebarGroupAction({
-  className,
-  asChild = false,
-  ...props
-}: React.ComponentProps<'button'> & { asChild?: boolean }) {
-  const Comp = asChild ? Slot : 'button'
-
+function SidebarGroupAction({ className, ...props }: React.ComponentProps<'button'>) {
   return (
-    <Comp
+    <button
       data-slot="sidebar-group-action"
       data-sidebar="group-action"
       className={cn(

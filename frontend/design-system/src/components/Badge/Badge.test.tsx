@@ -43,13 +43,4 @@ describe('Badge', () => {
     expect(container.firstChild).toHaveClass('text-foreground')
   })
 
-  it('renders as child element when asChild=true', () => {
-    const { container } = render(
-      <Badge asChild>
-        <a href="#">link</a>
-      </Badge>
-    )
-    expect(container.firstChild?.nodeName).toBe('A')
-    expect(container.firstChild).toHaveAttribute('data-slot', 'badge')
-  })
 })

@@ -1,21 +1,14 @@
 import * as React from 'react'
-import { Slot } from '../../utils/Slot'
 
 import { cn } from '../../utils/cn'
 
 function SidebarMenuAction({
   className,
-  asChild = false,
   showOnHover = false,
   ...props
-}: React.ComponentProps<'button'> & {
-  asChild?: boolean
-  showOnHover?: boolean
-}) {
-  const Comp = asChild ? Slot : 'button'
-
+}: React.ComponentProps<'button'> & { showOnHover?: boolean }) {
   return (
-    <Comp
+    <button
       data-slot="sidebar-menu-action"
       data-sidebar="menu-action"
       className={cn(

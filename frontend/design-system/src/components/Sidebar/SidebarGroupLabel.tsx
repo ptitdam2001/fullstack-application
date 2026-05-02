@@ -1,17 +1,10 @@
 import * as React from 'react'
-import { Slot } from '../../utils/Slot'
 
 import { cn } from '../../utils/cn'
 
-function SidebarGroupLabel({
-  className,
-  asChild = false,
-  ...props
-}: React.ComponentProps<'div'> & { asChild?: boolean }) {
-  const Comp = asChild ? Slot : 'div'
-
+function SidebarGroupLabel({ className, ...props }: React.ComponentProps<'div'>) {
   return (
-    <Comp
+    <div
       data-slot="sidebar-group-label"
       data-sidebar="group-label"
       className={cn(

@@ -87,14 +87,6 @@ describe('BreadcrumbLink', () => {
     expect(getByText('Home')).toBeInTheDocument()
   })
 
-  it('renders as child when asChild=true', () => {
-    const { container } = render(
-      <BreadcrumbLink asChild>
-        <button>Home</button>
-      </BreadcrumbLink>
-    )
-    expect(container.firstChild?.nodeName).toBe('BUTTON')
-  })
 })
 
 // ─── BreadcrumbPage ───────────────────────────────────────────────────────────

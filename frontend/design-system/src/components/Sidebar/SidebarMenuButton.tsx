@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { Slot } from '../../utils/Slot'
 import { type VariantProps, cva } from 'class-variance-authority'
 
 import { cn } from '../../utils/cn'
@@ -31,7 +30,6 @@ const sidebarMenuButtonVariants = cva(
 )
 
 function SidebarMenuButton({
-  asChild = false,
   isActive = false,
   variant = 'default',
   size = 'default',
@@ -39,15 +37,13 @@ function SidebarMenuButton({
   className,
   ...props
 }: React.ComponentProps<'button'> & {
-  asChild?: boolean
   isActive?: boolean
   tooltip?: string | React.ComponentProps<typeof TooltipContent>
 } & VariantProps<typeof sidebarMenuButtonVariants>) {
-  const Comp = asChild ? Slot : 'button'
   const { isMobile, state } = useSidebar()
 
   const button = (
-    <Comp
+    <button
       data-slot="sidebar-menu-button"
       data-sidebar="menu-button"
       data-size={size}
@@ -67,7 +63,7 @@ function SidebarMenuButton({
 
   return (
     <Tooltip>
-      <TooltipTrigger asChild>{button}</TooltipTrigger>
+      <TooltipTrigger>{button}</TooltipTrigger>
       <TooltipContent side="right" align="center" hidden={state !== 'collapsed' || isMobile} {...tooltip} />
     </Tooltip>
   )
