@@ -19,6 +19,8 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "test": "vitest",
+    "test:unit": "vitest --project 'unit test'",
+    "test:stories": "vitest --project storybook",
     "test:ui": "vitest --ui --coverage",
     "check:types": "tsc --noEmit"
   },
@@ -56,6 +58,7 @@
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "6.0.1",
     "@vitest/browser": "4.1.1",
+    "@vitest/browser-playwright": "^4.1.5",
     "@vitest/coverage-v8": "4.1.1",
     "@vitest/ui": "4.1.1",
     "eslint": "^10.0.0",
