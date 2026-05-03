@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { expect, userEvent, within } from 'storybook/test'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -88,5 +89,10 @@ export const WithValidationError: Story = {
       )
     }
     return <ErrorExample />
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await userEvent.click(canvas.getByRole('button', { name: /submit/i }))
+    expect(canvas.getByText('Username must be at least 2 characters.')).toBeInTheDocument()
   },
 }
