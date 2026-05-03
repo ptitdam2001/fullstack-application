@@ -118,13 +118,32 @@ export * from './components/Tabs/TabsList'
 export * from './components/Tabs/TabsTrigger'
 export * from './components/Tabs/TabsContent'
 
+export * from './components/Alert/Alert'
+
 export * from './components/Checkbox/Checkbox'
 export * from './components/Checkbox/CheckboxGroup'
 
-export * from './components/Switch/Switch'
+export * from './components/Combobox/Combobox'
+export * from './components/Combobox/ComboboxItem'
+export * from './components/Combobox/ComboboxSection'
+
+export * from './components/NumberField/NumberField'
+
+export * from './components/Progress/Progress'
 
 export * from './components/RadioGroup/Radio'
 export * from './components/RadioGroup/RadioGroup'
+
+export * from './components/Switch/Switch'
+
+export * from './components/Table/Table'
+export * from './components/Table/TableHeader'
+export * from './components/Table/TableBody'
+export * from './components/Table/TableFooter'
+export * from './components/Table/TableRow'
+export * from './components/Table/TableHead'
+export * from './components/Table/TableCell'
+export * from './components/Table/TableCaption'
 
 export * from './components/Textarea/Textarea'
 
