@@ -9,7 +9,7 @@ type SeparatorProps = React.ComponentProps<'div'> & {
 
 export const Separator = ({ className, orientation = 'horizontal', decorative = true, ...props }: SeparatorProps) => (
   <div
-    data-slot="separator-root"
+    data-slot="separator"
     role={decorative ? 'none' : 'separator'}
     aria-orientation={!decorative ? orientation : undefined}
     data-orientation={orientation}

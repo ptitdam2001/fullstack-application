@@ -3,9 +3,9 @@ import { render } from '@testing-library/react'
 import { Separator } from './Separator'
 
 describe('Separator', () => {
-  it('sets data-slot="separator-root"', () => {
+  it('sets data-slot="separator"', () => {
     const { container } = render(<Separator />)
-    expect(container.firstChild).toHaveAttribute('data-slot', 'separator-root')
+    expect(container.firstChild).toHaveAttribute('data-slot', 'separator')
   })
 
   it('forwards className', () => {
