@@ -2,7 +2,6 @@ import { type Meta } from '@storybook/react-vite'
 import { Toast } from './Toast'
 
 const meta = {
-  title: 'Common/Toast',
   parameters: {
     layout: 'fullscreen',
   },

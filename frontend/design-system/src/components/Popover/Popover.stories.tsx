@@ -6,7 +6,6 @@ import { PopoverTrigger } from './PopoverTrigger'
 import { Popover } from './Popover'
 
 const meta = {
-  title: 'Popover',
   component: Popover,
 } satisfies Meta<typeof Popover>
 
@@ -17,7 +16,7 @@ type Story = StoryObj<typeof meta>
 const defaultChildren = (
   <>
     <PopoverTrigger>
-      {(triggerProps) => (
+      {triggerProps => (
         <button {...triggerProps} className="rounded border px-3 py-1.5 text-sm">
           Open popover
         </button>
@@ -38,7 +37,7 @@ export const WithForm: Story = {
     children: (
       <>
         <PopoverTrigger>
-          {(triggerProps) => (
+          {triggerProps => (
             <button {...triggerProps} className="rounded border px-3 py-1.5 text-sm">
               Open form
             </button>
