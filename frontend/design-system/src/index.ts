@@ -121,6 +121,13 @@ export * from './components/Tabs/TabsContent'
 export * from './components/Checkbox/Checkbox'
 export * from './components/Checkbox/CheckboxGroup'
 
+export * from './components/Switch/Switch'
+
+export * from './components/RadioGroup/Radio'
+export * from './components/RadioGroup/RadioGroup'
+
+export * from './components/Textarea/Textarea'
+
 export * from './components/Select/Select'
 export * from './components/TextField/TextField'
 export * from './components/TextField/FieldError'
