@@ -113,8 +113,6 @@ export * from './components/Sidebar/SidebarMenuSubButton'
 
 export * from './components/Skeleton/Skeleton'
 
-export * from './components/Sonner/Toaster'
-
 export * from './components/Tabs/Tabs'
 export * from './components/Tabs/TabsList'
 export * from './components/Tabs/TabsTrigger'

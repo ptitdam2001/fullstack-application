@@ -1,5 +1,15 @@
 import React from 'react'
-import { type ExternalToast, toast, Toaster, type ToasterProps } from 'sonner'
+import { toast, Toaster, type ToasterProps, type ExternalToast } from 'sonner'
+import { useTheme } from 'next-themes'
+
+type ToastFn = {
+  (message: React.ReactNode, options?: ExternalToast): string | number
+  success(message: React.ReactNode, options?: ExternalToast): string | number
+  error(message: React.ReactNode, options?: ExternalToast): string | number
+  warning(message: React.ReactNode, options?: ExternalToast): string | number
+  loading(message: React.ReactNode, options?: ExternalToast): string | number
+  dismiss(id?: string | number): void
+}
 import { createContextWithWrite } from '../../contexts/createContextWithWrite'
 
 type ToastOptionsType = {
@@ -18,11 +28,23 @@ const defaultToastState: ToastOptionsType = {
 // eslint-disable-next-line react-refresh/only-export-components
 const ToastContainer = ({ children }: { children: React.ReactNode }) => {
   const value = ToastContext.useValue()
+  const { theme = 'system' } = useTheme()
 
   return (
     <>
       {children}
-      <Toaster position={value.position ?? 'bottom-left'} />
+      <Toaster
+        theme={theme as ToasterProps['theme']}
+        position={value.position ?? 'bottom-left'}
+        className="toaster group"
+        style={
+          {
+            '--normal-bg': 'var(--popover)',
+            '--normal-text': 'var(--popover-foreground)',
+            '--normal-border': 'var(--border)',
+          } as React.CSSProperties
+        }
+      />
     </>
   )
 }
@@ -42,7 +64,5 @@ export const Toast = {
   Provider: ({ children, value = defaultToastState }: ToastProviderProps) => (
     <ToastContext.Provider value={value}>{children}</ToastContext.Provider>
   ),
-  useToast: () => (message: React.ReactNode, options?: ExternalToast) => {
-    toast(message, options)
-  },
+  useToast: (): ToastFn => toast as ToastFn,
 }
