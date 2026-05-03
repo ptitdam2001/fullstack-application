@@ -120,10 +120,7 @@ export * from './components/Tabs/TabsList'
 export * from './components/Tabs/TabsTrigger'
 export * from './components/Tabs/TabsContent'
 
-export * from './components/Tooltip/TooltipProvider'
 export * from './components/Tooltip/Tooltip'
-export * from './components/Tooltip/TooltipTrigger'
-export * from './components/Tooltip/TooltipContent'
 
 export * from './components/ThemeToggle/ThemeToggle'
 

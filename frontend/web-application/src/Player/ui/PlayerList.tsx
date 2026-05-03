@@ -1,4 +1,4 @@
-import { cn, TooltipTrigger, TooltipProvider, TooltipContent, Tooltip, AvatarWithBadge } from '@repo/design-system'
+import { cn, Tooltip, AvatarWithBadge } from '@repo/design-system'
 import { TableLoader } from '@Common/Loading'
 import { Suspense, use } from 'react'
 import { ErrorBoundary } from '@Common/ErrorBoundary'
@@ -14,25 +14,22 @@ const PlayerListInner = ({ teamId, className }: PlayerListProps) => {
       {players?.map(player => (
         <li className="flex-start flex py-2" key={player.id}>
           <div className="px-4">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger>
-                  <AvatarWithBadge
-                    avatar={{ label: player.userId.slice(0, 2).toUpperCase() }}
-                    badge={{
-                      content: player.jersey != null ? `${player.jersey}` : '-',
-                      className: 'text-white',
-                    }}
-                  />
-                </TooltipTrigger>
-                <TooltipContent>
-                  <div className="flex flex-col">
-                    <span>#{player.jersey ?? '-'}</span>
-                    {player.position && <span>{player.position}</span>}
-                  </div>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <Tooltip
+              content={
+                <div className="flex flex-col">
+                  <span>#{player.jersey ?? '-'}</span>
+                  {player.position && <span>{player.position}</span>}
+                </div>
+              }
+            >
+              <AvatarWithBadge
+                avatar={{ label: player.userId.slice(0, 2).toUpperCase() }}
+                badge={{
+                  content: player.jersey != null ? `${player.jersey}` : '-',
+                  className: 'text-white',
+                }}
+              />
+            </Tooltip>
           </div>
           <div className="grow text-sm text-muted-foreground">{player.userId}</div>
         </li>

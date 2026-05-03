@@ -2,8 +2,6 @@ import * as React from 'react'
 import { type VariantProps, cva } from 'class-variance-authority'
 
 import { cn } from '../../utils/cn'
-import { TooltipContent } from '../Tooltip/TooltipContent'
-import { TooltipTrigger } from '../Tooltip/TooltipTrigger'
 import { Tooltip } from '../Tooltip/Tooltip'
 import { useSidebar } from './SidebarContext'
 
@@ -38,7 +36,7 @@ function SidebarMenuButton({
   ...props
 }: React.ComponentProps<'button'> & {
   isActive?: boolean
-  tooltip?: string | React.ComponentProps<typeof TooltipContent>
+  tooltip?: React.ReactNode
 } & VariantProps<typeof sidebarMenuButtonVariants>) {
   const { isMobile, state } = useSidebar()
 
@@ -57,14 +55,9 @@ function SidebarMenuButton({
     return button
   }
 
-  if (typeof tooltip === 'string') {
-    tooltip = { children: tooltip }
-  }
-
   return (
-    <Tooltip>
-      <TooltipTrigger>{button}</TooltipTrigger>
-      <TooltipContent side="right" align="center" hidden={state !== 'collapsed' || isMobile} {...tooltip} />
+    <Tooltip content={tooltip} position="right" delay={0} disabled={state !== 'collapsed' || isMobile}>
+      {button}
     </Tooltip>
   )
 }
