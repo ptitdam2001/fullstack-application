@@ -1,6 +1,8 @@
 import React from 'react'
 import { toast, Toaster, type ToasterProps, type ExternalToast } from 'sonner'
 import { useTheme } from 'next-themes'
+import { AlertTriangle, CheckCircle2, Info, Loader2, XCircle } from 'lucide-react'
+import { createContextWithWrite } from '../../contexts/createContextWithWrite'
 
 type ToastFn = {
   (message: React.ReactNode, options?: ExternalToast): string | number
@@ -10,7 +12,14 @@ type ToastFn = {
   loading(message: React.ReactNode, options?: ExternalToast): string | number
   dismiss(id?: string | number): void
 }
-import { createContextWithWrite } from '../../contexts/createContextWithWrite'
+
+const toastIcons = {
+  success: <CheckCircle2 size={16} className="text-green-500" />,
+  error: <XCircle size={16} className="text-destructive" />,
+  warning: <AlertTriangle size={16} className="text-amber-500" />,
+  info: <Info size={16} className="text-blue-500" />,
+  loading: <Loader2 size={16} className="text-muted-foreground animate-spin" />,
+}
 
 type ToastOptionsType = {
   position?: ToasterProps['position']
@@ -37,6 +46,7 @@ const ToastContainer = ({ children }: { children: React.ReactNode }) => {
         theme={theme as ToasterProps['theme']}
         position={value.position ?? 'bottom-left'}
         className="toaster group"
+        icons={toastIcons}
         style={
           {
             '--normal-bg': 'var(--popover)',
