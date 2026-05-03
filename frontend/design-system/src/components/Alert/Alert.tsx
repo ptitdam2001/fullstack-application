@@ -4,13 +4,12 @@ import { type VariantProps, cva } from 'class-variance-authority'
 import { cn } from '../../utils/cn'
 
 const alertVariants = cva(
-  'relative w-full rounded-lg border px-4 py-3 text-sm grid has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] grid-cols-[0_1fr] [&>svg]:size-4 [&>svg]:translate-y-0.5 [&>svg]:text-current',
+  'relative w-full rounded-lg border px-4 py-3 text-sm grid has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] grid-cols-[0_1fr] [&>svg]:size-4 [&>svg]:translate-y-0.5 [&>svg]:text-current gap-1',
   {
     variants: {
       variant: {
         default: 'bg-card text-card-foreground',
-        destructive:
-          'border-destructive/50 text-destructive dark:border-destructive [&>svg]:text-destructive',
+        destructive: 'border-destructive/50 text-destructive dark:border-destructive [&>svg]:text-destructive',
       },
     },
     defaultVariants: { variant: 'default' },
@@ -20,18 +19,13 @@ const alertVariants = cva(
 type AlertProps = React.ComponentProps<'div'> & VariantProps<typeof alertVariants>
 
 export const Alert = ({ className, variant, ...props }: AlertProps) => (
-  <div
-    data-slot="alert"
-    role="alert"
-    className={cn(alertVariants({ variant }), className)}
-    {...props}
-  />
+  <div data-slot="alert" role="alert" className={cn(alertVariants({ variant }), className)} {...props} />
 )
 
 export const AlertTitle = ({ className, ...props }: React.ComponentProps<'div'>) => (
   <div
     data-slot="alert-title"
-    className={cn('col-start-2 font-medium leading-none tracking-tight', className)}
+    className={cn('col-start-2 leading-none font-medium tracking-tight', className)}
     {...props}
   />
 )
@@ -39,7 +33,10 @@ export const AlertTitle = ({ className, ...props }: React.ComponentProps<'div'>)
 export const AlertDescription = ({ className, ...props }: React.ComponentProps<'div'>) => (
   <div
     data-slot="alert-description"
-    className={cn('text-muted-foreground col-start-2 grid justify-items-start gap-1 text-sm [&_p]:leading-relaxed', className)}
+    className={cn(
+      'text-muted-foreground col-start-2 grid justify-items-start gap-1 text-sm [&_p]:leading-relaxed',
+      className
+    )}
     {...props}
   />
 )
