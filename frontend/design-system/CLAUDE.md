@@ -302,9 +302,13 @@ setThemeConfig(BLUE_THEME)
 ## Commandes
 
 ```bash
-pnpm --filter @repo/design-system build      # Build → dist/
-pnpm --filter @repo/design-system test       # Vitest
-pnpm --filter @repo/design-system storybook  # Storybook :6006
+pnpm --filter @repo/design-system build         # Build → dist/
+pnpm --filter @repo/design-system test          # Tous les tests (unit + stories)
+pnpm --filter @repo/design-system test:unit     # Tests unitaires jsdom uniquement
+pnpm --filter @repo/design-system test:stories  # Play functions stories (chromium headless)
+pnpm --filter @repo/design-system storybook     # Storybook :6006
 ```
+
+> `test:stories` lance les `play` functions des stories dans un vrai navigateur (Playwright/Chromium). `test:unit` lance les `*.test.tsx` en jsdom.
 
 > Rebuild requis avant chaque utilisation dans `application-material` si CSS ou exports changent.
