@@ -3,10 +3,8 @@ import { Outlet } from 'react-router'
 import { ConnectedAppSidebar } from './components/ConnectedAppSidebar'
 import { LATERAL_MENU } from '@Application/lateralMenu.config'
 import { Breadcrumbs } from './Breadcrumbs/Breadcrumbs'
-import { cn } from '@repo/design-system'
+import { cn, Layout, SidebarInset, SidebarProvider, Separator } from '@repo/design-system'
 
-import { SidebarInset, SidebarProvider } from '@repo/design-system'
-import { Separator } from '@repo/design-system'
 import { TopBar } from './TopBar'
 import { useTheme } from '@Theme/Provider/ThemeProvider'
 
@@ -20,24 +18,24 @@ export const ConnectedLayout = () => {
         { dark: currentTheme && ['dark', 'system'].includes(currentTheme) }
       )}
     >
-      {/* Left Sidebar */}
       <ConnectedAppSidebar links={LATERAL_MENU} />
 
-      {/* Right Block */}
       <SidebarInset className="scrollbar-track-background h-full min-w-0">
-        <TopBar title="Connected App" />
-        <Separator orientation="horizontal" className="h-[1vh]" />
-        <section className="p-1">
-          <Breadcrumbs />
-        </section>
-        <Separator orientation="horizontal" className="h-[1vh]" />
+        <Layout.Header>
+          <TopBar title="Connected App" />
+          <Separator orientation="horizontal" className="h-[1vh]" />
+          <section className="p-1">
+            <Breadcrumbs />
+          </section>
+          <Separator orientation="horizontal" className="h-[1vh]" />
+        </Layout.Header>
 
-        <article
+        <Layout.Content
           data-testid="connected-layout-page"
-          className="scrollbar-track-background scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800 dark:scrollbar-thumb-gray-500 flex h-[93.5vh] w-full flex-col overflow-auto"
+          className="scrollbar-track-background scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800 dark:scrollbar-thumb-gray-500 w-full"
         >
           <Outlet />
-        </article>
+        </Layout.Content>
       </SidebarInset>
     </SidebarProvider>
   )
