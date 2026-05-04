@@ -6,7 +6,8 @@ import '../src/index.css'
 import React from 'react'
 import { reactQueryClient } from '../config/reactQueryClient'
 import { ThemeProvider } from '@Theme/Provider/ThemeProvider'
-
+import { localStorageDecorator } from './decorators/localstorage'
+import { intlDecorator } from './decorators/intl'
 /*
  * Initializes MSW
  * See https://github.com/mswjs/msw-storybook-addon#configuring-msw
@@ -35,6 +36,8 @@ const preview: Preview = {
         <ThemeProvider>{storyFn()}</ThemeProvider>
       </QueryClientProvider>
     ),
+    intlDecorator,
+    localStorageDecorator,
   ],
 
   // 👈 Add the MSW loader to all stories
