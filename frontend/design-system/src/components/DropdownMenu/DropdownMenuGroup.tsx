@@ -1,8 +1,8 @@
 import * as React from 'react'
-import { Section } from 'react-aria-components'
+import { MenuSection } from 'react-aria-components'
 
-function DropdownMenuGroup({ ...props }: React.ComponentProps<typeof Section>) {
-  return <Section data-slot="dropdown-menu-group" {...props} />
+function DropdownMenuGroup({ ...props }: React.ComponentProps<typeof MenuSection>) {
+  return <MenuSection data-slot="dropdown-menu-group" {...props} />
 }
 
 export { DropdownMenuGroup }
