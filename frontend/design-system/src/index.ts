@@ -162,6 +162,9 @@ export * from './components/Tooltip/Tooltip'
 
 export * from './components/ThemeToggle/ThemeToggle'
 
+export * from './components/Layout/Layout'
+export * from './components/Layout/LayoutContentVariants'
+
 // Providers
 export * from './providers/ThemeProvider/ThemeProvider'
 
