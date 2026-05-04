@@ -5,7 +5,7 @@ import { Form } from '@Common/Form/Form'
 import { Button, Input, Toast } from '@repo/design-system'
 import { Loader2 } from 'lucide-react'
 import { ForgotPasswordBody } from '@Sdk/authentication/authentication.zod'
-import { useForgotPassword } from '../infrastructure/useAuthApi'
+import { useForgotPassword } from '../../infrastructure/useAuthApi'
 
 type FormValue = z.infer<typeof ForgotPasswordBody>
 

@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react'
 import { Navigate } from 'react-router'
-import { AuthProvider } from '../application/AuthProvider'
-import { LOGIN_PAGE } from '../domain/Auth'
+import { AuthProvider } from '../../application/AuthProvider'
+import { LOGIN_PAGE } from '../../domain/Auth'
 
 type CheckAuthenticationProps = {
   children: ReactNode

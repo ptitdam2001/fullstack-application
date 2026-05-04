@@ -1,3 +1,3 @@
-import { UserCard } from '../ui/UserCard'
+import { UserCard } from '../ui/UserCard/UserCard'
 
 export const MyProfile = () => <UserCard />

@@ -7,8 +7,8 @@ import { Button, Input, Toast } from '@repo/design-system'
 import { Eye, EyeOff, Loader2 } from 'lucide-react'
 import { FormattedMessage } from 'react-intl'
 import { Link } from 'react-router'
-import { AuthProvider } from '../application/AuthProvider'
-import { useLoginAction } from '../application/useLoginAction'
+import { AuthProvider } from '../../application/AuthProvider'
+import { useLoginAction } from '../../application/useLoginAction'
 
 type FormValue = z.infer<typeof LoginBody>
 

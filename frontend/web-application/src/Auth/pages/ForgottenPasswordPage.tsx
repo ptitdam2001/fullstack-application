@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { AuthLeftPanel } from '../ui/AuthLeftPanel'
-import { ForgottenPasswordForm } from '../ui/ForgottenPasswordForm'
+import { AuthLeftPanel } from '../ui/AuthLeftPanel/AuthLeftPanel'
+import { ForgottenPasswordForm } from '../ui/ForgottenPasswordForm/ForgottenPasswordForm'
 import { LOGIN_PAGE } from '../domain/Auth'
 import { Link, useNavigate } from 'react-router'
 import { ArrowLeft, Mail } from 'lucide-react'

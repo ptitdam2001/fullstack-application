@@ -1,6 +1,6 @@
 import { vi } from 'vitest'
 import { screen, fireEvent, act } from '@testing-library/react'
-import { renderWithProviders } from '../../../tests/test-utils'
+import { renderWithProviders } from '../../../../tests/test-utils'
 import { SigninForm } from './SigninForm'
 
 const { mockProcess, mockUseLoginAction } = vi.hoisted(() => {
@@ -9,14 +9,14 @@ const { mockProcess, mockUseLoginAction } = vi.hoisted(() => {
   return { mockProcess, mockUseLoginAction }
 })
 
-vi.mock('../application/AuthProvider', () => ({
+vi.mock('../../application/AuthProvider', () => ({
   AuthProvider: {
     useAuthValue: vi.fn(() => ({ user: undefined, token: undefined })),
     useAuthDispatch: vi.fn(() => vi.fn()),
   },
 }))
 
-vi.mock('../application/useLoginAction', () => ({
+vi.mock('../../application/useLoginAction', () => ({
   useLoginAction: mockUseLoginAction,
 }))
 

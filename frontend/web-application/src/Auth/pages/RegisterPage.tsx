@@ -1,5 +1,5 @@
-import { AuthLeftPanel } from '../ui/AuthLeftPanel'
-import { RegisterForm } from '../ui/RegisterForm'
+import { AuthLeftPanel } from '../ui/AuthLeftPanel/AuthLeftPanel'
+import { RegisterForm } from '../ui/RegisterForm/RegisterForm'
 import { LOGIN_PAGE } from '../domain/Auth'
 import { Link, useNavigate } from 'react-router'
 
