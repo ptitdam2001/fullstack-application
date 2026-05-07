@@ -174,10 +174,13 @@ dist
 # Finder (MacOS) folder config
 .DS_Store
 
-# Claude Code local artifacts
+# Claude Code local artifacts — .claude/skills/ is intentionally tracked
+.claude/cache/
+.claude/memory/
+.claude/plans/
+.claude/plugins/
 .claude/projects/
 .claude/settings.json
 .claude/settings.local.json
 **/.agents/
-**/.claude/
 **/skills-lock.json

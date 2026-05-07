@@ -80,6 +80,24 @@ src/components/NomComposant/
    ```tsx
    import { Select as AriaSelect, SelectValue as AriaSelectValue } from 'react-aria-components'
    ```
+5. **Tailwind CSS v4** — utiliser la syntaxe data-attribute sans crochets :
+   ```tsx
+   // ✅ v4
+   'data-focused:bg-accent data-hovered:bg-accent data-disabled:opacity-50 data-selected:bg-accent'
+   // ❌ v3 (ne pas utiliser)
+   'data-[focused]:bg-accent data-[hovered]:bg-accent data-[disabled]:opacity-50'
+   ```
+6. **Arrow function** — toujours `export const` + flèche, jamais `function` :
+   ```tsx
+   // ✅
+   export const MyComponent = ({ className, ...props }: MyComponentProps) => (
+     <div className={cn('...', className)} {...props} />
+   )
+   // ❌
+   function MyComponent({ className, ...props }: MyComponentProps) {
+     return <div className={cn('...', className)} {...props} />
+   }
+   ```
 
 ### Composant simple (exemple : Badge)
 ```tsx
