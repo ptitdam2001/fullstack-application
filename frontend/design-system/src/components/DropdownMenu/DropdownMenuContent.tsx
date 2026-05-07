@@ -7,13 +7,14 @@ type Side = 'top' | 'bottom' | 'left' | 'right'
 type Align = 'start' | 'center' | 'end'
 
 function buildPlacement(side?: Side, align?: Align): React.ComponentProps<typeof Popover>['placement'] {
-  if (!side) {
+  if (!side && !align) {
     return undefined
   }
+  const finalSide = side ?? 'bottom'
   if (!align || align === 'center') {
-    return side
+    return finalSide
   }
-  return `${side} ${align}` as React.ComponentProps<typeof Popover>['placement']
+  return `${finalSide} ${align}` as React.ComponentProps<typeof Popover>['placement']
 }
 
 type DropdownMenuContentProps = React.ComponentProps<typeof Menu> & {
