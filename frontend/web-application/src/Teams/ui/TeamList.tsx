@@ -5,6 +5,8 @@ import { useTeamList } from '../application/useTeamList'
 import { TeamCardGrid } from './TeamCardGrid'
 import { TeamCardList } from './TeamCardList'
 import { TeamListPagination } from './TeamListPagination'
+import { Layout, Separator } from '@repo/design-system'
+import { Empty } from '@Common/Loading/Empty'
 
 type ViewMode = 'grid' | 'list'
 
@@ -16,17 +18,21 @@ export const TeamList = ({ viewMode }: Props) => {
   const teams = use(query.promise)
 
   return (
-    <section data-testid="TeamList" className="flex w-full flex-1 flex-col overflow-hidden">
-      <ErrorBoundary>
-        <Suspense fallback={<TableLoader nbCols={3} nbRows={12} />}>
-          <div key={pagination.page} className="flex-1 overflow-auto p-4">
-            {viewMode === 'grid' ? <TeamCardGrid teams={teams} /> : <TeamCardList teams={teams} />}
-          </div>
-          <div className="bg-background h-18 border-t py-2">
-            <TeamListPagination page={pagination.page} totalPages={totalPages} onPageChange={changePage} />
-          </div>
-        </Suspense>
-      </ErrorBoundary>
-    </section>
+    <Layout.Root>
+      <Layout.Content data-testid="TeamList" className="p-2">
+        <ErrorBoundary>
+          <Suspense fallback={<TableLoader nbCols={3} nbRows={12} />}>
+            {teams.length === 0 && <Empty />}
+            {viewMode === 'grid' && <TeamCardGrid teams={teams} />}
+            {viewMode === 'list' && <TeamCardList teams={teams} />}
+          </Suspense>
+        </ErrorBoundary>
+      </Layout.Content>
+      <Layout.Footer className="py-1">
+        <Separator orientation="horizontal" />
+
+        <TeamListPagination page={pagination.page} totalPages={totalPages} onPageChange={changePage} />
+      </Layout.Footer>
+    </Layout.Root>
   )
 }

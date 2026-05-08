@@ -8,15 +8,9 @@ type Props = { teams: Team[] }
 export const TeamCardList = ({ teams }: Props) => {
   const navigate = useNavigate()
   return (
-    <List.Root
-      aria-label="Teams"
-      items={teams}
-      variant="ghost"
-      className="h-full gap-3 p-1"
-      layoutOptions={{ rowHeight: 84, gap: 12 }}
-    >
+    <List.Root aria-label="Teams" items={teams} variant="ghost" layoutOptions={{ rowHeight: 84, gap: 2 }}>
       {team => (
-        <List.Item id={team.id} textValue={team.name} className="rounded-none p-0">
+        <List.Item id={team.id} textValue={team.name} className="rounded-none">
           <Card.Container className="w-full flex-row items-center gap-0 overflow-hidden py-4">
             <div className="shrink-0 px-6">
               <Volleyball style={{ color: team.color ?? 'currentColor' }} className="h-10 w-10" />
