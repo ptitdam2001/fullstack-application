@@ -16,7 +16,7 @@ import { TeamEditPage } from '@Teams/pages'
 import { TeamLayout } from '@Teams/index'
 import { CheckAuthentication } from '@Auth/ui/CheckAuthentication/CheckAuthentication'
 import { ForgottenPasswordPage, LoginPage, RegisterPage } from '@Auth/pages'
-import { TeamBreadcrumb } from '@Teams/TeamBreadcrumb'
+import { TeamBreadcrumb } from '@Teams'
 import { AreaBreadcrumb } from '@Settings'
 
 const AppLayout = () => {

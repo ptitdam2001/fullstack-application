@@ -1,7 +1,7 @@
 import { cn } from '@repo/design-system'
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { CreateTeamBody, UpdateTeamBody } from '@Sdk/team/team.zod'
+import { CreateTeamBody, UpdateTeamBody } from '../domain/Team'
 import { ControlledTextInput } from '@Common/Input/TextInput/ControlledTextInput'
 import { ColorInput } from '@Common/Input/ColorInput/ColorInput'
 import { Form } from '@Common/Form/Form'
