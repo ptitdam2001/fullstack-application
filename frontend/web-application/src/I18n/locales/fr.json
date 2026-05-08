@@ -58,5 +58,8 @@
     "editArea": "Modifier la zone",
     "createArea": "Créer une zone",
     "account": "Compte"
+  },
+  "theme": {
+    "selectTitle": "Sélectionner le thème"
   }
 }

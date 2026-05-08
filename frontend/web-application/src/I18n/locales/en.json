@@ -58,5 +58,8 @@
     "editArea": "Edit Area",
     "createArea": "Create Area",
     "account": "Account"
+  },
+  "theme": {
+    "selectTitle": "Select your theme"
   }
 }
