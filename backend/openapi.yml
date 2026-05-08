@@ -266,7 +266,7 @@ paths:
                 $ref: '#/components/schemas/ErrorOutput'
     patch:
       operationId: 'updateTeam'
-      description: 'Update a team'
+      description: 'Update a team. Requires Admin or Coach of the team.'
       tags:
         - Team
       parameters:
@@ -287,6 +287,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Team'
+        403:
+          description: 'Forbidden — requires Admin or Coach role on this team'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorOutput'
+        404:
+          description: 'Team not found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorOutput'
 
   /team/{teamId}/players:
     get:

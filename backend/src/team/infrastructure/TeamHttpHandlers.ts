@@ -39,7 +39,11 @@ export const createTeam = async (ctx: Context, req: Request, res: Response) => {
 }
 
 export const updateTeam = async (ctx: Context, req: Request, res: Response) => {
-  requireAdmin(ctx)
+  const auth = getAuthPayload(ctx)
+  if (!auth.isAdmin) {
+    const canAccess = await userTeamUseCases.hasRole(auth.userId, ctx.request.params.id, TeamRole.COACH)
+    if (!canAccess) throw new ForbiddenError()
+  }
   try {
     res.json(await teamUseCases.update(ctx.request.params.id, req.body))
   } catch (err) {

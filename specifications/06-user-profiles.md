@@ -87,7 +87,7 @@ Officiel désigné pour un ou plusieurs matchs via `UserMatch`. Accès en lectur
 | ------------------------------------- | ----- | ------------------ | ------------- | ------- | ------ |
 | Lister / consulter                    | ✅    | ✅                 | ✅            | ✅      | ✅     |
 | Créer                                 | ✅    | ❌                 | ❌            | ❌      | ❌     |
-| Modifier                              | ✅    | ❌                 | ❌            | ❌      | ❌     |
+| Modifier                              | ✅    | ✅                 | ❌            | ❌      | ❌     |
 | Supprimer                             | ✅    | ❌                 | ❌            | ❌      | ❌     |
 | Voir les joueurs d'une équipe         | ✅    | ✅                 | ✅            | ✅      | ✅     |
 | Gérer les joueurs d'une équipe        | ✅    | ✅                 | ❌            | ❌      | ❌     |

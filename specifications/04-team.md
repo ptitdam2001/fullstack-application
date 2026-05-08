@@ -55,3 +55,9 @@ Une équipe est **inscrite** à un championnat. L'inscription est matérialisée
 - La couleur est obligatoire.
 - Un terrain (Venue) peut être partagé entre plusieurs équipes.
 - Une équipe doit être dans la même catégorie d'âge que le championnat auquel elle est inscrite.
+
+## Permissions de modification
+
+- Seuls les **Admins** et les **Coachs de l'équipe concernée** peuvent modifier une équipe.
+- Un coach ne peut modifier que les équipes pour lesquelles il a un enregistrement `UserTeam(COACH, teamId)` — vérifié en DB à chaque opération.
+- Les Joueurs, Arbitres et Coachs d'autres équipes ont accès en lecture seule.
