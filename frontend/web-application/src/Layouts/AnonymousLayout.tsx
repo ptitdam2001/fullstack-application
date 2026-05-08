@@ -8,7 +8,7 @@ export const AnonymousLayout = () => {
   return (
     <Layout.Root className={cn({ dark: currentTheme && ['dark', 'system'].includes(currentTheme) })}>
       <Layout.Header>
-        <TopBar title={'Anonymous'} isAnonymous />
+        <TopBar isAnonymous />
       </Layout.Header>
       <Layout.Content className="p-1">
         <Outlet />

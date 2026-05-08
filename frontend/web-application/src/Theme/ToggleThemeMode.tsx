@@ -1,6 +1,7 @@
-import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem } from '@repo/design-system'
+import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuLabel, DropdownMenuItem } from '@repo/design-system'
 import { type Theme, useSetTheme, useTheme } from './Provider/ThemeProvider'
 import { ContrastIcon, MoonIcon, SunIcon, SunMoonIcon } from 'lucide-react'
+import { FormattedMessage } from 'react-intl'
 
 type ThemeListItem = {
   value: Theme
@@ -35,18 +36,22 @@ export const ToggleThemeMode = () => {
       <Button variant="ghost" size="icon" aria-label="Toggle Theme">
         <ContrastIcon />
       </Button>
-      <DropdownMenuContent align="end">
-        <p className="px-4 py-2">Select your theme</p>
-        {AVAILABLE_THEMES.map(theme => (
-          <DropdownMenuItem
-            onClick={() => changeTheme(theme.value)}
-            key={theme.value}
-            disabled={currentTheme === theme.value}
-          >
-            {theme.icon}
-            {theme.label}
-          </DropdownMenuItem>
-        ))}
+      <DropdownMenuContent>
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>
+            <FormattedMessage id="theme.selectTitle" />
+          </DropdownMenuLabel>
+          {AVAILABLE_THEMES.map(theme => (
+            <DropdownMenuItem
+              onClick={() => changeTheme(theme.value)}
+              key={theme.value}
+              disabled={currentTheme === theme.value}
+            >
+              {theme.icon}
+              {theme.label}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   )
