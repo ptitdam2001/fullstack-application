@@ -3,6 +3,7 @@ import { MemoryRouter } from 'react-router'
 import { TeamCardGrid } from './TeamCardGrid'
 import type { Team } from '../domain/Team'
 import { describe, expect, it } from 'vitest'
+import type { Area } from '@Sdk/model'
 
 const teams: Team[] = [
   { id: '1', name: 'Les Rouges', color: '#ff0000', areas: [] },
@@ -10,7 +11,7 @@ const teams: Team[] = [
     id: '2',
     name: 'Les Bleus',
     color: '#0000ff',
-    areas: [{ name: 'Stade', city: 'Paris', address: null, longitude: 0, latitude: 0 }],
+    areas: [{ name: 'Stade', city: 'Paris', longitude: 0, latitude: 0, address: '1 left' } as Area],
   },
 ]
 
