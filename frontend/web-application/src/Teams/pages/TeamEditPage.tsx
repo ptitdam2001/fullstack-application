@@ -6,7 +6,7 @@ import { cn } from '@repo/design-system'
 import { useTheme } from '@Theme/Provider/ThemeProvider'
 import { LinearProgress } from '@Common/Loading/LinearProgress'
 import { useTeamDetail } from '../application/useTeamDetail'
-import { TeamForm } from '../ui/TeamForm'
+import { TeamForm } from '../ui/TeamForm/TeamForm'
 
 export const TeamEditPage = () => {
   const currentTheme = useTheme()

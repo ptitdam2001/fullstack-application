@@ -1,5 +1,5 @@
 import { Button, Card } from '@repo/design-system'
-import type { Team } from '../domain/Team'
+import type { Team } from '../../domain/Team'
 
 type Props = { team: Team }
 

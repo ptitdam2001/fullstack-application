@@ -1,7 +1,7 @@
 import { cn } from '@repo/design-system'
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { CreateTeamBody, UpdateTeamBody } from '../domain/Team'
+import { CreateTeamBody, UpdateTeamBody } from '../../domain/Team'
 import { ControlledTextInput } from '@Common/Input/TextInput/ControlledTextInput'
 import { ColorInput } from '@Common/Input/ColorInput/ColorInput'
 import { Form } from '@Common/Form/Form'
@@ -9,8 +9,8 @@ import { type z } from 'zod'
 import { Button, Toast } from '@repo/design-system'
 import { Loader2 } from 'lucide-react'
 import { useMemo } from 'react'
-import type { CreateTeamMutationBody, Team, TeamWithoutId } from '../domain/Team'
-import { useTeamForm } from '../application/useTeamForm'
+import type { CreateTeamMutationBody, Team, TeamWithoutId } from '../../domain/Team'
+import { useTeamForm } from '../../application/useTeamForm'
 
 const initialValues: TeamWithoutId = {
   name: '',

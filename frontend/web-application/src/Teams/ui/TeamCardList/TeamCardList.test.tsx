@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router'
 import { TeamCardList } from './TeamCardList'
-import type { Team } from '../domain/Team'
+import type { Team } from '../../domain/Team'
 
 const teams: Team[] = [
   { id: '1', name: 'Les Rouges', color: '#ff0000', areas: [] },
@@ -27,6 +27,6 @@ describe('TeamCardList', () => {
 
   it('renders correct number of list items', () => {
     render(<MemoryRouter><TeamCardList teams={teams} /></MemoryRouter>)
-    expect(screen.getAllByRole('listitem')).toHaveLength(2)
+    expect(screen.getAllByRole('option')).toHaveLength(2)
   })
 })

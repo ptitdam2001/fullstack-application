@@ -2,8 +2,8 @@ import { Card } from '@repo/design-system'
 import { NotFound } from '@Common/NotFound'
 import { PlayerList } from '@Player/index'
 import { useParams } from 'react-router'
-import { TeamCalendarView } from '../ui/TeamCalendarView'
-import { TeamDetailCard } from '../ui/TeamDetailCard'
+import { TeamCalendarView } from '../ui/TeamCalendarView/TeamCalendarView'
+import { TeamDetailCard } from '../ui/TeamDetailCard/TeamDetailCard'
 
 export const TeamPage = () => {
   const { teamId } = useParams()

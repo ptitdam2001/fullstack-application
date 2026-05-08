@@ -1,7 +1,7 @@
 import { Button, Card, Grid } from '@repo/design-system'
 import { Eye, Pencil, Users, Volleyball } from 'lucide-react'
 import { useNavigate } from 'react-router'
-import type { Team } from '../domain/Team'
+import type { Team } from '../../domain/Team'
 
 type Props = { teams: Team[] }
 

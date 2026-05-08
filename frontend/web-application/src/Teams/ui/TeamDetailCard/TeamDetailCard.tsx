@@ -1,8 +1,8 @@
 import { ErrorBoundary } from '@Common/ErrorBoundary'
 import { Suspense, use } from 'react'
-import { useTeamDetail } from '../application/useTeamDetail'
-import { TeamCard } from './TeamCard'
-import { TeamCardSkeleton } from './TeamCardSkeleton'
+import { useTeamDetail } from '../../application/useTeamDetail'
+import { TeamCard } from '../TeamCard/TeamCard'
+import { TeamCardSkeleton } from '../TeamCardSkeleton/TeamCardSkeleton'
 
 type Props = { teamId: string }
 

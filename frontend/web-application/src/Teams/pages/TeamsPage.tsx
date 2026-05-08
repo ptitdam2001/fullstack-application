@@ -1,4 +1,4 @@
-import { TeamList } from '../ui/TeamList'
+import { TeamList } from '../ui/TeamList/TeamList'
 import { Outlet } from 'react-router'
 import { CirclePlus, LayoutGrid, List } from 'lucide-react'
 import { MenuBar } from '@Common/MenuBar/MenuBar'

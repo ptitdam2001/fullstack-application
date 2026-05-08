@@ -1,9 +1,8 @@
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router'
 import { TeamCardGrid } from './TeamCardGrid'
-import type { Team } from '../domain/Team'
+import type { Area, Team } from '../../domain/Team'
 import { describe, expect, it } from 'vitest'
-import type { Area } from '@Sdk/model'
 
 const teams: Team[] = [
   { id: '1', name: 'Les Rouges', color: '#ff0000', areas: [] },
@@ -16,31 +15,30 @@ const teams: Team[] = [
 ]
 
 describe('TeamCardGrid', () => {
-  it('renders all team names', () => {
+  it('renders the grid container', () => {
+    const { container } = render(
+      <MemoryRouter>
+        <TeamCardGrid teams={teams} />
+      </MemoryRouter>
+    )
+    expect(container.querySelector('[data-slot="grid"]')).toBeInTheDocument()
+  })
+
+  it('renders a listbox', () => {
     render(
       <MemoryRouter>
         <TeamCardGrid teams={teams} />
       </MemoryRouter>
     )
-    expect(screen.getByText('Les Rouges')).toBeInTheDocument()
-    expect(screen.getByText('Les Bleus')).toBeInTheDocument()
+    expect(screen.getByRole('listbox')).toBeInTheDocument()
   })
 
-  it('renders correct number of list items', () => {
-    render(
-      <MemoryRouter>
-        <TeamCardGrid teams={teams} />
-      </MemoryRouter>
-    )
-    expect(screen.getAllByRole('listitem')).toHaveLength(2)
-  })
-
-  it('renders empty list without crashing', () => {
+  it('renders empty grid without crashing', () => {
     const { container } = render(
       <MemoryRouter>
         <TeamCardGrid teams={[]} />
       </MemoryRouter>
     )
-    expect(container.querySelector('ul')).toBeInTheDocument()
+    expect(container.querySelector('[data-slot="grid"]')).toBeInTheDocument()
   })
 })

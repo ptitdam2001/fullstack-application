@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react'
 import { TeamCard } from './TeamCard'
-import type { Team } from '../domain/Team'
+import type { Team } from '../../domain/Team'
 import { describe, expect, it } from 'vitest'
 
 const team: Team = { id: '1', name: 'Les Rouges', color: '#ff0000', areas: [] }
