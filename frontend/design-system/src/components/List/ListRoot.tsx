@@ -17,7 +17,15 @@ export const ListRoot = <T extends object>({
   ...props
 }: ListRootProps<T>) => (
   <Virtualizer layout={ListLayout} layoutOptions={layoutOptions}>
-    <ListBox data-slot="list" className={cn(listVariants({ variant }), 'block p-0', className)} {...props}>
+    <ListBox
+      data-slot="list"
+      className={cn(
+        listVariants({ variant }),
+        'scrollbar-thin scrollbar-track-background scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800 dark:scrollbar-thumb-gray-500 block p-0',
+        className
+      )}
+      {...props}
+    >
       {children}
     </ListBox>
   </Virtualizer>
