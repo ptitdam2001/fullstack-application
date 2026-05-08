@@ -169,6 +169,10 @@ export * from './components/List/List'
 export * from './components/List/ListVariants'
 export * from './components/List/ListItemVariants'
 
+export * from './components/Grid/Grid'
+export * from './components/Grid/GridVariants'
+export * from './components/Grid/GridItemVariants'
+
 // Providers
 export * from './providers/ThemeProvider/ThemeProvider'
 
