@@ -1,5 +1,5 @@
 import cors from 'cors'
-import express, { type NextFunction, type Request, type Response } from 'express'
+import express, { type Request, type Response } from 'express'
 import dotenv from 'dotenv'
 import morgan from 'morgan'
 import jwt from 'jsonwebtoken'
@@ -116,9 +116,13 @@ app.use(morgan('combined'))
 // use as express middleware
 app.use((req: RequestOpenApi, res: Request) => api.handleRequest(req, req, res))
 
-app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
-  if (err instanceof UnauthorizedError) return res.status(401).json({ status: 401, message: 'Unauthorized' })
-  if (err instanceof ForbiddenError) return res.status(403).json({ status: 403, message: 'Forbidden' })
+app.use((err: Error, _req: Request, res: Response) => {
+  if (err instanceof UnauthorizedError) {
+    return res.status(401).json({ status: 401, message: 'Unauthorized' })
+  }
+  if (err instanceof ForbiddenError) {
+    return res.status(403).json({ status: 403, message: 'Forbidden' })
+  }
   logger.error(err)
   return res.status(500).json({ status: 500, message: 'Internal server error' })
 })

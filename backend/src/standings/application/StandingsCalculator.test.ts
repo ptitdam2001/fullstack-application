@@ -94,17 +94,6 @@ describe('calculateStandings — ranking', () => {
 
 describe('calculateStandings — tiebreaker: head-to-head', () => {
   it('uses head-to-head points when overall points are equal', () => {
-    // A beat B directly, both have 3pts overall
-    const matches = [
-      match('m1', 'A', 'B', 1, 0), // A wins h2h
-      match('m2', 'C', 'A', 0, 1), // A wins → 6pts, B at 0pts... let's make B=3pts too
-    ]
-    // Simpler: 3 teams, A and B both 3pts, A beat B head-to-head
-    const matchesTied = [
-      match('m1', 'A', 'B', 1, 0), // A wins (3pts)
-      match('m2', 'B', 'C', 1, 0), // B wins (3pts)
-      match('m3', 'C', 'A', 0, 0), // draw → A=4pts, B=3pts... not equal anymore
-    ]
     // Let's make exactly equal: A=3, B=3 via different paths
     const tiedMatches = [
       match('m1', 'A', 'B', 1, 0), // A beats B → A=3pts
@@ -119,12 +108,6 @@ describe('calculateStandings — tiebreaker: head-to-head', () => {
   })
 
   it('head-to-head goal difference breaks the tie when points are equal', () => {
-    // A and B both 3pts, A beat B 3-0, so h2h GD favors A
-    const matches = [
-      match('m1', 'A', 'B', 3, 0), // A wins +3 GD vs B
-      match('m2', 'B', 'C', 1, 0), // B wins → B=3pts, same as A
-      match('m3', 'C', 'A', 0, 1), // A wins → A=6pts... they won't be tied
-    ]
     // Let me construct a proper tie: A and B each 3pts, head-to-head A beat B 3-0
     const tiedMatches = [
       match('m1', 'A', 'B', 3, 0), // A beats B: A=3pts, h2h GD A=+3

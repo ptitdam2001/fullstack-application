@@ -32,11 +32,15 @@ function buildStatsMap(teamIds: string[], matches: Match[], pointsConfig: Points
   }
 
   for (const match of matches) {
-    if (match.status === MatchStatus.CANCELLED || match.status === MatchStatus.SCHEDULED) continue
+    if (match.status === MatchStatus.CANCELLED || match.status === MatchStatus.SCHEDULED) {
+      continue
+    }
 
     const home = map.get(match.homeTeamId)
     const away = map.get(match.awayTeamId)
-    if (!home || !away) continue
+    if (!home || !away) {
+      continue
+    }
 
     if (match.status === MatchStatus.FORFEITED && match.forfeitedBy) {
       const forfeitingTeam = match.forfeitedBy === match.homeTeamId ? home : away
@@ -103,17 +107,25 @@ function compareStats(
   const bo = overall.get(b.teamId)!
 
   // Head-to-head points
-  if (bh2h.points !== ah2h.points) return bh2h.points - ah2h.points
+  if (bh2h.points !== ah2h.points) {
+    return bh2h.points - ah2h.points
+  }
   // Head-to-head goal difference
   const ah2hGD = ah2h.goalsFor - ah2h.goalsAgainst
   const bh2hGD = bh2h.goalsFor - bh2h.goalsAgainst
-  if (bh2hGD !== ah2hGD) return bh2hGD - ah2hGD
+  if (bh2hGD !== ah2hGD) {
+    return bh2hGD - ah2hGD
+  }
   // Head-to-head goals scored
-  if (bh2h.goalsFor !== ah2h.goalsFor) return bh2h.goalsFor - ah2h.goalsFor
+  if (bh2h.goalsFor !== ah2h.goalsFor) {
+    return bh2h.goalsFor - ah2h.goalsFor
+  }
   // Overall goal difference
   const aoGD = ao.goalsFor - ao.goalsAgainst
   const boGD = bo.goalsFor - bo.goalsAgainst
-  if (boGD !== aoGD) return boGD - aoGD
+  if (boGD !== aoGD) {
+    return boGD - aoGD
+  }
   // Overall goals scored
   return bo.goalsFor - ao.goalsFor
 }
@@ -125,7 +137,9 @@ function sortWithTiebreakers(statsArray: TeamStats[], matches: Match[], pointsCo
 
   while (i < sorted.length) {
     let j = i + 1
-    while (j < sorted.length && sorted[j].points === sorted[i].points) j++
+    while (j < sorted.length && sorted[j].points === sorted[i].points) {
+      j++
+    }
 
     const group = sorted.slice(i, j)
     if (group.length === 1) {
