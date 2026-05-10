@@ -16,6 +16,7 @@ const ALIASES = {
   '@Application': path.resolve(__dirname, './src/Application'),
   '@Sdk': path.resolve(__dirname, './src/sdk/generated'),
   '@Settings': path.resolve(__dirname, './src/Settings'),
+  '@Dashboard': path.resolve(__dirname, './src/Dashboard'),
   '@': path.resolve(__dirname, './src'),
   '@Config': path.resolve(__dirname, './config'),
   '@I18n': path.resolve(__dirname, './src/I18n'),

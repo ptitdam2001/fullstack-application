@@ -34,6 +34,7 @@
       "@Calendar/*": ["./src/Calendar/*", "./src/Calendar/"],
       "@Application/*": ["./src/Application/*", "./src/Application/"],
       "@Settings/*": ["./src/Settings/*", "./src/Settings/"],
+      "@Dashboard/*": ["./src/Dashboard/*", "./src/Dashboard/"],
       "@Sdk/*": ["./src/sdk/generated/", "./src/sdk/generated/*"],
       "@Config/*": ["./config/*", "./config/"],
       "@I18n/*": ["src/I18n/*", "src/I18n"],
