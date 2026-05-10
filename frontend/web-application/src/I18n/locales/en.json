@@ -42,6 +42,10 @@
     "teamDetails": "Team Details",
     "teamPlayers": "Team Players"
   },
+  "teamCard": {
+    "view": "View",
+    "ageCategory": "Age category"
+  },
   "players": {
     "title": "Players",
     "playerList": "Player List",
