@@ -278,6 +278,7 @@ openapi-express-ts (backend)
 | `create-backend-domain` | "créer un domaine", "scaffolder X" | Scaffolds a hexagonal backend domain (domain/ports/application/infrastructure + tests + OpenAPI) |
 | `design-system-component` | "créer un composant", "ajouter au design system" | Creates a component in `@repo/design-system` (react-aria + Tailwind + Storybook + co-located tests) |
 | `frontend-feature-module` | "créer le module X", "ajouter une feature" | Scaffolds a frontend feature module following hexagonal architecture (domain/infrastructure/application/ui) |
+| `react-component` | "créer un composant", "nouveau composant React", "implémenter la vue" | Creates a React component in the web app: ESLint/Prettier rules, i18n (FormattedMessage), Design System priority, sub-components, co-located tests |
 
 > Frontend component and module guidance is also available in package-level CLAUDE.md files:
 >
