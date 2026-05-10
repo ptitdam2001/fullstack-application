@@ -15,3 +15,6 @@
 - Feuille de match (gros sujet)
 - Convocations
 - Stat des joueurs (lié a la feuille de match et au championnat)
+- Icone de notification
+- Importer une équipe
+- Exporter une équipe
