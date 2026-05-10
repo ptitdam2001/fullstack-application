@@ -1,7 +1,6 @@
 import { Outlet } from 'react-router'
 
-import { ConnectedAppSidebar } from './components/ConnectedAppSidebar'
-import { LATERAL_MENU } from '@Application/lateralMenu.config'
+import { AppSidebar } from './components/AppSidebar'
 import { Breadcrumbs } from './Breadcrumbs/Breadcrumbs'
 import { cn, Layout, SidebarInset, SidebarProvider, Separator } from '@repo/design-system'
 
@@ -18,7 +17,7 @@ export const ConnectedLayout = () => {
         { dark: currentTheme && ['dark', 'system'].includes(currentTheme) }
       )}
     >
-      <ConnectedAppSidebar links={LATERAL_MENU} />
+      <AppSidebar />
 
       <SidebarInset className="scrollbar-track-background min-w-0">
         <Layout.Root>
