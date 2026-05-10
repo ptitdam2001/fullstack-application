@@ -205,7 +205,7 @@ paths:
   /team:
     post:
       operationId: 'createTeam'
-      description: 'create a team'
+      description: 'Create a team. Any authenticated user can create a team and automatically becomes its coach.'
       tags:
         - Team
       parameters: []

@@ -34,8 +34,12 @@ export const getTeam = async (ctx: Context, _: Request, res: Response) => {
 }
 
 export const createTeam = async (ctx: Context, req: Request, res: Response) => {
-  requireAdmin(ctx)
-  res.status(201).json(await teamUseCases.create(req.body))
+  const auth = getAuthPayload(ctx)
+  const team = await teamUseCases.create(req.body)
+  if (!auth.isAdmin) {
+    await userTeamUseCases.assign(auth.userId, team.id, TeamRole.COACH)
+  }
+  res.status(201).json(team)
 }
 
 export const updateTeam = async (ctx: Context, req: Request, res: Response) => {
