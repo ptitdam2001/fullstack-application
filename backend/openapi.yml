@@ -1750,6 +1750,13 @@ components:
           format: date-time
         avatar:
           type: string
+        roles:
+          type: array
+          nullable: false
+          items:
+            type: string
+            enum: [ADMIN, COACH, PLAYER, REFEREE]
+          description: Resolved contextual roles of the authenticated user
     TokenData:
       type: object
       required:
