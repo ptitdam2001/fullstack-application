@@ -23,18 +23,18 @@ Les rôles COACH, PLAYER et REFEREE ne sont pas stockés sur `User` mais dans de
 
 Un même utilisateur peut cumuler plusieurs rôles sans conflit. Toutes ces combinaisons sont supportées :
 
-| Use case | Enregistrements |
-|---|---|
-| Coach d'une équipe | `UserTeam(COACH, team-A)` |
-| Joueur d'une équipe | `UserTeam(PLAYER, team-A)` + `Player` |
-| Coach ET joueur de la **même** équipe | `UserTeam(COACH, team-A)` + `UserTeam(PLAYER, team-A)` + `Player` |
-| Coach d'une équipe, joueur d'une autre | `UserTeam(COACH, team-A)` + `UserTeam(PLAYER, team-B)` + `Player` |
-| Coach de plusieurs équipes | `UserTeam(COACH, team-A)` + `UserTeam(COACH, team-B)` |
-| Arbitre d'un match | `UserMatch(match-1)` |
-| Arbitre + coach d'une équipe | `UserMatch` + `UserTeam(COACH)` |
-| Arbitre + joueur d'une équipe | `UserMatch` + `UserTeam(PLAYER)` + `Player` |
-| Arbitre + joueur + coach d'équipes différentes | `UserMatch` + `UserTeam(PLAYER)` + `UserTeam(COACH)` + `Player` |
-| Admin | `User.isAdmin = true` — aucun `UserTeam` requis |
+| Use case                                       | Enregistrements                                                   |
+| ---------------------------------------------- | ----------------------------------------------------------------- |
+| Coach d'une équipe                             | `UserTeam(COACH, team-A)`                                         |
+| Joueur d'une équipe                            | `UserTeam(PLAYER, team-A)` + `Player`                             |
+| Coach ET joueur de la **même** équipe          | `UserTeam(COACH, team-A)` + `UserTeam(PLAYER, team-A)` + `Player` |
+| Coach d'une équipe, joueur d'une autre         | `UserTeam(COACH, team-A)` + `UserTeam(PLAYER, team-B)` + `Player` |
+| Coach de plusieurs équipes                     | `UserTeam(COACH, team-A)` + `UserTeam(COACH, team-B)`             |
+| Arbitre d'un match                             | `UserMatch(match-1)`                                              |
+| Arbitre + coach d'une équipe                   | `UserMatch` + `UserTeam(COACH)`                                   |
+| Arbitre + joueur d'une équipe                  | `UserMatch` + `UserTeam(PLAYER)` + `Player`                       |
+| Arbitre + joueur + coach d'équipes différentes | `UserMatch` + `UserTeam(PLAYER)` + `UserTeam(COACH)` + `Player`   |
+| Admin                                          | `User.isAdmin = true` — aucun `UserTeam` requis                   |
 
 > **Contrainte d'unicité** : `UserTeam` a `@@unique([userId, teamId, role])`. Un utilisateur peut être COACH et PLAYER de la même équipe simultanément, mais pas COACH deux fois de la même équipe.
 
@@ -64,13 +64,13 @@ Officiel désigné pour un ou plusieurs matchs via `UserMatch`. Accès en lectur
 
 ### Gestion des utilisateurs
 
-| Action                  | Admin | Coach | Arbitre | Joueur |
-| ----------------------- | ----- | ----- | ------- | ------ |
-| Lister les utilisateurs | ✅    | ❌    | ❌      | ❌     |
-| Créer un utilisateur    | ✅    | ❌    | ❌      | ❌     |
-| Modifier un utilisateur | ✅    | ❌    | ❌      | ❌     |
-| Supprimer un utilisateur| ✅    | ❌    | ❌      | ❌     |
-| Voir son propre profil  | ✅    | ✅    | ✅      | ✅     |
+| Action                   | Admin | Coach | Arbitre | Joueur |
+| ------------------------ | ----- | ----- | ------- | ------ |
+| Lister les utilisateurs  | ✅    | ❌    | ❌      | ❌     |
+| Créer un utilisateur     | ✅    | ❌    | ❌      | ❌     |
+| Modifier un utilisateur  | ✅    | ❌    | ❌      | ❌     |
+| Supprimer un utilisateur | ✅    | ❌    | ❌      | ❌     |
+| Voir son propre profil   | ✅    | ✅    | ✅      | ✅     |
 
 ### Championnats
 
@@ -83,32 +83,35 @@ Officiel désigné pour un ou plusieurs matchs via `UserMatch`. Accès en lectur
 
 ### Équipes
 
-| Action                                | Admin | Coach (son équipe) | Coach (autre) | Arbitre | Joueur |
-| ------------------------------------- | ----- | ------------------ | ------------- | ------- | ------ |
-| Lister / consulter                    | ✅    | ✅                 | ✅            | ✅      | ✅     |
-| Créer                                 | ✅    | ❌                 | ❌            | ❌      | ❌     |
-| Modifier                              | ✅    | ✅                 | ❌            | ❌      | ❌     |
-| Supprimer                             | ✅    | ❌                 | ❌            | ❌      | ❌     |
-| Voir les joueurs d'une équipe         | ✅    | ✅                 | ✅            | ✅      | ✅     |
-| Gérer les joueurs d'une équipe        | ✅    | ✅                 | ❌            | ❌      | ❌     |
-| Assigner un coach à une équipe        | ✅    | ❌                 | ❌            | ❌      | ❌     |
+| Action                         | Admin | Coach (son équipe) | Coach (autre) | Arbitre | Joueur |
+| ------------------------------ | ----- | ------------------ | ------------- | ------- | ------ |
+| Lister / consulter             | ✅    | ✅                 | ✅            | ✅      | ✅     |
+| Créer                          | ✅    | ✅ (devient coach) | ❌            | ❌      | ❌     |
+| Modifier                       | ✅    | ✅                 | ❌            | ❌      | ❌     |
+| Supprimer                      | ✅    | ❌                 | ❌            | ❌      | ❌     |
+| Voir les joueurs d'une équipe  | ✅    | ✅                 | ✅            | ✅      | ✅     |
+| Gérer les joueurs d'une équipe | ✅    | ✅                 | ❌            | ❌      | ❌     |
+| Assigner un coach à une équipe | ✅    | ❌                 | ❌            | ❌      | ❌     |
 
 > La vérification "son équipe" est effectuée en DB via `UserTeamUseCases.hasRole(userId, teamId, COACH)` dans le use case.
 
 ### Matchs
 
-| Action                              | Admin | Coach | Arbitre (assigné) | Joueur |
-| ----------------------------------- | ----- | ----- | ----------------- | ------ |
-| Lister / consulter                  | ✅    | ✅    | ✅                | ✅     |
-| Créer / générer                     | ✅    | ❌    | ❌                | ❌     |
-| Modifier les métadonnées            | ✅    | ❌    | ❌                | ❌     |
-| Saisir le score                     | ✅    | ❌    | ✅                | ❌     |
-| Valider le score                    | ✅    | ❌    | ✅                | ❌     |
-| Déclarer un forfait                 | ✅    | ❌    | ❌                | ❌     |
-| Assigner un arbitre                 | ✅    | ❌    | ❌                | ❌     |
+| Action                   | Admin | Coach | Arbitre (assigné) | Joueur |
+| ------------------------ | ----- | ----- | ----------------- | ------ |
+| Lister / consulter       | ✅    | ✅    | ✅                | ✅     |
+| Créer / générer          | ✅    | ❌    | ❌                | ❌     |
+| Modifier les métadonnées | ✅    | ❌    | ❌                | ❌     |
+| Saisir le score          | ✅    | ❌    | ✅                | ❌     |
+| Valider le score         | ✅    | ❌    | ✅                | ❌     |
+| Déclarer un forfait (pré-match, son équipe) | ✅ | ✅ | ❌          | ❌     |
+| Déclarer un forfait (pendant le match)      | ✅ | ❌ | ✅ (son match) | ❌  |
+| Assigner un arbitre      | ✅    | ❌    | ❌                | ❌     |
 
 > Un arbitre ne peut saisir un score que pour les matchs où il a un enregistrement `UserMatch(userId, matchId)`.
 > Un match peut avoir plusieurs arbitres.
+> Un coach peut déclarer forfait uniquement pour les matchs où son équipe joue (`homeTeamId` ou `awayTeamId` ∈ ses équipes) — action pré-match.
+> Un arbitre peut déclarer forfait uniquement pour un match qui lui est assigné, et uniquement **au moment du match** (statut `IN_PROGRESS` ou équivalent) — il constate le forfait sur le terrain.
 
 ### Classements
 
@@ -123,7 +126,8 @@ Officiel désigné pour un ou plusieurs matchs via `UserMatch`. Accès en lectur
 ### Coach ↔ Équipe
 
 - Un coach peut gérer **plusieurs équipes** simultanément.
-- L'association est créée et supprimée exclusivement par un Admin via `POST/DELETE /team/{teamId}/coach/{userId}`.
+- Un utilisateur authentifié peut créer une équipe — il en devient automatiquement coach (`UserTeam(COACH, teamId)` créé à la suite).
+- L'association peut également être créée et supprimée par un Admin via `POST/DELETE /team/{teamId}/coach/{userId}`.
 - Un coach sans équipe associée a accès en lecture seule.
 
 ### Joueur ↔ Équipe

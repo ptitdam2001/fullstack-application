@@ -1,0 +1,1721 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Coach Home — Wireframes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Kalam:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --paper: #f7f5f0;
+    --paper-2: #efece4;
+    --ink: #1a1a1a;
+    --ink-soft: #4a4a4a;
+    --wire: #b8b3a8;
+    --wire-soft: #d8d3c7;
+    --accent: #e36b3a;
+    --accent-soft: #f6d6c5;
+    --grid: #e6e1d4;
+    --radius: 6px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--paper); color: var(--ink); font-family: 'Inter', system-ui, sans-serif; }
+
+  /* paper background dot grid */
+  body {
+    background-image: radial-gradient(var(--grid) 1px, transparent 1px);
+    background-size: 22px 22px;
+    background-position: -1px -1px;
+    min-height: 100vh;
+    padding: 28px 32px 80px;
+  }
+
+  .page-header {
+    max-width: 1380px;
+    margin: 0 auto 18px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .page-header h1 {
+    font-family: 'Kalam', cursive;
+    font-weight: 700;
+    font-size: 28px;
+    letter-spacing: -0.01em;
+  }
+  .page-header .sub {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 18px;
+    color: var(--ink-soft);
+    max-width: 56ch;
+    margin-top: 4px;
+  }
+  .legend {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 14px;
+    color: var(--ink-soft);
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .legend .dot { width: 10px; height: 10px; display: inline-block; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+
+  /* Tabs */
+  .tabs {
+    max-width: 1380px;
+    margin: 0 auto 14px;
+    display: flex;
+    gap: 6px;
+    border-bottom: 1.5px solid var(--ink);
+    align-items: flex-end;
+  }
+  .tab {
+    font-family: 'Kalam', cursive;
+    font-size: 16px;
+    background: transparent;
+    border: 1.5px solid var(--ink);
+    border-bottom: none;
+    padding: 10px 18px 8px;
+    cursor: pointer;
+    border-radius: 10px 10px 0 0;
+    color: var(--ink);
+    margin-bottom: -1.5px;
+    transition: background 0.15s, transform 0.1s;
+    position: relative;
+  }
+  .tab:hover { background: var(--paper-2); }
+  .tab.active { background: var(--ink); color: var(--paper); }
+  .tab .num {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 13px;
+    opacity: 0.65;
+    margin-right: 6px;
+  }
+
+  .frame {
+    max-width: 1380px;
+    margin: 0 auto;
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+    border-top: none;
+    border-radius: 0 0 14px 14px;
+    padding: 22px;
+    min-height: 720px;
+    position: relative;
+  }
+  .frame::after {
+    /* subtle "page corner curl" decoration */
+    content: '';
+    position: absolute;
+    right: 14px; bottom: 14px;
+    width: 16px; height: 16px;
+    background: linear-gradient(135deg, transparent 50%, var(--paper-2) 50%);
+    border-right: 1px dashed var(--wire);
+    border-bottom: 1px dashed var(--wire);
+    border-radius: 0 0 4px 0;
+    pointer-events: none;
+  }
+
+  .frame-title {
+    font-family: 'Kalam', cursive;
+    font-weight: 700;
+    font-size: 20px;
+    margin-bottom: 4px;
+  }
+  .frame-desc {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 16px;
+    color: var(--ink-soft);
+    margin-bottom: 18px;
+    max-width: 80ch;
+  }
+
+  /* Device toggle */
+  .device-toggle {
+    display: inline-flex;
+    border: 1.5px solid var(--ink);
+    border-radius: 999px;
+    padding: 3px;
+    background: var(--paper);
+    margin-left: auto;
+  }
+  .device-toggle button {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 14px;
+    background: transparent;
+    border: none;
+    padding: 5px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+    color: var(--ink-soft);
+  }
+  .device-toggle button.on {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .frame-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+  }
+
+  /* WIRE PRIMITIVES (sketch style) ---------------------------------- */
+
+  .w-app {
+    border: 1.5px solid var(--ink);
+    border-radius: 10px;
+    background: var(--paper);
+    overflow: hidden;
+    display: grid;
+  }
+  .w-app.desktop { grid-template-rows: auto 1fr; }
+  .w-app.mobile {
+    width: 360px;
+    margin: 0 auto;
+    grid-template-rows: auto 1fr auto;
+    min-height: 640px;
+  }
+
+  /* Top bar (app chrome) */
+  .w-topbar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 18px;
+    border-bottom: 1.5px solid var(--ink);
+    background: var(--paper-2);
+  }
+  .w-logo {
+    width: 28px; height: 28px;
+    border: 1.5px solid var(--ink);
+    border-radius: 6px;
+    display: grid; place-items: center;
+    font-family: 'Kalam', cursive;
+    font-weight: 700;
+    background: var(--accent);
+    color: var(--paper);
+    font-size: 14px;
+    transform: rotate(-2deg);
+  }
+  .w-brand {
+    font-family: 'Kalam', cursive;
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: -0.01em;
+  }
+  .w-search {
+    flex: 1;
+    max-width: 320px;
+    height: 32px;
+    border: 1.5px dashed var(--wire);
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    font-family: 'Patrick Hand', cursive;
+    font-size: 14px;
+    color: var(--wire);
+    background: var(--paper);
+  }
+  .w-search::before { content: '🔍'; margin-right: 8px; filter: grayscale(1); opacity: 0.5; }
+  .w-topbar-spacer { flex: 1; }
+  .w-iconbtn {
+    width: 30px; height: 30px;
+    border: 1.5px solid var(--ink);
+    border-radius: 8px;
+    display: grid; place-items: center;
+    font-family: 'Patrick Hand', cursive;
+    background: var(--paper);
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--ink-soft);
+  }
+  .w-avatar {
+    width: 30px; height: 30px;
+    border: 1.5px solid var(--ink);
+    border-radius: 50%;
+    background: var(--paper);
+    display: grid; place-items: center;
+    font-family: 'Kalam', cursive;
+    font-weight: 700;
+    font-size: 12px;
+  }
+
+  /* Greeting bar */
+  .w-greeting {
+    padding: 18px 24px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 12px;
+    border-bottom: 1px dashed var(--wire);
+  }
+  .w-greeting h2 {
+    font-family: 'Kalam', cursive;
+    font-weight: 700;
+    font-size: 22px;
+  }
+  .w-greeting .meta {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 15px;
+    color: var(--ink-soft);
+  }
+
+  /* Buttons */
+  .w-btn {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 13px;
+    padding: 7px 14px;
+    border: 1.5px solid var(--ink);
+    border-radius: 6px;
+    background: var(--paper);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .w-btn.primary { background: var(--ink); color: var(--paper); }
+  .w-btn.accent  { background: var(--accent); color: var(--paper); border-color: var(--accent); }
+  .w-btn .plus { font-weight: 700; font-size: 14px; line-height: 1; }
+
+  /* Team card */
+  .team-card {
+    border: 1.5px solid var(--ink);
+    border-radius: 10px;
+    background: var(--paper);
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .team-card:hover { transform: translateY(-1px); box-shadow: 3px 4px 0 var(--ink); }
+  .team-card .row { display: flex; align-items: center; gap: 10px; }
+  .team-logo {
+    width: 40px; height: 40px;
+    border: 1.5px solid var(--ink);
+    border-radius: 8px;
+    background:
+      repeating-linear-gradient(45deg, var(--paper) 0 4px, var(--wire-soft) 4px 5px);
+    display: grid; place-items: center;
+    font-family: 'Kalam', cursive;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--ink);
+    flex-shrink: 0;
+  }
+  .team-logo.solid {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .team-logo.accent {
+    background: var(--accent);
+    color: var(--paper);
+    border-color: var(--accent);
+  }
+  .team-name {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 1.2;
+  }
+  .team-cat {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 14px;
+    color: var(--ink-soft);
+    display: inline-block;
+    padding: 1px 8px;
+    border: 1px dashed var(--wire);
+    border-radius: 999px;
+    margin-top: 2px;
+  }
+  .kebab {
+    margin-left: auto;
+    width: 24px; height: 24px;
+    border-radius: 6px;
+    display: grid; place-items: center;
+    font-size: 16px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: 1px;
+  }
+  .kebab:hover { background: var(--paper-2); }
+  .next-match {
+    border-top: 1px dashed var(--wire);
+    padding-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .nm-label {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .nm-content {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .nm-when {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 13px;
+    color: var(--accent);
+    margin-left: auto;
+  }
+
+  /* Ghost create card */
+  .team-card.ghost {
+    border-style: dashed;
+    border-color: var(--wire);
+    color: var(--wire);
+    align-items: center;
+    justify-content: center;
+    min-height: 144px;
+    cursor: pointer;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .team-card.ghost:hover { border-color: var(--ink); color: var(--ink); transform: none; box-shadow: none; }
+  .team-card.ghost .plus { font-size: 36px; line-height: 1; font-family: 'Kalam', cursive; }
+  .team-card.ghost .lab { font-family: 'Patrick Hand', cursive; font-size: 16px; }
+
+  /* Upcoming matches list */
+  .upcoming {
+    border: 1.5px solid var(--ink);
+    border-radius: 10px;
+    background: var(--paper);
+    padding: 14px 16px;
+  }
+  .upcoming h3 {
+    font-family: 'Kalam', cursive;
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .upcoming h3 .seeall {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--ink-soft);
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  .um-row {
+    display: grid;
+    grid-template-columns: 56px 1fr auto;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--wire);
+    align-items: center;
+  }
+  .um-row:last-child { border-bottom: none; }
+  .um-month {
+    font-family: 'Kalam', cursive;
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-soft);
+    padding: 8px 0 4px;
+    border-bottom: 1.5px solid var(--ink);
+    margin-bottom: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .um-month:first-child { padding-top: 0; }
+  .um-month .count {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 12px;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--wire);
+  }
+  .um-date {
+    text-align: center;
+    border: 1.5px solid var(--ink);
+    border-radius: 6px;
+    padding: 4px 0;
+    background: var(--paper-2);
+  }
+  .um-date .d { font-family: 'Kalam', cursive; font-weight: 700; font-size: 18px; line-height: 1; }
+  .um-date .m { font-family: 'Patrick Hand', cursive; font-size: 11px; color: var(--ink-soft); text-transform: uppercase; }
+  .um-meta { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .um-team { font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500; }
+  .um-vs { font-family: 'Patrick Hand', cursive; font-size: 13px; color: var(--ink-soft); }
+  .um-time {
+    font-family: 'Kalam', cursive;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--accent);
+  }
+
+  /* annotation pins */
+  .pin {
+    position: absolute;
+    font-family: 'Patrick Hand', cursive;
+    font-size: 13px;
+    color: var(--accent);
+    background: var(--paper);
+    padding: 3px 8px;
+    border: 1px dashed var(--accent);
+    border-radius: 4px;
+    transform: rotate(-2deg);
+    z-index: 4;
+    pointer-events: none;
+  }
+  .pin.r { transform: rotate(2deg); }
+  .pin svg { vertical-align: middle; margin-right: 4px; }
+
+  .arrow {
+    position: absolute;
+    width: 0; height: 0;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  /* GRID layouts ---------------------------------------------------- */
+  .layout-A {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 20px;
+    padding: 22px;
+  }
+  .layout-A .teams-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+
+  /* Layout B: List view */
+  .layout-B {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 20px;
+    padding: 22px;
+  }
+  .teams-table {
+    border: 1.5px solid var(--ink);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--paper);
+  }
+  .tt-head, .tt-row {
+    display: grid;
+    grid-template-columns: 44px 2fr 1fr 1.5fr 36px;
+    gap: 12px;
+    padding: 10px 14px;
+    align-items: center;
+  }
+  .tt-head {
+    background: var(--paper-2);
+    border-bottom: 1.5px solid var(--ink);
+    font-family: 'Patrick Hand', cursive;
+    font-size: 13px;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .tt-row { border-bottom: 1px dashed var(--wire); cursor: pointer; transition: background 0.1s; }
+  .tt-row:hover { background: var(--paper-2); }
+  .tt-row:last-child { border-bottom: none; }
+
+  /* Layout C: Hero + grid */
+  .layout-C { padding: 22px; display: flex; flex-direction: column; gap: 18px; }
+  .hero-next {
+    border: 1.5px solid var(--ink);
+    border-radius: 12px;
+    background: var(--paper-2);
+    padding: 22px 26px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 22px;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-next::before {
+    content: '';
+    position: absolute;
+    right: -40px; top: -40px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, var(--accent-soft), transparent 70%);
+    pointer-events: none;
+  }
+  .hero-tag {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 13px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 4px;
+  }
+  .hero-title {
+    font-family: 'Kalam', cursive;
+    font-weight: 700;
+    font-size: 26px;
+    line-height: 1.1;
+    margin-bottom: 4px;
+  }
+  .hero-meta {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: var(--ink-soft);
+  }
+  .hero-logo {
+    width: 84px; height: 84px;
+    border: 2px solid var(--ink);
+    border-radius: 14px;
+    background: var(--accent);
+    color: var(--paper);
+    display: grid; place-items: center;
+    font-family: 'Kalam', cursive;
+    font-weight: 700;
+    font-size: 28px;
+    transform: rotate(-3deg);
+  }
+  .hero-countdown {
+    text-align: right;
+  }
+  .hero-countdown .num {
+    font-family: 'Kalam', cursive;
+    font-weight: 700;
+    font-size: 36px;
+    line-height: 1;
+  }
+  .hero-countdown .lab {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+
+  .C-grid-wrap { display: grid; grid-template-columns: 1fr 320px; gap: 18px; }
+  .C-teams {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  .C-section-title {
+    font-family: 'Kalam', cursive;
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .C-section-title .helper {
+    font-family: 'Patrick Hand', cursive;
+    font-weight: 400;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+
+  /* Layout D: Sidebar nav */
+  .layout-D {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    min-height: 600px;
+  }
+  .sidebar {
+    border-right: 1.5px solid var(--ink);
+    background: var(--paper-2);
+    padding: 18px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .sb-section {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 13px;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 12px 8px 4px;
+  }
+  .sb-team {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+  }
+  .sb-team:hover { background: var(--paper); border-color: var(--wire); }
+  .sb-team.active { background: var(--paper); border-color: var(--ink); font-weight: 600; box-shadow: 2px 2px 0 var(--ink); }
+  .sb-mini {
+    width: 22px; height: 22px;
+    border: 1.5px solid var(--ink);
+    border-radius: 5px;
+    display: grid; place-items: center;
+    font-family: 'Kalam', cursive;
+    font-weight: 700;
+    font-size: 11px;
+    flex-shrink: 0;
+    background: var(--paper);
+  }
+  .sb-cat {
+    margin-left: auto;
+    font-family: 'Patrick Hand', cursive;
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+  .sb-add {
+    margin-top: 8px;
+    border: 1.5px dashed var(--wire);
+    border-radius: 6px;
+    padding: 8px;
+    text-align: center;
+    font-family: 'Patrick Hand', cursive;
+    font-size: 14px;
+    color: var(--ink-soft);
+    cursor: pointer;
+  }
+  .sb-add:hover { border-color: var(--ink); color: var(--ink); }
+
+  .D-main { padding: 22px; display: flex; flex-direction: column; gap: 18px; }
+  .D-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+  .stat-card {
+    border: 1.5px solid var(--ink);
+    border-radius: 10px;
+    padding: 12px 14px;
+    background: var(--paper);
+  }
+  .stat-card .lab { font-family: 'Patrick Hand', cursive; font-size: 13px; color: var(--ink-soft); }
+  .stat-card .val { font-family: 'Kalam', cursive; font-weight: 700; font-size: 24px; line-height: 1.1; }
+  .stat-card .delta { font-family: 'Patrick Hand', cursive; font-size: 12px; color: var(--accent); }
+  .D-rows { display: grid; grid-template-columns: 1.4fr 1fr; gap: 18px; }
+
+  /* Mobile container content */
+  .mobile-content { padding: 14px; display: flex; flex-direction: column; gap: 14px; }
+  .mobile-content .teams-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .mobile-content .um-row { grid-template-columns: 50px 1fr auto; }
+  .w-bottombar {
+    border-top: 1.5px solid var(--ink);
+    background: var(--paper-2);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    padding: 8px 0 10px;
+  }
+  .bb-tab {
+    text-align: center;
+    font-family: 'Patrick Hand', cursive;
+    font-size: 12px;
+    color: var(--ink-soft);
+    cursor: pointer;
+  }
+  .bb-tab .ic {
+    display: block;
+    width: 22px; height: 22px;
+    margin: 0 auto 2px;
+    border: 1.5px solid var(--ink-soft);
+    border-radius: 6px;
+  }
+  .bb-tab.on { color: var(--ink); }
+  .bb-tab.on .ic { background: var(--ink); border-color: var(--ink); }
+
+  /* Responsive frame on small viewports */
+  @media (max-width: 1100px) {
+    .layout-A, .layout-B, .C-grid-wrap { grid-template-columns: 1fr; }
+    .layout-A .teams-grid, .C-teams { grid-template-columns: repeat(2, 1fr); }
+    .layout-D { grid-template-columns: 1fr; }
+    .sidebar { border-right: none; border-bottom: 1.5px solid var(--ink); }
+    .D-stats { grid-template-columns: repeat(2, 1fr); }
+    .D-rows { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 720px) {
+    body { padding: 14px; }
+    .layout-A .teams-grid, .C-teams { grid-template-columns: 1fr; }
+    .D-stats { grid-template-columns: 1fr 1fr; }
+    .tt-head, .tt-row { grid-template-columns: 36px 1.4fr 1fr 36px; }
+    .tt-head .col-next, .tt-row .col-next { display: none; }
+  }
+
+  /* Footer notes panel */
+  .notes {
+    max-width: 1380px;
+    margin: 22px auto 0;
+    padding: 18px 22px;
+    border: 1.5px dashed var(--wire);
+    border-radius: 10px;
+    background: var(--paper);
+    font-family: 'Patrick Hand', cursive;
+    font-size: 15px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+  .notes h4 {
+    font-family: 'Kalam', cursive;
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .notes ul { padding-left: 18px; }
+  .notes li { margin-bottom: 2px; }
+  .notes .em { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <div>
+    <h1>Coach Home — Wireframes</h1>
+    <p class="sub">4 directions to explore the dashboard. Same data (équipes + prochains matchs), 4 mises en page. Cliquez les onglets ↓</p>
+  </div>
+  <div class="legend">
+    <span><span class="dot" style="background:var(--ink)"></span>Real UI</span>
+    <span><span class="dot" style="background:var(--wire); border:1px dashed var(--ink-soft)"></span>Placeholder / TBD</span>
+    <span><span class="dot" style="background:var(--accent)"></span>Accent / live</span>
+  </div>
+</header>
+
+<nav class="tabs" id="tabs">
+  <button class="tab active" data-tab="A"><span class="num">01</span>Cards Grid</button>
+  <button class="tab" data-tab="B"><span class="num">02</span>List / Table</button>
+  <button class="tab" data-tab="C"><span class="num">03</span>Hero + Grid</button>
+  <button class="tab" data-tab="D"><span class="num">04</span>Sidebar Nav</button>
+</nav>
+
+<section class="frame" id="frame-A" data-frame>
+  <div class="frame-toolbar">
+    <div>
+      <div class="frame-title">01 — Cards Grid · "Le tableau de bord direct"</div>
+      <div class="frame-desc">Grille de cartes équipes + sidebar matchs. Chaque carte = 1 click pour ouvrir l'équipe. Création via carte fantôme à la fin.</div>
+    </div>
+    <div class="device-toggle" data-device="A">
+      <button class="on" data-d="desktop">Desktop</button>
+      <button data-d="mobile">Mobile</button>
+    </div>
+  </div>
+
+  <!-- DESKTOP -->
+  <div class="device-view desktop-view">
+    <div class="w-app desktop">
+      <div class="w-topbar">
+        <div class="w-logo">H</div>
+        <div class="w-brand">Handball / Coach</div>
+        <div class="w-search">Rechercher une équipe, un joueur…</div>
+        <div class="w-topbar-spacer"></div>
+        <div class="w-iconbtn" title="Notifications">🔔</div>
+        <div class="w-avatar">GM</div>
+      </div>
+
+      <div class="layout-A">
+        <div>
+          <div class="w-greeting" style="padding-left:0;padding-right:0;border:none;padding-top:0">
+            <div>
+              <h2>Bonjour, Coach Marin 👋</h2>
+              <div class="meta">Mardi 12 mai · 5 équipes · 3 matchs cette semaine</div>
+            </div>
+            <div style="display:flex; gap:8px;">
+              <button class="w-btn primary"><span class="plus">+</span> Nouvelle équipe</button>
+            </div>
+          </div>
+
+          <div class="C-section-title" style="margin-top:14px">
+            <span>Mes équipes</span>
+            <span class="helper">5 équipes · trier par : prochain match ▾</span>
+          </div>
+
+          <div class="teams-grid">
+            <!-- card 1 -->
+            <div class="team-card">
+              <div class="row">
+                <div class="team-logo accent">SA</div>
+                <div>
+                  <div class="team-name">Seniors A</div>
+                  <span class="team-cat">Senior · Nationale 3</span>
+                </div>
+                <button class="kebab" title="More">⋮</button>
+              </div>
+              <div class="next-match">
+                <span class="nm-label">Prochain →</span>
+                <span class="nm-content">vs HBC Lyon</span>
+                <span class="nm-when">Sam. 14h</span>
+              </div>
+            </div>
+
+            <div class="team-card">
+              <div class="row">
+                <div class="team-logo solid">SB</div>
+                <div>
+                  <div class="team-name">Seniors B</div>
+                  <span class="team-cat">Senior · Régionale</span>
+                </div>
+                <button class="kebab">⋮</button>
+              </div>
+              <div class="next-match">
+                <span class="nm-label">Prochain →</span>
+                <span class="nm-content">vs Bron HB</span>
+                <span class="nm-when">Dim. 16h</span>
+              </div>
+            </div>
+
+            <div class="team-card">
+              <div class="row">
+                <div class="team-logo">U18</div>
+                <div>
+                  <div class="team-name">U18 Garçons</div>
+                  <span class="team-cat">U18 · Inter-départ.</span>
+                </div>
+                <button class="kebab">⋮</button>
+              </div>
+              <div class="next-match">
+                <span class="nm-label">Prochain →</span>
+                <span class="nm-content">vs Caluire HB</span>
+                <span class="nm-when">+9 jours</span>
+              </div>
+            </div>
+
+            <div class="team-card">
+              <div class="row">
+                <div class="team-logo">U15</div>
+                <div>
+                  <div class="team-name">U15 Filles</div>
+                  <span class="team-cat">U15F · Départ.</span>
+                </div>
+                <button class="kebab">⋮</button>
+              </div>
+              <div class="next-match">
+                <span class="nm-label">Prochain →</span>
+                <span class="nm-content">vs Villeurbanne</span>
+                <span class="nm-when">Sam. 11h</span>
+              </div>
+            </div>
+
+            <div class="team-card">
+              <div class="row">
+                <div class="team-logo">M11</div>
+                <div>
+                  <div class="team-name">Moins de 11</div>
+                  <span class="team-cat">M11 mixte</span>
+                </div>
+                <button class="kebab">⋮</button>
+              </div>
+              <div class="next-match">
+                <span class="nm-label">Prochain →</span>
+                <span class="nm-content">Plateau · 4 équipes</span>
+                <span class="nm-when">Sam. 9h</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <aside style="display:flex; flex-direction:column; gap:14px;">
+          <div class="upcoming">
+            <h3>Prochains matchs <span class="seeall">Tout voir</span></h3>
+            <div class="um-month">Mai 2026 <span class="count">4 matchs</span></div>
+            <div class="um-row">
+              <div class="um-date"><div class="d">14</div><div class="m">Sam</div></div>
+              <div class="um-meta">
+                <div class="um-team">U15 Filles · vs Villeurbanne</div>
+                <div class="um-vs">Domicile · Gymnase Pérec</div>
+              </div>
+              <div class="um-time">11:00</div>
+            </div>
+            <div class="um-row">
+              <div class="um-date"><div class="d">14</div><div class="m">Sam</div></div>
+              <div class="um-meta">
+                <div class="um-team">Seniors A · vs HBC Lyon</div>
+                <div class="um-vs">Extérieur · Lyon Gerland</div>
+              </div>
+              <div class="um-time">14:00</div>
+            </div>
+            <div class="um-row">
+              <div class="um-date"><div class="d">15</div><div class="m">Dim</div></div>
+              <div class="um-meta">
+                <div class="um-team">Seniors B · vs Bron HB</div>
+                <div class="um-vs">Domicile</div>
+              </div>
+              <div class="um-time">16:00</div>
+            </div>
+            <div class="um-row">
+              <div class="um-date"><div class="d">21</div><div class="m">Sam</div></div>
+              <div class="um-meta">
+                <div class="um-team">U18 Garçons · vs Caluire HB</div>
+                <div class="um-vs">Extérieur</div>
+              </div>
+              <div class="um-time">17:30</div>
+            </div>
+            <div class="um-month">Juin 2026 <span class="count">2 matchs</span></div>
+            <div class="um-row">
+              <div class="um-date"><div class="d">04</div><div class="m">Sam</div></div>
+              <div class="um-meta">
+                <div class="um-team">Seniors A · Play-off · vs Annecy</div>
+                <div class="um-vs">Domicile</div>
+              </div>
+              <div class="um-time">15:00</div>
+            </div>
+            <div class="um-row">
+              <div class="um-date"><div class="d">11</div><div class="m">Sam</div></div>
+              <div class="um-meta">
+                <div class="um-team">U15 Filles · Tournoi fin de saison</div>
+                <div class="um-vs">Lyon</div>
+              </div>
+              <div class="um-time">10:00</div>
+            </div>
+          </div>
+
+          <div style="border:1.5px dashed var(--wire); border-radius:10px; padding:12px 14px; font-family:'Patrick Hand'; color:var(--ink-soft); font-size:14px; line-height:1.5;">
+            <strong style="font-family:'Kalam'; color:var(--ink);">Note design ✎</strong><br/>
+            La sidebar reste au-dessus en mobile (stack). Carte "+" en dernier slot sur desktop, en bouton flottant sur mobile.
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <div class="pin" style="top: 70px; right: 40px;">↑ kebab = supprimer / éditer / quitter</div>
+    <div class="pin r" style="top: 270px; left: 270px;">cliquer carte = ouvre l'équipe</div>
+  </div>
+
+  <!-- MOBILE -->
+  <div class="device-view mobile-view" hidden>
+    <div class="w-app mobile">
+      <div class="w-topbar">
+        <div class="w-logo">H</div>
+        <div class="w-brand" style="font-size:15px;">Coach</div>
+        <div class="w-topbar-spacer"></div>
+        <div class="w-iconbtn">🔔</div>
+        <div class="w-avatar">GM</div>
+      </div>
+      <div class="mobile-content">
+        <div>
+          <div style="font-family:'Kalam'; font-weight:700; font-size:18px;">Bonjour Coach 👋</div>
+          <div style="font-family:'Patrick Hand'; font-size:14px; color:var(--ink-soft);">3 matchs cette semaine</div>
+        </div>
+        <div class="upcoming" style="padding:10px 12px;">
+          <h3 style="font-size:14px;">Prochains matchs <span class="seeall">→</span></h3>
+          <div class="um-month">Mai 2026 <span class="count">4</span></div>
+          <div class="um-row">
+            <div class="um-date"><div class="d">14</div><div class="m">Sam</div></div>
+            <div class="um-meta"><div class="um-team">U15F · Villeurbanne</div><div class="um-vs">Domicile</div></div>
+            <div class="um-time">11h</div>
+          </div>
+          <div class="um-row">
+            <div class="um-date"><div class="d">14</div><div class="m">Sam</div></div>
+            <div class="um-meta"><div class="um-team">Sen. A · HBC Lyon</div><div class="um-vs">Extérieur</div></div>
+            <div class="um-time">14h</div>
+          </div>
+          <div class="um-month">Juin 2026 <span class="count">2</span></div>
+          <div class="um-row">
+            <div class="um-date"><div class="d">04</div><div class="m">Sam</div></div>
+            <div class="um-meta"><div class="um-team">Sen. A · Play-off Annecy</div><div class="um-vs">Domicile</div></div>
+            <div class="um-time">15h</div>
+          </div>
+        </div>
+        <div style="font-family:'Kalam'; font-weight:700; font-size:15px; margin-top:4px;">Mes équipes (5)</div>
+        <div class="teams-grid">
+          <div class="team-card">
+            <div class="row">
+              <div class="team-logo accent">SA</div>
+              <div><div class="team-name">Seniors A</div><span class="team-cat">Senior · N3</span></div>
+              <button class="kebab">⋮</button>
+            </div>
+            <div class="next-match">
+              <span class="nm-label">→</span>
+              <span class="nm-content">vs HBC Lyon</span>
+              <span class="nm-when">Sam. 14h</span>
+            </div>
+          </div>
+          <div class="team-card">
+            <div class="row">
+              <div class="team-logo solid">SB</div>
+              <div><div class="team-name">Seniors B</div><span class="team-cat">Senior · Rég.</span></div>
+              <button class="kebab">⋮</button>
+            </div>
+            <div class="next-match">
+              <span class="nm-label">→</span>
+              <span class="nm-content">vs Bron HB</span>
+              <span class="nm-when">Dim. 16h</span>
+            </div>
+          </div>
+          <div class="team-card">
+            <div class="row">
+              <div class="team-logo">U18</div>
+              <div><div class="team-name">U18 Garçons</div><span class="team-cat">U18</span></div>
+              <button class="kebab">⋮</button>
+            </div>
+            <div class="next-match">
+              <span class="nm-label">→</span>
+              <span class="nm-content">vs Caluire</span>
+              <span class="nm-when">+9 j.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="w-bottombar">
+        <div class="bb-tab on"><span class="ic"></span>Accueil</div>
+        <div class="bb-tab"><span class="ic"></span>Matchs</div>
+        <div class="bb-tab"><span class="ic"></span>Joueurs</div>
+        <div class="bb-tab"><span class="ic"></span>Profil</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="frame" id="frame-B" data-frame hidden>
+  <div class="frame-toolbar">
+    <div>
+      <div class="frame-title">02 — List / Table · "Pour les coachs avec beaucoup d'équipes"</div>
+      <div class="frame-desc">Tableau dense, triable. Idéal si 8–15 équipes. Un seul clic = ligne entière. Kebab à droite. Plus rapide à scanner.</div>
+    </div>
+    <div class="device-toggle" data-device="B">
+      <button class="on" data-d="desktop">Desktop</button>
+      <button data-d="mobile">Mobile</button>
+    </div>
+  </div>
+
+  <div class="device-view desktop-view">
+    <div class="w-app desktop">
+      <div class="w-topbar">
+        <div class="w-logo">H</div>
+        <div class="w-brand">Handball / Coach</div>
+        <div class="w-search">Rechercher…</div>
+        <div class="w-topbar-spacer"></div>
+        <div class="w-iconbtn">🔔</div>
+        <div class="w-avatar">GM</div>
+      </div>
+
+      <div class="layout-B">
+        <div>
+          <div class="w-greeting" style="border:none; padding:0 0 14px;">
+            <div>
+              <h2>Mes équipes</h2>
+              <div class="meta">12 équipes · 5 matchs cette semaine</div>
+            </div>
+            <div style="display:flex; gap:8px;">
+              <button class="w-btn">Filtrer ▾</button>
+              <button class="w-btn primary"><span class="plus">+</span> Nouvelle équipe</button>
+            </div>
+          </div>
+
+          <div class="teams-table">
+            <div class="tt-head">
+              <div></div>
+              <div>Équipe ▼</div>
+              <div>Catégorie</div>
+              <div class="col-next">Prochain match</div>
+              <div></div>
+            </div>
+            <div class="tt-row">
+              <div class="team-logo accent" style="width:32px;height:32px;font-size:11px;">SA</div>
+              <div><div class="um-team">Seniors A</div><div class="um-vs">14 joueurs</div></div>
+              <div><span class="team-cat">Senior · N3</span></div>
+              <div class="col-next"><span class="um-team">vs HBC Lyon</span> · <span class="um-time">Sam. 14h</span></div>
+              <button class="kebab">⋮</button>
+            </div>
+            <div class="tt-row">
+              <div class="team-logo solid" style="width:32px;height:32px;font-size:11px;">SB</div>
+              <div><div class="um-team">Seniors B</div><div class="um-vs">12 joueurs</div></div>
+              <div><span class="team-cat">Senior · Rég.</span></div>
+              <div class="col-next"><span class="um-team">vs Bron HB</span> · <span class="um-time">Dim. 16h</span></div>
+              <button class="kebab">⋮</button>
+            </div>
+            <div class="tt-row">
+              <div class="team-logo" style="width:32px;height:32px;font-size:11px;">U18</div>
+              <div><div class="um-team">U18 Garçons</div><div class="um-vs">15 joueurs</div></div>
+              <div><span class="team-cat">U18 · Inter-départ.</span></div>
+              <div class="col-next"><span class="um-team">vs Caluire</span> · <span class="um-time">+9 j.</span></div>
+              <button class="kebab">⋮</button>
+            </div>
+            <div class="tt-row">
+              <div class="team-logo" style="width:32px;height:32px;font-size:11px;">U15</div>
+              <div><div class="um-team">U15 Filles</div><div class="um-vs">13 joueurs</div></div>
+              <div><span class="team-cat">U15F · Départ.</span></div>
+              <div class="col-next"><span class="um-team">vs Villeurbanne</span> · <span class="um-time">Sam. 11h</span></div>
+              <button class="kebab">⋮</button>
+            </div>
+            <div class="tt-row">
+              <div class="team-logo" style="width:32px;height:32px;font-size:11px;">U13</div>
+              <div><div class="um-team">U13 Mixte</div><div class="um-vs">11 joueurs</div></div>
+              <div><span class="team-cat">U13 · Départ.</span></div>
+              <div class="col-next"><span class="um-team">Plateau</span> · <span class="um-time">Sam. 10h</span></div>
+              <button class="kebab">⋮</button>
+            </div>
+            <div class="tt-row">
+              <div class="team-logo" style="width:32px;height:32px;font-size:11px;">M11</div>
+              <div><div class="um-team">Moins de 11</div><div class="um-vs">9 joueurs</div></div>
+              <div><span class="team-cat">M11 mixte</span></div>
+              <div class="col-next"><span class="um-team">Plateau · 4 éq.</span> · <span class="um-time">Sam. 9h</span></div>
+              <button class="kebab">⋮</button>
+            </div>
+            <div class="tt-row">
+              <div class="team-logo" style="width:32px;height:32px;font-size:11px;">M9</div>
+              <div><div class="um-team">Baby HB</div><div class="um-vs">8 joueurs</div></div>
+              <div><span class="team-cat">M9 · École</span></div>
+              <div class="col-next"><span class="um-vs">Pas de match</span></div>
+              <button class="kebab">⋮</button>
+            </div>
+          </div>
+        </div>
+
+        <aside style="display:flex; flex-direction:column; gap:14px;">
+          <div class="upcoming">
+            <h3>Prochains matchs <span class="seeall">Tout voir</span></h3>
+            <div class="um-month">Mai 2026 <span class="count">4 matchs</span></div>
+            <div class="um-row">
+              <div class="um-date"><div class="d">14</div><div class="m">Sam</div></div>
+              <div class="um-meta">
+                <div class="um-team">U15F · vs Villeurbanne</div>
+                <div class="um-vs">Domicile · 11:00</div>
+              </div>
+              <div class="um-time">11h</div>
+            </div>
+            <div class="um-row">
+              <div class="um-date"><div class="d">14</div><div class="m">Sam</div></div>
+              <div class="um-meta">
+                <div class="um-team">Sen. A · vs HBC Lyon</div>
+                <div class="um-vs">Extérieur · 14:00</div>
+              </div>
+              <div class="um-time">14h</div>
+            </div>
+            <div class="um-row">
+              <div class="um-date"><div class="d">15</div><div class="m">Dim</div></div>
+              <div class="um-meta">
+                <div class="um-team">Sen. B · vs Bron HB</div>
+                <div class="um-vs">Domicile · 16:00</div>
+              </div>
+              <div class="um-time">16h</div>
+            </div>
+            <div class="um-month">Juin 2026 <span class="count">2 matchs</span></div>
+            <div class="um-row">
+              <div class="um-date"><div class="d">04</div><div class="m">Sam</div></div>
+              <div class="um-meta">
+                <div class="um-team">Sen. A · Play-off vs Annecy</div>
+                <div class="um-vs">Domicile</div>
+              </div>
+              <div class="um-time">15h</div>
+            </div>
+            <div class="um-row">
+              <div class="um-date"><div class="d">11</div><div class="m">Sam</div></div>
+              <div class="um-meta">
+                <div class="um-team">U15F · Tournoi de fin</div>
+                <div class="um-vs">Lyon</div>
+              </div>
+              <div class="um-time">10h</div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+    <div class="pin" style="top: 80px; right: 40px;">tableau triable + filtres</div>
+    <div class="pin r" style="bottom: 40px; left: 60px;">+ bouton (header) crée via modal</div>
+  </div>
+
+  <div class="device-view mobile-view" hidden>
+    <div class="w-app mobile">
+      <div class="w-topbar">
+        <div class="w-logo">H</div>
+        <div class="w-brand" style="font-size:15px;">Mes équipes</div>
+        <div class="w-topbar-spacer"></div>
+        <div class="w-iconbtn">+</div>
+      </div>
+      <div class="mobile-content">
+        <div class="w-search" style="max-width:none;">Rechercher…</div>
+        <div class="teams-table">
+          <div class="tt-row" style="grid-template-columns:32px 1fr 28px;">
+            <div class="team-logo accent" style="width:28px;height:28px;font-size:10px;">SA</div>
+            <div><div class="um-team">Seniors A</div><div class="um-vs">vs HBC Lyon · Sam. 14h</div></div>
+            <button class="kebab">⋮</button>
+          </div>
+          <div class="tt-row" style="grid-template-columns:32px 1fr 28px;">
+            <div class="team-logo solid" style="width:28px;height:28px;font-size:10px;">SB</div>
+            <div><div class="um-team">Seniors B</div><div class="um-vs">vs Bron HB · Dim. 16h</div></div>
+            <button class="kebab">⋮</button>
+          </div>
+          <div class="tt-row" style="grid-template-columns:32px 1fr 28px;">
+            <div class="team-logo" style="width:28px;height:28px;font-size:10px;">U18</div>
+            <div><div class="um-team">U18 Garçons</div><div class="um-vs">vs Caluire · +9 j.</div></div>
+            <button class="kebab">⋮</button>
+          </div>
+          <div class="tt-row" style="grid-template-columns:32px 1fr 28px;">
+            <div class="team-logo" style="width:28px;height:28px;font-size:10px;">U15</div>
+            <div><div class="um-team">U15 Filles</div><div class="um-vs">vs Villeurbanne · Sam. 11h</div></div>
+            <button class="kebab">⋮</button>
+          </div>
+          <div class="tt-row" style="grid-template-columns:32px 1fr 28px;">
+            <div class="team-logo" style="width:28px;height:28px;font-size:10px;">U13</div>
+            <div><div class="um-team">U13 Mixte</div><div class="um-vs">Plateau · Sam.</div></div>
+            <button class="kebab">⋮</button>
+          </div>
+        </div>
+      </div>
+      <div class="w-bottombar">
+        <div class="bb-tab on"><span class="ic"></span>Équipes</div>
+        <div class="bb-tab"><span class="ic"></span>Matchs</div>
+        <div class="bb-tab"><span class="ic"></span>Joueurs</div>
+        <div class="bb-tab"><span class="ic"></span>Profil</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="frame" id="frame-C" data-frame hidden>
+  <div class="frame-toolbar">
+    <div>
+      <div class="frame-title">03 — Hero + Grid · "Le prochain match d'abord"</div>
+      <div class="frame-desc">Le prochain match (toutes équipes confondues) en hero, grosse zone visuelle. En-dessous : grille des autres équipes. Bon pour quelqu'un focus sur le terrain.</div>
+    </div>
+    <div class="device-toggle" data-device="C">
+      <button class="on" data-d="desktop">Desktop</button>
+      <button data-d="mobile">Mobile</button>
+    </div>
+  </div>
+
+  <div class="device-view desktop-view">
+    <div class="w-app desktop">
+      <div class="w-topbar">
+        <div class="w-logo">H</div>
+        <div class="w-brand">Handball / Coach</div>
+        <div class="w-search">Rechercher…</div>
+        <div class="w-topbar-spacer"></div>
+        <div class="w-iconbtn">🔔</div>
+        <div class="w-avatar">GM</div>
+      </div>
+
+      <div class="layout-C">
+        <div class="hero-next">
+          <div class="hero-logo">SA</div>
+          <div style="position:relative; z-index:1;">
+            <div class="hero-tag">⚡ Prochain match — toutes équipes</div>
+            <div class="hero-title">Seniors A &nbsp;vs&nbsp; HBC Lyon</div>
+            <div class="hero-meta">Samedi 14 mai · 14:00 · Lyon Gerland (Extérieur)</div>
+            <div style="display:flex; gap:8px; margin-top:14px;">
+              <button class="w-btn primary">Ouvrir l'équipe →</button>
+              <button class="w-btn">Feuille de match</button>
+              <button class="w-btn">Convocations</button>
+            </div>
+          </div>
+          <div class="hero-countdown">
+            <div class="num">3j</div>
+            <div class="lab">avant coup d'envoi</div>
+          </div>
+        </div>
+
+        <div class="C-grid-wrap">
+          <div>
+            <div class="C-section-title">
+              <span>Mes équipes</span>
+              <span class="helper">5 équipes · <button class="w-btn" style="font-size:12px; padding:4px 10px;"><span class="plus">+</span> Nouvelle</button></span>
+            </div>
+            <div class="C-teams">
+              <div class="team-card">
+                <div class="row">
+                  <div class="team-logo accent">SA</div>
+                  <div><div class="team-name">Seniors A</div><span class="team-cat">Senior · N3</span></div>
+                  <button class="kebab">⋮</button>
+                </div>
+                <div class="next-match"><span class="nm-label">→</span><span class="nm-content">vs HBC Lyon</span><span class="nm-when">Sam.</span></div>
+              </div>
+              <div class="team-card">
+                <div class="row">
+                  <div class="team-logo solid">SB</div>
+                  <div><div class="team-name">Seniors B</div><span class="team-cat">Senior · Rég.</span></div>
+                  <button class="kebab">⋮</button>
+                </div>
+                <div class="next-match"><span class="nm-label">→</span><span class="nm-content">vs Bron HB</span><span class="nm-when">Dim.</span></div>
+              </div>
+              <div class="team-card">
+                <div class="row">
+                  <div class="team-logo">U18</div>
+                  <div><div class="team-name">U18 Garçons</div><span class="team-cat">U18</span></div>
+                  <button class="kebab">⋮</button>
+                </div>
+                <div class="next-match"><span class="nm-label">→</span><span class="nm-content">vs Caluire</span><span class="nm-when">+9 j.</span></div>
+              </div>
+              <div class="team-card">
+                <div class="row">
+                  <div class="team-logo">U15</div>
+                  <div><div class="team-name">U15 Filles</div><span class="team-cat">U15F · Départ.</span></div>
+                  <button class="kebab">⋮</button>
+                </div>
+                <div class="next-match"><span class="nm-label">→</span><span class="nm-content">vs Villeurbanne</span><span class="nm-when">Sam.</span></div>
+              </div>
+              <div class="team-card">
+                <div class="row">
+                  <div class="team-logo">M11</div>
+                  <div><div class="team-name">Moins de 11</div><span class="team-cat">M11 mixte</span></div>
+                  <button class="kebab">⋮</button>
+                </div>
+                <div class="next-match"><span class="nm-label">→</span><span class="nm-content">Plateau</span><span class="nm-when">Sam.</span></div>
+              </div>
+            </div>
+          </div>
+
+          <aside>
+            <div class="upcoming">
+              <h3>Agenda <span class="seeall">→</span></h3>
+              <div class="um-month">Mai 2026 <span class="count">4 matchs</span></div>
+              <div class="um-row">
+                <div class="um-date"><div class="d">14</div><div class="m">Sam</div></div>
+                <div class="um-meta"><div class="um-team">U15F vs Villeurbanne</div><div class="um-vs">Domicile</div></div>
+                <div class="um-time">11h</div>
+              </div>
+              <div class="um-row">
+                <div class="um-date"><div class="d">14</div><div class="m">Sam</div></div>
+                <div class="um-meta"><div class="um-team">Sen. A vs HBC Lyon</div><div class="um-vs">Extérieur</div></div>
+                <div class="um-time">14h</div>
+              </div>
+              <div class="um-row">
+                <div class="um-date"><div class="d">15</div><div class="m">Dim</div></div>
+                <div class="um-meta"><div class="um-team">Sen. B vs Bron HB</div><div class="um-vs">Domicile</div></div>
+                <div class="um-time">16h</div>
+              </div>
+              <div class="um-month">Juin 2026 <span class="count">2 matchs</span></div>
+              <div class="um-row">
+                <div class="um-date"><div class="d">04</div><div class="m">Sam</div></div>
+                <div class="um-meta"><div class="um-team">Sen. A · Play-off Annecy</div><div class="um-vs">Domicile</div></div>
+                <div class="um-time">15h</div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+    <div class="pin" style="top: 90px; left: 40px;">hero = focus &amp; énergie</div>
+    <div class="pin r" style="top: 270px; right: 80px;">countdown — utile en saison</div>
+  </div>
+
+  <div class="device-view mobile-view" hidden>
+    <div class="w-app mobile">
+      <div class="w-topbar">
+        <div class="w-logo">H</div>
+        <div class="w-brand" style="font-size:15px;">Coach</div>
+        <div class="w-topbar-spacer"></div>
+        <div class="w-iconbtn">🔔</div>
+      </div>
+      <div class="mobile-content">
+        <div class="hero-next" style="grid-template-columns:1fr; padding:16px;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div class="hero-logo" style="width:48px; height:48px; font-size:18px;">SA</div>
+            <div>
+              <div class="hero-tag" style="font-size:11px;">⚡ Prochain match</div>
+              <div class="hero-title" style="font-size:18px;">Seniors A vs HBC Lyon</div>
+            </div>
+          </div>
+          <div class="hero-meta" style="font-size:13px;">Sam. 14 mai · 14h · Extérieur</div>
+          <div class="hero-countdown" style="text-align:left;">
+            <div class="num" style="font-size:24px;">3j</div>
+            <div class="lab">avant coup d'envoi</div>
+          </div>
+          <button class="w-btn primary" style="margin-top:6px;">Ouvrir l'équipe →</button>
+        </div>
+        <div style="font-family:'Kalam'; font-weight:700; font-size:15px;">Mes équipes</div>
+        <div class="teams-grid">
+          <div class="team-card">
+            <div class="row">
+              <div class="team-logo solid">SB</div>
+              <div><div class="team-name">Seniors B</div><span class="team-cat">Sen. · Rég.</span></div>
+              <button class="kebab">⋮</button>
+            </div>
+            <div class="next-match"><span class="nm-label">→</span><span class="nm-content">vs Bron HB</span><span class="nm-when">Dim. 16h</span></div>
+          </div>
+          <div class="team-card">
+            <div class="row">
+              <div class="team-logo">U18</div>
+              <div><div class="team-name">U18 Garçons</div><span class="team-cat">U18</span></div>
+              <button class="kebab">⋮</button>
+            </div>
+            <div class="next-match"><span class="nm-label">→</span><span class="nm-content">vs Caluire</span><span class="nm-when">+9 j.</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="w-bottombar">
+        <div class="bb-tab on"><span class="ic"></span>Accueil</div>
+        <div class="bb-tab"><span class="ic"></span>Matchs</div>
+        <div class="bb-tab"><span class="ic"></span>Joueurs</div>
+        <div class="bb-tab"><span class="ic"></span>Profil</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="frame" id="frame-D" data-frame hidden>
+  <div class="frame-toolbar">
+    <div>
+      <div class="frame-title">04 — Sidebar Nav · "Outil métier complet"</div>
+      <div class="frame-desc">Sidebar gauche = liste équipes (compacte, 15 max OK). Centre = stats globales + agenda. Plus "outil métier", proche d'un CRM. Switch vite entre équipes via la sidebar.</div>
+    </div>
+    <div class="device-toggle" data-device="D">
+      <button class="on" data-d="desktop">Desktop</button>
+      <button data-d="mobile">Mobile</button>
+    </div>
+  </div>
+
+  <div class="device-view desktop-view">
+    <div class="w-app desktop">
+      <div class="w-topbar">
+        <div class="w-logo">H</div>
+        <div class="w-brand">Handball / Coach</div>
+        <div class="w-search">Rechercher…</div>
+        <div class="w-topbar-spacer"></div>
+        <div class="w-iconbtn">🔔</div>
+        <div class="w-avatar">GM</div>
+      </div>
+
+      <div class="layout-D">
+        <aside class="sidebar">
+          <div class="sb-section">Vue globale</div>
+          <div class="sb-team active">
+            <div class="sb-mini" style="background:var(--ink); color:var(--paper);">▦</div>
+            <span>Tableau de bord</span>
+          </div>
+
+          <div class="sb-section">Équipes (5)</div>
+          <div class="sb-team">
+            <div class="sb-mini" style="background:var(--accent); color:var(--paper); border-color:var(--accent);">SA</div>
+            <span>Seniors A</span>
+            <span class="sb-cat">N3</span>
+          </div>
+          <div class="sb-team">
+            <div class="sb-mini" style="background:var(--ink); color:var(--paper);">SB</div>
+            <span>Seniors B</span>
+            <span class="sb-cat">Rég.</span>
+          </div>
+          <div class="sb-team">
+            <div class="sb-mini">U18</div>
+            <span>U18 Garçons</span>
+            <span class="sb-cat">U18</span>
+          </div>
+          <div class="sb-team">
+            <div class="sb-mini">U15</div>
+            <span>U15 Filles</span>
+            <span class="sb-cat">U15F</span>
+          </div>
+          <div class="sb-team">
+            <div class="sb-mini">M11</div>
+            <span>Moins de 11</span>
+            <span class="sb-cat">M11</span>
+          </div>
+          <div class="sb-add">+ Nouvelle équipe</div>
+
+          <div class="sb-section">Saison</div>
+          <div class="sb-team">
+            <div class="sb-mini">📅</div>
+            <span>Agenda</span>
+          </div>
+          <div class="sb-team">
+            <div class="sb-mini">⚙</div>
+            <span>Paramètres club</span>
+          </div>
+        </aside>
+
+        <div class="D-main">
+          <div class="w-greeting" style="border:none; padding:0;">
+            <div>
+              <h2>Tableau de bord</h2>
+              <div class="meta">Vue toutes équipes · Saison 2025–26</div>
+            </div>
+            <div style="display:flex; gap:8px;">
+              <button class="w-btn primary"><span class="plus">+</span> Nouvelle équipe</button>
+            </div>
+          </div>
+
+          <div class="D-stats">
+            <div class="stat-card">
+              <div class="lab">Équipes actives</div>
+              <div class="val">5</div>
+              <div class="delta">+1 vs saison passée</div>
+            </div>
+            <div class="stat-card">
+              <div class="lab">Joueurs (total)</div>
+              <div class="val">63</div>
+              <div class="delta">14 nouveaux</div>
+            </div>
+            <div class="stat-card">
+              <div class="lab">Matchs cette semaine</div>
+              <div class="val">4</div>
+              <div class="delta">2 dom. · 2 ext.</div>
+            </div>
+            <div class="stat-card">
+              <div class="lab">Bilan saison</div>
+              <div class="val">12 V <span style="color:var(--ink-soft); font-size:18px;">· 5 D</span></div>
+              <div class="delta">71 % victoires</div>
+            </div>
+          </div>
+
+          <div class="D-rows">
+            <div class="upcoming">
+              <h3>Agenda <span class="seeall">Tout l'agenda →</span></h3>
+              <div class="um-month">Mai 2026 <span class="count">4 matchs</span></div>
+              <div class="um-row">
+                <div class="um-date"><div class="d">14</div><div class="m">Sam</div></div>
+                <div class="um-meta"><div class="um-team">U15 Filles · vs Villeurbanne</div><div class="um-vs">Domicile · Gymnase Pérec</div></div>
+                <div class="um-time">11:00</div>
+              </div>
+              <div class="um-row">
+                <div class="um-date"><div class="d">14</div><div class="m">Sam</div></div>
+                <div class="um-meta"><div class="um-team">Seniors A · vs HBC Lyon</div><div class="um-vs">Extérieur · Lyon Gerland</div></div>
+                <div class="um-time">14:00</div>
+              </div>
+              <div class="um-row">
+                <div class="um-date"><div class="d">15</div><div class="m">Dim</div></div>
+                <div class="um-meta"><div class="um-team">Seniors B · vs Bron HB</div><div class="um-vs">Domicile</div></div>
+                <div class="um-time">16:00</div>
+              </div>
+              <div class="um-row">
+                <div class="um-date"><div class="d">21</div><div class="m">Sam</div></div>
+                <div class="um-meta"><div class="um-team">U18 Garçons · vs Caluire HB</div><div class="um-vs">Extérieur</div></div>
+                <div class="um-time">17:30</div>
+              </div>
+              <div class="um-month">Juin 2026 <span class="count">2 matchs</span></div>
+              <div class="um-row">
+                <div class="um-date"><div class="d">04</div><div class="m">Sam</div></div>
+                <div class="um-meta"><div class="um-team">Seniors A · Play-off vs Annecy</div><div class="um-vs">Domicile</div></div>
+                <div class="um-time">15:00</div>
+              </div>
+            </div>
+
+            <div class="upcoming">
+              <h3>Activité récente <span class="seeall">→</span></h3>
+              <div class="um-row" style="grid-template-columns: 28px 1fr auto;">
+                <div style="font-size:18px;">🏆</div>
+                <div class="um-meta"><div class="um-team">Seniors A · victoire 28–24 vs Vénissieux</div><div class="um-vs">Il y a 2 jours</div></div>
+                <span class="um-time" style="color:var(--ink-soft); font-size:12px;">V</span>
+              </div>
+              <div class="um-row" style="grid-template-columns: 28px 1fr auto;">
+                <div style="font-size:18px;">📋</div>
+                <div class="um-meta"><div class="um-team">Convocations envoyées · U15 Filles</div><div class="um-vs">Hier</div></div>
+                <span class="um-time" style="color:var(--ink-soft); font-size:12px;">→</span>
+              </div>
+              <div class="um-row" style="grid-template-columns: 28px 1fr auto;">
+                <div style="font-size:18px;">➕</div>
+                <div class="um-meta"><div class="um-team">Joueur ajouté · Léa Martin (U15F)</div><div class="um-vs">Hier</div></div>
+                <span class="um-time" style="color:var(--ink-soft); font-size:12px;">→</span>
+              </div>
+              <div class="um-row" style="grid-template-columns: 28px 1fr auto;">
+                <div style="font-size:18px;">⚠</div>
+                <div class="um-meta"><div class="um-team">U18 — 3 forfaits ce mois</div><div class="um-vs">À surveiller</div></div>
+                <span class="um-time" style="color:var(--accent); font-size:12px;">!</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pin" style="top: 90px; left: 60px;">switch équipe = 1 click</div>
+    <div class="pin r" style="top: 220px; right: 80px;">stats globales = vue club</div>
+  </div>
+
+  <div class="device-view mobile-view" hidden>
+    <div class="w-app mobile">
+      <div class="w-topbar">
+        <div class="w-iconbtn">☰</div>
+        <div class="w-brand" style="font-size:15px;">Tableau de bord</div>
+        <div class="w-topbar-spacer"></div>
+        <div class="w-iconbtn">🔔</div>
+      </div>
+      <div class="mobile-content">
+        <div class="D-stats" style="grid-template-columns:1fr 1fr;">
+          <div class="stat-card"><div class="lab">Équipes</div><div class="val">5</div></div>
+          <div class="stat-card"><div class="lab">Joueurs</div><div class="val">63</div></div>
+          <div class="stat-card"><div class="lab">Matchs / sem.</div><div class="val">4</div></div>
+          <div class="stat-card"><div class="lab">Bilan</div><div class="val" style="font-size:18px;">12V · 5D</div></div>
+        </div>
+        <div class="upcoming">
+          <h3>Agenda <span class="seeall">→</span></h3>
+          <div class="um-month">Mai 2026 <span class="count">4</span></div>
+          <div class="um-row">
+            <div class="um-date"><div class="d">14</div><div class="m">Sam</div></div>
+            <div class="um-meta"><div class="um-team">U15F · Villeurbanne</div><div class="um-vs">Domicile</div></div>
+            <div class="um-time">11h</div>
+          </div>
+          <div class="um-row">
+            <div class="um-date"><div class="d">14</div><div class="m">Sam</div></div>
+            <div class="um-meta"><div class="um-team">Sen. A · HBC Lyon</div><div class="um-vs">Extérieur</div></div>
+            <div class="um-time">14h</div>
+          </div>
+          <div class="um-month">Juin 2026 <span class="count">2</span></div>
+          <div class="um-row">
+            <div class="um-date"><div class="d">04</div><div class="m">Sam</div></div>
+            <div class="um-meta"><div class="um-team">Sen. A · Play-off</div><div class="um-vs">Domicile</div></div>
+            <div class="um-time">15h</div>
+          </div>
+        </div>
+        <div style="font-family:'Patrick Hand'; font-size:13px; color:var(--ink-soft); text-align:center;">
+          (sidebar = drawer ☰ sur mobile)
+        </div>
+      </div>
+      <div class="w-bottombar">
+        <div class="bb-tab on"><span class="ic"></span>Dashboard</div>
+        <div class="bb-tab"><span class="ic"></span>Équipes</div>
+        <div class="bb-tab"><span class="ic"></span>Agenda</div>
+        <div class="bb-tab"><span class="ic"></span>Profil</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<aside class="notes">
+  <h4>Notes & décisions à arbitrer</h4>
+  <ul>
+    <li><span class="em">Création d'équipe</span> : carte fantôme "+" dans la grille (A, C) ou bouton header (B, D). Dans tous les cas → modal wizard 2 étapes (nom + cat. → couleurs/logo). Décide pour moi = je propose <strong>carte fantôme + bouton header</strong> (les deux), comme dans la maquette A.</li>
+    <li><span class="em">Suppression</span> : kebab ⋮ sur chaque carte → menu (Renommer · Couleurs · <strong>Supprimer</strong>) → confirmation modale. Visible aussi en mode liste.</li>
+    <li><span class="em">Accès équipe</span> : clic sur la carte/ligne entière. Pas besoin de bouton "Ouvrir".</li>
+    <li><span class="em">Limite 1–15 équipes</span> : A et C respirent jusqu'à ~8, après quoi ça scrolle beaucoup. B et D scalent mieux pour 10+.</li>
+    <li><span class="em">Mobile</span> : nav bottom-tabs sur tous les modèles. Sidebar (D) devient drawer ☰.</li>
+    <li><span class="em">Bilingue</span> : structure prête, on bascule via i18n dans la version hi-fi.</li>
+    <li>Prochaine étape : tu choisis 1–2 directions, et je passe en hi-fi avec ton design system (boutons / cards / sidebar du kit).</li>
+  </ul>
+</aside>
+
+<script>
+  // Tabs
+  const tabs = document.querySelectorAll('.tab');
+  const frames = document.querySelectorAll('[data-frame]');
+  tabs.forEach(t => {
+    t.addEventListener('click', () => {
+      tabs.forEach(x => x.classList.remove('active'));
+      t.classList.add('active');
+      const id = t.dataset.tab;
+      frames.forEach(f => f.hidden = f.id !== `frame-${id}`);
+    });
+  });
+
+  // Device toggles (per-frame)
+  document.querySelectorAll('.device-toggle').forEach(toggle => {
+    const frame = toggle.closest('[data-frame]');
+    toggle.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        toggle.querySelectorAll('button').forEach(b => b.classList.remove('on'));
+        btn.classList.add('on');
+        const target = btn.dataset.d;
+        frame.querySelector('.desktop-view').hidden = target !== 'desktop';
+        frame.querySelector('.mobile-view').hidden  = target !== 'mobile';
+      });
+    });
+  });
+</script>
+</body>
+</html>
