@@ -61,6 +61,8 @@ export * from './components/Form/FormMessage'
 
 export * from './components/Input/Input'
 
+export * from './components/PasswordInput/PasswordInput'
+
 export * from './components/Label/Label'
 
 export * from './components/Pagination/Pagination'
