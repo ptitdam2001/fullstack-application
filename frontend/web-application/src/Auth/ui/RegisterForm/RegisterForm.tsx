@@ -5,7 +5,7 @@ import { Button, Input, PasswordInput, Toast } from '@repo/design-system'
 import { Loader2 } from 'lucide-react'
 import { Form } from '@Common/Form/Form'
 import { FormattedMessage, useIntl } from '@I18n/translation'
-import { useTeamOptions } from '@Teams'
+import { TeamSelectField } from '@Teams'
 
 const RegisterSchema = z
   .object({
@@ -87,7 +87,6 @@ type RegisterFormProps = {
 export const RegisterForm = ({ onSuccess }: RegisterFormProps) => {
   const toast = Toast.useToast()
   const intl = useIntl()
-  const teams = useTeamOptions()
 
   const {
     control,
@@ -126,21 +125,12 @@ export const RegisterForm = ({ onSuccess }: RegisterFormProps) => {
             hint={intl.formatMessage({ id: 'register.field.team.hint' })}
             className="mb-4"
           >
-            <select
+            <TeamSelectField
               {...field}
               id="register-team"
-              className="border-input focus-visible:border-ring focus-visible:ring-ring/50 dark:bg-input/30 flex h-9 w-full cursor-pointer rounded-md border bg-transparent px-3 py-1 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50"
+              placeholder={intl.formatMessage({ id: 'register.field.team.placeholder' })}
               aria-invalid={!!fieldState.error}
-            >
-              <option value="" disabled>
-                {intl.formatMessage({ id: 'register.field.team.placeholder' })}
-              </option>
-              {teams.map(team => (
-                <option key={team.id} value={team.id}>
-                  {team.name}
-                </option>
-              ))}
-            </select>
+            />
           </FormField>
         )}
       />
