@@ -1,9 +1,19 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Controller, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { Button, Input, PasswordInput, Toast } from '@repo/design-system'
+import {
+  Button,
+  Form,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  Input,
+  PasswordInput,
+  Toast,
+} from '@repo/design-system'
 import { Loader2 } from 'lucide-react'
-import { Form } from '@Common/Form/Form'
 import { FormattedMessage, useIntl } from '@I18n/translation'
 import { TeamSelectField } from '@Teams'
 
@@ -52,33 +62,9 @@ const STRENGTH_KEYS = [
   'register.strength.strong',
 ] as const
 
-// --- Sub-components ---
-
-type FormFieldProps = {
-  htmlFor: string
-  label: string
-  error?: string
-  hint?: string
-  className?: string
-  children: React.ReactNode
-}
-
-const FormField = ({ htmlFor, label, error, hint, className, children }: FormFieldProps) => (
-  <div className={`flex flex-col gap-1.5${className ? ` ${className}` : ''}`}>
-    <label htmlFor={htmlFor} className="text-sm leading-none font-medium">
-      {label}
-    </label>
-    {children}
-    {error && <p className="text-destructive text-xs">{error}</p>}
-    {hint && <p className="text-muted-foreground text-xs leading-relaxed">{hint}</p>}
-  </div>
-)
-
 const SectionLabel = ({ children }: { children: React.ReactNode }) => (
   <p className="text-muted-foreground mb-3 text-[0.72rem] font-semibold tracking-widest uppercase">{children}</p>
 )
-
-// --- Main component ---
 
 type RegisterFormProps = {
   onSuccess?: () => void
@@ -88,15 +74,11 @@ export const RegisterForm = ({ onSuccess }: RegisterFormProps) => {
   const toast = Toast.useToast()
   const intl = useIntl()
 
-  const {
-    control,
-    handleSubmit,
-    watch,
-    formState: { isSubmitting, isValid, isDirty },
-  } = useForm<RegisterFormValues>({
+  const form = useForm<RegisterFormValues>({
     resolver: zodResolver(RegisterSchema),
     mode: 'all',
   })
+  const { handleSubmit, watch, formState: { isSubmitting, isValid, isDirty } } = form
 
   const passwordValue = watch('password') ?? ''
   const strength = passwordStrength(passwordValue)
@@ -109,167 +91,165 @@ export const RegisterForm = ({ onSuccess }: RegisterFormProps) => {
   }
 
   return (
-    <Form name="Register" onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-0" data-testid="register-form">
-      <SectionLabel>
-        <FormattedMessage id="register.section.team" />
-      </SectionLabel>
+    <Form {...form}>
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-0" data-testid="register-form">
+        <SectionLabel>
+          <FormattedMessage id="register.section.team" />
+        </SectionLabel>
 
-      <Controller
-        name="teamId"
-        control={control}
-        render={({ field, fieldState }) => (
-          <FormField
-            htmlFor="register-team"
-            label={intl.formatMessage({ id: 'register.field.team' })}
-            error={fieldState.error?.message}
-            hint={intl.formatMessage({ id: 'register.field.team.hint' })}
-            className="mb-4"
-          >
-            <TeamSelectField
-              {...field}
-              id="register-team"
-              placeholder={intl.formatMessage({ id: 'register.field.team.placeholder' })}
-              aria-invalid={!!fieldState.error}
-            />
-          </FormField>
-        )}
-      />
-
-      <SectionLabel>
-        <FormattedMessage id="register.section.personalInfo" />
-      </SectionLabel>
-
-      <div className="mb-4 grid grid-cols-2 gap-3">
-        <Controller
-          name="firstName"
-          control={control}
+        <FormField
+          name="teamId"
+          control={form.control}
           render={({ field, fieldState }) => (
-            <FormField
-              htmlFor="register-firstname"
-              label={intl.formatMessage({ id: 'register.field.firstName' })}
-              error={fieldState.error?.message}
-            >
-              <Input
+            <FormItem className="mb-4 flex flex-col gap-1.5">
+              <FormLabel htmlFor="register-team">
+                {intl.formatMessage({ id: 'register.field.team' })}
+              </FormLabel>
+              <TeamSelectField
                 {...field}
-                id="register-firstname"
-                type="text"
-                placeholder={intl.formatMessage({ id: 'register.field.firstName.placeholder' })}
-                autoComplete="given-name"
+                id="register-team"
+                placeholder={intl.formatMessage({ id: 'register.field.team.placeholder' })}
                 aria-invalid={!!fieldState.error}
               />
-            </FormField>
+              <FormDescription>{intl.formatMessage({ id: 'register.field.team.hint' })}</FormDescription>
+              <FormMessage />
+            </FormItem>
           )}
         />
-        <Controller
-          name="lastName"
-          control={control}
-          render={({ field, fieldState }) => (
-            <FormField
-              htmlFor="register-lastname"
-              label={intl.formatMessage({ id: 'register.field.lastName' })}
-              error={fieldState.error?.message}
-            >
-              <Input
-                {...field}
-                id="register-lastname"
-                type="text"
-                placeholder={intl.formatMessage({ id: 'register.field.lastName.placeholder' })}
-                autoComplete="family-name"
-                aria-invalid={!!fieldState.error}
-              />
-            </FormField>
-          )}
-        />
-      </div>
 
-      <Controller
-        name="email"
-        control={control}
-        render={({ field, fieldState }) => (
+        <SectionLabel>
+          <FormattedMessage id="register.section.personalInfo" />
+        </SectionLabel>
+
+        <div className="mb-4 grid grid-cols-2 gap-3">
           <FormField
-            htmlFor="register-email"
-            label={intl.formatMessage({ id: 'register.field.email' })}
-            error={fieldState.error?.message}
-            className="mb-4"
-          >
-            <Input
-              {...field}
-              id="register-email"
-              type="email"
-              placeholder={intl.formatMessage({ id: 'register.field.email.placeholder' })}
-              autoComplete="email"
-              aria-invalid={!!fieldState.error}
-            />
-          </FormField>
-        )}
-      />
-
-      <SectionLabel>
-        <FormattedMessage id="register.section.security" />
-      </SectionLabel>
-
-      <Controller
-        name="password"
-        control={control}
-        render={({ field, fieldState }) => (
-          <FormField
-            htmlFor="register-password"
-            label={intl.formatMessage({ id: 'register.field.password' })}
-            error={fieldState.error?.message}
-            className="mb-4"
-          >
-            <PasswordInput
-              {...field}
-              id="register-password"
-              placeholder={intl.formatMessage({ id: 'register.field.password.placeholder' })}
-              autoComplete="new-password"
-              aria-invalid={!!fieldState.error}
-            />
-            {passwordValue && (
-              <div className="mt-0.5">
-                <div className="flex gap-1">
-                  {[1, 2, 3, 4].map(i => (
-                    <div
-                      key={i}
-                      className="h-0.5 flex-1 rounded-sm transition-colors duration-200"
-                      style={{ background: strength >= i ? STRENGTH_COLORS[strength] : 'var(--border)' }}
-                    />
-                  ))}
-                </div>
-                <p className="text-muted-foreground mt-0.5 text-[0.72rem]">
-                  <FormattedMessage id={STRENGTH_KEYS[strength]} />
-                </p>
-              </div>
+            name="firstName"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <FormItem className="flex flex-col gap-1.5">
+                <FormLabel htmlFor="register-firstname">
+                  {intl.formatMessage({ id: 'register.field.firstName' })}
+                </FormLabel>
+                <Input
+                  {...field}
+                  id="register-firstname"
+                  type="text"
+                  placeholder={intl.formatMessage({ id: 'register.field.firstName.placeholder' })}
+                  autoComplete="given-name"
+                  aria-invalid={!!fieldState.error}
+                />
+                <FormMessage />
+              </FormItem>
             )}
-          </FormField>
-        )}
-      />
-
-      <Controller
-        name="confirmPassword"
-        control={control}
-        render={({ field, fieldState }) => (
+          />
           <FormField
-            htmlFor="register-confirm-password"
-            label={intl.formatMessage({ id: 'register.field.confirmPassword' })}
-            error={fieldState.error?.message}
-            className="mb-5"
-          >
-            <PasswordInput
-              {...field}
-              id="register-confirm-password"
-              placeholder="••••••••"
-              autoComplete="new-password"
-              aria-invalid={!!fieldState.error}
-            />
-          </FormField>
-        )}
-      />
+            name="lastName"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <FormItem className="flex flex-col gap-1.5">
+                <FormLabel htmlFor="register-lastname">
+                  {intl.formatMessage({ id: 'register.field.lastName' })}
+                </FormLabel>
+                <Input
+                  {...field}
+                  id="register-lastname"
+                  type="text"
+                  placeholder={intl.formatMessage({ id: 'register.field.lastName.placeholder' })}
+                  autoComplete="family-name"
+                  aria-invalid={!!fieldState.error}
+                />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
-      <Button type="submit" variant="default" isDisabled={!isValid || !isDirty || isSubmitting} className="h-10 w-full">
-        {isSubmitting && <Loader2 className="animate-spin" size={16} />}
-        <FormattedMessage id="register.submit" />
-      </Button>
+        <FormField
+          name="email"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <FormItem className="mb-4 flex flex-col gap-1.5">
+              <FormLabel htmlFor="register-email">
+                {intl.formatMessage({ id: 'register.field.email' })}
+              </FormLabel>
+              <Input
+                {...field}
+                id="register-email"
+                type="email"
+                placeholder={intl.formatMessage({ id: 'register.field.email.placeholder' })}
+                autoComplete="email"
+                aria-invalid={!!fieldState.error}
+              />
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <SectionLabel>
+          <FormattedMessage id="register.section.security" />
+        </SectionLabel>
+
+        <FormField
+          name="password"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <FormItem className="mb-4 flex flex-col gap-1.5">
+              <FormLabel htmlFor="register-password">
+                {intl.formatMessage({ id: 'register.field.password' })}
+              </FormLabel>
+              <PasswordInput
+                {...field}
+                id="register-password"
+                placeholder={intl.formatMessage({ id: 'register.field.password.placeholder' })}
+                autoComplete="new-password"
+                aria-invalid={!!fieldState.error}
+              />
+              {passwordValue && (
+                <div className="mt-0.5">
+                  <div className="flex gap-1">
+                    {[1, 2, 3, 4].map(i => (
+                      <div
+                        key={i}
+                        className="h-0.5 flex-1 rounded-sm transition-colors duration-200"
+                        style={{ background: strength >= i ? STRENGTH_COLORS[strength] : 'var(--border)' }}
+                      />
+                    ))}
+                  </div>
+                  <p className="text-muted-foreground mt-0.5 text-[0.72rem]">
+                    <FormattedMessage id={STRENGTH_KEYS[strength]} />
+                  </p>
+                </div>
+              )}
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          name="confirmPassword"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <FormItem className="mb-5 flex flex-col gap-1.5">
+              <FormLabel htmlFor="register-confirm-password">
+                {intl.formatMessage({ id: 'register.field.confirmPassword' })}
+              </FormLabel>
+              <PasswordInput
+                {...field}
+                id="register-confirm-password"
+                placeholder="••••••••"
+                autoComplete="new-password"
+                aria-invalid={!!fieldState.error}
+              />
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <Button type="submit" variant="default" isDisabled={!isValid || !isDirty || isSubmitting} className="h-10 w-full">
+          {isSubmitting && <Loader2 className="animate-spin" size={16} />}
+          <FormattedMessage id="register.submit" />
+        </Button>
+      </form>
     </Form>
   )
 }
