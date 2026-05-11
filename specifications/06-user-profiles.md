@@ -25,6 +25,7 @@ Un même utilisateur peut cumuler plusieurs rôles sans conflit. Toutes ces comb
 
 | Use case                                       | Enregistrements                                                   |
 | ---------------------------------------------- | ----------------------------------------------------------------- |
+| Utilisateur sans équipe (après inscription)    | `User` seul — lecture seule, peut demander à rejoindre une équipe |
 | Coach d'une équipe                             | `UserTeam(COACH, team-A)`                                         |
 | Joueur d'une équipe                            | `UserTeam(PLAYER, team-A)` + `Player`                             |
 | Coach ET joueur de la **même** équipe          | `UserTeam(COACH, team-A)` + `UserTeam(PLAYER, team-A)` + `Player` |
@@ -41,6 +42,12 @@ Un même utilisateur peut cumuler plusieurs rôles sans conflit. Toutes ces comb
 ---
 
 ## Définitions
+
+### Utilisateur sans équipe
+
+Utilisateur authentifié sans aucun enregistrement `UserTeam`. Accès en **lecture seule** sur toutes les données publiques (équipes, championnats, matchs, classements). Ne peut pas effectuer d'actions d'écriture.
+
+Depuis son profil, il peut **demander à rejoindre une équipe** en tant que joueur ou coach. La demande est soumise à validation par un coach de l'équipe ou un admin. Tant que la demande est en attente, aucun `UserTeam` n'est créé.
 
 ### Admin
 
@@ -64,34 +71,35 @@ Officiel désigné pour un ou plusieurs matchs via `UserMatch`. Accès en lectur
 
 ### Gestion des utilisateurs
 
-| Action                   | Admin | Coach | Arbitre | Joueur |
-| ------------------------ | ----- | ----- | ------- | ------ |
-| Lister les utilisateurs  | ✅    | ❌    | ❌      | ❌     |
-| Créer un utilisateur     | ✅    | ❌    | ❌      | ❌     |
-| Modifier un utilisateur  | ✅    | ❌    | ❌      | ❌     |
-| Supprimer un utilisateur | ✅    | ❌    | ❌      | ❌     |
-| Voir son propre profil   | ✅    | ✅    | ✅      | ✅     |
+| Action                          | Admin | Coach | Arbitre | Joueur | Sans équipe |
+| ------------------------------- | ----- | ----- | ------- | ------ | ----------- |
+| Lister les utilisateurs         | ✅    | ❌    | ❌      | ❌     | ❌          |
+| Créer un utilisateur            | ✅    | ❌    | ❌      | ❌     | ❌          |
+| Modifier un utilisateur         | ✅    | ❌    | ❌      | ❌     | ❌          |
+| Supprimer un utilisateur        | ✅    | ❌    | ❌      | ❌     | ❌          |
+| Voir son propre profil          | ✅    | ✅    | ✅      | ✅     | ✅          |
+| Demander à rejoindre une équipe | ❌    | ❌    | ❌      | ❌     | ✅          |
 
 ### Championnats
 
-| Action             | Admin | Coach | Arbitre | Joueur |
-| ------------------ | ----- | ----- | ------- | ------ |
-| Lister / consulter | ✅    | ✅    | ✅      | ✅     |
-| Créer              | ✅    | ❌    | ❌      | ❌     |
-| Modifier           | ✅    | ❌    | ❌      | ❌     |
-| Supprimer          | ✅    | ❌    | ❌      | ❌     |
+| Action             | Admin | Coach | Arbitre | Joueur | Sans équipe |
+| ------------------ | ----- | ----- | ------- | ------ | ----------- |
+| Lister / consulter | ✅    | ✅    | ✅      | ✅     | ✅          |
+| Créer              | ✅    | ❌    | ❌      | ❌     | ❌          |
+| Modifier           | ✅    | ❌    | ❌      | ❌     | ❌          |
+| Supprimer          | ✅    | ❌    | ❌      | ❌     | ❌          |
 
 ### Équipes
 
-| Action                         | Admin | Coach (son équipe) | Coach (autre) | Arbitre | Joueur |
-| ------------------------------ | ----- | ------------------ | ------------- | ------- | ------ |
-| Lister / consulter             | ✅    | ✅                 | ✅            | ✅      | ✅     |
-| Créer                          | ✅    | ✅ (devient coach) | ❌            | ❌      | ❌     |
-| Modifier                       | ✅    | ✅                 | ❌            | ❌      | ❌     |
-| Supprimer                      | ✅    | ❌                 | ❌            | ❌      | ❌     |
-| Voir les joueurs d'une équipe  | ✅    | ✅                 | ✅            | ✅      | ✅     |
-| Gérer les joueurs d'une équipe | ✅    | ✅                 | ❌            | ❌      | ❌     |
-| Assigner un coach à une équipe | ✅    | ❌                 | ❌            | ❌      | ❌     |
+| Action                          | Admin | Coach (son équipe) | Coach (autre) | Arbitre | Joueur | Sans équipe |
+| ------------------------------- | ----- | ------------------ | ------------- | ------- | ------ | ----------- |
+| Lister / consulter              | ✅    | ✅                 | ✅            | ✅      | ✅     | ✅          |
+| Créer                           | ✅    | ✅ (devient coach) | ❌            | ❌      | ❌     | ❌          |
+| Modifier                        | ✅    | ✅                 | ❌            | ❌      | ❌     | ❌          |
+| Supprimer                       | ✅    | ❌                 | ❌            | ❌      | ❌     | ❌          |
+| Voir les joueurs d'une équipe   | ✅    | ✅                 | ✅            | ✅      | ✅     | ✅          |
+| Gérer les joueurs d'une équipe  | ✅    | ✅                 | ❌            | ❌      | ❌     | ❌          |
+| Assigner un coach à une équipe  | ✅    | ❌                 | ❌            | ❌      | ❌     | ❌          |
 
 > La vérification "son équipe" est effectuée en DB via `UserTeamUseCases.hasRole(userId, teamId, COACH)` dans le use case.
 
@@ -129,6 +137,20 @@ Officiel désigné pour un ou plusieurs matchs via `UserMatch`. Accès en lectur
 - Un utilisateur authentifié peut créer une équipe — il en devient automatiquement coach (`UserTeam(COACH, teamId)` créé à la suite).
 - L'association peut également être créée et supprimée par un Admin via `POST/DELETE /team/{teamId}/coach/{userId}`.
 - Un coach sans équipe associée a accès en lecture seule.
+
+### Inscription
+
+- L'inscription (`POST /auth/register` — à implémenter) crée un `User` sans aucun `UserTeam`.
+- Aucune équipe n'est requise à l'inscription.
+- L'utilisateur accède à la plateforme en lecture seule jusqu'à être associé à une équipe.
+
+### Rejoindre une équipe (flux à implémenter)
+
+- Depuis son profil, un utilisateur sans équipe peut soumettre une demande pour rejoindre une équipe en tant que joueur.
+- La demande génère une notification au(x) coach(es) de l'équipe et aux admins.
+- Un coach de l'équipe ou un admin approuve ou refuse la demande.
+- Approbation → création du `UserTeam(PLAYER, teamId)` + `Player`.
+- Refus → aucun enregistrement créé, l'utilisateur peut soumettre une nouvelle demande.
 
 ### Joueur ↔ Équipe
 

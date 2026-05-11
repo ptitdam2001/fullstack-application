@@ -9,7 +9,7 @@ import { useTeamOptions } from '@Teams'
 
 const RegisterSchema = z
   .object({
-    teamId: z.string().min(1, 'Please select a team.'),
+    teamId: z.string().optional(),
     firstName: z.string().min(1, 'Required.'),
     lastName: z.string().min(1, 'Required.'),
     email: z.email('Enter a valid email address.'),
