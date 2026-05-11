@@ -1,11 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useGetTeams } from '@Sdk/teams/teams'
 import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { Button, Input, Toast } from '@repo/design-system'
-import { Eye, EyeOff, Loader2 } from 'lucide-react'
-import { useState } from 'react'
+import { Button, Input, PasswordInput, Toast } from '@repo/design-system'
+import { Loader2 } from 'lucide-react'
 import { Form } from '@Common/Form/Form'
+import { FormattedMessage, useIntl } from '@I18n/translation'
+import { useTeamOptions } from '@Teams'
 
 const RegisterSchema = z
   .object({
@@ -43,26 +43,51 @@ function passwordStrength(pw: string): number {
   return score
 }
 
-const STRENGTH_COLORS = [
+const STRENGTH_COLORS = ['', 'oklch(0.577 0.245 27)', 'oklch(0.75 0.18 60)', 'oklch(0.65 0.18 145)', 'oklch(0.5 0.18 145)']
+const STRENGTH_KEYS = [
   '',
-  'oklch(0.577 0.245 27)',
-  'oklch(0.75 0.18 60)',
-  'oklch(0.65 0.18 145)',
-  'oklch(0.5 0.18 145)',
-]
-const STRENGTH_LABELS = ['', 'Faible', 'Moyen', 'Bon', 'Fort']
+  'register.strength.weak',
+  'register.strength.fair',
+  'register.strength.good',
+  'register.strength.strong',
+] as const
+
+// --- Sub-components ---
+
+type FormFieldProps = {
+  htmlFor: string
+  label: string
+  error?: string
+  hint?: string
+  className?: string
+  children: React.ReactNode
+}
+
+const FormField = ({ htmlFor, label, error, hint, className, children }: FormFieldProps) => (
+  <div className={`flex flex-col gap-1.5${className ? ` ${className}` : ''}`}>
+    <label htmlFor={htmlFor} className="text-sm leading-none font-medium">
+      {label}
+    </label>
+    {children}
+    {error && <p className="text-destructive text-xs">{error}</p>}
+    {hint && <p className="text-muted-foreground text-xs leading-relaxed">{hint}</p>}
+  </div>
+)
+
+const SectionLabel = ({ children }: { children: React.ReactNode }) => (
+  <p className="text-muted-foreground mb-3 text-[0.72rem] font-semibold tracking-widest uppercase">{children}</p>
+)
+
+// --- Main component ---
 
 type RegisterFormProps = {
   onSuccess?: () => void
 }
 
-export const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess }) => {
+export const RegisterForm = ({ onSuccess }: RegisterFormProps) => {
   const toast = Toast.useToast()
-  const { data: teamsData } = useGetTeams()
-  const teams = teamsData ?? []
-
-  const [showPw, setShowPw] = useState(false)
-  const [showConfirm, setShowConfirm] = useState(false)
+  const intl = useIntl()
+  const teams = useTeamOptions()
 
   const {
     control,
@@ -80,23 +105,27 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess }) => {
   const onSubmit = async (_data: RegisterFormValues) => {
     // TODO: wire up to register API when endpoint is available
     await new Promise(r => setTimeout(r, 800))
-    toast('Registration submitted — awaiting team admin approval.')
+    toast(intl.formatMessage({ id: 'register.success' }))
     onSuccess?.()
   }
 
   return (
     <Form name="Register" onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-0" data-testid="register-form">
-      {/* Team */}
-      <p className="text-muted-foreground mb-3 text-[0.72rem] font-semibold tracking-widest uppercase">Your team</p>
+      <SectionLabel>
+        <FormattedMessage id="register.section.team" />
+      </SectionLabel>
 
       <Controller
         name="teamId"
         control={control}
         render={({ field, fieldState }) => (
-          <div className="mb-4 flex flex-col gap-1.5">
-            <label htmlFor="register-team" className="text-sm leading-none font-medium">
-              Team
-            </label>
+          <FormField
+            htmlFor="register-team"
+            label={intl.formatMessage({ id: 'register.field.team' })}
+            error={fieldState.error?.message}
+            hint={intl.formatMessage({ id: 'register.field.team.hint' })}
+            className="mb-4"
+          >
             <select
               {...field}
               id="register-team"
@@ -104,7 +133,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess }) => {
               aria-invalid={!!fieldState.error}
             >
               <option value="" disabled>
-                Select a team…
+                {intl.formatMessage({ id: 'register.field.team.placeholder' })}
               </option>
               {teams.map(team => (
                 <option key={team.id} value={team.id}>
@@ -112,57 +141,53 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess }) => {
                 </option>
               ))}
             </select>
-            {fieldState.error && <p className="text-destructive text-xs">{fieldState.error.message}</p>}
-            <p className="text-muted-foreground text-xs leading-relaxed">
-              Votre inscription sera soumise à la validation de l&apos;administrateur de l&apos;équipe avant d&apos;être
-              activée.
-            </p>
-          </div>
+          </FormField>
         )}
       />
 
-      {/* Personal info */}
-      <p className="text-muted-foreground mb-3 text-[0.72rem] font-semibold tracking-widest uppercase">Personal info</p>
+      <SectionLabel>
+        <FormattedMessage id="register.section.personalInfo" />
+      </SectionLabel>
 
       <div className="mb-4 grid grid-cols-2 gap-3">
         <Controller
           name="firstName"
           control={control}
           render={({ field, fieldState }) => (
-            <div className="flex flex-col gap-1.5">
-              <label htmlFor="register-firstname" className="text-sm leading-none font-medium">
-                First name
-              </label>
+            <FormField
+              htmlFor="register-firstname"
+              label={intl.formatMessage({ id: 'register.field.firstName' })}
+              error={fieldState.error?.message}
+            >
               <Input
                 {...field}
                 id="register-firstname"
                 type="text"
-                placeholder="Guy"
+                placeholder={intl.formatMessage({ id: 'register.field.firstName.placeholder' })}
                 autoComplete="given-name"
                 aria-invalid={!!fieldState.error}
               />
-              {fieldState.error && <p className="text-destructive text-xs">{fieldState.error.message}</p>}
-            </div>
+            </FormField>
           )}
         />
         <Controller
           name="lastName"
           control={control}
           render={({ field, fieldState }) => (
-            <div className="flex flex-col gap-1.5">
-              <label htmlFor="register-lastname" className="text-sm leading-none font-medium">
-                Last name
-              </label>
+            <FormField
+              htmlFor="register-lastname"
+              label={intl.formatMessage({ id: 'register.field.lastName' })}
+              error={fieldState.error?.message}
+            >
               <Input
                 {...field}
                 id="register-lastname"
                 type="text"
-                placeholder="Dupont"
+                placeholder={intl.formatMessage({ id: 'register.field.lastName.placeholder' })}
                 autoComplete="family-name"
                 aria-invalid={!!fieldState.error}
               />
-              {fieldState.error && <p className="text-destructive text-xs">{fieldState.error.message}</p>}
-            </div>
+            </FormField>
           )}
         />
       </div>
@@ -171,53 +196,45 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess }) => {
         name="email"
         control={control}
         render={({ field, fieldState }) => (
-          <div className="mb-4 flex flex-col gap-1.5">
-            <label htmlFor="register-email" className="text-sm leading-none font-medium">
-              Email address
-            </label>
+          <FormField
+            htmlFor="register-email"
+            label={intl.formatMessage({ id: 'register.field.email' })}
+            error={fieldState.error?.message}
+            className="mb-4"
+          >
             <Input
               {...field}
               id="register-email"
               type="email"
-              placeholder="you@example.com"
+              placeholder={intl.formatMessage({ id: 'register.field.email.placeholder' })}
               autoComplete="email"
               aria-invalid={!!fieldState.error}
             />
-            {fieldState.error && <p className="text-destructive text-xs">{fieldState.error.message}</p>}
-          </div>
+          </FormField>
         )}
       />
 
-      {/* Security */}
-      <p className="text-muted-foreground mb-3 text-[0.72rem] font-semibold tracking-widest uppercase">Security</p>
+      <SectionLabel>
+        <FormattedMessage id="register.section.security" />
+      </SectionLabel>
 
       <Controller
         name="password"
         control={control}
         render={({ field, fieldState }) => (
-          <div className="mb-4 flex flex-col gap-1.5">
-            <label htmlFor="register-password" className="text-sm leading-none font-medium">
-              Password
-            </label>
-            <div className="relative">
-              <Input
-                {...field}
-                id="register-password"
-                type={showPw ? 'text' : 'password'}
-                placeholder="Min. 8 characters"
-                autoComplete="new-password"
-                aria-invalid={!!fieldState.error}
-                className="pr-10"
-              />
-              <button
-                type="button"
-                className="text-muted-foreground hover:text-foreground absolute top-1/2 right-2.5 -translate-y-1/2 rounded p-0.5 transition-colors"
-                onClick={() => setShowPw(v => !v)}
-                aria-label={showPw ? 'Hide password' : 'Show password'}
-              >
-                {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
-            </div>
+          <FormField
+            htmlFor="register-password"
+            label={intl.formatMessage({ id: 'register.field.password' })}
+            error={fieldState.error?.message}
+            className="mb-4"
+          >
+            <PasswordInput
+              {...field}
+              id="register-password"
+              placeholder={intl.formatMessage({ id: 'register.field.password.placeholder' })}
+              autoComplete="new-password"
+              aria-invalid={!!fieldState.error}
+            />
             {passwordValue && (
               <div className="mt-0.5">
                 <div className="flex gap-1">
@@ -225,17 +242,16 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess }) => {
                     <div
                       key={i}
                       className="h-0.5 flex-1 rounded-sm transition-colors duration-200"
-                      style={{
-                        background: strength >= i ? STRENGTH_COLORS[strength] : 'var(--border)',
-                      }}
+                      style={{ background: strength >= i ? STRENGTH_COLORS[strength] : 'var(--border)' }}
                     />
                   ))}
                 </div>
-                <p className="text-muted-foreground mt-0.5 text-[0.72rem]">{STRENGTH_LABELS[strength]}</p>
+                <p className="text-muted-foreground mt-0.5 text-[0.72rem]">
+                  <FormattedMessage id={STRENGTH_KEYS[strength]} />
+                </p>
               </div>
             )}
-            {fieldState.error && <p className="text-destructive text-xs">{fieldState.error.message}</p>}
-          </div>
+          </FormField>
         )}
       />
 
@@ -243,37 +259,26 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess }) => {
         name="confirmPassword"
         control={control}
         render={({ field, fieldState }) => (
-          <div className="mb-5 flex flex-col gap-1.5">
-            <label htmlFor="register-confirm-password" className="text-sm leading-none font-medium">
-              Confirm password
-            </label>
-            <div className="relative">
-              <Input
-                {...field}
-                id="register-confirm-password"
-                type={showConfirm ? 'text' : 'password'}
-                placeholder="••••••••"
-                autoComplete="new-password"
-                aria-invalid={!!fieldState.error}
-                className="pr-10"
-              />
-              <button
-                type="button"
-                className="text-muted-foreground hover:text-foreground absolute top-1/2 right-2.5 -translate-y-1/2 rounded p-0.5 transition-colors"
-                onClick={() => setShowConfirm(v => !v)}
-                aria-label={showConfirm ? 'Hide password' : 'Show password'}
-              >
-                {showConfirm ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
-            </div>
-            {fieldState.error && <p className="text-destructive text-xs">{fieldState.error.message}</p>}
-          </div>
+          <FormField
+            htmlFor="register-confirm-password"
+            label={intl.formatMessage({ id: 'register.field.confirmPassword' })}
+            error={fieldState.error?.message}
+            className="mb-5"
+          >
+            <PasswordInput
+              {...field}
+              id="register-confirm-password"
+              placeholder="••••••••"
+              autoComplete="new-password"
+              aria-invalid={!!fieldState.error}
+            />
+          </FormField>
         )}
       />
 
-      <Button type="submit" variant="default" disabled={!isValid || !isDirty || isSubmitting} className="h-10 w-full">
+      <Button type="submit" variant="default" isDisabled={!isValid || !isDirty || isSubmitting} className="h-10 w-full">
         {isSubmitting && <Loader2 className="animate-spin" size={16} />}
-        Create account
+        <FormattedMessage id="register.submit" />
       </Button>
     </Form>
   )

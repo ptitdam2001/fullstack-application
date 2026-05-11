@@ -65,5 +65,28 @@
   },
   "theme": {
     "selectTitle": "Select your theme"
+  },
+  "register": {
+    "section.team": "Your team",
+    "section.personalInfo": "Personal info",
+    "section.security": "Security",
+    "field.team": "Team",
+    "field.team.placeholder": "Select a team…",
+    "field.team.hint": "Your registration will be submitted to the team admin for approval before being activated.",
+    "field.firstName": "First name",
+    "field.firstName.placeholder": "Guy",
+    "field.lastName": "Last name",
+    "field.lastName.placeholder": "Dupont",
+    "field.email": "Email address",
+    "field.email.placeholder": "you@example.com",
+    "field.password": "Password",
+    "field.password.placeholder": "Min. 8 characters",
+    "field.confirmPassword": "Confirm password",
+    "submit": "Create account",
+    "success": "Registration submitted — awaiting team admin approval.",
+    "strength.weak": "Weak",
+    "strength.fair": "Fair",
+    "strength.good": "Good",
+    "strength.strong": "Strong"
   }
 }

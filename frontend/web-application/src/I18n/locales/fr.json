@@ -65,5 +65,28 @@
   },
   "theme": {
     "selectTitle": "Sélectionner le thème"
+  },
+  "register": {
+    "section.team": "Votre équipe",
+    "section.personalInfo": "Informations personnelles",
+    "section.security": "Sécurité",
+    "field.team": "Équipe",
+    "field.team.placeholder": "Sélectionner une équipe…",
+    "field.team.hint": "Votre inscription sera soumise à la validation de l'administrateur de l'équipe avant d'être activée.",
+    "field.firstName": "Prénom",
+    "field.firstName.placeholder": "Guy",
+    "field.lastName": "Nom",
+    "field.lastName.placeholder": "Dupont",
+    "field.email": "Adresse e-mail",
+    "field.email.placeholder": "vous@exemple.com",
+    "field.password": "Mot de passe",
+    "field.password.placeholder": "Min. 8 caractères",
+    "field.confirmPassword": "Confirmer le mot de passe",
+    "submit": "Créer un compte",
+    "success": "Inscription soumise — en attente de validation de l'administrateur.",
+    "strength.weak": "Faible",
+    "strength.fair": "Moyen",
+    "strength.good": "Bon",
+    "strength.strong": "Fort"
   }
 }
