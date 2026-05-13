@@ -5,10 +5,18 @@ import type { LoginResult } from '../domain/User.js'
 import type { IUserTeamRepository } from '../../userTeam/ports/IUserTeamRepository.js'
 import type { IUserMatchRepository } from '../../userMatch/ports/IUserMatchRepository.js'
 import { TeamRole } from '../../userTeam/domain/UserTeam.js'
-import { InvalidCredentialsError } from '../domain/AuthErrors.js'
+import { InvalidCredentialsError, EmailAlreadyInUseError } from '../domain/AuthErrors.js'
 import { UserNotFoundError } from '../../user/domain/UserErrors.js'
 
 export type UserProfileWithRoles = UserProfile & { roles: string[] }
+
+export type RegisterInput = {
+  firstName: string
+  lastName?: string
+  email: string
+  password: string
+  teamId?: string
+}
 
 export class AuthUseCases {
   constructor(
@@ -61,5 +69,31 @@ export class AuthUseCases {
     }
 
     return { ...user, roles }
+  }
+
+  async register(input: RegisterInput): Promise<UserProfile> {
+    const existing = await this.userRepo.findByEmailWithPassword(input.email)
+    if (existing) {
+      throw new EmailAlreadyInUseError()
+    }
+
+    const hashed = await this.authService.hashPassword(input.password)
+    const user = await this.userRepo.create({
+      firstName: input.firstName,
+      lastName: input.lastName,
+      email: input.email,
+      password: hashed,
+      isAdmin: false,
+    })
+
+    if (input.teamId) {
+      try {
+        await this.userTeamRepo.assign(user.id, input.teamId, TeamRole.PLAYER)
+      } catch {
+        // teamId invalide ou introuvable — on ignore silencieusement
+      }
+    }
+
+    return user
   }
 }

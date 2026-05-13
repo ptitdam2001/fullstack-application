@@ -2,7 +2,7 @@ import type { Request, Response } from 'express'
 import type { Context } from 'openapi-backend'
 import { AuthUseCases } from '../application/AuthUseCases.js'
 import { getAuthUserId } from '../application/requireRoles.js'
-import { InvalidCredentialsError } from '../domain/AuthErrors.js'
+import { InvalidCredentialsError, EmailAlreadyInUseError } from '../domain/AuthErrors.js'
 import { UserNotFoundError } from '../../user/domain/UserErrors.js'
 import { UnauthorizedError } from '../domain/AuthErrors.js'
 import { PrismaUserRepository } from '../../user/infrastructure/PrismaUserRepository.js'
@@ -25,6 +25,19 @@ export const login = async (_: Context, req: Request, res: Response) => {
   } catch (err) {
     if (err instanceof UserNotFoundError || err instanceof InvalidCredentialsError) {
       return res.status(403).json({ message: 'Invalid credentials', status: 403 })
+    }
+    logger.error(err)
+    return res.status(500).json({ message: 'Error! Something went wrong.', status: 500 })
+  }
+}
+
+export const register = async (_: Context, req: Request, res: Response) => {
+  try {
+    const user = await useCases.register(req.body)
+    return res.status(201).json(user)
+  } catch (err) {
+    if (err instanceof EmailAlreadyInUseError) {
+      return res.status(409).json({ message: 'Email already in use', status: 409 })
     }
     logger.error(err)
     return res.status(500).json({ message: 'Error! Something went wrong.', status: 500 })

@@ -51,6 +51,15 @@ const loginRateLimit = rateLimit({
 })
 app.post('/login', loginRateLimit)
 
+const registerRateLimit = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  limit: 5,
+  standardHeaders: 'draft-8',
+  legacyHeaders: false,
+  message: { status: 429, message: 'Too many registration attempts, please try again later.' },
+})
+app.post('/register', registerRateLimit)
+
 const api = new OpenAPIBackend({
   definition: './openapi.yml',
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
