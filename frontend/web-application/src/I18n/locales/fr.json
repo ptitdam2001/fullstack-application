@@ -87,6 +87,12 @@
     "strength.weak": "Faible",
     "strength.fair": "Moyen",
     "strength.good": "Bon",
-    "strength.strong": "Fort"
+    "strength.strong": "Fort",
+    "error.required": "Requis.",
+    "error.invalidEmail": "Adresse e-mail invalide.",
+    "error.passwordTooShort": "8 caractères minimum.",
+    "error.passwordMismatch": "Les mots de passe ne correspondent pas.",
+    "error.emailInUse": "Cette adresse e-mail est déjà utilisée.",
+    "error.generic": "Une erreur est survenue. Veuillez réessayer."
   }
 }

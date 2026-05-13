@@ -87,6 +87,12 @@
     "strength.weak": "Weak",
     "strength.fair": "Fair",
     "strength.good": "Good",
-    "strength.strong": "Strong"
+    "strength.strong": "Strong",
+    "error.required": "Required.",
+    "error.invalidEmail": "Enter a valid email address.",
+    "error.passwordTooShort": "Minimum 8 characters.",
+    "error.passwordMismatch": "Passwords do not match.",
+    "error.emailInUse": "This email address is already registered.",
+    "error.generic": "An error occurred. Please try again."
   }
 }
