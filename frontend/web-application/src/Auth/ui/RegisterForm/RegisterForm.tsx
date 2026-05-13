@@ -1,5 +1,6 @@
+import { useMemo } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { z } from 'zod'
 import {
   Button,
@@ -14,24 +15,36 @@ import {
   Toast,
 } from '@repo/design-system'
 import { Loader2 } from 'lucide-react'
+import { isAxiosError } from 'axios'
 import { FormattedMessage, useIntl } from '@I18n/translation'
 import { TeamSelectField } from '@Teams'
+import { useRegister } from '@Auth/infrastructure/useAuthApi'
 
-const RegisterSchema = z
-  .object({
-    teamId: z.string().optional(),
-    firstName: z.string().min(1, 'Required.'),
-    lastName: z.string().min(1, 'Required.'),
-    email: z.email('Enter a valid email address.'),
-    password: z.string().min(8, 'Minimum 8 characters.'),
-    confirmPassword: z.string().min(1, 'Please confirm your password.'),
-  })
-  .refine(data => data.password === data.confirmPassword, {
-    message: 'Passwords do not match.',
-    path: ['confirmPassword'],
-  })
+const _schemaForTypes = z.object({
+  teamId: z.string().optional(),
+  firstName: z.string().min(1),
+  lastName: z.string().min(1),
+  email: z.string(),
+  password: z.string().min(8),
+  confirmPassword: z.string().min(1),
+})
 
-type RegisterFormValues = z.infer<typeof RegisterSchema>
+type RegisterFormValues = z.infer<typeof _schemaForTypes>
+
+const buildSchema = (t: (id: string) => string) =>
+  z
+    .object({
+      teamId: z.string().optional(),
+      firstName: z.string().min(1, t('register.error.required')),
+      lastName: z.string().min(1, t('register.error.required')),
+      email: z.email(t('register.error.invalidEmail')),
+      password: z.string().min(8, t('register.error.passwordTooShort')),
+      confirmPassword: z.string().min(1, t('register.error.required')),
+    })
+    .refine(data => data.password === data.confirmPassword, {
+      message: t('register.error.passwordMismatch'),
+      path: ['confirmPassword'],
+    })
 
 function passwordStrength(pw: string): number {
   if (!pw) {
@@ -50,7 +63,7 @@ function passwordStrength(pw: string): number {
   if (/[^A-Za-z0-9]/.test(pw)) {
     score++
   }
-  return score
+  return score || 1
 }
 
 const STRENGTH_COLORS = ['', 'oklch(0.577 0.245 27)', 'oklch(0.75 0.18 60)', 'oklch(0.65 0.18 145)', 'oklch(0.5 0.18 145)']
@@ -73,25 +86,51 @@ type RegisterFormProps = {
 export const RegisterForm = ({ onSuccess }: RegisterFormProps) => {
   const toast = Toast.useToast()
   const intl = useIntl()
+  const { mutateAsync: register } = useRegister()
 
-  const form = useForm<RegisterFormValues>({
-    resolver: zodResolver(RegisterSchema),
-    mode: 'all',
+  const schema = useMemo(() => buildSchema(id => intl.formatMessage({ id })), [intl])
+
+  const methods = useForm<RegisterFormValues>({
+    resolver: zodResolver(schema),
+    mode: 'onTouched',
+    defaultValues: {
+      teamId: undefined,
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
   })
-  const { handleSubmit, watch, formState: { isSubmitting, isValid, isDirty } } = form
+  const { handleSubmit, formState: { isSubmitting, isValid, isDirty } } = methods
 
-  const passwordValue = watch('password') ?? ''
+  const passwordValue = useWatch({ control: methods.control, name: 'password' })
   const strength = passwordStrength(passwordValue)
 
-  const onSubmit = async (_data: RegisterFormValues) => {
-    // TODO: wire up to register API when endpoint is available
-    await new Promise(r => setTimeout(r, 800))
-    toast(intl.formatMessage({ id: 'register.success' }))
-    onSuccess?.()
+  const onSubmit = async (data: RegisterFormValues) => {
+    try {
+      await register({
+        data: {
+          firstName: data.firstName,
+          lastName: data.lastName || undefined,
+          email: data.email,
+          password: data.password,
+          teamId: data.teamId || undefined,
+        },
+      })
+      toast(intl.formatMessage({ id: 'register.success' }))
+      onSuccess?.()
+    } catch (err) {
+      const messageId =
+        isAxiosError(err) && err.response?.status === 409
+          ? 'register.error.emailInUse'
+          : 'register.error.generic'
+      toast(intl.formatMessage({ id: messageId }))
+    }
   }
 
   return (
-    <Form {...form}>
+    <Form {...methods}>
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-0" data-testid="register-form">
         <SectionLabel>
           <FormattedMessage id="register.section.team" />
@@ -99,7 +138,7 @@ export const RegisterForm = ({ onSuccess }: RegisterFormProps) => {
 
         <FormField
           name="teamId"
-          control={form.control}
+          control={methods.control}
           render={({ field, fieldState }) => (
             <FormItem className="mb-4 flex flex-col gap-1.5">
               <FormLabel htmlFor="register-team">
@@ -124,7 +163,7 @@ export const RegisterForm = ({ onSuccess }: RegisterFormProps) => {
         <div className="mb-4 grid grid-cols-2 gap-3">
           <FormField
             name="firstName"
-            control={form.control}
+            control={methods.control}
             render={({ field, fieldState }) => (
               <FormItem className="flex flex-col gap-1.5">
                 <FormLabel htmlFor="register-firstname">
@@ -144,7 +183,7 @@ export const RegisterForm = ({ onSuccess }: RegisterFormProps) => {
           />
           <FormField
             name="lastName"
-            control={form.control}
+            control={methods.control}
             render={({ field, fieldState }) => (
               <FormItem className="flex flex-col gap-1.5">
                 <FormLabel htmlFor="register-lastname">
@@ -166,7 +205,7 @@ export const RegisterForm = ({ onSuccess }: RegisterFormProps) => {
 
         <FormField
           name="email"
-          control={form.control}
+          control={methods.control}
           render={({ field, fieldState }) => (
             <FormItem className="mb-4 flex flex-col gap-1.5">
               <FormLabel htmlFor="register-email">
@@ -191,7 +230,7 @@ export const RegisterForm = ({ onSuccess }: RegisterFormProps) => {
 
         <FormField
           name="password"
-          control={form.control}
+          control={methods.control}
           render={({ field, fieldState }) => (
             <FormItem className="mb-4 flex flex-col gap-1.5">
               <FormLabel htmlFor="register-password">
@@ -227,7 +266,7 @@ export const RegisterForm = ({ onSuccess }: RegisterFormProps) => {
 
         <FormField
           name="confirmPassword"
-          control={form.control}
+          control={methods.control}
           render={({ field, fieldState }) => (
             <FormItem className="mb-5 flex flex-col gap-1.5">
               <FormLabel htmlFor="register-confirm-password">

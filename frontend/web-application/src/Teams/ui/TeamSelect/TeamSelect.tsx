@@ -16,7 +16,7 @@ type TeamSelectProps = Omit<React.ComponentProps<'select'>, 'children'> & {
 export const TeamSelect = ({ teams, placeholder = '—', multiple, className, ...props }: TeamSelectProps) => (
   <select
     multiple={multiple}
-    className={[SELECT_BASE_CLASS, multiple ? 'h-auto min-h-[6rem]' : 'h-9', className].filter(Boolean).join(' ')}
+    className={[SELECT_BASE_CLASS, multiple ? 'h-auto min-h-24' : 'h-9', className].filter(Boolean).join(' ')}
     {...props}
   >
     {!multiple && (

@@ -23,6 +23,7 @@ export const PasswordInput = ({
       <Input {...props} type={show ? 'text' : 'password'} className={cn('pr-10', className)} />
       <AriaButton
         className="text-muted-foreground hover:text-foreground pressed:text-foreground absolute top-1/2 right-2.5 -translate-y-1/2 rounded p-0.5 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        type="button"
         onPress={() => setShow(v => !v)}
         aria-label={show ? hidePasswordLabel : showPasswordLabel}
       >
