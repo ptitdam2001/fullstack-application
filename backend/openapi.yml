@@ -61,11 +61,44 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
+  /register:
+    post:
+      operationId: register
+      tags:
+        - Authentication
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterInput'
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserWithoutPassword'
+        '409':
+          description: Email already in use
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorOutput'
+        '500':
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorOutput'
+
   /forgot-password:
     post:
       operationId: forgotPassword
       tags:
         - Authentication
+      security: []
       requestBody:
         content:
           application/json:
@@ -112,6 +145,7 @@ paths:
       description: ''
       tags:
         - Users
+      security: []
       parameters: []
       requestBody:
         content:
@@ -168,6 +202,7 @@ paths:
       description: 'get list of teams'
       tags:
         - Teams
+      security: []
       parameters:
         - in: query
           name: page
@@ -194,6 +229,7 @@ paths:
       description: count the number of teams
       tags:
         - Teams
+      security: []
       parameters: []
       responses:
         200:
@@ -1572,6 +1608,28 @@ components:
       scheme: 'bearer'
       bearerFormat: 'JWT'
   schemas:
+    RegisterInput:
+      type: object
+      required:
+        - firstName
+        - email
+        - password
+      properties:
+        firstName:
+          type: string
+          minLength: 1
+        lastName:
+          type: string
+          nullable: true
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+        teamId:
+          type: string
+          nullable: true
     Count:
       type: integer
       nullable: false
