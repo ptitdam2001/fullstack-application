@@ -1,0 +1,25 @@
+meta {
+  name: Update Area
+  type: http
+  seq: 5
+}
+
+patch {
+  url: {{baseUrl}}/areas/{{areaId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "Gymnase Municipal (updated)",
+    "address": "1 rue de la Paix",
+    "city": "Paris",
+    "longitude": 2.3308,
+    "latitude": 48.8698
+  }
+}

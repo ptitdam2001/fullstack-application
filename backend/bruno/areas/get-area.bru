@@ -1,0 +1,15 @@
+meta {
+  name: Get Area
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/areas/{{areaId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

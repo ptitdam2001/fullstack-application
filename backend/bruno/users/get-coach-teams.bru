@@ -1,0 +1,15 @@
+meta {
+  name: Get Coach Teams
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{baseUrl}}/user/{{userId}}/coach-teams
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

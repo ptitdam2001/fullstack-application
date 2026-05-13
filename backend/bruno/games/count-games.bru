@@ -1,0 +1,15 @@
+meta {
+  name: Count Games
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/games/count
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

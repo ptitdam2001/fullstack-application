@@ -1,0 +1,31 @@
+meta {
+  name: Create Game
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/game
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "date": "2026-06-01T15:00:00.000Z",
+    "teams": [
+      { "teamId": "{{teamId}}", "score": null },
+      { "teamId": "{{teamId}}", "score": null }
+    ]
+  }
+}
+
+script:post-response {
+  if (res.status === 200 && res.body._id) {
+    bru.setVar("gameId", res.body._id);
+  }
+}

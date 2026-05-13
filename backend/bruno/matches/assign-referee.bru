@@ -1,0 +1,15 @@
+meta {
+  name: Assign Referee
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{baseUrl}}/match/{{matchId}}/referee/{{userId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

@@ -1,0 +1,15 @@
+meta {
+  name: Remove Referee
+  type: http
+  seq: 9
+}
+
+delete {
+  url: {{baseUrl}}/match/{{matchId}}/referee/{{userId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

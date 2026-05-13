@@ -1,0 +1,31 @@
+meta {
+  name: Create Area
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/areas
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "Gymnase Municipal",
+    "address": "1 rue de la Paix",
+    "city": "Paris",
+    "longitude": 2.3308,
+    "latitude": 48.8698
+  }
+}
+
+script:post-response {
+  if (res.status === 200 && res.body._id) {
+    bru.setVar("areaId", res.body._id);
+  }
+}

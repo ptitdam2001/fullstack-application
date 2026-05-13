@@ -1,0 +1,15 @@
+meta {
+  name: Get Match Referees
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{baseUrl}}/match/{{matchId}}/referees
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
