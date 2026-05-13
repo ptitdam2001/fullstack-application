@@ -7,8 +7,7 @@ import Axios, { type AxiosError, type AxiosRequestConfig } from 'axios'
 import { clearAuthStorage } from '@Auth/infrastructure/authStorage'
 import { redirectToLogin } from '@Auth/infrastructure/authNavigation'
 
-// const getBaseUrl = () => import.meta.env.BACKEND_BASEURL
-const getBaseUrl = () => 'http://localhost:4000/'
+const getBaseUrl = () => import.meta.env.VITE_BACKEND_BASEURL ?? 'http://localhost:4000/'
 
 const getAxiosConfig = (): AxiosRequestConfig => {
   const localstorageContent = localStorage.getItem('user')
@@ -43,7 +42,6 @@ AXIOS_INSTANCE.interceptors.response.use(
 export const customAxiosInstance = <T>(config: AxiosRequestConfig, options?: AxiosRequestConfig): Promise<T> => {
   const source = Axios.CancelToken.source()
   const baseRequestConfig = getAxiosConfig()
-
   const requestConfig = {
     ...baseRequestConfig,
     ...config,
