@@ -3,7 +3,6 @@ import { render, screen } from '@testing-library/react'
 import { Table } from './Table'
 import { TableHeader } from './TableHeader'
 import { TableBody } from './TableBody'
-import { TableFooter } from './TableFooter'
 import { TableRow } from './TableRow'
 import { TableHead } from './TableHead'
 import { TableCell } from './TableCell'
@@ -11,13 +10,10 @@ import { TableCaption } from './TableCaption'
 
 function BasicTable() {
   return (
-    <Table>
-      <TableCaption>Classement</TableCaption>
+    <Table aria-label="Classement">
       <TableHeader>
-        <TableRow>
-          <TableHead>Équipe</TableHead>
-          <TableHead>Pts</TableHead>
-        </TableRow>
+        <TableHead>Équipe</TableHead>
+        <TableHead>Pts</TableHead>
       </TableHeader>
       <TableBody>
         <TableRow>
@@ -25,12 +21,6 @@ function BasicTable() {
           <TableCell>18</TableCell>
         </TableRow>
       </TableBody>
-      <TableFooter>
-        <TableRow>
-          <TableCell>Total</TableCell>
-          <TableCell>18</TableCell>
-        </TableRow>
-      </TableFooter>
     </Table>
   )
 }
@@ -41,65 +31,108 @@ describe('Table', () => {
     expect(container.querySelector('[data-slot="table"]')).toBeInTheDocument()
   })
 
-  it('renders as table element', () => {
+  it('renders as grid or table element', () => {
     render(<BasicTable />)
-    expect(screen.getByRole('table')).toBeInTheDocument()
+    const el = screen.queryByRole('grid') ?? screen.queryByRole('table')
+    expect(el).toBeInTheDocument()
   })
 
   it('forwards className', () => {
-    const { container } = render(<Table className="custom" />)
+    const { container } = render(<Table aria-label="test" className="custom" />)
     expect(container.querySelector('[data-slot="table"]')).toHaveClass('custom')
   })
 })
 
 describe('TableHeader', () => {
   it('sets data-slot="table-header"', () => {
-    const { container } = render(<Table><TableHeader /></Table>)
+    const { container } = render(
+      <Table aria-label="test">
+        <TableHeader>
+          <TableHead>Col</TableHead>
+        </TableHeader>
+        <TableBody />
+      </Table>
+    )
     expect(container.querySelector('[data-slot="table-header"]')).toBeInTheDocument()
   })
 })
 
 describe('TableBody', () => {
   it('sets data-slot="table-body"', () => {
-    const { container } = render(<Table><TableBody /></Table>)
+    const { container } = render(
+      <Table aria-label="test">
+        <TableHeader><TableHead>Col</TableHead></TableHeader>
+        <TableBody />
+      </Table>
+    )
     expect(container.querySelector('[data-slot="table-body"]')).toBeInTheDocument()
   })
 })
 
 describe('TableRow', () => {
   it('sets data-slot="table-row"', () => {
-    const { container } = render(<Table><TableBody><TableRow /></TableBody></Table>)
+    const { container } = render(
+      <Table aria-label="test">
+        <TableHeader><TableHead>Col</TableHead></TableHeader>
+        <TableBody>
+          <TableRow>
+            <TableCell>Val</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    )
     expect(container.querySelector('[data-slot="table-row"]')).toBeInTheDocument()
   })
 })
 
 describe('TableHead', () => {
   it('sets data-slot="table-head"', () => {
-    const { container } = render(<Table><TableHeader><TableRow><TableHead>Col</TableHead></TableRow></TableHeader></Table>)
+    const { container } = render(
+      <Table aria-label="test">
+        <TableHeader>
+          <TableHead>Col</TableHead>
+        </TableHeader>
+        <TableBody />
+      </Table>
+    )
     expect(container.querySelector('[data-slot="table-head"]')).toBeInTheDocument()
   })
 })
 
 describe('TableCell', () => {
   it('sets data-slot="table-cell"', () => {
-    const { container } = render(<Table><TableBody><TableRow><TableCell>Val</TableCell></TableRow></TableBody></Table>)
+    const { container } = render(
+      <Table aria-label="test">
+        <TableHeader><TableHead>Col</TableHead></TableHeader>
+        <TableBody>
+          <TableRow><TableCell>Val</TableCell></TableRow>
+        </TableBody>
+      </Table>
+    )
     expect(container.querySelector('[data-slot="table-cell"]')).toBeInTheDocument()
   })
 
   it('renders cell content', () => {
-    render(<Table><TableBody><TableRow><TableCell>Équipe A</TableCell></TableRow></TableBody></Table>)
+    render(
+      <Table aria-label="test">
+        <TableHeader><TableHead>Col</TableHead></TableHeader>
+        <TableBody>
+          <TableRow><TableCell>Équipe A</TableCell></TableRow>
+        </TableBody>
+      </Table>
+    )
     expect(screen.getByText('Équipe A')).toBeInTheDocument()
   })
 })
 
 describe('TableCaption', () => {
   it('sets data-slot="table-caption"', () => {
-    const { container } = render(<Table><TableCaption>Cap</TableCaption></Table>)
+    const { container } = render(<table><TableCaption>Cap</TableCaption></table>)
     expect(container.querySelector('[data-slot="table-caption"]')).toBeInTheDocument()
   })
 
   it('renders caption text', () => {
-    render(<Table><TableCaption>Classement général</TableCaption></Table>)
+    render(<table><TableCaption>Classement général</TableCaption></table>)
     expect(screen.getByText('Classement général')).toBeInTheDocument()
   })
 })

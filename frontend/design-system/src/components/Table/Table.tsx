@@ -1,10 +1,11 @@
 import * as React from 'react'
+import { Table as AriaTable, type TableProps } from 'react-aria-components'
 
 import { cn } from '../../utils/cn'
 
-export const Table = ({ className, ...props }: React.ComponentProps<'table'>) => (
+export const Table = ({ className, ...props }: TableProps) => (
   <div className="relative w-full overflow-auto">
-    <table
+    <AriaTable
       data-slot="table"
       className={cn('w-full caption-bottom text-sm', className)}
       {...props}
