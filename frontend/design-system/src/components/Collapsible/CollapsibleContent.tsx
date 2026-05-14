@@ -33,11 +33,17 @@ const PanelStateSync = () => {
 export const CollapsibleContent = ({ className, children, ...props }: CollapsibleContentProps) => (
   <DisclosurePanel
     data-slot="collapsible-content"
-    className={cn(className)}
+    className={cn(
+      '!grid grid-rows-[0fr] [&:not([hidden])]:grid-rows-[1fr]',
+      'transition-[grid-template-rows] duration-200 ease-in-out',
+      className
+    )}
     {...props}
   >
-    <PanelStateSync />
-    {children}
+    <div className="min-h-0 overflow-hidden">
+      <PanelStateSync />
+      {children}
+    </div>
   </DisclosurePanel>
 )
 
