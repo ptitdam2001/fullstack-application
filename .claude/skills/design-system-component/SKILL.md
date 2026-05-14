@@ -136,17 +136,28 @@ export const BadgeVariants = cva(
 )
 ```
 
-### Pattern asChild (composants polymorphes)
-```tsx
-import { Slot } from '../../utils/Slot'
+### INTERDIT — `asChild` / `Slot`
 
-type Props = React.ComponentProps<'button'> & { asChild?: boolean }
+`Slot.tsx` a été supprimé du design system. N'utilise **jamais** `asChild` ou `Slot`.
+- Navigation polymorphe → `onPress + useNavigate` ou `Link` react-aria avec styles `ButtonVariants`
+- Trigger de Dialog/Menu → utilise directement `Button` (react-aria expose `ButtonContext` aux enfants)
 
-export const NomComposant = ({ asChild, className, ...props }: Props) => {
-  const Comp = asChild ? Slot : 'button'
-  return <Comp data-slot="nom" className={cn('...', className)} {...props} />
-}
+### Tailwind v4 — data attributes (syntaxe obligatoire)
+
+```css
+/* ✅ v4 — sans crochets */
+data-hovered:bg-accent
+data-focused:ring-2
+data-selected:font-bold
+data-disabled:opacity-50
+data-pressed:scale-95
+
+/* ❌ v3 — NE PAS UTILISER */
+data-[hovered]:bg-accent
+data-[focused]:ring-2
 ```
+
+react-aria pose ces attributs sur les éléments — les styles ne s'appliquent qu'avec la syntaxe v4.
 
 ---
 
@@ -167,17 +178,15 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-// Story par défaut
 export const Default: Story = {
   args: { /* props minimaux */ },
 }
 
-// Une story par variant significatif
 export const Destructive: Story = {
   args: { variant: 'destructive' },
 }
 
-// Play function pour les composants interactifs
+// OBLIGATOIRE pour tout composant interactif
 export const Interaction: Story = {
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
@@ -187,10 +196,22 @@ export const Interaction: Story = {
 }
 ```
 
-**Règles stories** :
-- `play` function obligatoire pour tout composant avec état ou événement (click, focus, keyboard)
-- Tester la navigation clavier pour les composants react-aria (Tab, ArrowDown, Enter, Escape)
+**Règles stories — NON NÉGOCIABLES** :
+- `play` function **obligatoire** pour tout composant avec état ou événement (click, focus, open/close, keyboard)
+- Une story sans `play` = story incomplète pour un composant interactif
 - `fn()` pour mocker les callbacks dans `args`
+
+**Interactions react-aria dans les plays** :
+
+| Comportement à tester | Pattern correct |
+|-----------------------|-----------------|
+| Tooltip (trigger focus) | `await userEvent.tab()` — PAS `hover()` |
+| Button click | `await userEvent.click(btn)` ✅ |
+| Menu / Dialog open | `await userEvent.click(trigger)` |
+| Keyboard nav in list | `await userEvent.keyboard('{ArrowDown}')` |
+| Close on Escape | `await userEvent.keyboard('{Escape}')` |
+
+**`userEvent.hover()` ne fonctionne PAS avec react-aria** — useHover interne ignore l'événement jsdom (currentTarget=null). Utilise `userEvent.tab()` pour tester les états focus-triggered.
 
 ---
 
