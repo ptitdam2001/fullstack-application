@@ -28,24 +28,22 @@ const standings = [
 
 export const Standings: Story = {
   render: () => (
-    <Table>
+    <Table aria-label="Classement — Championnat U13 — Phase 1">
       <TableCaption>Classement — Championnat U13 — Phase 1</TableCaption>
       <TableHeader>
-        <TableRow>
-          <TableHead className="w-10 text-center">#</TableHead>
-          <TableHead>Équipe</TableHead>
-          <TableHead className="text-center">J</TableHead>
-          <TableHead className="text-center">G</TableHead>
-          <TableHead className="text-center">N</TableHead>
-          <TableHead className="text-center">P</TableHead>
-          <TableHead className="text-center">BP</TableHead>
-          <TableHead className="text-center">BC</TableHead>
-          <TableHead className="text-center font-bold">Pts</TableHead>
-        </TableRow>
+        <TableHead className="w-10 text-center">#</TableHead>
+        <TableHead>Équipe</TableHead>
+        <TableHead className="text-center">J</TableHead>
+        <TableHead className="text-center">G</TableHead>
+        <TableHead className="text-center">N</TableHead>
+        <TableHead className="text-center">P</TableHead>
+        <TableHead className="text-center">BP</TableHead>
+        <TableHead className="text-center">BC</TableHead>
+        <TableHead className="text-center font-bold">Pts</TableHead>
       </TableHeader>
-      <TableBody>
-        {standings.map(row => (
-          <TableRow key={row.rank}>
+      <TableBody items={standings}>
+        {row => (
+          <TableRow id={String(row.rank)}>
             <TableCell className="text-center text-muted-foreground">{row.rank}</TableCell>
             <TableCell className="font-medium">{row.team}</TableCell>
             <TableCell className="text-center">{row.played}</TableCell>
@@ -56,7 +54,7 @@ export const Standings: Story = {
             <TableCell className="text-center">{row.ga}</TableCell>
             <TableCell className="text-center font-bold">{row.pts}</TableCell>
           </TableRow>
-        ))}
+        )}
       </TableBody>
     </Table>
   ),
@@ -64,32 +62,30 @@ export const Standings: Story = {
 
 export const MatchList: Story = {
   render: () => (
-    <Table>
+    <Table aria-label="Liste des matchs">
       <TableHeader>
-        <TableRow>
-          <TableHead>Date</TableHead>
-          <TableHead>Domicile</TableHead>
-          <TableHead className="text-center">Score</TableHead>
-          <TableHead>Extérieur</TableHead>
-          <TableHead>Statut</TableHead>
-        </TableRow>
+        <TableHead>Date</TableHead>
+        <TableHead>Domicile</TableHead>
+        <TableHead className="text-center">Score</TableHead>
+        <TableHead>Extérieur</TableHead>
+        <TableHead>Statut</TableHead>
       </TableHeader>
       <TableBody>
-        <TableRow>
+        <TableRow id="m1">
           <TableCell>12/04/2025</TableCell>
           <TableCell>Équipe A</TableCell>
           <TableCell className="text-center font-mono">3 — 1</TableCell>
           <TableCell>Équipe B</TableCell>
           <TableCell><Badge variant="outline">Terminé</Badge></TableCell>
         </TableRow>
-        <TableRow>
+        <TableRow id="m2">
           <TableCell>19/04/2025</TableCell>
           <TableCell>Équipe C</TableCell>
           <TableCell className="text-center font-mono">— </TableCell>
           <TableCell>Équipe D</TableCell>
           <TableCell><Badge>À venir</Badge></TableCell>
         </TableRow>
-        <TableRow>
+        <TableRow id="m3">
           <TableCell>26/04/2025</TableCell>
           <TableCell>Équipe E</TableCell>
           <TableCell className="text-center font-mono">0 — 4</TableCell>
@@ -103,28 +99,26 @@ export const MatchList: Story = {
 
 export const WithFooter: Story = {
   render: () => (
-    <Table>
+    <Table aria-label="Points par équipe">
       <TableHeader>
-        <TableRow>
-          <TableHead>Équipe</TableHead>
-          <TableHead className="text-right">Points</TableHead>
-        </TableRow>
+        <TableHead>Équipe</TableHead>
+        <TableHead className="text-right">Points</TableHead>
       </TableHeader>
       <TableBody>
-        <TableRow>
+        <TableRow id="r1">
           <TableCell>Équipe A</TableCell>
           <TableCell className="text-right">25</TableCell>
         </TableRow>
-        <TableRow>
+        <TableRow id="r2">
           <TableCell>Équipe B</TableCell>
           <TableCell className="text-right">23</TableCell>
         </TableRow>
       </TableBody>
       <TableFooter>
-        <TableRow>
-          <TableCell>Total</TableCell>
-          <TableCell className="text-right">48</TableCell>
-        </TableRow>
+        <tr>
+          <td className="p-2 font-medium">Total</td>
+          <td className="p-2 text-right font-medium">48</td>
+        </tr>
       </TableFooter>
     </Table>
   ),

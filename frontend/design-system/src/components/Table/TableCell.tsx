@@ -1,14 +1,12 @@
 import * as React from 'react'
+import { Cell, type CellProps } from 'react-aria-components'
 
 import { cn } from '../../utils/cn'
 
-export const TableCell = ({ className, ...props }: React.ComponentProps<'td'>) => (
-  <td
+export const TableCell = ({ className, ...props }: CellProps) => (
+  <Cell
     data-slot="table-cell"
-    className={cn(
-      'p-2 align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]',
-      className
-    )}
+    className={cn('p-2 align-middle whitespace-nowrap', className)}
     {...props}
   />
 )
