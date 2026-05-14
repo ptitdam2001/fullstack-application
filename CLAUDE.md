@@ -348,6 +348,8 @@ Recurring mistakes confirmed by session history — check these before debugging
 | `react-aria-testing` | "tester un composant react-aria", "play function", "test tooltip/hover" | Testing patterns for react-aria: no userEvent.hover, correct interaction APIs, Tailwind v4 data attributes |
 | `rebuild-ds` | "rebuild design system", "change not showing", "vite cache" | Steps to rebuild @repo/design-system and clear stale Vite cache |
 | `openapi-sync` | "updated openapi", "after openapi change", "sync sdk", "sync bruno" | Checklist after openapi.yml changes: gen:sdk + Bruno update + nullability sync |
+| `spec-writer` | "écrire une spec", "nouvelle fonctionnalité", "créer une spec", "spec pour X" | Interview structurée → document de spécification fonctionnelle dans `specifications/` |
+| `spec-tech-writer` | "specs technique", "partie technique", "enrichir la spec", "technical spec" | Interview dev senior → section technique (Prisma, OpenAPI, hexagonal, séquence, sécurité) dans la spec existante |
 
 > Frontend component and module guidance is also available in package-level CLAUDE.md files:
 >
