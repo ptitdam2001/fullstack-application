@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { render, fireEvent } from '@testing-library/react'
+import { render, fireEvent, act } from '@testing-library/react'
 import { Collapsible } from './Collapsible'
 import { CollapsibleTrigger } from './CollapsibleTrigger'
 import { CollapsibleContent } from './CollapsibleContent'
@@ -66,16 +66,17 @@ describe('CollapsibleTrigger', () => {
   })
 
   it('toggles open state on click', () => {
-    const { getByRole, getByText, queryByText } = render(<CollapsibleComposed />)
-    expect(queryByText('Content')).not.toBeInTheDocument()
-    fireEvent.click(getByRole('button'))
-    expect(getByText('Content')).toBeInTheDocument()
+    const { getByRole, getByText } = render(<CollapsibleComposed />)
+    // DisclosurePanel always in DOM; use visibility
+    expect(getByText('Content')).not.toBeVisible()
+    act(() => { fireEvent.click(getByRole('button')) })
+    expect(getByText('Content')).toBeVisible()
   })
 
   it('calls onOpenChange when toggled', () => {
     const handler = vi.fn()
     const { getByRole } = render(<CollapsibleComposed onOpenChange={handler} />)
-    fireEvent.click(getByRole('button'))
+    act(() => { fireEvent.click(getByRole('button')) })
     expect(handler).toHaveBeenCalledWith(true)
   })
 })
@@ -84,13 +85,14 @@ describe('CollapsibleTrigger', () => {
 
 describe('CollapsibleContent', () => {
   it('is hidden when collapsible is closed', () => {
-    const { queryByText } = render(<CollapsibleComposed />)
-    expect(queryByText('Content')).not.toBeInTheDocument()
+    const { getByText } = render(<CollapsibleComposed />)
+    // DisclosurePanel stays in DOM but is hidden
+    expect(getByText('Content')).not.toBeVisible()
   })
 
   it('is visible when collapsible is open', () => {
     const { getByText } = render(<CollapsibleComposed defaultOpen />)
-    expect(getByText('Content')).toBeInTheDocument()
+    expect(getByText('Content')).toBeVisible()
   })
 
   it('sets data-slot="collapsible-content"', () => {
@@ -109,11 +111,12 @@ describe('CollapsibleContent', () => {
 describe('Collapsible (controlled)', () => {
   it('respects controlled open=true', () => {
     const { getByText } = render(<CollapsibleComposed open={true} />)
-    expect(getByText('Content')).toBeInTheDocument()
+    expect(getByText('Content')).toBeVisible()
   })
 
   it('respects controlled open=false', () => {
-    const { queryByText } = render(<CollapsibleComposed open={false} />)
-    expect(queryByText('Content')).not.toBeInTheDocument()
+    const { getByText } = render(<CollapsibleComposed open={false} />)
+    // DisclosurePanel is in DOM but hidden
+    expect(getByText('Content')).not.toBeVisible()
   })
 })
