@@ -196,12 +196,59 @@ Backend references tooling via `workspace:*`. Frontend packages use `file:../../
 - Run the full test suite (`pnpm vitest run` in `backend/`) after any domain model or role/permission refactor.
 - When scaffolding a new domain, include unit tests and ensure they pass before committing.
 
+## Design System Workflow
+
+- After modifying any package in the design-system, ALWAYS rebuild it (`pnpm --filter @repo/design-system build`) before testing in the web app.
+- When Vite changes aren't being picked up, suspect stale dep cache first: clear `node_modules/.vite` before deeper debugging.
+
+### Debugging checklist — "change not picked up"
+
+Before investigating code, eliminate these in order:
+1. Is the design-system built? (`pnpm --filter @repo/design-system build`)
+2. Is `frontend/web-application/node_modules/.vite` stale? (delete it)
+3. Was `pnpm generate:prisma` run after schema changes?
+
+Only after all three are confirmed, investigate code.
+
+## i18n Convention
+
+- NEVER hardcode user-facing strings. All UI text must go through react-intl using `FormattedMessage` or `useIntl` with i18n keys.
+- Test files should mock react-intl consistently with the global setup; don't add per-file `vi.mock('react-intl')` that conflicts with globals.
+
+## Scope Discipline
+
+- Fix only what was asked. Do NOT proactively modify adjacent code (mocks, unrelated stories, refactors) after the primary issue is resolved.
+- If you notice other issues, list them and ASK before touching them.
+
+When the user opens a session with the pattern below, treat the declared scope as a hard boundary:
+
+> "Scope for this session: [issue]. Fix ONLY this. If you notice other issues, add them to a 'follow-ups' list at the end and ask before touching them. Do not refactor adjacent code."
+
+Honour it literally: one scope, one fix, follow-ups listed separately.
+
 ## Commits & Workflow
 
 This repo uses [Conventional Commits](https://www.conventionalcommits.org/) enforced by commitlint + husky. Use `git cz` for an interactive prompt instead of `git commit`.
 
 - Create structured, atomic commits grouped by concern (e.g., security fixes, refactor, tests) rather than single large commits.
 - Push to main after the user confirms completion.
+
+## Commit Strategy
+
+- Make atomic commits per logical change with structured messages.
+- Run tests before each commit; do not commit failing tests.
+- Push to main after the user confirms the work block is complete.
+
+## Working Style
+
+Before writing any code:
+1. Produce a numbered plan — one logical commit per step.
+2. Wait for user approval before starting.
+
+After each step:
+1. Run tests.
+2. Commit with a structured message.
+3. Pause — wait for user to verify before continuing to the next step.
 
 ## Monorepo Layout
 
@@ -267,6 +314,25 @@ openapi-express-ts (backend)
 - Always install from `frontend/` (workspace root), **never** from `frontend/web-application/` — workspace packages (`@repo/design-system`) won't resolve otherwise.
 - Root installs (`/`) cover `tooling/*` only; backend and frontend are independent install roots.
 
+## Known Pitfalls
+
+Recurring mistakes confirmed by session history — check these before debugging or writing code.
+
+| # | Pitfall | Rule |
+|---|---------|------|
+| 1 | **Stale Vite / DS cache** | After any edit to `frontend/design-system/src/`, run `pnpm --filter @repo/design-system build`. If change still not visible: `rm -rf frontend/web-application/node_modules/.vite` then restart Vite. Never debug code before eliminating this. |
+| 2 | **`userEvent.hover()` silent fail** | react-aria `useHover` ignores jsdom hover events (currentTarget=null). Use `userEvent.tab()` to test focus/tooltip triggers. `userEvent.click()` works fine for press/open. |
+| 3 | **Tailwind v4 data attributes** | Use `data-hovered:`, `data-focused:`, `data-selected:`, `data-disabled:` (no brackets). v3 `data-[hovered]:` syntax silently fails in v4 — dark mode and state styles won't apply. |
+| 4 | **Stories missing play functions** | Every interactive design system component needs a `play` function in at least one story. No play = untested open/close/keyboard behavior. Non-negotiable. |
+| 5 | **Bruno not synced after openapi.yml** | After every openapi.yml change, update `backend/bruno/`: add `.bru` for new routes, remove for deleted, update body/params for changed schemas. |
+| 6 | **Stale Prisma client** | After any change to `backend/prisma/schema.prisma`, run `pnpm generate:prisma` immediately. Skip this and you get 500s or TS errors on the next request. |
+| 7 | **Direct react-aria import in web-application** | `web-application` must NEVER import from `react-aria-components` directly. Import from `@repo/design-system` only. The design system re-exports all primitives needed. |
+| 8 | **.env.sample out of sync** | Any time a variable is added or removed from `.env`, update `.env.sample` in the same commit (use placeholder values, no real secrets). |
+| 9 | **Hardcoded i18n strings** | NEVER write user-visible text as string literals in JSX. All UI text goes through `<FormattedMessage id="..." />` or `useIntl().formatMessage(...)`. |
+| 10 | **SDK stale after openapi.yml** | After editing `openapi.yml`, run `pnpm --filter application-material gen:sdk`. Frontend type errors and missing hooks are a symptom of a stale SDK. |
+
+> The post-edit hook in `.claude/hooks/post-edit-remind.sh` surfaces reminders for pitfalls 1, 5, 6, 7, 8 automatically.
+
 ## Skill Authoring Standards
 
 - When creating or refining skills that generate Prisma code, always include: correct nullable syntax, required `select` clauses, and domain-consistent naming conventions.
@@ -279,6 +345,9 @@ openapi-express-ts (backend)
 | `design-system-component` | "créer un composant", "ajouter au design system" | Creates a component in `@repo/design-system` (react-aria + Tailwind + Storybook + co-located tests) |
 | `frontend-feature-module` | "créer le module X", "ajouter une feature" | Scaffolds a frontend feature module following hexagonal architecture (domain/infrastructure/application/ui) |
 | `react-component` | "créer un composant", "nouveau composant React", "implémenter la vue" | Creates a React component in the web app: ESLint/Prettier rules, i18n (FormattedMessage), Design System priority, sub-components, co-located tests |
+| `react-aria-testing` | "tester un composant react-aria", "play function", "test tooltip/hover" | Testing patterns for react-aria: no userEvent.hover, correct interaction APIs, Tailwind v4 data attributes |
+| `rebuild-ds` | "rebuild design system", "change not showing", "vite cache" | Steps to rebuild @repo/design-system and clear stale Vite cache |
+| `openapi-sync` | "updated openapi", "after openapi change", "sync sdk", "sync bruno" | Checklist after openapi.yml changes: gen:sdk + Bruno update + nullability sync |
 
 > Frontend component and module guidance is also available in package-level CLAUDE.md files:
 >
