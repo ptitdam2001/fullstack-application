@@ -1,25 +1,19 @@
 import * as React from 'react'
-import { useCollapsibleContext } from './CollapsibleContext'
+import { Button } from 'react-aria-components'
 
-type CollapsibleTriggerProps = React.ComponentProps<'button'>
+import { cn } from '../../utils/cn'
 
-function CollapsibleTrigger({ onClick, children, ...props }: CollapsibleTriggerProps) {
-  const { open, setOpen, contentId } = useCollapsibleContext()
+type CollapsibleTriggerProps = React.ComponentProps<typeof Button>
 
-  return (
-    <button
-      data-slot="collapsible-trigger"
-      aria-expanded={open}
-      aria-controls={contentId}
-      onClick={(e) => {
-        setOpen(!open)
-        onClick?.(e)
-      }}
-      {...props}
-    >
-      {children}
-    </button>
-  )
-}
+export const CollapsibleTrigger = ({ className, children, ...props }: CollapsibleTriggerProps) => (
+  <Button
+    slot="trigger"
+    data-slot="collapsible-trigger"
+    className={cn(className)}
+    {...props}
+  >
+    {children}
+  </Button>
+)
 
-export { CollapsibleTrigger }
+CollapsibleTrigger.displayName = 'CollapsibleTrigger'

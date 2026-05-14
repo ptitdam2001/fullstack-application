@@ -6,10 +6,7 @@ import { Collapsible } from './Collapsible'
 import { CollapsibleContent } from './CollapsibleContent'
 import { CollapsibleTrigger } from './CollapsibleTrigger'
 
-const meta = {
-  component: Collapsible,
-} satisfies Meta<typeof Collapsible>
-
+const meta = { component: Collapsible } satisfies Meta<typeof Collapsible>
 export default meta
 
 type Story = StoryObj<typeof meta>
@@ -68,11 +65,12 @@ export const TogglesContent: Story = {
     const canvas = within(canvasElement)
     const trigger = canvas.getByRole('button', { name: /toggle repositories/i })
 
-    await expect(canvas.queryByText('Hidden item')).not.toBeInTheDocument()
+    // DisclosurePanel stays in DOM — use visibility check
+    await expect(canvas.getByText('Hidden item')).not.toBeVisible()
     await userEvent.click(trigger)
     await expect(canvas.getByText('Hidden item')).toBeVisible()
     await userEvent.click(trigger)
-    await expect(canvas.queryByText('Hidden item')).not.toBeInTheDocument()
+    await expect(canvas.getByText('Hidden item')).not.toBeVisible()
   },
 }
 
@@ -96,6 +94,6 @@ export const StartsOpen: Story = {
 
     await expect(canvas.getByText('Visible content')).toBeVisible()
     await userEvent.click(trigger)
-    await expect(canvas.queryByText('Visible content')).not.toBeInTheDocument()
+    await expect(canvas.getByText('Visible content')).not.toBeVisible()
   },
 }
