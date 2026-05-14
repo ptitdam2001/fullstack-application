@@ -191,6 +191,6 @@ On next weekly run (week of 2026-05-21):
 4. Update occurrence counts + add new patterns if rank > 10 min/week
 
 ```bash
-# Find new transcripts since last audit
-find /Users/suhard/.claude/projects/ -name "*.jsonl" -newer .claude/friction-audit-2026-05-14.md
+# Find new transcripts since last audit (run from repo root)
+find ~/.claude/projects/ -name "*.jsonl" -newer .claude/friction-audit-2026-05-14.md
 ```
