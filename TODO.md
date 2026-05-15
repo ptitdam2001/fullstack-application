@@ -3,6 +3,9 @@
 ## Global
 
 - Mettre le git privé
+- Dockerisation
+- Test E2E
+- CI: check, deploiement automatique
 - feature flag
 - Migration MongoDB vers une PostgreSQL ?
 - mettre en place un systeme de log file JSON pour les agregrateurss anonymisés
