@@ -1,0 +1,21 @@
+meta {
+  name: Create Join Request
+  type: http
+  seq: 21
+}
+
+post {
+  url: {{baseUrl}}/teams/{{teamId}}/join-requests
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "requestedRole": "PLAYER"
+  }
+}

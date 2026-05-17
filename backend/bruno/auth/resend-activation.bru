@@ -1,0 +1,17 @@
+meta {
+  name: Resend Activation
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{baseUrl}}/resend-activation
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "user@example.com"
+  }
+}

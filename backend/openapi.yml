@@ -1599,6 +1599,238 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
 
+  /activate:
+    post:
+      operationId: activateAccount
+      tags:
+        - Authentication
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActivateAccountInput'
+      responses:
+        '200':
+          description: Account activated successfully
+        '400':
+          description: Invalid or expired token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorOutput'
+
+  /resend-activation:
+    post:
+      operationId: resendActivation
+      tags:
+        - Authentication
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResendActivationInput'
+      responses:
+        '200':
+          description: Email sent (always 200 for anti-enumeration)
+
+  /reset-password:
+    post:
+      operationId: resetPassword
+      tags:
+        - Authentication
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordInput'
+      responses:
+        '200':
+          description: Password reset successfully
+        '400':
+          description: Invalid or expired token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorOutput'
+
+  /users/{userId}/activate:
+    patch:
+      operationId: adminActivateUser
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User activated by admin
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorOutput'
+
+  /users/{userId}/unblock:
+    patch:
+      operationId: adminUnblockUser
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User unblocked by admin
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorOutput'
+
+  /me/referee:
+    post:
+      operationId: declareReferee
+      tags:
+        - Authentication
+      responses:
+        '200':
+          description: User declared as referee
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorOutput'
+
+  /teams/with-coach:
+    post:
+      operationId: createTeamWithCoach
+      tags:
+        - Teams
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTeamWithCoachInput'
+      responses:
+        '201':
+          description: Team created and user assigned as coach
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamWithCoachResult'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorOutput'
+
+  /teams/{teamId}/join-requests:
+    post:
+      operationId: createTeamJoinRequest
+      tags:
+        - Teams
+      parameters:
+        - in: path
+          name: teamId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTeamJoinRequestInput'
+      responses:
+        '201':
+          description: Join request created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamJoinRequest'
+        '409':
+          description: Already a member
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorOutput'
+    get:
+      operationId: getTeamJoinRequests
+      tags:
+        - Teams
+      parameters:
+        - in: path
+          name: teamId
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: status
+          schema:
+            $ref: '#/components/schemas/JoinRequestStatus'
+      responses:
+        '200':
+          description: List of join requests
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TeamJoinRequest'
+
+  /teams/{teamId}/join-requests/{requestId}:
+    patch:
+      operationId: updateTeamJoinRequest
+      tags:
+        - Teams
+      parameters:
+        - in: path
+          name: teamId
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: requestId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTeamJoinRequestInput'
+      responses:
+        '200':
+          description: Join request updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamJoinRequest'
+        '404':
+          description: Request not found or not pending
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorOutput'
+
 security:
   - jwtAuth: []
 components:
@@ -1695,6 +1927,122 @@ components:
       required:
         - email
         - password
+    ActivateAccountInput:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          nullable: false
+    ResendActivationInput:
+      type: object
+      required:
+        - email
+      properties:
+        email:
+          type: string
+          format: email
+          nullable: false
+    ResetPasswordInput:
+      type: object
+      required:
+        - token
+        - newPassword
+      properties:
+        token:
+          type: string
+          nullable: false
+        newPassword:
+          type: string
+          minLength: 8
+          nullable: false
+    JoinRequestStatus:
+      type: string
+      enum:
+        - PENDING
+        - APPROVED
+        - REFUSED
+    CreateTeamJoinRequestInput:
+      type: object
+      required:
+        - requestedRole
+      properties:
+        requestedRole:
+          $ref: '#/components/schemas/TeamRole'
+    UpdateTeamJoinRequestInput:
+      type: object
+      required:
+        - action
+      properties:
+        action:
+          type: string
+          enum:
+            - approve
+            - refuse
+          nullable: false
+    TeamJoinRequest:
+      type: object
+      required:
+        - id
+        - userId
+        - teamId
+        - requestedRole
+        - status
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+          nullable: false
+        userId:
+          type: string
+          nullable: false
+        teamId:
+          type: string
+          nullable: false
+        requestedRole:
+          $ref: '#/components/schemas/TeamRole'
+        status:
+          $ref: '#/components/schemas/JoinRequestStatus'
+        createdAt:
+          type: string
+          format: date-time
+          nullable: false
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: false
+    CreateTeamWithCoachInput:
+      type: object
+      required:
+        - name
+        - ageCategory
+        - color
+        - areas
+      properties:
+        name:
+          type: string
+          nullable: false
+        ageCategory:
+          $ref: '#/components/schemas/AgeCategory'
+        color:
+          type: string
+          nullable: false
+        areas:
+          type: array
+          items:
+            $ref: '#/components/schemas/AreaWithoutId'
+    TeamWithCoachResult:
+      type: object
+      required:
+        - team
+        - userTeam
+      properties:
+        team:
+          $ref: '#/components/schemas/Team'
+        userTeam:
+          $ref: '#/components/schemas/UserTeam'
     TeamRole:
       type: string
       enum:
@@ -1800,6 +2148,15 @@ components:
           type: 'string'
           format: uuid
         isAdmin:
+          type: boolean
+          nullable: false
+        isActive:
+          type: boolean
+          nullable: false
+        isBlocked:
+          type: boolean
+          nullable: false
+        isReferee:
           type: boolean
           nullable: false
         createdAt:

@@ -1,0 +1,21 @@
+meta {
+  name: Update Join Request
+  type: http
+  seq: 23
+}
+
+patch {
+  url: {{baseUrl}}/teams/{{teamId}}/join-requests/{{requestId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "action": "approve"
+  }
+}

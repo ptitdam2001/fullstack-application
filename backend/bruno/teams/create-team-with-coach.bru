@@ -1,0 +1,24 @@
+meta {
+  name: Create Team With Coach
+  type: http
+  seq: 20
+}
+
+post {
+  url: {{baseUrl}}/teams/with-coach
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "Team FC",
+    "ageCategory": "Senior",
+    "color": "#FF0000",
+    "areas": []
+  }
+}

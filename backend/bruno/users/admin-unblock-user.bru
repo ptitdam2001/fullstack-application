@@ -1,0 +1,15 @@
+meta {
+  name: Admin Unblock User
+  type: http
+  seq: 11
+}
+
+patch {
+  url: {{baseUrl}}/users/{{userId}}/unblock
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

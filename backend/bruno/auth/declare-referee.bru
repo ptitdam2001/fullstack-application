@@ -1,0 +1,15 @@
+meta {
+  name: Declare Referee
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{baseUrl}}/me/referee
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

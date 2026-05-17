@@ -1,0 +1,19 @@
+meta {
+  name: Get Join Requests
+  type: http
+  seq: 22
+}
+
+get {
+  url: {{baseUrl}}/teams/{{teamId}}/join-requests
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:query {
+  ~status: PENDING
+}
