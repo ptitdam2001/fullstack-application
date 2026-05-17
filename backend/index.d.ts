@@ -4,6 +4,7 @@ declare global {
       JWT_SECRET: string
       JWT_EXPIRE: string
       PORT: string
+      ACTIVATION_TOKEN_EXPIRY_HOURS: string
     }
   }
 }
