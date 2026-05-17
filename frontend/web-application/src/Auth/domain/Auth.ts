@@ -11,5 +11,7 @@ export const DEFAULT_AUTH_DATA: AuthData = {
 }
 
 export const LOGIN_PAGE = '/auth/signin'
+export const REGISTER_PAGE = '/auth/register'
 export const CONNECTED_HOME = '/app'
 export const LOGOUT_PAGE = '/auth/logout'
+export const ONBOARDING_PAGE = '/app/onboarding'

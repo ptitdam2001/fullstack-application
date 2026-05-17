@@ -1,3 +1,1 @@
-import { UserCard } from '../ui/UserCard/UserCard'
-
-export const MyProfile = () => <UserCard />
+export const MyProfile = () => null

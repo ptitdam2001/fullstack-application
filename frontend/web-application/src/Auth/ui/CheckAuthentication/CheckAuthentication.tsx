@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react'
-import { Navigate } from 'react-router'
+import { Navigate } from 'react-router-dom'
 import { AuthProvider } from '../../application/AuthProvider'
 import { LOGIN_PAGE } from '../../domain/Auth'
 
@@ -7,8 +7,10 @@ type CheckAuthenticationProps = {
   children: ReactNode
 }
 
-export const CheckAuthentication: React.FC<CheckAuthenticationProps> = ({ children }) => {
+export const CheckAuthentication = ({ children }: CheckAuthenticationProps) => {
   const { user } = AuthProvider.useAuthValue()
-
-  return user ? children : <Navigate to={LOGIN_PAGE} />
+  if (!user) {
+    return <Navigate to={LOGIN_PAGE} replace />
+  }
+  return <>{children}</>
 }
