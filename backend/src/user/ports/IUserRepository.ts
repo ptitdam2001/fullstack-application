@@ -7,4 +7,6 @@ export interface IUserRepository {
   create(input: CreateUserInput): Promise<UserProfile>
   update(id: string, input: UpdateUserInput): Promise<UserProfile>
   delete(id: string): Promise<void>
+  incrementLoginAttempts(userId: string): Promise<number>
+  blockUser(userId: string): Promise<void>
 }

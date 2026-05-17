@@ -8,6 +8,10 @@ const select = {
   lastName: true,
   email: true,
   isAdmin: true,
+  isActive: true,
+  isBlocked: true,
+  isReferee: true,
+  loginAttempts: true,
   avatar: true,
   createdAt: true,
 } as const
@@ -55,5 +59,18 @@ export class PrismaUserRepository implements IUserRepository {
 
   async delete(id: string): Promise<void> {
     await prisma.user.delete({ where: { id } })
+  }
+
+  async incrementLoginAttempts(userId: string): Promise<number> {
+    const updated = await prisma.user.update({
+      where: { id: userId },
+      data: { loginAttempts: { increment: 1 } },
+      select: { loginAttempts: true },
+    })
+    return updated.loginAttempts
+  }
+
+  async blockUser(userId: string): Promise<void> {
+    await prisma.user.update({ where: { id: userId }, data: { isBlocked: true } })
   }
 }

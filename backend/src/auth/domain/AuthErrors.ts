@@ -25,3 +25,17 @@ export class EmailAlreadyInUseError extends Error {
     this.name = 'EmailAlreadyInUseError'
   }
 }
+
+export class AccountBlockedError extends Error {
+  constructor() {
+    super('Account is blocked')
+    this.name = 'AccountBlockedError'
+  }
+}
+
+export class AccountInactiveError extends Error {
+  constructor() {
+    super('Account is not active')
+    this.name = 'AccountInactiveError'
+  }
+}

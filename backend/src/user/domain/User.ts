@@ -4,6 +4,10 @@ export type UserProfile = {
   lastName: string | null
   email: string
   isAdmin: boolean
+  isActive: boolean
+  isBlocked: boolean
+  isReferee: boolean
+  loginAttempts: number
   avatar: string | null
   createdAt: Date
 }
