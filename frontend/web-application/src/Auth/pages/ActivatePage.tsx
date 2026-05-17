@@ -1,9 +1,12 @@
+import { Layout } from '@repo/design-system'
 import { ActivateForm } from '../ui/ActivateForm/ActivateForm'
 
 export const ActivatePage = () => (
-  <div className="flex h-full items-center justify-center p-8">
-    <div className="w-full max-w-sm">
-      <ActivateForm />
-    </div>
-  </div>
+  <Layout.Root>
+    <Layout.Content align="center">
+      <div className="w-full max-w-sm py-8">
+        <ActivateForm />
+      </div>
+    </Layout.Content>
+  </Layout.Root>
 )

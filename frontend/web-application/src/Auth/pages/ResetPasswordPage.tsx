@@ -1,9 +1,12 @@
+import { Layout } from '@repo/design-system'
 import { ResetPasswordForm } from '../ui/ResetPasswordForm/ResetPasswordForm'
 
 export const ResetPasswordPage = () => (
-  <div className="flex h-full items-center justify-center p-8">
-    <div className="w-full max-w-sm">
-      <ResetPasswordForm />
-    </div>
-  </div>
+  <Layout.Root>
+    <Layout.Content align="center">
+      <div className="w-full max-w-sm py-8">
+        <ResetPasswordForm />
+      </div>
+    </Layout.Content>
+  </Layout.Root>
 )

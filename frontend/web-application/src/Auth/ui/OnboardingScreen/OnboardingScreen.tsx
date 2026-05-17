@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { useIntl, FormattedMessage } from 'react-intl'
-import { Button, Toast } from '@repo/design-system'
+import { Button, Layout, Toast } from '@repo/design-system'
 import { Loader2 } from 'lucide-react'
 import { TeamSelectField } from '@Teams/ui/TeamSelect/TeamSelectField'
 import { useDeclareReferee, useCreateTeamJoinRequest, useCreateTeamWithCoach } from '../../infrastructure/useAuthApi'
@@ -57,8 +57,9 @@ export const OnboardingScreen = () => {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50 p-8">
-      <div className="w-full max-w-lg space-y-8">
+    <Layout.Root>
+      <Layout.Content align="center">
+      <div className="w-full max-w-lg space-y-8 py-8">
         <div className="space-y-2">
           <h1 className="text-3xl font-bold">
             <FormattedMessage id="onboarding.title" />
@@ -136,6 +137,7 @@ export const OnboardingScreen = () => {
           </Button>
         </div>
       </div>
-    </div>
+      </Layout.Content>
+    </Layout.Root>
   )
 }
