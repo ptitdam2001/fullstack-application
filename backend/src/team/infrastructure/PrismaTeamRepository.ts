@@ -1,7 +1,8 @@
 import { prisma } from '../../../utils/prismaClient.js'
 import type { ITeamRepository, TeamPlayersOptions, TeamCalendarOptions, GameSummary } from '../ports/ITeamRepository.js'
-import type { Team, CreateTeamInput, UpdateTeamInput } from '../domain/Team.js'
+import type { Team, CreateTeamInput, UpdateTeamInput, CreateTeamWithCoachInput } from '../domain/Team.js'
 import type { Player } from '../../player/domain/Player.js'
+import type { UserTeam } from '../../userTeam/domain/UserTeam.js'
 
 export class PrismaTeamRepository implements ITeamRepository {
   count() {
@@ -48,6 +49,34 @@ export class PrismaTeamRepository implements ITeamRepository {
       take: count,
       orderBy: { date: 'asc' },
     })
-    return games.map(g => ({ id: g.id, date: g.date, teams: g.teams }))
+    return games.map((g) => ({ id: g.id, date: g.date, teams: g.teams }))
+  }
+
+  async createWithCoach(input: CreateTeamWithCoachInput, coachUserId: string): Promise<{ team: Team; userTeam: UserTeam }> {
+    return prisma.$transaction(async (tx) => {
+      const team = await tx.team.create({
+        data: {
+          name: input.name,
+          color: input.color,
+          ageCategory: input.ageCategory,
+          areas: input.areas.map((a) => ({
+            id: crypto.randomUUID(),
+            name: a.name,
+            address: a.address,
+            city: a.city,
+            longitude: a.longitude,
+            latitude: a.latitude,
+          })),
+        },
+        select: { id: true, name: true, color: true },
+      })
+
+      const userTeam = await tx.userTeam.create({
+        data: { userId: coachUserId, teamId: team.id, role: 'COACH' },
+        select: { id: true, userId: true, teamId: true, role: true },
+      })
+
+      return { team: team as Team, userTeam: userTeam as UserTeam }
+    })
   }
 }

@@ -6,11 +6,12 @@ import { PlayerUseCases } from '../../player/application/PlayerUseCases.js'
 import { PrismaPlayerRepository } from '../../player/infrastructure/PrismaPlayerRepository.js'
 import { TeamNotFoundError } from '../domain/TeamErrors.js'
 import { PlayerNotFoundError } from '../../player/domain/PlayerErrors.js'
-import { requireAdmin, getAuthPayload } from '../../auth/application/requireRoles.js'
+import { requireAdmin, getAuthPayload, getAuthUserId } from '../../auth/application/requireRoles.js'
 import { ForbiddenError } from '../../auth/domain/AuthErrors.js'
 import { UserTeamUseCases } from '../../userTeam/application/UserTeamUseCases.js'
 import { PrismaUserTeamRepository } from '../../userTeam/infrastructure/PrismaUserTeamRepository.js'
 import { TeamRole } from '../../userTeam/domain/UserTeam.js'
+import { logger } from '../../../config/logger.js'
 
 const teamUseCases = new TeamUseCases(new PrismaTeamRepository())
 const playerUseCases = new PlayerUseCases(new PrismaPlayerRepository())
@@ -119,4 +120,15 @@ export const createPlayer = async (ctx: Context, req: Request, res: Response) =>
   }
   const userId = ctx.request.params.userId
   res.status(201).json(await playerUseCases.create({ ...req.body, userId }))
+}
+
+export const createTeamWithCoach = async (ctx: Context, req: Request, res: Response) => {
+  try {
+    const coachUserId = getAuthUserId(ctx)
+    const result = await teamUseCases.createWithCoach(req.body, coachUserId)
+    return res.status(201).json(result)
+  } catch (err) {
+    logger.error(err)
+    return res.status(500).json({ message: 'Error! Something went wrong.', status: 500 })
+  }
 }

@@ -12,8 +12,10 @@ import helmet from 'helmet'
 
 import { UnauthorizedError, ForbiddenError } from './src/auth/domain/AuthErrors'
 import * as authHandlers from './src/auth/infrastructure/AuthHttpHandlers'
+import * as registrationHandlers from './src/registration/infrastructure/RegistrationHttpHandlers'
 import * as userHandlers from './src/user/infrastructure/UserHttpHandlers'
 import * as teamHandlers from './src/team/infrastructure/TeamHttpHandlers'
+import * as teamJoinRequestHandlers from './src/teamJoinRequest/infrastructure/TeamJoinRequestHttpHandlers'
 import * as matchHandlers from './src/match/infrastructure/MatchHttpHandlers'
 import * as championshipHandlers from './src/championship/infrastructure/ChampionshipHttpHandlers'
 import * as userTeamHandlers from './src/userTeam/infrastructure/UserTeamHttpHandlers'
@@ -75,8 +77,10 @@ const api = new OpenAPIBackend({
   },
   handlers: {
     ...authHandlers,
+    ...registrationHandlers,
     ...userHandlers,
     ...teamHandlers,
+    ...teamJoinRequestHandlers,
     ...matchHandlers,
     ...championshipHandlers,
     ...userTeamHandlers,

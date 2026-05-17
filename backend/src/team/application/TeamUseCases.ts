@@ -1,5 +1,7 @@
 import type { ITeamRepository, TeamPlayersOptions, TeamCalendarOptions } from '../ports/ITeamRepository.js'
-import type { CreateTeamInput, UpdateTeamInput } from '../domain/Team.js'
+import type { CreateTeamInput, UpdateTeamInput, CreateTeamWithCoachInput } from '../domain/Team.js'
+import type { Team } from '../domain/Team.js'
+import type { UserTeam } from '../../userTeam/domain/UserTeam.js'
 import { TeamNotFoundError } from '../domain/TeamErrors.js'
 
 export class TeamUseCases {
@@ -41,5 +43,9 @@ export class TeamUseCases {
   async getCalendar(teamId: string, options: TeamCalendarOptions) {
     await this.getById(teamId)
     return this.repo.findCalendar(teamId, options)
+  }
+
+  createWithCoach(input: CreateTeamWithCoachInput, coachUserId: string): Promise<{ team: Team; userTeam: UserTeam }> {
+    return this.repo.createWithCoach(input, coachUserId)
   }
 }
