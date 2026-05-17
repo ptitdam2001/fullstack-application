@@ -1,32 +1,27 @@
-import { useEffect } from 'react'
 import { Link, useSearchParams } from 'react-router'
-import { useIntl, FormattedMessage } from 'react-intl'
+import { FormattedMessage } from 'react-intl'
 import { Button, Toast } from '@repo/design-system'
 import { Loader2 } from 'lucide-react'
 import { LOGIN_PAGE } from '../../domain/Auth'
 import { useActivateAction } from '../../application/useActivateAction'
 
 export const ActivateForm = () => {
-  const intl = useIntl()
   const toast = Toast.useToast()
   const [searchParams] = useSearchParams()
   const token = searchParams.get('token') ?? ''
   const { process, isPending, isSuccess, isError } = useActivateAction()
 
-  useEffect(() => {
-    if (token) {
-      process(token).catch(() => {
-        toast(intl.formatMessage({ id: 'activate.error.invalid' }))
-      })
-    }
-  }, [token])
+  const handleActivate = () => {
+    process(token).catch(() => {
+      toast('activate.error.invalid')
+    })
+  }
 
-  if (isPending) {
+  if (!token) {
     return (
-      <div className="flex items-center gap-2">
-        <Loader2 className="animate-spin" />
-        <FormattedMessage id="common.loading" />
-      </div>
+      <p className="font-medium text-red-600">
+        <FormattedMessage id="activate.error.invalid" />
+      </p>
     )
   }
 
@@ -61,13 +56,18 @@ export const ActivateForm = () => {
     )
   }
 
-  if (!token) {
-    return (
-      <p className="text-red-600">
-        <FormattedMessage id="activate.error.invalid" />
+  return (
+    <div className="flex flex-col gap-6">
+      <h2 className="text-2xl font-bold">
+        <FormattedMessage id="activate.title" />
+      </h2>
+      <p className="text-slate-500">
+        <FormattedMessage id="activate.description" />
       </p>
-    )
-  }
-
-  return null
+      <Button onPress={handleActivate} isDisabled={isPending} className="w-full max-w-sm">
+        {isPending && <Loader2 className="animate-spin" />}
+        <FormattedMessage id="activate.submit" />
+      </Button>
+    </div>
+  )
 }

@@ -1,4 +1,5 @@
 import { Link } from 'react-router'
+import { FormattedMessage } from 'react-intl'
 import { Layout } from '@repo/design-system'
 import { AuthLeftPanel } from '../ui/AuthLeftPanel/AuthLeftPanel'
 import { SigninForm } from '../ui/SigninForm/SigninForm'
@@ -13,9 +14,9 @@ export const LoginPage = () => (
           <div className="w-full max-w-sm space-y-6">
             <SigninForm forgotPasswordHref="/auth/forgotten-password" />
             <p className="text-center text-sm text-slate-500">
-              Pas encore de compte ?{' '}
+              <FormattedMessage id="auth.noAccount" />{' '}
               <Link to={REGISTER_PAGE} className="text-blue-600 hover:underline">
-                Créer un compte
+                <FormattedMessage id="auth.createAccount" />
               </Link>
             </p>
           </div>

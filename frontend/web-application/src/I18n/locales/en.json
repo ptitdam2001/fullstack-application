@@ -27,7 +27,11 @@
     "error.invalidCredentials": "Incorrect email or password.",
     "error.accountInactive": "Your account is not yet activated. Check your email or request a new activation link.",
     "error.accountBlocked": "Your account has been blocked due to too many failed attempts. Please contact an administrator.",
-    "error.generic": "An error occurred. Please try again."
+    "error.generic": "An error occurred. Please try again.",
+    "noAccount": "Don't have an account?",
+    "createAccount": "Create an account",
+    "alreadyAccount": "Already have an account?",
+    "backToLogin": "Back to sign in"
   },
   "activate": {
     "title": "Activate your account",

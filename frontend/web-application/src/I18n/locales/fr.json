@@ -27,7 +27,11 @@
     "error.invalidCredentials": "Email ou mot de passe incorrect.",
     "error.accountInactive": "Votre compte n'est pas encore activé. Vérifiez votre boîte email ou demandez un renvoi du lien d'activation.",
     "error.accountBlocked": "Votre compte a été bloqué suite à trop de tentatives échouées. Contactez un administrateur.",
-    "error.generic": "Une erreur est survenue. Veuillez réessayer."
+    "error.generic": "Une erreur est survenue. Veuillez réessayer.",
+    "noAccount": "Pas encore de compte ?",
+    "createAccount": "Créer un compte",
+    "alreadyAccount": "Déjà un compte ?",
+    "backToLogin": "Retour à la connexion"
   },
   "activate": {
     "title": "Activation de votre compte",
