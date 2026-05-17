@@ -15,7 +15,8 @@ import { AreaEditPage, AreaPages, SettingsLayout } from '@Settings/index'
 import { TeamEditPage } from '@Teams/pages'
 import { TeamLayout } from '@Teams/index'
 import { CheckAuthentication } from '@Auth/ui/CheckAuthentication/CheckAuthentication'
-import { ForgottenPasswordPage, LoginPage, RegisterPage } from '@Auth/pages'
+import { ActivatePage, ForgottenPasswordPage, LoginPage, RegisterPage, ResetPasswordPage } from '@Auth/pages'
+import { OnboardingScreen } from '@Auth/ui/OnboardingScreen/OnboardingScreen'
 import { TeamBreadcrumb } from '@Teams'
 import { AreaBreadcrumb } from '@Settings'
 
@@ -42,6 +43,7 @@ const router = createBrowserRouter(
         errorElement={<NotFound />}
       >
         <Route index element={<Dashboard />} />
+        <Route path="onboarding" element={<OnboardingScreen />} />
         <Route path="my-profile" element={<MyProfile />} handle={{ breadcrumb: 'Mon profil' }} />
 
         <Route path="team" element={<TeamLayout />} handle={{ breadcrumb: 'Équipes' }}>
@@ -102,6 +104,8 @@ const router = createBrowserRouter(
         <Route path="logout" element={<Logout />} />
         <Route path="forgotten-password" element={<ForgottenPasswordPage />} />
         <Route path="register" element={<RegisterPage />} />
+        <Route path="activate" element={<ActivatePage />} />
+        <Route path="reset-password" element={<ResetPasswordPage />} />
       </Route>
     </Route>
   )
