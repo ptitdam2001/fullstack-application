@@ -65,7 +65,7 @@ export const CoachAppSidebar = () => {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               )}
-              {teams.map((team) => (
+              {teams.map(team => (
                 <SidebarMenuItem key={team.id}>
                   <SidebarMenuButton tooltip={team.name} onClick={() => navigate(`/teams/${team.id}`)}>
                     <span
@@ -103,7 +103,7 @@ export const CoachAppSidebar = () => {
             <SidebarMenuButton tooltip="Mon profil" onClick={() => navigate('/app/my-profile')}>
               <CircleUserRound />
               <span>
-                {user?.firstname} {user?.lastname}
+                {user?.firstName} {user?.lastName}
               </span>
             </SidebarMenuButton>
           </SidebarMenuItem>
