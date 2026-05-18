@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Navigate } from 'react-router-dom'
+import { Navigate } from 'react-router'
 import { clearAuthStorage } from '../../infrastructure/authStorage'
 import { AuthProvider } from '../../application/AuthProvider'
 import { DEFAULT_AUTH_DATA, LOGIN_PAGE } from '../../domain/Auth'

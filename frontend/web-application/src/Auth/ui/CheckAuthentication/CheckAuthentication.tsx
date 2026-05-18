@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react'
-import { Navigate } from 'react-router-dom'
+import { Navigate } from 'react-router'
 import { AuthProvider } from '../../application/AuthProvider'
 import { LOGIN_PAGE } from '../../domain/Auth'
 
