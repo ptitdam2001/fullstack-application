@@ -8,12 +8,12 @@ L'authentification couvre l'ensemble des flux permettant à un utilisateur de cr
 
 ## Acteurs concernés
 
-| Rôle | Implication |
-|------|-------------|
-| Utilisateur non inscrit | Peut s'inscrire via le formulaire public |
-| Admin | Peut créer un compte pour quelqu'un, activer un compte, débloquer un compte |
+| Rôle                    | Implication                                                                 |
+| ----------------------- | --------------------------------------------------------------------------- |
+| Utilisateur non inscrit | Peut s'inscrire via le formulaire public                                    |
+| Admin                   | Peut créer un compte pour quelqu'un, activer un compte, débloquer un compte |
 | Utilisateur sans équipe | Accède à la plateforme en lecture seule, peut rejoindre ou créer une équipe |
-| Coach | Valide les demandes d'adhésion à son équipe |
+| Coach                   | Valide les demandes d'adhésion à son équipe                                 |
 
 ---
 
@@ -21,13 +21,13 @@ L'authentification couvre l'ensemble des flux permettant à un utilisateur de cr
 
 ### Champs du formulaire
 
-| Champ | Obligatoire | Remarques |
-|-------|-------------|-----------|
-| Prénom | ✅ | |
-| Nom | ✅ | |
-| Email | ✅ | Doit être unique en base |
-| Mot de passe | ✅ | Voir règles ci-dessous |
-| Équipe (rejoindre ou créer) | ❌ | Optionnel à l'inscription, disponible depuis le profil après |
+| Champ                       | Obligatoire | Remarques                                                    |
+| --------------------------- | ----------- | ------------------------------------------------------------ |
+| Prénom                      | ✅          |                                                              |
+| Nom                         | ✅          |                                                              |
+| Email                       | ✅          | Doit être unique en base                                     |
+| Mot de passe                | ✅          | Voir règles ci-dessous                                       |
+| Équipe (rejoindre ou créer) | ❌          | Optionnel à l'inscription, disponible depuis le profil après |
 
 ### Règles de validation du mot de passe
 
@@ -66,10 +66,10 @@ Un lien / formulaire permet de **renvoyer l'email d'activation** à l'adresse en
 
 ### Cas : mauvais mot de passe — blocage progressif
 
-| Tentatives échouées | Comportement |
-|---------------------|--------------|
-| 1 à 4 | Message d'erreur générique ("email ou mot de passe incorrect") |
-| 5 | Compte **bloqué** — message spécifique, connexion impossible |
+| Tentatives échouées | Comportement                                                   |
+| ------------------- | -------------------------------------------------------------- |
+| 1 à 4               | Message d'erreur générique ("email ou mot de passe incorrect") |
+| 5                   | Compte **bloqué** — message spécifique, connexion impossible   |
 
 Un compte bloqué ne peut être débloqué que par **l'Admin**. L'utilisateur doit contacter l'admin pour en faire la demande.
 
@@ -103,11 +103,11 @@ Après connexion réussie, l'utilisateur est redirigé vers `/dashboard`. Le das
 
 L'écran propose trois actions, **non mutuellement exclusives** :
 
-| Action | Effet | Immédiat ? |
-|--------|-------|-----------|
-| Se signaler comme arbitre | `User.isReferee = true` | ✅ Immédiat |
-| Rejoindre une équipe | Soumettre une `TeamJoinRequest` (PLAYER ou COACH) | ⏳ Validation requise |
-| Créer une équipe | Créer l'équipe + s'assigner COACH | ✅ Immédiat |
+| Action                    | Effet                                             | Immédiat ?            |
+| ------------------------- | ------------------------------------------------- | --------------------- |
+| Se signaler comme arbitre | `User.isReferee = true`                           | ✅ Immédiat           |
+| Rejoindre une équipe      | Soumettre une `TeamJoinRequest` (PLAYER ou COACH) | ⏳ Validation requise |
+| Créer une équipe          | Créer l'équipe + s'assigner COACH                 | ✅ Immédiat           |
 
 L'utilisateur peut aussi **passer cette étape** et accéder directement au dashboard en lecture seule. Les trois actions restent disponibles depuis son profil.
 
@@ -138,12 +138,12 @@ Disponible : à l'onboarding et depuis la page profil.
 
 **Champs du formulaire de création :**
 
-| Champ | Obligatoire | Remarques |
-|-------|-------------|-----------|
-| Nom de l'équipe | ✅ | |
-| Catégorie d'âge | ✅ | U9, U11, U13, U15, U18, Senior (voir `02-championship.md`) |
-| Couleur de la tenue | ✅ | |
-| Terrain(s) | ✅ | Un ou plusieurs terrains où l'équipe joue à domicile |
+| Champ               | Obligatoire | Remarques                                                  |
+| ------------------- | ----------- | ---------------------------------------------------------- |
+| Nom de l'équipe     | ✅          |                                                            |
+| Catégorie d'âge     | ✅          | U9, U11, U13, U15, U18, Senior (voir `02-championship.md`) |
+| Couleur de la tenue | ✅          |                                                            |
+| Terrain(s)          | ✅          | Un ou plusieurs terrains où l'équipe joue à domicile       |
 
 **Flow :**
 
@@ -155,19 +155,19 @@ Disponible : à l'onboarding et depuis la page profil.
 
 ## Matrice de permissions
 
-| Action | Non inscrit | Sans équipe | Admin |
-| ------ | ----------- | ----------- | ----- |
-| S'inscrire | ✅ | — | — |
-| Se connecter | ✅ | ✅ | ✅ |
-| Réinitialiser son mot de passe | ✅ | ✅ | ✅ |
-| Renvoyer l'email d'activation | ✅ (compte inactif) | — | — |
-| Activer un compte (email) | ✅ | — | — |
-| Activer un compte (panel) | ❌ | ❌ | ✅ |
-| Débloquer un compte | ❌ | ❌ | ✅ |
-| Se signaler comme arbitre | — | ✅ | ✅ |
-| Rejoindre une équipe (PLAYER ou COACH) | — | ✅ | — |
-| Créer une équipe | — | ✅ | ✅ |
-| Valider une demande d'adhésion | — | ❌ | ✅ |
+| Action                                 | Non inscrit         | Sans équipe | Admin |
+| -------------------------------------- | ------------------- | ----------- | ----- |
+| S'inscrire                             | ✅                  | —           | —     |
+| Se connecter                           | ✅                  | ✅          | ✅    |
+| Réinitialiser son mot de passe         | ✅                  | ✅          | ✅    |
+| Renvoyer l'email d'activation          | ✅ (compte inactif) | —           | —     |
+| Activer un compte (email)              | ✅                  | —           | —     |
+| Activer un compte (panel)              | ❌                  | ❌          | ✅    |
+| Débloquer un compte                    | ❌                  | ❌          | ✅    |
+| Se signaler comme arbitre              | —                   | ✅          | ✅    |
+| Rejoindre une équipe (PLAYER ou COACH) | —                   | ✅          | —     |
+| Créer une équipe                       | —                   | ✅          | ✅    |
+| Valider une demande d'adhésion         | —                   | ❌          | ✅    |
 
 ---
 
@@ -531,47 +531,53 @@ model TeamJoinRequest {
 
 ### Contrat API
 
-| Méthode | Route | OperationId | Auth | Description |
-|---------|-------|-------------|------|-------------|
-| `POST` | `/activate` | `activateAccount` | ❌ | Activation compte via token |
-| `POST` | `/resend-activation` | `resendActivation` | ❌ | Renvoi lien d'activation |
-| `POST` | `/reset-password` | `resetPassword` | ❌ | Reset mot de passe via token |
-| `PATCH` | `/users/{userId}/activate` | `adminActivateUser` | Admin | Activation manuelle |
-| `PATCH` | `/users/{userId}/unblock` | `adminUnblockUser` | Admin | Déblocage manuel |
-| `POST` | `/me/referee` | `declareReferee` | JWT | Se signaler comme arbitre |
-| `POST` | `/teams/{teamId}/join-requests` | `createTeamJoinRequest` | JWT | Soumettre une demande d'adhésion (PLAYER ou COACH) |
-| `GET` | `/teams/{teamId}/join-requests` | `getTeamJoinRequests` | JWT (coach/admin) | Lister les demandes (filtre `?status=`) |
-| `PATCH` | `/teams/{teamId}/join-requests/{requestId}` | `updateTeamJoinRequest` | JWT (coach/admin) | Approuver ou refuser |
-| `POST` | `/teams/with-coach` | `createTeamWithCoach` | JWT | Créer équipe + s'assigner COACH |
+| Méthode | Route                                       | OperationId             | Auth              | Description                                        |
+| ------- | ------------------------------------------- | ----------------------- | ----------------- | -------------------------------------------------- |
+| `POST`  | `/activate`                                 | `activateAccount`       | ❌                | Activation compte via token                        |
+| `POST`  | `/resend-activation`                        | `resendActivation`      | ❌                | Renvoi lien d'activation                           |
+| `POST`  | `/reset-password`                           | `resetPassword`         | ❌                | Reset mot de passe via token                       |
+| `PATCH` | `/users/{userId}/activate`                  | `adminActivateUser`     | Admin             | Activation manuelle                                |
+| `PATCH` | `/users/{userId}/unblock`                   | `adminUnblockUser`      | Admin             | Déblocage manuel                                   |
+| `POST`  | `/me/referee`                               | `declareReferee`        | JWT               | Se signaler comme arbitre                          |
+| `POST`  | `/teams/{teamId}/join-requests`             | `createTeamJoinRequest` | JWT               | Soumettre une demande d'adhésion (PLAYER ou COACH) |
+| `GET`   | `/teams/{teamId}/join-requests`             | `getTeamJoinRequests`   | JWT (coach/admin) | Lister les demandes (filtre `?status=`)            |
+| `PATCH` | `/teams/{teamId}/join-requests/{requestId}` | `updateTeamJoinRequest` | JWT (coach/admin) | Approuver ou refuser                               |
+| `POST`  | `/teams/with-coach`                         | `createTeamWithCoach`   | JWT               | Créer équipe + s'assigner COACH                    |
 
 **Schémas à créer**
 
 `ActivateAccountInput`
+
 ```json
 { "token": "string" }
 ```
 
 `ResendActivationInput`
+
 ```json
 { "email": "string (format: email)" }
 ```
 
 `ResetPasswordInput`
+
 ```json
 { "token": "string", "newPassword": "string (minLength: 8)" }
 ```
 
 `UpdateTeamJoinRequestInput`
+
 ```json
 { "action": "approve | refuse" }
 ```
 
 `CreateTeamJoinRequestInput`
+
 ```json
 { "requestedRole": "PLAYER | COACH" }
 ```
 
 `TeamJoinRequest` (réponse)
+
 ```json
 {
   "id": "string",
@@ -585,6 +591,7 @@ model TeamJoinRequest {
 ```
 
 `CreateTeamWithCoachInput`
+
 ```json
 {
   "name": "string",
@@ -597,6 +604,7 @@ model TeamJoinRequest {
 **Schémas à modifier**
 
 `UserWithoutPassword` — ajouter les champs :
+
 ```yaml
 isActive:
   type: boolean
@@ -638,19 +646,33 @@ backend/src/registration/
 
 ```typescript
 interface IRegistrationRepository {
-  existsByEmail(email: string): Promise<boolean>
-  findByEmail(email: string): Promise<User | null>
-  findByActivationToken(token: string): Promise<User | null>
-  findByResetToken(token: string): Promise<User | null>
-  create(input: CreateUserInput, activationToken: string, activationTokenExpiry: Date): Promise<User>
-  createWithJoinRequest(input: CreateUserInput, activationToken: string, activationTokenExpiry: Date, teamId: string, requestedRole: TeamRole): Promise<User>
-  activateAccount(userId: string): Promise<void>
-  setActivationToken(userId: string, token: string, expiry: Date): Promise<void>
-  setResetToken(userId: string, token: string, expiry: Date): Promise<void>
-  resetPassword(userId: string, hashedPassword: string): Promise<void>
-  declareReferee(userId: string): Promise<void>
-  adminActivateUser(userId: string): Promise<void>
-  adminUnblockUser(userId: string): Promise<void>
+  existsByEmail(email: string): Promise<boolean>;
+  findByEmail(email: string): Promise<User | null>;
+  findByActivationToken(token: string): Promise<User | null>;
+  findByResetToken(token: string): Promise<User | null>;
+  create(
+    input: CreateUserInput,
+    activationToken: string,
+    activationTokenExpiry: Date,
+  ): Promise<User>;
+  createWithJoinRequest(
+    input: CreateUserInput,
+    activationToken: string,
+    activationTokenExpiry: Date,
+    teamId: string,
+    requestedRole: TeamRole,
+  ): Promise<User>;
+  activateAccount(userId: string): Promise<void>;
+  setActivationToken(
+    userId: string,
+    token: string,
+    expiry: Date,
+  ): Promise<void>;
+  setResetToken(userId: string, token: string, expiry: Date): Promise<void>;
+  resetPassword(userId: string, hashedPassword: string): Promise<void>;
+  declareReferee(userId: string): Promise<void>;
+  adminActivateUser(userId: string): Promise<void>;
+  adminUnblockUser(userId: string): Promise<void>;
 }
 ```
 
@@ -658,23 +680,23 @@ interface IRegistrationRepository {
 
 ```typescript
 interface IEmailService {
-  sendActivationEmail(to: string, token: string): Promise<void>
-  sendPasswordResetEmail(to: string, token: string): Promise<void>
+  sendActivationEmail(to: string, token: string): Promise<void>;
+  sendPasswordResetEmail(to: string, token: string): Promise<void>;
 }
 ```
 
 **Use cases — `RegistrationUseCases`**
 
-| Use case | Input | Output | Description |
-|----------|-------|--------|-------------|
-| `register` | `RegisterInput` | `UserWithoutPassword` | Crée User inactif + TeamJoinRequest(PENDING) si teamId |
-| `activateAccount` | `{ token }` | `void` | Active le compte via token email |
-| `resendActivation` | `{ email }` | `void` | Nouveau token + renvoi email (toujours 200) |
-| `forgotPassword` | `{ email }` | `void` | Reset token + envoi email (toujours 200) |
-| `resetPassword` | `{ token, newPassword }` | `void` | Reset password, débloque, remet loginAttempts à 0 |
-| `declareReferee` | `{ userId }` | `void` | Auto-déclaration arbitre — `isReferee = true` (idempotent) |
-| `adminActivateUser` | `{ userId }` | `void` | Activation manuelle admin |
-| `adminUnblockUser` | `{ userId }` | `void` | Déblocage manuel admin |
+| Use case            | Input                    | Output                | Description                                                |
+| ------------------- | ------------------------ | --------------------- | ---------------------------------------------------------- |
+| `register`          | `RegisterInput`          | `UserWithoutPassword` | Crée User inactif + TeamJoinRequest(PENDING) si teamId     |
+| `activateAccount`   | `{ token }`              | `void`                | Active le compte via token email                           |
+| `resendActivation`  | `{ email }`              | `void`                | Nouveau token + renvoi email (toujours 200)                |
+| `forgotPassword`    | `{ email }`              | `void`                | Reset token + envoi email (toujours 200)                   |
+| `resetPassword`     | `{ token, newPassword }` | `void`                | Reset password, débloque, remet loginAttempts à 0          |
+| `declareReferee`    | `{ userId }`             | `void`                | Auto-déclaration arbitre — `isReferee = true` (idempotent) |
+| `adminActivateUser` | `{ userId }`             | `void`                | Activation manuelle admin                                  |
+| `adminUnblockUser`  | `{ userId }`             | `void`                | Déblocage manuel admin                                     |
 
 #### Nouveau domaine — `teamJoinRequest`
 
@@ -697,26 +719,42 @@ backend/src/teamJoinRequest/
 
 ```typescript
 interface ITeamJoinRequestRepository {
-  findById(id: string): Promise<TeamJoinRequest | null>
-  findByUserAndTeam(userId: string, teamId: string): Promise<TeamJoinRequest | null>
-  findByTeam(teamId: string, status?: JoinRequestStatus): Promise<TeamJoinRequest[]>
-  upsert(userId: string, teamId: string, requestedRole: TeamRole): Promise<TeamJoinRequest>
-  approve(requestId: string, userId: string, teamId: string, requestedRole: TeamRole): Promise<TeamJoinRequest>
-  refuse(requestId: string): Promise<TeamJoinRequest>
+  findById(id: string): Promise<TeamJoinRequest | null>;
+  findByUserAndTeam(
+    userId: string,
+    teamId: string,
+  ): Promise<TeamJoinRequest | null>;
+  findByTeam(
+    teamId: string,
+    status?: JoinRequestStatus,
+  ): Promise<TeamJoinRequest[]>;
+  upsert(
+    userId: string,
+    teamId: string,
+    requestedRole: TeamRole,
+  ): Promise<TeamJoinRequest>;
+  approve(
+    requestId: string,
+    userId: string,
+    teamId: string,
+    requestedRole: TeamRole,
+  ): Promise<TeamJoinRequest>;
+  refuse(requestId: string): Promise<TeamJoinRequest>;
 }
 ```
 
 > `approve` encapsule la transaction Prisma selon `requestedRole` :
+>
 > - `PLAYER` → `status=APPROVED` + `userTeam.create({ role: PLAYER })` + `player.create()`
 > - `COACH` → `status=APPROVED` + `userTeam.create({ role: COACH })` (pas de `Player`)
 
 **Use cases — `TeamJoinRequestUseCases`**
 
-| Use case | Input | Output | Description |
-|----------|-------|--------|-------------|
-| `createRequest` | `{ userId, teamId, requestedRole }` | `TeamJoinRequest` | Upsert demande PENDING (erreur si APPROVED existant) |
-| `getTeamRequests` | `{ teamId, status? }` | `TeamJoinRequest[]` | Liste filtrée par statut |
-| `updateRequest` | `{ requestId, teamId, action, approverId }` | `TeamJoinRequest` | Approuve ou refuse selon `requestedRole` (guard: PENDING uniquement) |
+| Use case          | Input                                       | Output              | Description                                                          |
+| ----------------- | ------------------------------------------- | ------------------- | -------------------------------------------------------------------- |
+| `createRequest`   | `{ userId, teamId, requestedRole }`         | `TeamJoinRequest`   | Upsert demande PENDING (erreur si APPROVED existant)                 |
+| `getTeamRequests` | `{ teamId, status? }`                       | `TeamJoinRequest[]` | Liste filtrée par statut                                             |
+| `updateRequest`   | `{ requestId, teamId, action, approverId }` | `TeamJoinRequest`   | Approuve ou refuse selon `requestedRole` (guard: PENDING uniquement) |
 
 #### Extension domaine `team` — `createTeamWithCoach`
 
@@ -725,7 +763,10 @@ Nouveau use case dans `TeamUseCases`. Ajout sur `ITeamRepository` :
 ```typescript
 interface ITeamRepository {
   // ... méthodes existantes ...
-  createWithCoach(input: CreateTeamInput, coachUserId: string): Promise<{ team: Team; userTeam: UserTeam }>
+  createWithCoach(
+    input: CreateTeamInput,
+    coachUserId: string,
+  ): Promise<{ team: Team; userTeam: UserTeam }>;
 }
 ```
 
@@ -736,8 +777,8 @@ Deux nouvelles méthodes requises sur `IUserRepository` :
 ```typescript
 interface IUserRepository {
   // ... méthodes existantes ...
-  incrementLoginAttempts(userId: string): Promise<number>  // retourne le nouveau compteur
-  blockUser(userId: string): Promise<void>
+  incrementLoginAttempts(userId: string): Promise<number>; // retourne le nouveau compteur
+  blockUser(userId: string): Promise<void>;
 }
 ```
 
@@ -750,10 +791,14 @@ Le `LoginUseCase` existant doit vérifier dans cet ordre : `isBlocked` → `isAc
 **Génération de tokens**
 
 ```typescript
-const token = crypto.randomUUID()
-const ACTIVATION_EXPIRY_HOURS = parseInt(process.env.ACTIVATION_TOKEN_EXPIRY_HOURS ?? '48')
-const activationTokenExpiry = new Date(Date.now() + ACTIVATION_EXPIRY_HOURS * 3_600_000)
-const resetTokenExpiry = new Date(Date.now() + 7 * 24 * 3_600_000) // 7 jours — non configurable
+const token = crypto.randomUUID();
+const ACTIVATION_EXPIRY_HOURS = parseInt(
+  process.env.ACTIVATION_TOKEN_EXPIRY_HOURS ?? "48",
+);
+const activationTokenExpiry = new Date(
+  Date.now() + ACTIVATION_EXPIRY_HOURS * 3_600_000,
+);
+const resetTokenExpiry = new Date(Date.now() + 7 * 24 * 3_600_000); // 7 jours — non configurable
 ```
 
 **Blocage progressif**
@@ -774,9 +819,9 @@ Connexion réussie : ne remet PAS loginAttempts à 0
 // Re-soumettre après refus = mettre à jour l'enregistrement existant
 prisma.teamJoinRequest.upsert({
   where: { userId_teamId: { userId, teamId } },
-  create: { userId, teamId, status: 'PENDING' },
-  update: { status: 'PENDING', updatedAt: new Date() },
-})
+  create: { userId, teamId, status: "PENDING" },
+  update: { status: "PENDING", updatedAt: new Date() },
+});
 ```
 
 Le use case vérifie d'abord : si statut existant = `APPROVED` → `AlreadyMemberError` (409), pas d'upsert.
@@ -786,24 +831,30 @@ Le use case vérifie d'abord : si statut existant = `APPROVED` → `AlreadyMembe
 ```typescript
 // requestedRole = PLAYER
 await prisma.$transaction([
-  prisma.teamJoinRequest.update({ where: { id: requestId }, data: { status: 'APPROVED' } }),
-  prisma.userTeam.create({ data: { userId, teamId, role: 'PLAYER' } }),
+  prisma.teamJoinRequest.update({
+    where: { id: requestId },
+    data: { status: "APPROVED" },
+  }),
+  prisma.userTeam.create({ data: { userId, teamId, role: "PLAYER" } }),
   prisma.player.create({ data: { userId, teamId } }),
-])
+]);
 
 // requestedRole = COACH
 await prisma.$transaction([
-  prisma.teamJoinRequest.update({ where: { id: requestId }, data: { status: 'APPROVED' } }),
-  prisma.userTeam.create({ data: { userId, teamId, role: 'COACH' } }),
+  prisma.teamJoinRequest.update({
+    where: { id: requestId },
+    data: { status: "APPROVED" },
+  }),
+  prisma.userTeam.create({ data: { userId, teamId, role: "COACH" } }),
   // pas de player.create — un coach n'est pas automatiquement joueur
-])
+]);
 ```
 
 **Variable d'environnement**
 
-| Variable | Défaut | Description |
-|----------|--------|-------------|
-| `ACTIVATION_TOKEN_EXPIRY_HOURS` | `48` | TTL du token d'activation en heures |
+| Variable                        | Défaut | Description                         |
+| ------------------------------- | ------ | ----------------------------------- |
+| `ACTIVATION_TOKEN_EXPIRY_HOURS` | `48`   | TTL du token d'activation en heures |
 
 ---
 
