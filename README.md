@@ -17,6 +17,19 @@ All the frontend is developed in ReactJs + Typescript. We split the content in t
 
 ---
 
+## Scripts utilitaires
+
+Des scripts Make sont disponibles pour les opérations courantes.
+
+```bash
+make help   # liste toutes les commandes
+make seed   # crée un jeu de données de test en base
+```
+
+Voir [`scripts/README.md`](scripts/README.md) pour le détail de chaque script et comment en ajouter.
+
+---
+
 ## Docker
 
 The full stack can be run locally with Docker Compose. All services share a single env file.
