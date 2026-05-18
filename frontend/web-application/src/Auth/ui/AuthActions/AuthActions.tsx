@@ -23,7 +23,7 @@ export const AuthActions = () => {
     return null
   }
 
-  const initials = [user.firstname, user.lastname]
+  const initials = [user.firstName, user.lastName]
     .filter(Boolean)
     .map((n) => n![0]?.toUpperCase())
     .join('')
@@ -32,7 +32,7 @@ export const AuthActions = () => {
     <DropdownMenu>
       <Button variant="ghost" size="sm" className="h-8 w-8 rounded-full p-0">
         <Avatar className="h-8 w-8">
-          {user.avatar && <AvatarImage src={user.avatar} alt={user.firstname ?? ''} />}
+          {user.avatar && <AvatarImage src={user.avatar} alt={user.firstName ?? ''} />}
           <AvatarFallback>{initials}</AvatarFallback>
         </Avatar>
       </Button>

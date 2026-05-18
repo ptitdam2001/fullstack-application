@@ -11,7 +11,7 @@ export const CoachDashboard = () => {
 
   return (
     <section className="flex flex-1 flex-col gap-6 p-4 pt-0">
-      <CoachDashboardHeader firstName={user?.firstname} />
+      <CoachDashboardHeader firstName={user?.firstName} />
       <CoachKpiCards stats={stats} />
 
       <div className="grid gap-6 lg:grid-cols-[280px_1fr]">

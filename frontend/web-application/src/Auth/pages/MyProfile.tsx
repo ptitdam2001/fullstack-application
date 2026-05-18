@@ -10,7 +10,7 @@ export const MyProfile = () => {
       </h1>
       {user && (
         <div className="mt-4 space-y-1 text-sm text-slate-600">
-          <p>{user.firstname} {user.lastname}</p>
+          <p>{user.firstName} {user.lastName}</p>
           <p>{user.email}</p>
         </div>
       )}
