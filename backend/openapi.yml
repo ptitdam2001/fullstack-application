@@ -2085,11 +2085,11 @@ components:
           format: uuid
     UpdateUserInput:
       properties:
-        lastname:
+        lastName:
           nullable: false
           type: string
           minLength: 1
-        firstname:
+        firstName:
           nullable: false
           type: string
           minLength: 1
@@ -2101,11 +2101,11 @@ components:
           type: string
     User:
       properties:
-        lastname:
+        lastName:
           nullable: false
           type: string
           minLength: 1
-        firstname:
+        firstName:
           nullable: false
           type: string
           minLength: 1
@@ -2128,15 +2128,15 @@ components:
       required:
         - _id
         - email
-        - lastname
-        - firstname
+        - lastName
+        - firstName
         - isAdmin
     UserWithoutPassword:
       properties:
-        lastname:
+        lastName:
           nullable: false
           type: string
-        firstname:
+        firstName:
           nullable: false
           type: 'string'
         email:
