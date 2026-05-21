@@ -130,6 +130,11 @@ paths:
           schema:
             type: integer
           description: The numbers of items to return
+        - in: query
+          name: isActive
+          schema:
+            type: boolean
+          description: Filter by active status (false = inactive/pending activation)
       responses:
         200:
           description: 'Get list of users'
@@ -1481,6 +1486,16 @@ paths:
           name: count
           schema:
             type: integer
+        - in: query
+          name: status
+          schema:
+            $ref: '#/components/schemas/MatchStatus'
+          description: Filter by match status
+        - in: query
+          name: pastDue
+          schema:
+            type: boolean
+          description: If true, only return matches where scheduledAt is in the past
       responses:
         200:
           description: ''
@@ -1831,6 +1846,35 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
 
+  /teams/{teamId}/current-group:
+    get:
+      operationId: getTeamCurrentGroup
+      description: 'Get the current group (poule) the team is enrolled in'
+      tags:
+        - Teams
+      parameters:
+        - in: path
+          name: teamId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Current group info, or null if not enrolled
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/TeamCurrentGroup'
+                  - type: 'null'
+        '404':
+          description: Team not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorOutput'
+
 security:
   - jwtAuth: []
 components:
@@ -2099,6 +2143,34 @@ components:
           format: email
         avatar:
           type: string
+    TeamCurrentGroup:
+      type: object
+      required:
+        - groupId
+        - groupName
+        - phaseId
+        - championshipId
+      properties:
+        groupId:
+          type: string
+          format: uuid
+        groupName:
+          type: string
+        phaseId:
+          type: string
+          format: uuid
+        championshipId:
+          type: string
+          format: uuid
+
+    UserRole:
+      type: string
+      enum:
+        - ADMIN
+        - COACH
+        - PLAYER
+        - REFEREE
+
     User:
       properties:
         lastName:
@@ -2119,18 +2191,35 @@ components:
         isAdmin:
           type: boolean
           nullable: false
+        isActive:
+          type: boolean
+          nullable: false
+        isBlocked:
+          type: boolean
+          nullable: false
+        isReferee:
+          type: boolean
+          nullable: false
         createdAt:
           nullable: false
           type: string
           format: date-time
         avatar:
           type: string
+        roles:
+          type: array
+          description: Contextual roles derived from team memberships and isReferee flag
+          items:
+            $ref: '#/components/schemas/UserRole'
       required:
         - _id
         - email
         - lastName
         - firstName
         - isAdmin
+        - isActive
+        - isBlocked
+        - isReferee
     UserWithoutPassword:
       properties:
         lastName:
