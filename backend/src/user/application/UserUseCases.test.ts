@@ -2,15 +2,22 @@ import { describe, it, expect, vi } from 'vitest'
 import { UserUseCases } from './UserUseCases.js'
 import type { IUserRepository } from '../ports/IUserRepository.js'
 import { UserNotFoundError } from '../domain/UserErrors.js'
+import type { UserProfile } from '../domain/User.js'
+import { isAccessor } from 'typescript'
 
-const mockUser = {
+const mockUser: UserProfile = {
   id: 'user-1',
   firstName: 'Bob',
   lastName: 'Martin',
   email: 'bob@example.com',
   isAdmin: false,
+  isActive: true,
+  isBlocked: false,
+  isReferee: false,
+  loginAttempts: 0,
   avatar: null,
   createdAt: new Date(),
+  roles: [],
 }
 
 const makeRepo = (overrides: Partial<IUserRepository> = {}): IUserRepository => ({
@@ -20,6 +27,8 @@ const makeRepo = (overrides: Partial<IUserRepository> = {}): IUserRepository => 
   create: vi.fn().mockResolvedValue(mockUser),
   update: vi.fn().mockResolvedValue({ ...mockUser, firstName: 'Updated' }),
   delete: vi.fn().mockResolvedValue(undefined),
+  incrementLoginAttempts: vi.fn().mockResolvedValue(1),
+  blockUser: vi.fn().mockResolvedValue(undefined),
   ...overrides,
 })
 
@@ -31,6 +40,29 @@ describe('UserUseCases.getAll', () => {
     expect(users).toHaveLength(1)
     expect(users[0].id).toBe('user-1')
   })
+
+  it('passes undefined filter to repo when none provided', () => {
+    const repo = makeRepo()
+    new UserUseCases(repo).getAll()
+    expect(repo.findAll).toHaveBeenCalledWith(undefined)
+  })
+
+  it('passes filter to repo when provided', () => {
+    const repo = makeRepo()
+    new UserUseCases(repo).getAll({ isActive: false })
+    expect(repo.findAll).toHaveBeenCalledWith({ isActive: false })
+  })
+
+  it('returned user profile with exposed roles', async () => {
+    const users = await new UserUseCases(makeRepo()).getAll()
+    expect(users[0].roles).toBeDefined()
+    expect(users[0].roles).toEqual([])
+  })
+
+  // TODO(human): écrire les tests E, F, G ci-dessous
+  // E — getAll() sans filtre → repo.findAll appelé avec undefined
+  // F — getAll({ isActive: false }) → filtre passé au repo
+  // G — le UserProfile retourné expose bien roles[] (ici vide par défaut)
 })
 
 describe('UserUseCases.getById', () => {

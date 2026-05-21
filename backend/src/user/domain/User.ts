@@ -1,3 +1,5 @@
+export type UserRole = 'ADMIN' | 'COACH' | 'PLAYER' | 'REFEREE'
+
 export type UserProfile = {
   id: string
   firstName: string
@@ -10,6 +12,7 @@ export type UserProfile = {
   loginAttempts: number
   avatar: string | null
   createdAt: Date
+  roles: UserRole[]
 }
 
 export type CreateUserInput = {
