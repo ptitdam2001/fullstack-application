@@ -1,4 +1,4 @@
-import type { Team, CreateTeamInput, UpdateTeamInput, CreateTeamWithCoachInput } from '../domain/Team.js'
+import type { Team, CreateTeamInput, UpdateTeamInput, CreateTeamWithCoachInput, TeamCurrentGroup } from '../domain/Team.js'
 import type { Player } from '../../player/domain/Player.js'
 import type { UserTeam } from '../../userTeam/domain/UserTeam.js'
 
@@ -21,4 +21,5 @@ export interface ITeamRepository {
   findPlayers(teamId: string, options: TeamPlayersOptions): Promise<Player[]>
   findCalendar(teamId: string, options: TeamCalendarOptions): Promise<GameSummary[]>
   createWithCoach(input: CreateTeamWithCoachInput, coachUserId: string): Promise<{ team: Team; userTeam: UserTeam }>
+  findCurrentGroup(teamId: string): Promise<TeamCurrentGroup | null>
 }

@@ -23,3 +23,10 @@ export type CreateTeamWithCoachInput = {
   color: string
   areas: AreaWithoutId[]
 }
+
+export type TeamCurrentGroup = {
+  groupId: string
+  groupName: string
+  phaseId: string
+  championshipId: string
+}

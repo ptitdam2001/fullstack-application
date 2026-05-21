@@ -4,6 +4,7 @@ import type { ITeamRepository } from '../ports/ITeamRepository.js'
 import { TeamNotFoundError } from '../domain/TeamErrors.js'
 
 const mockTeam = { id: 'team-1', name: 'Les Bleus', color: '#0000FF' }
+const mockCurrentGroup = { groupId: 'group-1', groupName: 'Poule A', phaseId: 'phase-1', championshipId: 'champ-1' }
 
 const makeRepo = (overrides: Partial<ITeamRepository> = {}): ITeamRepository => ({
   count: vi.fn().mockResolvedValue(1),
@@ -14,6 +15,8 @@ const makeRepo = (overrides: Partial<ITeamRepository> = {}): ITeamRepository => 
   delete: vi.fn().mockResolvedValue(undefined),
   findPlayers: vi.fn().mockResolvedValue([]),
   findCalendar: vi.fn().mockResolvedValue([]),
+  createWithCoach: vi.fn().mockResolvedValue({ team: mockTeam, userTeam: {} }),
+  findCurrentGroup: vi.fn().mockResolvedValue(mockCurrentGroup),
   ...overrides,
 })
 
@@ -110,5 +113,23 @@ describe('TeamUseCases.getCalendar', () => {
     const repo = makeRepo({ findById: vi.fn().mockResolvedValue(null) })
     const useCases = new TeamUseCases(repo)
     await expect(useCases.getCalendar('unknown', { page: 1, count: 20 })).rejects.toThrow(TeamNotFoundError)
+  })
+})
+
+describe('TeamUseCases.getTeamCurrentGroup', () => {
+  it('returns current group when team is enrolled', async () => {
+    const result = await new TeamUseCases(makeRepo()).getTeamCurrentGroup('team-1')
+    expect(result).toEqual(mockCurrentGroup)
+  })
+
+  it('returns null when team exists but is not enrolled', async () => {
+    const repo = makeRepo({ findCurrentGroup: vi.fn().mockResolvedValue(null) })
+    const result = await new TeamUseCases(repo).getTeamCurrentGroup('team-1')
+    expect(result).toBeNull()
+  })
+
+  it('throws TeamNotFoundError when team does not exist', async () => {
+    const repo = makeRepo({ findById: vi.fn().mockResolvedValue(null) })
+    await expect(new TeamUseCases(repo).getTeamCurrentGroup('unknown')).rejects.toThrow(TeamNotFoundError)
   })
 })

@@ -1,5 +1,5 @@
 import type { ITeamRepository, TeamPlayersOptions, TeamCalendarOptions } from '../ports/ITeamRepository.js'
-import type { CreateTeamInput, UpdateTeamInput, CreateTeamWithCoachInput } from '../domain/Team.js'
+import type { CreateTeamInput, UpdateTeamInput, CreateTeamWithCoachInput, TeamCurrentGroup } from '../domain/Team.js'
 import type { Team } from '../domain/Team.js'
 import type { UserTeam } from '../../userTeam/domain/UserTeam.js'
 import { TeamNotFoundError } from '../domain/TeamErrors.js'
@@ -17,7 +17,9 @@ export class TeamUseCases {
 
   async getById(id: string) {
     const team = await this.repo.findById(id)
-    if (!team) throw new TeamNotFoundError(id)
+    if (!team) {
+      throw new TeamNotFoundError(id)
+    }
     return team
   }
 
@@ -47,5 +49,10 @@ export class TeamUseCases {
 
   createWithCoach(input: CreateTeamWithCoachInput, coachUserId: string): Promise<{ team: Team; userTeam: UserTeam }> {
     return this.repo.createWithCoach(input, coachUserId)
+  }
+
+  async getTeamCurrentGroup(teamId: string): Promise<TeamCurrentGroup | null> {
+    await this.getById(teamId)
+    return this.repo.findCurrentGroup(teamId)
   }
 }
