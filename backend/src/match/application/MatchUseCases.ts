@@ -1,4 +1,4 @@
-import type { IMatchRepository, PaginationOptions } from '../ports/IMatchRepository.js'
+import type { IMatchRepository, PaginationOptions, MatchFilterOptions } from '../ports/IMatchRepository.js'
 import type { CreateMatchInput, UpdateMatchInput } from '../domain/Match.js'
 import { MatchNotFoundError } from '../domain/MatchErrors.js'
 
@@ -9,8 +9,8 @@ export class MatchUseCases {
     return this.repo.count()
   }
 
-  getAll(options: PaginationOptions) {
-    return this.repo.findAll(options)
+  getAll(options: PaginationOptions, filters?: MatchFilterOptions) {
+    return this.repo.findAll(options, filters)
   }
 
   async getById(id: string) {

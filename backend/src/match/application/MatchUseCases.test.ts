@@ -48,6 +48,33 @@ describe('MatchUseCases.getAll', () => {
     const result = await new MatchUseCases(makeRepo()).getAll({ page: 1, count: 20 })
     expect(result).toHaveLength(1)
   })
+
+  it('passes undefined filters to repo when none provided', async () => {
+    const repo = makeRepo()
+    await new MatchUseCases(repo).getAll({ page: 1, count: 20 })
+    expect(repo.findAll).toHaveBeenCalledWith({ page: 1, count: 20 }, undefined)
+  })
+
+  it('passes status filter to repo', async () => {
+    const repo = makeRepo()
+    await new MatchUseCases(repo).getAll({ page: 1, count: 20 }, { status: MatchStatus.SCHEDULED })
+    expect(repo.findAll).toHaveBeenCalledWith({ page: 1, count: 20 }, { status: MatchStatus.SCHEDULED })
+  })
+
+  it('passes pastDue filter to repo', async () => {
+    const repo = makeRepo()
+    await new MatchUseCases(repo).getAll({ page: 1, count: 20 }, { pastDue: true })
+    expect(repo.findAll).toHaveBeenCalledWith({ page: 1, count: 20 }, { pastDue: true })
+  })
+
+  it('passes combined filters to repo', async () => {
+    const repo = makeRepo()
+    await new MatchUseCases(repo).getAll({ page: 1, count: 20 }, { status: MatchStatus.SCHEDULED, pastDue: true })
+    expect(repo.findAll).toHaveBeenCalledWith(
+      { page: 1, count: 20 },
+      { status: MatchStatus.SCHEDULED, pastDue: true },
+    )
+  })
 })
 
 describe('MatchUseCases.getById', () => {
