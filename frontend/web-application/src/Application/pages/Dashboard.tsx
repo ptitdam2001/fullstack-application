@@ -1,7 +1,7 @@
 import { AuthProvider } from '@Auth/application/AuthProvider'
 import { PageLoader } from '@Common/Loading/PageLoader'
-import { CoachDashboard } from '@Dashboard/ui/CoachDashboard/CoachDashboard'
-import { DefaultDashboard } from '@Dashboard/ui/DefaultDashboard/DefaultDashboard'
+import { AdminDashboard } from '@Dashboard/ui/AdminDashboard/AdminDashboard'
+import { DashboardTabs } from '@Dashboard/ui/DashboardTabs/DashboardTabs'
 
 export const Dashboard = () => {
   const { user } = AuthProvider.useAuthValue()
@@ -10,17 +10,9 @@ export const Dashboard = () => {
     return <PageLoader />
   }
 
-  if (user.roles?.includes('COACH')) {
-    return <CoachDashboard />
+  if (user.isAdmin) {
+    return <AdminDashboard />
   }
 
-  if (user.roles?.includes('ADMIN')) {
-    return <DefaultDashboard />
-  }
-
-  if (user.roles?.includes('REFEREE')) {
-    return <DefaultDashboard />
-  }
-
-  return <DefaultDashboard />
+  return <DashboardTabs roles={user.roles ?? []} />
 }

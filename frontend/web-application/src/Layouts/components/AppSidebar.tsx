@@ -6,9 +6,16 @@ import { LATERAL_MENU } from '@Application/lateralMenu.config'
 export const AppSidebar = () => {
   const { user } = AuthProvider.useAuthValue()
 
-  if (user?.roles?.includes('COACH')) {
-    return <CoachAppSidebar />
+  if (!user) {
+    return null
   }
 
+  if (user.isAdmin) {
+    return <ConnectedAppSidebar links={LATERAL_MENU} />
+  }
+
+  if (user.roles?.includes('COACH')) {
+    return <CoachAppSidebar />
+  }
   return <ConnectedAppSidebar links={LATERAL_MENU} />
 }
