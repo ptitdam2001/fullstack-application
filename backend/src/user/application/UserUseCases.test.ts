@@ -3,7 +3,6 @@ import { UserUseCases } from './UserUseCases.js'
 import type { IUserRepository } from '../ports/IUserRepository.js'
 import { UserNotFoundError } from '../domain/UserErrors.js'
 import type { UserProfile } from '../domain/User.js'
-import { isAccessor } from 'typescript'
 
 const mockUser: UserProfile = {
   id: 'user-1',
@@ -58,11 +57,6 @@ describe('UserUseCases.getAll', () => {
     expect(users[0].roles).toBeDefined()
     expect(users[0].roles).toEqual([])
   })
-
-  // TODO(human): écrire les tests E, F, G ci-dessous
-  // E — getAll() sans filtre → repo.findAll appelé avec undefined
-  // F — getAll({ isActive: false }) → filtre passé au repo
-  // G — le UserProfile retourné expose bien roles[] (ici vide par défaut)
 })
 
 describe('UserUseCases.getById', () => {
