@@ -27,5 +27,5 @@ export const useCoachDashboard = (userId: string) => {
     upcomingMatchCount: upcomingMatches.length,
   }
 
-  return { teams, upcomingMatches, stats }
+  return { teams, upcomingMatches, allMatches, stats }
 }
