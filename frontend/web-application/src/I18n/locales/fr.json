@@ -142,6 +142,15 @@
     "noRole.message": "Vous n'êtes encore membre d'aucune équipe.",
     "noRole.cta": "Rejoindre ou créer une équipe"
   },
+  "refereeDashboard": {
+    "urgent.title": "À finaliser",
+    "urgent.badge": "En retard",
+    "urgent.daysAgo": "Prévu il y a {days} jour(s)",
+    "urgent.action": "Saisir le score",
+    "upcoming.title": "Prochains matchs à arbitrer",
+    "noMatches": "Aucun match assigné",
+    "vs": "vs"
+  },
   "playerDashboard": {
     "noTeam": "Vous n'êtes membre d'aucune équipe.",
     "upcomingMatches.title": "Prochains matchs",
