@@ -135,6 +135,52 @@
   "theme": {
     "selectTitle": "Select your theme"
   },
+  "dashboard": {
+    "tab.coach": "Coach",
+    "tab.player": "Player",
+    "tab.referee": "Referee",
+    "noRole.message": "You are not yet a member of any team.",
+    "noRole.cta": "Join or create a team"
+  },
+  "coachDashboard": {
+    "teams.title": "My teams",
+    "matches.title": "Upcoming matches",
+    "noTeam": "No team",
+    "standings.title": "Standings & record",
+    "standing.notEnrolled": "Not enrolled"
+  },
+  "adminDashboard": {
+    "kpi.pendingScore": "Matches without score",
+    "kpi.pendingActivation": "Pending activations",
+    "kpi.championships": "Active championships",
+    "kpi.teams": "Total teams",
+    "actions.teams": "Manage teams",
+    "actions.users": "Manage users",
+    "actions.games": "Manage games",
+    "feed.title": "Recent activity",
+    "feed.empty": "No recent activity",
+    "feed.activate": "Activate",
+    "feed.event.activationRequest": "{firstName} {lastName} requests activation",
+    "feed.event.forfeit": "Forfeit declared",
+    "feed.event.matchCompleted": "Match completed",
+    "chart.title": "Role distribution",
+    "chart.role.admin": "Admin",
+    "chart.role.coach": "Coach",
+    "chart.role.player": "Player",
+    "chart.role.referee": "Referee",
+    "chart.role.noRole": "No role"
+  },
+  "adminSidebar": {
+    "globalView": "Overview",
+    "management": "Management",
+    "championships": "Championships",
+    "teams": "Teams",
+    "gamesNeedsScore": "Matches without score",
+    "users": "Users",
+    "usersInactive": "Pending activations",
+    "config": "Configuration",
+    "settings": "Settings"
+  },
   "register": {
     "section.team": "Your team",
     "section.personalInfo": "Personal info",

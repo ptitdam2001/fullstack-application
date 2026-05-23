@@ -1,4 +1,5 @@
 import { AuthProvider } from '@Auth/application/AuthProvider'
+import { AdminAppSidebar } from './AdminAppSidebar'
 import { CoachAppSidebar } from './CoachAppSidebar'
 import { ConnectedAppSidebar } from './ConnectedAppSidebar'
 import { LATERAL_MENU } from '@Application/lateralMenu.config'
@@ -11,11 +12,12 @@ export const AppSidebar = () => {
   }
 
   if (user.isAdmin) {
-    return <ConnectedAppSidebar links={LATERAL_MENU} />
+    return <AdminAppSidebar />
   }
 
   if (user.roles?.includes('COACH')) {
     return <CoachAppSidebar />
   }
+
   return <ConnectedAppSidebar links={LATERAL_MENU} />
 }

@@ -135,6 +135,52 @@
   "theme": {
     "selectTitle": "Sélectionner le thème"
   },
+  "dashboard": {
+    "tab.coach": "Coach",
+    "tab.player": "Joueur",
+    "tab.referee": "Arbitre",
+    "noRole.message": "Vous n'êtes encore membre d'aucune équipe.",
+    "noRole.cta": "Rejoindre ou créer une équipe"
+  },
+  "coachDashboard": {
+    "teams.title": "Mes équipes",
+    "matches.title": "Prochains matchs",
+    "noTeam": "Aucune équipe",
+    "standings.title": "Classement & bilan",
+    "standing.notEnrolled": "Non inscrit"
+  },
+  "adminDashboard": {
+    "kpi.pendingScore": "Matchs sans score",
+    "kpi.pendingActivation": "Activations en attente",
+    "kpi.championships": "Championnats actifs",
+    "kpi.teams": "Équipes totales",
+    "actions.teams": "Gérer les équipes",
+    "actions.users": "Gérer les utilisateurs",
+    "actions.games": "Gérer les matchs",
+    "feed.title": "Activité récente",
+    "feed.empty": "Aucune activité récente",
+    "feed.activate": "Activer",
+    "feed.event.activationRequest": "{firstName} {lastName} demande une activation",
+    "feed.event.forfeit": "Forfait déclaré",
+    "feed.event.matchCompleted": "Match terminé",
+    "chart.title": "Répartition des rôles",
+    "chart.role.admin": "Admin",
+    "chart.role.coach": "Coach",
+    "chart.role.player": "Joueur",
+    "chart.role.referee": "Arbitre",
+    "chart.role.noRole": "Sans rôle"
+  },
+  "adminSidebar": {
+    "globalView": "Vue globale",
+    "management": "Gestion",
+    "championships": "Championnats",
+    "teams": "Équipes",
+    "gamesNeedsScore": "Matchs sans score",
+    "users": "Utilisateurs",
+    "usersInactive": "Activations en attente",
+    "config": "Configuration",
+    "settings": "Paramètres"
+  },
   "register": {
     "section.team": "Votre équipe",
     "section.personalInfo": "Informations personnelles",

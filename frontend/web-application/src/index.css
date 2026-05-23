@@ -18,6 +18,12 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --chart-color-admin: #6366f1;
+  --chart-color-coach: #22c55e;
+  --chart-color-player: #3b82f6;
+  --chart-color-referee: #f59e0b;
+  --chart-color-other: #94a3b8;
 }
 
 body {
