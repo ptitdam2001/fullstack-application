@@ -142,6 +142,19 @@
     "noRole.message": "You are not yet a member of any team.",
     "noRole.cta": "Join or create a team"
   },
+  "playerDashboard": {
+    "noTeam": "You are not a member of any team.",
+    "upcomingMatches.title": "Upcoming matches",
+    "standings.title": "Group standings",
+    "notEnrolled": "Not enrolled in a championship",
+    "standings.rank": "Rank",
+    "standings.team": "Team",
+    "standings.played": "P",
+    "standings.won": "W",
+    "standings.drawn": "D",
+    "standings.lost": "L",
+    "standings.points": "Pts"
+  },
   "coachDashboard": {
     "teams.title": "My teams",
     "matches.title": "Upcoming matches",

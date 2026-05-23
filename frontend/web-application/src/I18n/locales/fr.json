@@ -142,6 +142,19 @@
     "noRole.message": "Vous n'êtes encore membre d'aucune équipe.",
     "noRole.cta": "Rejoindre ou créer une équipe"
   },
+  "playerDashboard": {
+    "noTeam": "Vous n'êtes membre d'aucune équipe.",
+    "upcomingMatches.title": "Prochains matchs",
+    "standings.title": "Classement de la poule",
+    "notEnrolled": "Non inscrit dans un championnat",
+    "standings.rank": "Rang",
+    "standings.team": "Équipe",
+    "standings.played": "J",
+    "standings.won": "V",
+    "standings.drawn": "N",
+    "standings.lost": "D",
+    "standings.points": "Pts"
+  },
   "coachDashboard": {
     "teams.title": "Mes équipes",
     "matches.title": "Prochains matchs",
