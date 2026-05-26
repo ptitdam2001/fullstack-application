@@ -34,6 +34,7 @@ const makeRepo = (overrides: Partial<IMatchRepository> = {}): IMatchRepository =
   create: vi.fn().mockResolvedValue(mockMatch),
   update: vi.fn().mockResolvedValue({ ...mockMatch, scheduledAt: new Date('2026-05-02T15:00:00Z') }),
   delete: vi.fn().mockResolvedValue(undefined),
+  softDelete: vi.fn().mockResolvedValue(undefined),
   ...overrides,
 })
 
@@ -112,6 +113,22 @@ describe('MatchUseCases.create', () => {
     await new MatchUseCases(repo).create(input)
     expect(repo.create).toHaveBeenCalledWith(input)
   })
+
+  it('creates a match without area', async () => {
+    const repo = makeRepo()
+    const input = {
+      groupId: 'group-1',
+      scheduledAt: null,
+      area: null,
+      homeTeamId: 'team-1',
+      awayTeamId: 'team-2',
+      homeGoals: null,
+      awayGoals: null,
+      forfeitedBy: null,
+    }
+    await new MatchUseCases(repo).create(input)
+    expect(repo.create).toHaveBeenCalledWith(input)
+  })
 })
 
 describe('MatchUseCases.update', () => {
@@ -128,10 +145,29 @@ describe('MatchUseCases.update', () => {
 })
 
 describe('MatchUseCases.delete', () => {
-  it('deletes match when found', async () => {
-    const repo = makeRepo()
+  it('hard deletes SCHEDULED match', async () => {
+    const repo = makeRepo({ findById: vi.fn().mockResolvedValue({ ...mockMatch, status: MatchStatus.SCHEDULED }) })
     await new MatchUseCases(repo).delete('match-1')
     expect(repo.delete).toHaveBeenCalledWith('match-1')
+    expect(repo.softDelete).not.toHaveBeenCalled()
+  })
+  it('hard deletes CANCELLED match', async () => {
+    const repo = makeRepo({ findById: vi.fn().mockResolvedValue({ ...mockMatch, status: MatchStatus.CANCELLED }) })
+    await new MatchUseCases(repo).delete('match-1')
+    expect(repo.delete).toHaveBeenCalledWith('match-1')
+    expect(repo.softDelete).not.toHaveBeenCalled()
+  })
+  it('soft deletes PLAYED match', async () => {
+    const repo = makeRepo({ findById: vi.fn().mockResolvedValue({ ...mockMatch, status: MatchStatus.PLAYED }) })
+    await new MatchUseCases(repo).delete('match-1')
+    expect(repo.softDelete).toHaveBeenCalledWith('match-1')
+    expect(repo.delete).not.toHaveBeenCalled()
+  })
+  it('soft deletes FORFEITED match', async () => {
+    const repo = makeRepo({ findById: vi.fn().mockResolvedValue({ ...mockMatch, status: MatchStatus.FORFEITED }) })
+    await new MatchUseCases(repo).delete('match-1')
+    expect(repo.softDelete).toHaveBeenCalledWith('match-1')
+    expect(repo.delete).not.toHaveBeenCalled()
   })
   it('throws MatchNotFoundError when not found', async () => {
     const repo = makeRepo({ findById: vi.fn().mockResolvedValue(null) })

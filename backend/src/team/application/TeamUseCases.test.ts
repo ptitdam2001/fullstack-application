@@ -86,6 +86,17 @@ describe('TeamUseCases.delete', () => {
     const useCases = new TeamUseCases(repo)
     await expect(useCases.delete('unknown')).rejects.toThrow(TeamNotFoundError)
   })
+
+  it('team is not findable after deletion', async () => {
+    let deleted = false
+    const repo = makeRepo({
+      delete: vi.fn().mockImplementation(async () => { deleted = true }),
+      findById: vi.fn().mockImplementation(async () => (deleted ? null : mockTeam)),
+    })
+    const useCases = new TeamUseCases(repo)
+    await useCases.delete('team-1')
+    await expect(useCases.getById('team-1')).rejects.toThrow(TeamNotFoundError)
+  })
 })
 
 describe('TeamUseCases.getPlayers', () => {

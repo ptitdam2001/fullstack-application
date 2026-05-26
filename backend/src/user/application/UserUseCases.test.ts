@@ -16,6 +16,7 @@ const mockUser: UserProfile = {
   loginAttempts: 0,
   avatar: null,
   createdAt: new Date(),
+  updatedAt: new Date(),
   roles: [],
 }
 

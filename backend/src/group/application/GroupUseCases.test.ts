@@ -18,6 +18,8 @@ const makeRepo = (overrides: Partial<IGroupRepository> = {}): IGroupRepository =
   create: vi.fn().mockResolvedValue(mockGroup),
   update: vi.fn().mockResolvedValue({ ...mockGroup, name: 'Poule B' }),
   delete: vi.fn().mockResolvedValue(undefined),
+  softDelete: vi.fn().mockResolvedValue(undefined),
+  hasPlayedMatches: vi.fn().mockResolvedValue(false),
   ...overrides,
 })
 
@@ -66,10 +68,17 @@ describe('GroupUseCases.update', () => {
 })
 
 describe('GroupUseCases.delete', () => {
-  it('deletes group when found', async () => {
-    const repo = makeRepo()
+  it('hard deletes when no played matches', async () => {
+    const repo = makeRepo({ hasPlayedMatches: vi.fn().mockResolvedValue(false) })
     await new GroupUseCases(repo).delete('group-1')
     expect(repo.delete).toHaveBeenCalledWith('group-1')
+    expect(repo.softDelete).not.toHaveBeenCalled()
+  })
+  it('soft deletes when played matches exist', async () => {
+    const repo = makeRepo({ hasPlayedMatches: vi.fn().mockResolvedValue(true) })
+    await new GroupUseCases(repo).delete('group-1')
+    expect(repo.softDelete).toHaveBeenCalledWith('group-1')
+    expect(repo.delete).not.toHaveBeenCalled()
   })
   it('throws GroupNotFoundError when not found', async () => {
     const repo = makeRepo({ findById: vi.fn().mockResolvedValue(null) })

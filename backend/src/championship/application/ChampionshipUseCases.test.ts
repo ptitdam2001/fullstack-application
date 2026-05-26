@@ -21,6 +21,8 @@ const makeRepo = (overrides: Partial<IChampionshipRepository> = {}): IChampionsh
   create: vi.fn().mockResolvedValue(mockChampionship),
   update: vi.fn().mockResolvedValue({ ...mockChampionship, name: 'Championnat U13 2024 - Saison modifiée' }),
   delete: vi.fn().mockResolvedValue(undefined),
+  softDelete: vi.fn().mockResolvedValue(undefined),
+  hasPlayedMatches: vi.fn().mockResolvedValue(false),
   ...overrides,
 })
 
@@ -79,10 +81,17 @@ describe('ChampionshipUseCases.update', () => {
 })
 
 describe('ChampionshipUseCases.delete', () => {
-  it('deletes championship when found', async () => {
-    const repo = makeRepo()
+  it('hard deletes when no played matches', async () => {
+    const repo = makeRepo({ hasPlayedMatches: vi.fn().mockResolvedValue(false) })
     await new ChampionshipUseCases(repo).delete('championship-1')
     expect(repo.delete).toHaveBeenCalledWith('championship-1')
+    expect(repo.softDelete).not.toHaveBeenCalled()
+  })
+  it('soft deletes when played matches exist', async () => {
+    const repo = makeRepo({ hasPlayedMatches: vi.fn().mockResolvedValue(true) })
+    await new ChampionshipUseCases(repo).delete('championship-1')
+    expect(repo.softDelete).toHaveBeenCalledWith('championship-1')
+    expect(repo.delete).not.toHaveBeenCalled()
   })
   it('throws ChampionshipNotFoundError when not found', async () => {
     const repo = makeRepo({ findById: vi.fn().mockResolvedValue(null) })

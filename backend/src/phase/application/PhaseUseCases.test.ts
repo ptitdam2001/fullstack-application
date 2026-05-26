@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { PhaseUseCases } from './PhaseUseCases.js'
 import type { IPhaseRepository } from '../ports/IPhaseRepository.js'
-import { PhaseNotFoundError } from '../domain/PhaseErrors.js'
+import { PhaseNotFoundError, PhaseDuplicateOrderError } from '../domain/PhaseErrors.js'
 import { PhaseType } from '../domain/Phase.js'
 
 const mockPhase = {
@@ -18,6 +18,8 @@ const makeRepo = (overrides: Partial<IPhaseRepository> = {}): IPhaseRepository =
   create: vi.fn().mockResolvedValue(mockPhase),
   update: vi.fn().mockResolvedValue({ ...mockPhase, name: 'Phase 1 modifiée' }),
   delete: vi.fn().mockResolvedValue(undefined),
+  softDelete: vi.fn().mockResolvedValue(undefined),
+  hasPlayedMatches: vi.fn().mockResolvedValue(false),
   ...overrides,
 })
 
@@ -43,7 +45,21 @@ describe('PhaseUseCases.getById', () => {
 describe('PhaseUseCases.create', () => {
   it('creates a phase', async () => {
     const repo = makeRepo()
-    const input = { championshipId: 'champ-1', type: PhaseType.GROUP, order: 1, name: 'Phase de poules' }
+    const input = { championshipId: 'champ-1', type: PhaseType.GROUP, order: 2, name: 'Phase éliminatoire' }
+    await new PhaseUseCases(repo).create(input)
+    expect(repo.create).toHaveBeenCalledWith(input)
+  })
+
+  it('throws PhaseDuplicateOrderError when order already exists in championship', async () => {
+    const repo = makeRepo()
+    const input = { championshipId: 'champ-1', type: PhaseType.KNOCKOUT, order: 1, name: 'Phase éliminatoire' }
+    await expect(new PhaseUseCases(repo).create(input)).rejects.toThrow(PhaseDuplicateOrderError)
+    expect(repo.create).not.toHaveBeenCalled()
+  })
+
+  it('allows same order in different championships', async () => {
+    const repo = makeRepo({ findByChampionshipId: vi.fn().mockResolvedValue([]) })
+    const input = { championshipId: 'champ-2', type: PhaseType.GROUP, order: 1, name: 'Phase de poules' }
     await new PhaseUseCases(repo).create(input)
     expect(repo.create).toHaveBeenCalledWith(input)
   })
@@ -61,10 +77,17 @@ describe('PhaseUseCases.update', () => {
 })
 
 describe('PhaseUseCases.delete', () => {
-  it('deletes phase when found', async () => {
-    const repo = makeRepo()
+  it('hard deletes when no played matches', async () => {
+    const repo = makeRepo({ hasPlayedMatches: vi.fn().mockResolvedValue(false) })
     await new PhaseUseCases(repo).delete('phase-1')
     expect(repo.delete).toHaveBeenCalledWith('phase-1')
+    expect(repo.softDelete).not.toHaveBeenCalled()
+  })
+  it('soft deletes when played matches exist', async () => {
+    const repo = makeRepo({ hasPlayedMatches: vi.fn().mockResolvedValue(true) })
+    await new PhaseUseCases(repo).delete('phase-1')
+    expect(repo.softDelete).toHaveBeenCalledWith('phase-1')
+    expect(repo.delete).not.toHaveBeenCalled()
   })
   it('throws PhaseNotFoundError when not found', async () => {
     const repo = makeRepo({ findById: vi.fn().mockResolvedValue(null) })
