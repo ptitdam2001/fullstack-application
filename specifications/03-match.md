@@ -8,17 +8,18 @@ Un match est une rencontre entre deux équipes dans le cadre d'une phase de cham
 
 ## Structure d'un match
 
-| Attribut      | Type             | Description                                          |
-| ------------- | ---------------- | ---------------------------------------------------- |
-| `homeTeam`    | Team             | Équipe qui reçoit (joue sur son terrain)             |
-| `awayTeam`    | Team             | Équipe visiteuse                                     |
-| `phase`       | Phase            | Phase du championnat à laquelle appartient le match  |
-| `group`       | Group \| Bracket | Poule ou tableau éliminatoire du match               |
-| `scheduledAt` | Date \| null     | Date et heure prévues du match (optionnel)           |
-| `homeGoals`   | number \| null   | Buts de l'équipe hôte (null = match non joué)        |
-| `awayGoals`   | number \| null   | Buts de l'équipe visiteuse (null = match non joué)   |
-| `status`      | MatchStatus      | État du match                                        |
-| `forfeitedBy` | Team \| null     | Équipe ayant déclaré forfait (null si aucun forfait) |
+| Attribut      | Type             | Description                                                     |
+| ------------- | ---------------- | --------------------------------------------------------------- |
+| `homeTeam`    | Team             | Équipe qui reçoit (joue sur son terrain)                        |
+| `awayTeam`    | Team             | Équipe visiteuse                                                |
+| `phase`       | Phase            | Phase du championnat à laquelle appartient le match             |
+| `group`       | Group \| Bracket | Poule ou tableau éliminatoire du match                          |
+| `scheduledAt` | Date \| null     | Date et heure prévues du match (optionnel)                      |
+| `area`        | Area \| null     | Terrain du match (optionnel — peut être assigné après création) |
+| `homeGoals`   | number \| null   | Buts de l'équipe hôte (null = match non joué)                   |
+| `awayGoals`   | number \| null   | Buts de l'équipe visiteuse (null = match non joué)              |
+| `status`      | MatchStatus      | État du match                                                   |
+| `forfeitedBy` | Team \| null     | Équipe ayant déclaré forfait (null si aucun forfait)            |
 
 ---
 

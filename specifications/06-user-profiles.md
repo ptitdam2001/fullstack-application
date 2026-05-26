@@ -61,6 +61,8 @@ Responsable d'une ou plusieurs équipes. Identifié par un enregistrement `UserT
 
 Participant inscrit dans une équipe via `UserTeam(PLAYER, teamId)`. Possède un profil joueur (`Player`) avec numéro de maillot et poste. Un utilisateur peut être joueur dans plusieurs équipes (un `UserTeam(PLAYER)` + `Player` par équipe). Accès en lecture seule.
 
+> **Invariant** : tout enregistrement `Player(userId, teamId)` requiert l'existence préalable d'un `UserTeam(PLAYER, userId, teamId)`. L'inverse n'est pas vrai — un membre peut avoir accès à l'équipe sans qu'un profil joueur lui soit encore assigné. Cette contrainte est vérifiée applicativement, pas en base de données.
+
 ### Arbitre
 
 Officiel désigné pour un ou plusieurs matchs via `UserMatch`. Accès en lecture sur toutes les données publiques. Peut saisir et valider les scores des matchs qui lui sont assignés.

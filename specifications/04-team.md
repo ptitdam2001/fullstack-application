@@ -49,6 +49,16 @@ Une équipe est **inscrite** à un championnat. L'inscription est matérialisée
 
 ---
 
+## Suppression d'une équipe
+
+La suppression d'une équipe est **logique** (soft delete) : l'équipe est marquée comme supprimée mais n'est pas retirée de la base de données.
+
+- Les matchs passés, classements et statistiques liés à cette équipe sont **préservés**.
+- Une équipe supprimée n'apparaît plus dans les listes ni n'est assignable à de nouvelles poules ou matchs.
+- Ce comportement protège l'intégrité de l'historique sportif (dissolution d'un club, fusion, etc.).
+
+---
+
 ## Contraintes métier
 
 - Le nom d'une équipe est unique au sein d'un championnat.

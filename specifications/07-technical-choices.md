@@ -106,6 +106,45 @@ export default config;
 
 ---
 
+## Politique de suppression des données
+
+### Règle générale — soft delete conditionnel
+
+Toute nouvelle collection doit définir explicitement sa stratégie de suppression selon la règle suivante :
+
+| Condition                              | Comportement | Implémentation                                              |
+| -------------------------------------- | ------------ | ----------------------------------------------------------- |
+| Entité sans historique joué            | Hard delete  | `prisma.entity.delete()`                                    |
+| Entité avec matchs PLAYED ou FORFEITED | Soft delete  | `prisma.entity.update({ data: { deletedAt: new Date() } })` |
+
+Le choix est effectué dans le use case, pas dans le repository. Le repository expose `delete()` (hard) et `softDelete()` (soft).
+
+### Collections concernées
+
+| Collection                    | Champ `deletedAt` | Critère soft delete                            |
+| ----------------------------- | ----------------- | ---------------------------------------------- |
+| `championships`               | ✅                | ≥ 1 match PLAYED/FORFEITED dans ses phases     |
+| `phases`                      | ✅                | ≥ 1 match PLAYED/FORFEITED dans ses poules     |
+| `groups`                      | ✅                | ≥ 1 match PLAYED/FORFEITED dans la poule       |
+| `matches`                     | ✅                | Status = PLAYED ou FORFEITED                   |
+| `teams`                       | ✅                | Toujours soft delete (historique sportif)      |
+| Autres (users, players, etc.) | ❌                | Hard delete (pas de valeur historique directe) |
+
+### Filtrage automatique
+
+Tous les `findMany` et `findById` filtrent `deletedAt: null` dans le repository. Les entités soft-deleted sont invisibles aux couches supérieures.
+
+### Application à de nouvelles collections
+
+Pour chaque nouvelle collection, se poser la question :
+
+> "La suppression de cette entité détruirait-elle un fait sportif passé ?"
+
+- Oui → ajouter `deletedAt DateTime?` + implémenter `softDelete()` + logique conditionnelle dans le use case
+- Non → hard delete uniquement
+
+---
+
 ## Résumé des dépendances inter-packages
 
 ```test

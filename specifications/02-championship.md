@@ -103,9 +103,24 @@ Quand plusieurs équipes du même rang (ex. 2èmes de poule différentes) sont c
 
 ---
 
+## Structure d'un championnat
+
+| Attribut       | Type          | Obligatoire | Description                                     |
+| -------------- | ------------- | ----------- | ----------------------------------------------- |
+| `name`         | string        | ✅          | Nom du championnat (ex. "Championnat U13 2026") |
+| `ageCategory`  | AgeCategory   | ✅          | Catégorie d'âge                                 |
+| `season`       | string        | ✅          | Saison (ex. "2025-2026")                        |
+| `startDate`    | Date \| null  | ❌          | Date de début (optionnelle)                     |
+| `endDate`      | Date \| null  | ❌          | Date de fin (optionnelle)                       |
+| `pointsConfig` | PointsConfig  | ✅          | Configuration des points                        |
+
+---
+
 ## Contraintes métier
 
+- Le nom d'un championnat est obligatoire.
 - Un championnat doit avoir au moins une phase.
+- L'ordre d'une phase est unique au sein d'un championnat — deux phases ne peuvent pas avoir le même `order`.
 - Une phase doit avoir au moins une poule ou un tableau éliminatoire.
 - Une poule doit avoir au moins 2 équipes.
 - Les matchs d'une phase ne peuvent pas débuter avant que la phase précédente soit terminée (tous les matchs joués).
