@@ -1,4 +1,5 @@
 import { prisma } from '../../../utils/prismaClient.js'
+import { notDeleted } from '../../../utils/softDelete.js'
 import type { ITeamRepository, TeamPlayersOptions, TeamCalendarOptions, GameSummary } from '../ports/ITeamRepository.js'
 import type { Team, CreateTeamInput, UpdateTeamInput, CreateTeamWithCoachInput, TeamCurrentGroup } from '../domain/Team.js'
 import type { Player } from '../../player/domain/Player.js'
@@ -6,15 +7,15 @@ import type { UserTeam } from '../../userTeam/domain/UserTeam.js'
 
 export class PrismaTeamRepository implements ITeamRepository {
   count() {
-    return prisma.team.count({ where: { deletedAt: null } })
+    return prisma.team.count({ where: { ...notDeleted } })
   }
 
   async findAll(): Promise<Team[]> {
-    return prisma.team.findMany({ where: { deletedAt: null }, select: { id: true, name: true, color: true, updatedAt: true } })
+    return prisma.team.findMany({ where: { ...notDeleted }, select: { id: true, name: true, color: true, updatedAt: true } })
   }
 
   async findById(id: string): Promise<Team | null> {
-    return prisma.team.findFirst({ where: { id, deletedAt: null }, select: { id: true, name: true, color: true, updatedAt: true } })
+    return prisma.team.findFirst({ where: { id, ...notDeleted }, select: { id: true, name: true, color: true, updatedAt: true } })
   }
 
   async create(input: CreateTeamInput): Promise<Team> {
@@ -40,7 +41,7 @@ export class PrismaTeamRepository implements ITeamRepository {
   async findCalendar(teamId: string, { page, count, startDate, endDate }: TeamCalendarOptions): Promise<GameSummary[]> {
     const matches = await prisma.match.findMany({
       where: {
-        deletedAt: null,
+        AND: [notDeleted],
         OR: [{ homeTeamId: teamId }, { awayTeamId: teamId }],
         ...(startDate || endDate
           ? { scheduledAt: { ...(startDate ? { gte: startDate } : {}), ...(endDate ? { lte: endDate } : {}) } }

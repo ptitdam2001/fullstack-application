@@ -1,4 +1,5 @@
 import { prisma } from '../../../utils/prismaClient.js'
+import { notDeleted } from '../../../utils/softDelete.js'
 import type { IGroupRepository } from '../ports/IGroupRepository.js'
 import type { Group, CreateGroupInput, UpdateGroupInput } from '../domain/Group.js'
 
@@ -19,12 +20,12 @@ function toGroup(raw: RawGroup): Group {
 
 export class PrismaGroupRepository implements IGroupRepository {
   async findByPhaseId(phaseId: string): Promise<Group[]> {
-    const rows = await prisma.group.findMany({ where: { phaseId, deletedAt: null }, select })
+    const rows = await prisma.group.findMany({ where: { phaseId, ...notDeleted }, select })
     return rows.map(toGroup)
   }
 
   async findById(id: string): Promise<Group | null> {
-    const row = await prisma.group.findFirst({ where: { id, deletedAt: null }, select })
+    const row = await prisma.group.findFirst({ where: { id, ...notDeleted }, select })
     return row ? toGroup(row) : null
   }
 
@@ -62,7 +63,7 @@ export class PrismaGroupRepository implements IGroupRepository {
 
   async hasPlayedMatches(id: string): Promise<boolean> {
     const count = await prisma.match.count({
-      where: { groupId: id, deletedAt: null, status: { in: ['PLAYED', 'FORFEITED'] } },
+      where: { groupId: id, ...notDeleted, status: { in: ['PLAYED', 'FORFEITED'] } },
     })
     return count > 0
   }
