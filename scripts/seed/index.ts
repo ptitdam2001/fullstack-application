@@ -94,13 +94,16 @@ async function seedContext() {
     },
   })
 
-  await prisma.group.create({
+  const group = await prisma.group.create({
     data: {
       phaseId: phase.id,
       name: 'Groupe A',
       matchMode: MatchMode.SINGLE,
-      teamIds: [team.id],
     },
+  })
+
+  await prisma.groupTeam.create({
+    data: { groupId: group.id, teamId: team.id },
   })
   console.log(`  ✓ Team inscrite au championship (Phase > Groupe A)`)
 
