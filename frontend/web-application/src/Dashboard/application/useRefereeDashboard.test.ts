@@ -50,7 +50,7 @@ describe('splitRefereeMatches', () => {
   })
 
   it('excludes non-SCHEDULED matches', () => {
-    const match = makeMatch({ id: 'match-1', scheduledAt: FUTURE, status: MatchStatus.COMPLETED })
+    const match = makeMatch({ id: 'match-1', scheduledAt: FUTURE, status: MatchStatus.PLAYED })
     const result = splitRefereeMatches(new Set(['match-1']), [match], NOW)
     expect(result.upcomingMatches).toHaveLength(0)
   })
@@ -72,9 +72,9 @@ describe('splitRefereeMatches', () => {
 
   it('caps upcoming matches at 5', () => {
     const matches = Array.from({ length: 8 }, (_, i) =>
-      makeMatch({ id: `match-${i}`, scheduledAt: dayjs(FUTURE).add(i, 'day').toISOString() }),
+      makeMatch({ id: `match-${i}`, scheduledAt: dayjs(FUTURE).add(i, 'day').toISOString() })
     )
-    const ids = new Set(matches.map((m) => m.id))
+    const ids = new Set(matches.map(m => m.id))
     const result = splitRefereeMatches(ids, matches, NOW)
     expect(result.upcomingMatches).toHaveLength(5)
   })
@@ -86,10 +86,7 @@ describe('teamNameMap', () => {
   })
 
   it('maps team ids to names', () => {
-    const teams: Team[] = [
-      { id: 'team-1', name: 'Alpha' } as Team,
-      { id: 'team-2', name: 'Beta' } as Team,
-    ]
+    const teams: Team[] = [{ id: 'team-1', name: 'Alpha' } as Team, { id: 'team-2', name: 'Beta' } as Team]
     expect(teamNameMap(teams)).toEqual({ 'team-1': 'Alpha', 'team-2': 'Beta' })
   })
 })

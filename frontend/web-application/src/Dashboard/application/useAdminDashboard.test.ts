@@ -4,7 +4,14 @@ import { buildRoleDistribution, buildFeedEvents } from './useAdminDashboard'
 
 const makeMatch = (overrides: Partial<Match> & { id: string }): Match => ({
   id: overrides.id,
-  area: { name: 'Terrain A' },
+  area: {
+    name: 'Terrain A',
+    id: '',
+    address: '',
+    city: '',
+    longitude: 0,
+    latitude: 0,
+  },
   homeTeamId: 'home-1',
   awayTeamId: 'away-1',
   ...overrides,
@@ -74,7 +81,7 @@ describe('buildFeedEvents', () => {
 
   it('slices result to 20 events max', () => {
     const matches = Array.from({ length: 25 }, (_, i) =>
-      makeMatch({ id: `m${i}`, scheduledAt: `2025-0${(i % 9) + 1}-01T00:00:00Z` }),
+      makeMatch({ id: `m${i}`, scheduledAt: `2025-0${(i % 9) + 1}-01T00:00:00Z` })
     )
     expect(buildFeedEvents({ playedMatches: matches })).toHaveLength(20)
   })

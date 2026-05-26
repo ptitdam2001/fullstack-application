@@ -2,11 +2,12 @@ import { Link } from 'react-router'
 import { FormattedMessage } from 'react-intl'
 import { UserCheck, AlertTriangle, CheckCircle, Users } from 'lucide-react'
 import type { FeedEvent } from '@Dashboard/domain/Dashboard'
+import { cn } from '@repo/design-system'
 
 const EVENT_CONFIG = {
   ACTIVATION_REQUEST: { icon: <UserCheck className="h-4 w-4 text-amber-500" />, color: 'border-l-amber-400' },
   TEAM_CREATED: { icon: <Users className="h-4 w-4 text-blue-500" />, color: 'border-l-blue-400' },
-  FORFEIT: { icon: <AlertTriangle className="h-4 w-4 text-destructive" />, color: 'border-l-destructive' },
+  FORFEIT: { icon: <AlertTriangle className="text-destructive h-4 w-4" />, color: 'border-l-destructive' },
   MATCH_COMPLETED: { icon: <CheckCircle className="h-4 w-4 text-green-500" />, color: 'border-l-green-400' },
 } as const
 
@@ -34,7 +35,7 @@ export const AdminLiveFeedEvent = ({ event }: Props) => {
   })()
 
   return (
-    <div className={`bg-card flex items-center gap-3 rounded-md border border-l-4 p-3 ${config.color}`}>
+    <div className={cn(`bg-card flex items-center gap-3 rounded-md border border-l-4 p-3`, config.color)}>
       {config.icon}
       <span className="flex-1 text-sm">{label}</span>
       {event.href && (

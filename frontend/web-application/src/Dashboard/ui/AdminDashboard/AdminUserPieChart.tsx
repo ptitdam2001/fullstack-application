@@ -9,7 +9,10 @@ export const AdminUserPieChart = ({ distribution }: Props) => {
 
   const localizedData = distribution.map(entry => ({
     ...entry,
-    name: formatMessage({ id: `adminDashboard.chart.role.${entry.role.toLowerCase().replace(' ', '')}`, defaultMessage: entry.role }),
+    name: formatMessage({
+      id: `adminDashboard.chart.role.${entry.role.toLowerCase().replace(' ', '')}`,
+      defaultMessage: entry.role,
+    }),
   }))
 
   return (
@@ -27,7 +30,7 @@ export const AdminUserPieChart = ({ distribution }: Props) => {
                 <Cell key={`cell-${index}`} fill={entry.color} />
               ))}
             </Pie>
-            <Tooltip formatter={(value: number) => [value, '']} />
+            <Tooltip formatter={(value: number) => [value, 'coucou']} />
             <Legend />
           </PieChart>
         </ResponsiveContainer>

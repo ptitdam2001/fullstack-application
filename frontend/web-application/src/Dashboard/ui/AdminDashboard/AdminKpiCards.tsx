@@ -1,6 +1,7 @@
 import { AlertCircle, Clock, Trophy, Users } from 'lucide-react'
 import { Link } from 'react-router'
 import { useIntl } from 'react-intl'
+import { cn } from '@repo/design-system'
 
 type KpiCardProps = {
   icon: React.ReactNode
@@ -13,13 +14,15 @@ type KpiCardProps = {
 const KpiCard = ({ icon, label, value, href, highlight }: KpiCardProps) => (
   <Link
     to={href}
-    className={`bg-card flex flex-col gap-2 rounded-lg border p-4 transition-colors hover:bg-accent ${highlight && value > 0 ? 'border-destructive/40' : ''}`}
+    className={cn(`bg-card hover:bg-accent flex flex-col gap-2 rounded-lg border p-4 transition-colors`, {
+      'border-destructive/40': highlight && value > 0,
+    })}
   >
     <div className="text-muted-foreground flex items-center gap-1.5 text-xs font-medium">
       {icon}
       {label}
     </div>
-    <div className={`text-2xl font-semibold tracking-tight ${highlight && value > 0 ? 'text-destructive' : ''}`}>
+    <div className={cn(`text-2xl font-semibold tracking-tight`, { 'text-destructive': highlight && value > 0 })}>
       {value}
     </div>
   </Link>

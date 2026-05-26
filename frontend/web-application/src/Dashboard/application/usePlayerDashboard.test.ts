@@ -3,12 +3,18 @@ import type { Match } from '@Sdk/model/match'
 import { filterUpcomingMatches } from './usePlayerDashboard'
 
 const makeMatch = (overrides: Partial<Match> & { id: string }): Match => ({
-  id: overrides.id,
-  area: { name: 'Terrain A' },
+  ...overrides,
+  area: {
+    name: 'Terrain A',
+    id: '',
+    address: '',
+    city: '',
+    longitude: 0,
+    latitude: 0,
+  },
   homeTeamId: 'home-1',
   awayTeamId: 'away-1',
   status: 'SCHEDULED',
-  ...overrides,
 })
 
 const NOW = new Date('2025-06-01T12:00:00Z')

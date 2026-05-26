@@ -17,39 +17,35 @@ export const PlayerTeamCard = ({ team, userId, upcomingMatches }: Props) => {
   const { data: players = [], isLoading } = useGetTeamPlayers(team.id)
   const { data: currentGroup } = useGetTeamCurrentGroup(team.id)
 
-  const isPlayer = players.some((p) => p.userId === userId)
+  const isPlayer = players.some(p => p.userId === userId)
 
   if (isLoading || !isPlayer) {
     return null
   }
 
   const teamMatches = upcomingMatches
-    .filter((m) => m.status === MatchStatus.SCHEDULED && (m.homeTeamId === team.id || m.awayTeamId === team.id))
+    .filter(m => m.status === MatchStatus.SCHEDULED && (m.homeTeamId === team.id || m.awayTeamId === team.id))
     .slice(0, 5)
 
   return (
     <div className="bg-card flex flex-col gap-4 rounded-lg border p-4">
       <div className="flex items-center gap-3">
-        {team.color && (
-          <span className="size-4 rounded-full flex-shrink-0" style={{ backgroundColor: team.color }} />
-        )}
+        {team.color && <span className="size-4 shrink-0 rounded-full" style={{ backgroundColor: team.color }} />}
         <div className="flex flex-1 items-center justify-between">
           <Link to={`/app/team/${team.id}`} className="text-primary font-semibold hover:underline">
             {team.name}
           </Link>
-          {currentGroup && (
-            <span className="text-muted-foreground text-xs">{currentGroup.groupName}</span>
-          )}
+          {currentGroup && <span className="text-muted-foreground text-xs">{currentGroup.groupName}</span>}
         </div>
       </div>
 
       {teamMatches.length > 0 && (
         <div>
-          <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider">
+          <h4 className="mb-2 text-xs font-semibold tracking-wider uppercase">
             <FormattedMessage id="playerDashboard.upcomingMatches.title" />
           </h4>
           <ul className="flex flex-col gap-1">
-            {teamMatches.map((m) => (
+            {teamMatches.map(m => (
               <li key={m.id} className="text-muted-foreground text-xs">
                 {m.scheduledAt ? new Date(m.scheduledAt).toLocaleDateString() : '—'}
               </li>
@@ -59,7 +55,7 @@ export const PlayerTeamCard = ({ team, userId, upcomingMatches }: Props) => {
       )}
 
       <div>
-        <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider">
+        <h4 className="mb-2 text-xs font-semibold tracking-wider uppercase">
           <FormattedMessage id="playerDashboard.standings.title" />
         </h4>
         <PlayerStandingsTable teamId={team.id} userId={userId} />
