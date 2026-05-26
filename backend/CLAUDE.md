@@ -20,7 +20,7 @@ pnpm format:prisma   # Format prisma/schema.prisma
 
 **Hexagonal architecture** (Ports & Adapters) — one folder per domain under `src/`:
 
-```
+```text
 src/<domain>/
 ├── domain/         # Pure types, value objects, errors (no Prisma, no Express)
 ├── ports/          # TypeScript interfaces (output ports = repositories)

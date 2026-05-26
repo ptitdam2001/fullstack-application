@@ -130,12 +130,16 @@ export type <Entity> = {
   // ... other fields
 }
 
-export type Create<Entity>Input = Omit<<Entity>, 'id'>
+export type Create<Entity>Input = Omit<<Entity>, 'id' | 'updatedAt' | 'createdAt' | 'deletedAt'>
 export type Update<Entity>Input = Partial<Create<Entity>Input>
 ```
 
-If there are auto-generated fields (`createdAt`, `updatedAt`), omit them from `Create<Entity>Input` too:
-`Omit<<Entity>, 'id' | 'createdAt'>`
+**Hard rule**: always exclude `'id'`, `'updatedAt'`, `'createdAt'`, and `'deletedAt'` from all input types — create AND update. These are Prisma-managed fields:
+- `updatedAt` → set automatically by `@updatedAt` on every write
+- `createdAt` → set once by `@default(now())` at insert
+- `deletedAt` → only set via the dedicated `softDelete()` use case, never via a generic update
+
+Callers must never be able to set these fields. Since `UpdateInput = Partial<CreateInput>`, the exclusion propagates automatically — but always include all four in the `Omit` explicitly so the intent is clear.
 
 ---
 
@@ -327,6 +331,33 @@ export class Prisma<Entity>Repository implements I<Entity>Repository {
 ```
 
 The `select` object must match the `<Entity>` type exactly — same field names, no extras, no missing ones.
+
+**If the entity has soft delete** (`deletedAt DateTime?` in Prisma schema), use the `notDeleted` helper for every query that filters active records — never use `{ deletedAt: null }` directly (Prisma v6 + MongoDB only matches documents where the field is explicitly stored as null, not absent fields):
+
+```ts
+import { prisma } from '../../../utils/prismaClient.js'
+import { notDeleted } from '../../../utils/softDelete.js'
+
+// count only active records
+return prisma.<entity>.count({ where: { ...notDeleted } })
+
+// list only active records
+return prisma.<entity>.findMany({ where: { ...notDeleted }, skip: ..., take: ..., select })
+
+// find active by id
+return prisma.<entity>.findFirst({ where: { id, ...notDeleted }, select })
+
+// soft delete — set deletedAt, never call .delete()
+await prisma.<entity>.update({ where: { id }, data: { deletedAt: new Date() } })
+```
+
+If the query already has an `OR` condition at the same level (key conflict), wrap `notDeleted` in `AND` instead of spreading:
+```ts
+where: {
+  AND: [notDeleted],
+  OR: [{ homeTeamId: id }, { awayTeamId: id }],
+}
+```
 
 ---
 
@@ -778,6 +809,8 @@ Fix any TypeScript errors or failing tests before reporting completion. Common i
 |------|-------|
 | Import extensions | Always `.js` (ESM strict) |
 | prismaClient path | `'../../../utils/prismaClient.js'` |
+| softDelete helper | `'../../../utils/softDelete.js'` — always use `notDeleted` for soft-delete filters, never `{ deletedAt: null }` |
+| Input types | Always `Omit<Entity, 'id' \| 'updatedAt' \| 'createdAt' \| 'deletedAt'>` — never expose Prisma-managed fields in create or update |
 | requireRoles path | `'../../auth/application/requireRoles.js'` |
 | Role enum path | `'../../user/domain/User.js'` |
 | Nullable domain fields | `Type \| null` — never `Type?` |

@@ -204,6 +204,7 @@ Backend references tooling via `workspace:*`. Frontend packages use `file:../../
 ### Debugging checklist — "change not picked up"
 
 Before investigating code, eliminate these in order:
+
 1. Is the design-system built? (`pnpm --filter @repo/design-system build`)
 2. Is `frontend/web-application/node_modules/.vite` stale? (delete it)
 3. Was `pnpm generate:prisma` run after schema changes?
@@ -242,10 +243,12 @@ This repo uses [Conventional Commits](https://www.conventionalcommits.org/) enfo
 ## Working Style
 
 Before writing any code:
+
 1. Produce a numbered plan — one logical commit per step.
 2. Wait for user approval before starting.
 
 After each step:
+
 1. Run tests.
 2. Commit with a structured message.
 3. Pause — wait for user to verify before continuing to the next step.
@@ -318,18 +321,22 @@ openapi-express-ts (backend)
 
 Recurring mistakes confirmed by session history — check these before debugging or writing code.
 
-| # | Pitfall | Rule |
-|---|---------|------|
-| 1 | **Stale Vite / DS cache** | After any edit to `frontend/design-system/src/`, run `pnpm --filter @repo/design-system build`. If change still not visible: `rm -rf frontend/web-application/node_modules/.vite` then restart Vite. Never debug code before eliminating this. |
-| 2 | **`userEvent.hover()` silent fail** | react-aria `useHover` ignores jsdom hover events (currentTarget=null). Use `userEvent.tab()` to test focus/tooltip triggers. `userEvent.click()` works fine for press/open. |
-| 3 | **Tailwind v4 data attributes** | Use `data-hovered:`, `data-focused:`, `data-selected:`, `data-disabled:` (no brackets). v3 `data-[hovered]:` syntax silently fails in v4 — dark mode and state styles won't apply. |
-| 4 | **Stories missing play functions** | Every interactive design system component needs a `play` function in at least one story. No play = untested open/close/keyboard behavior. Non-negotiable. |
-| 5 | **Bruno not synced after openapi.yml** | After every openapi.yml change, update `backend/bruno/`: add `.bru` for new routes, remove for deleted, update body/params for changed schemas. |
-| 6 | **Stale Prisma client** | After any change to `backend/prisma/schema.prisma`, run `pnpm generate:prisma` immediately. Skip this and you get 500s or TS errors on the next request. |
-| 7 | **Direct react-aria import in web-application** | `web-application` must NEVER import from `react-aria-components` directly. Import from `@repo/design-system` only. The design system re-exports all primitives needed. |
-| 8 | **.env.sample out of sync** | Any time a variable is added or removed from `.env`, update `.env.sample` in the same commit (use placeholder values, no real secrets). |
-| 9 | **Hardcoded i18n strings** | NEVER write user-visible text as string literals in JSX. All UI text goes through `<FormattedMessage id="..." />` or `useIntl().formatMessage(...)`. |
-| 10 | **SDK stale after openapi.yml** | After editing `openapi.yml`, run `pnpm --filter application-material gen:sdk`. Frontend type errors and missing hooks are a symptom of a stale SDK. |
+| #   | Pitfall                                             | Rule                                                                                                                                                                                                                                                                                                                                                    |
+| --- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | **Stale Vite / DS cache**                           | After any edit to `frontend/design-system/src/`, run `pnpm --filter @repo/design-system build`. If change still not visible: `rm -rf frontend/web-application/node_modules/.vite` then restart Vite. Never debug code before eliminating this.                                                                                                          |
+| 2   | **`userEvent.hover()` silent fail**                 | react-aria `useHover` ignores jsdom hover events (currentTarget=null). Use `userEvent.tab()` to test focus/tooltip triggers. `userEvent.click()` works fine for press/open.                                                                                                                                                                             |
+| 3   | **Tailwind v4 data attributes**                     | Use `data-hovered:`, `data-focused:`, `data-selected:`, `data-disabled:` (no brackets). v3 `data-[hovered]:` syntax silently fails in v4 — dark mode and state styles won't apply.                                                                                                                                                                      |
+| 4   | **Stories missing play functions**                  | Every interactive design system component needs a `play` function in at least one story. No play = untested open/close/keyboard behavior. Non-negotiable.                                                                                                                                                                                               |
+| 5   | **Bruno not synced after openapi.yml**              | After every openapi.yml change, update `backend/bruno/`: add `.bru` for new routes, remove for deleted, update body/params for changed schemas.                                                                                                                                                                                                         |
+| 6   | **Stale Prisma client**                             | After any change to `backend/prisma/schema.prisma`, run `pnpm generate:prisma` immediately. Skip this and you get 500s or TS errors on the next request.                                                                                                                                                                                                |
+| 7   | **Direct react-aria import in web-application**     | `web-application` must NEVER import from `react-aria-components` directly. Import from `@repo/design-system` only. The design system re-exports all primitives needed.                                                                                                                                                                                  |
+| 8   | **.env.sample out of sync**                         | Any time a variable is added or removed from `.env`, update `.env.sample` in the same commit (use placeholder values, no real secrets).                                                                                                                                                                                                                 |
+| 9   | **Hardcoded i18n strings**                          | NEVER write user-visible text as string literals in JSX. All UI text goes through `<FormattedMessage id="..." />` or `useIntl().formatMessage(...)`.                                                                                                                                                                                                    |
+| 10  | **SDK stale after openapi.yml**                     | After editing `openapi.yml`, run `pnpm --filter application-material gen:sdk`. Frontend type errors and missing hooks are a symptom of a stale SDK.                                                                                                                                                                                                     |
+| 11  | **Backend utils location**                          | Shared backend utilities (`prismaClient`, `softDelete`, etc.) live in `backend/utils/`, NOT `backend/src/utils/`. Always verify by checking an existing utility path before creating a new file.                                                                                                                                                        |
+| 12  | **`{ deletedAt: null }` in Prisma + MongoDB**       | Never use `{ deletedAt: null }` directly in Prisma where clauses. Prisma v6 + MongoDB only matches documents with the field explicitly stored as null — missing fields are excluded. Always use `notDeleted` from `backend/utils/softDelete.ts`: `{ ...notDeleted }`. If the query already has an `OR`, use `AND: [notDeleted]` to avoid key collision. |
+| 13  | **Domain input types expose Prisma-managed fields** | `Create<X>Input` and `Update<X>Input` must always `Omit` `'updatedAt' \| 'createdAt' \| 'deletedAt'`. These are managed by Prisma (`@updatedAt`, `@default(now())`, soft-delete use case). Callers must never set them.                                                                                                                                 |
+| 14  | **`pnpm check:type` before done**                   | After any backend change, run `pnpm check:type` from `backend/`. A change is not complete until type check passes. TypeScript errors from `as const` (readonly arrays), wrong paths, or wrong Prisma filter shapes are caught here — not at runtime.                                                                                                    |
 
 > The post-edit hook in `.claude/hooks/post-edit-remind.sh` surfaces reminders for pitfalls 1, 5, 6, 7, 8 automatically.
 
@@ -339,17 +346,17 @@ Recurring mistakes confirmed by session history — check these before debugging
 
 ## Project Skills
 
-| Skill | Trigger | Description |
-| --- | --- | --- |
-| `create-backend-domain` | "créer un domaine", "scaffolder X" | Scaffolds a hexagonal backend domain (domain/ports/application/infrastructure + tests + OpenAPI) |
-| `design-system-component` | "créer un composant", "ajouter au design system" | Creates a component in `@repo/design-system` (react-aria + Tailwind + Storybook + co-located tests) |
-| `frontend-feature-module` | "créer le module X", "ajouter une feature" | Scaffolds a frontend feature module following hexagonal architecture (domain/infrastructure/application/ui) |
-| `react-component` | "créer un composant", "nouveau composant React", "implémenter la vue" | Creates a React component in the web app: ESLint/Prettier rules, i18n (FormattedMessage), Design System priority, sub-components, co-located tests |
-| `react-aria-testing` | "tester un composant react-aria", "play function", "test tooltip/hover" | Testing patterns for react-aria: no userEvent.hover, correct interaction APIs, Tailwind v4 data attributes |
-| `rebuild-ds` | "rebuild design system", "change not showing", "vite cache" | Steps to rebuild @repo/design-system and clear stale Vite cache |
-| `openapi-sync` | "updated openapi", "after openapi change", "sync sdk", "sync bruno" | Checklist after openapi.yml changes: gen:sdk + Bruno update + nullability sync |
-| `spec-writer` | "écrire une spec", "nouvelle fonctionnalité", "créer une spec", "spec pour X" | Interview structurée → document de spécification fonctionnelle dans `specifications/` |
-| `spec-tech-writer` | "specs technique", "partie technique", "enrichir la spec", "technical spec" | Interview dev senior → section technique (Prisma, OpenAPI, hexagonal, séquence, sécurité) dans la spec existante |
+| Skill                     | Trigger                                                                       | Description                                                                                                                                        |
+| ------------------------- | ----------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `create-backend-domain`   | "créer un domaine", "scaffolder X"                                            | Scaffolds a hexagonal backend domain (domain/ports/application/infrastructure + tests + OpenAPI)                                                   |
+| `design-system-component` | "créer un composant", "ajouter au design system"                              | Creates a component in `@repo/design-system` (react-aria + Tailwind + Storybook + co-located tests)                                                |
+| `frontend-feature-module` | "créer le module X", "ajouter une feature"                                    | Scaffolds a frontend feature module following hexagonal architecture (domain/infrastructure/application/ui)                                        |
+| `react-component`         | "créer un composant", "nouveau composant React", "implémenter la vue"         | Creates a React component in the web app: ESLint/Prettier rules, i18n (FormattedMessage), Design System priority, sub-components, co-located tests |
+| `react-aria-testing`      | "tester un composant react-aria", "play function", "test tooltip/hover"       | Testing patterns for react-aria: no userEvent.hover, correct interaction APIs, Tailwind v4 data attributes                                         |
+| `rebuild-ds`              | "rebuild design system", "change not showing", "vite cache"                   | Steps to rebuild @repo/design-system and clear stale Vite cache                                                                                    |
+| `openapi-sync`            | "updated openapi", "after openapi change", "sync sdk", "sync bruno"           | Checklist after openapi.yml changes: gen:sdk + Bruno update + nullability sync                                                                     |
+| `spec-writer`             | "écrire une spec", "nouvelle fonctionnalité", "créer une spec", "spec pour X" | Interview structurée → document de spécification fonctionnelle dans `specifications/`                                                              |
+| `spec-tech-writer`        | "specs technique", "partie technique", "enrichir la spec", "technical spec"   | Interview dev senior → section technique (Prisma, OpenAPI, hexagonal, séquence, sécurité) dans la spec existante                                   |
 
 > Frontend component and module guidance is also available in package-level CLAUDE.md files:
 >
