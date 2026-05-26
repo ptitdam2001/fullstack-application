@@ -6,4 +6,6 @@ export interface IGroupRepository {
   create(input: CreateGroupInput): Promise<Group>
   update(id: string, input: UpdateGroupInput): Promise<Group>
   delete(id: string): Promise<void>
+  softDelete(id: string): Promise<void>
+  hasPlayedMatches(id: string): Promise<boolean>
 }

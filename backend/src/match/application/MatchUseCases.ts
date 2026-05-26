@@ -1,5 +1,6 @@
 import type { IMatchRepository, PaginationOptions, MatchFilterOptions } from '../ports/IMatchRepository.js'
 import type { CreateMatchInput, UpdateMatchInput } from '../domain/Match.js'
+import { MatchStatus } from '../domain/Match.js'
 import { MatchNotFoundError } from '../domain/MatchErrors.js'
 
 export class MatchUseCases {
@@ -33,7 +34,10 @@ export class MatchUseCases {
   }
 
   async delete(id: string) {
-    await this.getById(id)
-    return this.repo.delete(id)
+    const match = await this.getById(id)
+    if (match.status === MatchStatus.SCHEDULED || match.status === MatchStatus.CANCELLED) {
+      return this.repo.delete(id)
+    }
+    return this.repo.softDelete(id)
   }
 }

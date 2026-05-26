@@ -4,3 +4,10 @@ export class PhaseNotFoundError extends Error {
     this.name = 'PhaseNotFoundError'
   }
 }
+
+export class PhaseDuplicateOrderError extends Error {
+  constructor(championshipId: string, order: number) {
+    super(`Phase with order ${order} already exists in championship ${championshipId}`)
+    this.name = 'PhaseDuplicateOrderError'
+  }
+}

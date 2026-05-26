@@ -2,7 +2,7 @@ import { prisma } from '../../../utils/prismaClient.js'
 import type { IPlayerRepository } from '../ports/IPlayerRepository.js'
 import type { Player, CreatePlayerInput, UpdatePlayerInput } from '../domain/Player.js'
 
-const select = { id: true, userId: true, teamId: true, jersey: true, position: true } as const
+const select = { id: true, userId: true, teamId: true, jersey: true, position: true, updatedAt: true } as const
 
 export class PrismaPlayerRepository implements IPlayerRepository {
   async findById(id: string): Promise<Player | null> {

@@ -4,6 +4,7 @@ export type Player = {
   teamId: string
   jersey: number | null
   position: string | null
+  updatedAt: Date
 }
 
 export type CreatePlayerInput = Omit<Player, 'id'>

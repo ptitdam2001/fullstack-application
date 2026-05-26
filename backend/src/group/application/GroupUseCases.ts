@@ -26,6 +26,10 @@ export class GroupUseCases {
 
   async delete(id: string) {
     await this.getById(id)
+    const hasHistory = await this.repo.hasPlayedMatches(id)
+    if (hasHistory) {
+      return this.repo.softDelete(id)
+    }
     return this.repo.delete(id)
   }
 }

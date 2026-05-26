@@ -19,12 +19,13 @@ export type Match = {
   groupId: string | null
   status: MatchStatus
   scheduledAt: Date | null
-  area: MatchArea
+  area: MatchArea | null
   homeTeamId: string
   awayTeamId: string
   homeGoals: number | null
   awayGoals: number | null
   forfeitedBy: string | null
+  updatedAt: Date
 }
 
 export type CreateMatchInput = Omit<Match, 'id' | 'status'> & { status?: MatchStatus }

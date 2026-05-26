@@ -1,32 +1,32 @@
 import { prisma } from '../../../utils/prismaClient.js'
 import type { ITeamRepository, TeamPlayersOptions, TeamCalendarOptions, GameSummary } from '../ports/ITeamRepository.js'
-import type { Team, CreateTeamInput, UpdateTeamInput, CreateTeamWithCoachInput } from '../domain/Team.js'
+import type { Team, CreateTeamInput, UpdateTeamInput, CreateTeamWithCoachInput, TeamCurrentGroup } from '../domain/Team.js'
 import type { Player } from '../../player/domain/Player.js'
 import type { UserTeam } from '../../userTeam/domain/UserTeam.js'
 
 export class PrismaTeamRepository implements ITeamRepository {
   count() {
-    return prisma.team.count()
+    return prisma.team.count({ where: { deletedAt: null } })
   }
 
   async findAll(): Promise<Team[]> {
-    return prisma.team.findMany({ select: { id: true, name: true, color: true } })
+    return prisma.team.findMany({ where: { deletedAt: null }, select: { id: true, name: true, color: true, updatedAt: true } })
   }
 
   async findById(id: string): Promise<Team | null> {
-    return prisma.team.findUnique({ where: { id }, select: { id: true, name: true, color: true } })
+    return prisma.team.findFirst({ where: { id, deletedAt: null }, select: { id: true, name: true, color: true, updatedAt: true } })
   }
 
   async create(input: CreateTeamInput): Promise<Team> {
-    return prisma.team.create({ data: input, select: { id: true, name: true, color: true } })
+    return prisma.team.create({ data: input, select: { id: true, name: true, color: true, updatedAt: true } })
   }
 
   async update(id: string, input: UpdateTeamInput): Promise<Team> {
-    return prisma.team.update({ where: { id }, data: input, select: { id: true, name: true, color: true } })
+    return prisma.team.update({ where: { id }, data: input, select: { id: true, name: true, color: true, updatedAt: true } })
   }
 
   async delete(id: string): Promise<void> {
-    await prisma.team.delete({ where: { id } })
+    await prisma.team.update({ where: { id }, data: { deletedAt: new Date() } })
   }
 
   async findPlayers(teamId: string, { page, count }: TeamPlayersOptions): Promise<Player[]> {
@@ -38,18 +38,27 @@ export class PrismaTeamRepository implements ITeamRepository {
   }
 
   async findCalendar(teamId: string, { page, count, startDate, endDate }: TeamCalendarOptions): Promise<GameSummary[]> {
-    const games = await prisma.game.findMany({
+    const matches = await prisma.match.findMany({
       where: {
-        gameTeams: { some: { teamId } },
+        deletedAt: null,
+        OR: [{ homeTeamId: teamId }, { awayTeamId: teamId }],
         ...(startDate || endDate
-          ? { date: { ...(startDate ? { gte: startDate } : {}), ...(endDate ? { lte: endDate } : {}) } }
+          ? { scheduledAt: { ...(startDate ? { gte: startDate } : {}), ...(endDate ? { lte: endDate } : {}) } }
           : {}),
       },
       skip: (page - 1) * count,
       take: count,
-      orderBy: { date: 'asc' },
+      orderBy: { scheduledAt: 'asc' },
+      select: { id: true, scheduledAt: true, homeTeamId: true, awayTeamId: true, homeGoals: true, awayGoals: true },
     })
-    return games.map((g) => ({ id: g.id, date: g.date, teams: g.teams }))
+    return matches.map((m) => ({
+      id: m.id,
+      date: m.scheduledAt,
+      teams: [
+        { teamId: m.homeTeamId, score: m.homeGoals ?? 0 },
+        { teamId: m.awayTeamId, score: m.awayGoals ?? 0 },
+      ],
+    }))
   }
 
   async createWithCoach(input: CreateTeamWithCoachInput, coachUserId: string): Promise<{ team: Team; userTeam: UserTeam }> {
@@ -68,7 +77,7 @@ export class PrismaTeamRepository implements ITeamRepository {
             latitude: a.latitude,
           })),
         },
-        select: { id: true, name: true, color: true },
+        select: { id: true, name: true, color: true, updatedAt: true },
       })
 
       const userTeam = await tx.userTeam.create({
@@ -78,5 +87,19 @@ export class PrismaTeamRepository implements ITeamRepository {
 
       return { team: team as Team, userTeam: userTeam as UserTeam }
     })
+  }
+
+  async findCurrentGroup(teamId: string): Promise<TeamCurrentGroup | null> {
+    const gt = await prisma.groupTeam.findFirst({
+      where: { teamId },
+      select: { group: { select: { id: true, name: true, phaseId: true, phase: { select: { championshipId: true } } } } },
+    })
+    if (!gt) { return null }
+    return {
+      groupId: gt.group.id,
+      groupName: gt.group.name,
+      phaseId: gt.group.phaseId,
+      championshipId: gt.group.phase.championshipId,
+    }
   }
 }

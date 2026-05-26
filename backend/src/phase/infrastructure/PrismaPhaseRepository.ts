@@ -2,15 +2,15 @@ import { prisma } from '../../../utils/prismaClient.js'
 import type { IPhaseRepository } from '../ports/IPhaseRepository.js'
 import type { Phase, CreatePhaseInput, UpdatePhaseInput } from '../domain/Phase.js'
 
-const select = { id: true, championshipId: true, type: true, order: true, name: true } as const
+const select = { id: true, championshipId: true, type: true, order: true, name: true, updatedAt: true } as const
 
 export class PrismaPhaseRepository implements IPhaseRepository {
   async findByChampionshipId(championshipId: string): Promise<Phase[]> {
-    return prisma.phase.findMany({ where: { championshipId }, orderBy: { order: 'asc' }, select }) as Promise<Phase[]>
+    return prisma.phase.findMany({ where: { championshipId, deletedAt: null }, orderBy: { order: 'asc' }, select }) as Promise<Phase[]>
   }
 
   async findById(id: string): Promise<Phase | null> {
-    return prisma.phase.findUnique({ where: { id }, select }) as Promise<Phase | null>
+    return prisma.phase.findFirst({ where: { id, deletedAt: null }, select }) as Promise<Phase | null>
   }
 
   async create(input: CreatePhaseInput): Promise<Phase> {
@@ -23,5 +23,16 @@ export class PrismaPhaseRepository implements IPhaseRepository {
 
   async delete(id: string): Promise<void> {
     await prisma.phase.delete({ where: { id } })
+  }
+
+  async softDelete(id: string): Promise<void> {
+    await prisma.phase.update({ where: { id }, data: { deletedAt: new Date() } })
+  }
+
+  async hasPlayedMatches(id: string): Promise<boolean> {
+    const count = await prisma.match.count({
+      where: { deletedAt: null, status: { in: ['PLAYED', 'FORFEITED'] }, group: { phaseId: id } },
+    })
+    return count > 0
   }
 }

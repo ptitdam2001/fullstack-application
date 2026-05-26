@@ -9,4 +9,6 @@ export interface IChampionshipRepository {
   create(input: CreateChampionshipInput): Promise<Championship>
   update(id: string, input: UpdateChampionshipInput): Promise<Championship>
   delete(id: string): Promise<void>
+  softDelete(id: string): Promise<void>
+  hasPlayedMatches(id: string): Promise<boolean>
 }

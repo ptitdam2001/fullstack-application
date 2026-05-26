@@ -21,22 +21,16 @@ export class PrismaStandingsRepository implements IStandingsRepository {
   }
 
   async findGroupContext(groupId: string): Promise<GroupContext> {
-    const group = await prisma.group.findUniqueOrThrow({
-      where: { id: groupId },
-      select: {
-        teamIds: true,
-        phase: {
-          select: {
-            championship: {
-              select: { pointsConfig: true },
-            },
-          },
-        },
-      },
-    })
+    const [groupTeams, group] = await Promise.all([
+      prisma.groupTeam.findMany({ where: { groupId }, select: { teamId: true } }),
+      prisma.group.findUniqueOrThrow({
+        where: { id: groupId },
+        include: { phase: { include: { championship: { select: { pointsConfig: true } } } } },
+      }),
+    ])
 
     return {
-      teamIds: group.teamIds,
+      teamIds: groupTeams.map((gt) => gt.teamId),
       pointsConfig: group.phase.championship.pointsConfig,
     }
   }

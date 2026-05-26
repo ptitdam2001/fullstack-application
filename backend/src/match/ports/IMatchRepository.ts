@@ -11,4 +11,5 @@ export interface IMatchRepository {
   create(input: CreateMatchInput): Promise<Match>
   update(id: string, input: UpdateMatchInput): Promise<Match>
   delete(id: string): Promise<void>
+  softDelete(id: string): Promise<void>
 }

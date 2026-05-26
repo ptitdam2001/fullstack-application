@@ -16,12 +16,14 @@ export type PointsConfig = {
 
 export type Championship = {
   id: string
-  name: string | null
+  name: string
   ageCategory: AgeCategory
   season: string
   startDate: Date | null
   endDate: Date | null
   pointsConfig: PointsConfig
+  createdAt: Date
+  updatedAt: Date
 }
 
 export type CreateChampionshipInput = Omit<Championship, 'id'>

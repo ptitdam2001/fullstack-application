@@ -1,6 +1,6 @@
 import { prisma } from '../../../utils/prismaClient.js'
 import type { IUserRepository } from '../ports/IUserRepository.js'
-import type { UserProfile, CreateUserInput, UpdateUserInput } from '../domain/User.js'
+import type { UserProfile, UserRole, CreateUserInput, UpdateUserInput } from '../domain/User.js'
 
 const select = {
   id: true,
@@ -14,24 +14,56 @@ const select = {
   loginAttempts: true,
   avatar: true,
   createdAt: true,
+  updatedAt: true,
 } as const
+
+type RawUser = {
+  id: string
+  firstName: string
+  lastName: string | null
+  email: string
+  isAdmin: boolean
+  isActive: boolean
+  isBlocked: boolean
+  isReferee: boolean
+  loginAttempts: number
+  avatar: string | null
+  createdAt: Date
+  updatedAt: Date
+}
+
+function toUserProfile(raw: RawUser): UserProfile {
+  const roles: UserRole[] = []
+  if (raw.isAdmin) {
+    roles.push('ADMIN')
+  }
+  if (raw.isReferee) {
+    roles.push('REFEREE')
+  }
+  return { ...raw, roles }
+}
 
 export class PrismaUserRepository implements IUserRepository {
   async findById(id: string): Promise<UserProfile | null> {
-    return prisma.user.findUnique({ where: { id }, select })
+    const row = await prisma.user.findUnique({ where: { id }, select })
+    return row ? toUserProfile(row) : null
   }
 
   async findByEmailWithPassword(email: string): Promise<(UserProfile & { password: string }) | null> {
-    const user = await prisma.user.findUnique({ where: { email }, select: { ...select, password: true } })
-    return user ?? null
+    const row = await prisma.user.findUnique({ where: { email }, select: { ...select, password: true } })
+    if (!row) {
+      return null
+    }
+    return { ...toUserProfile(row), password: row.password }
   }
 
   async findAll(): Promise<UserProfile[]> {
-    return prisma.user.findMany({ select })
+    const rows = await prisma.user.findMany({ select })
+    return rows.map(toUserProfile)
   }
 
   async create(input: CreateUserInput): Promise<UserProfile> {
-    return prisma.user.create({
+    const row = await prisma.user.create({
       data: {
         firstName: input.firstName,
         lastName: input.lastName,
@@ -42,10 +74,11 @@ export class PrismaUserRepository implements IUserRepository {
       },
       select,
     })
+    return toUserProfile(row)
   }
 
   async update(id: string, input: UpdateUserInput): Promise<UserProfile> {
-    return prisma.user.update({
+    const row = await prisma.user.update({
       where: { id },
       data: {
         ...(input.firstName !== undefined && { firstName: input.firstName }),
@@ -55,6 +88,7 @@ export class PrismaUserRepository implements IUserRepository {
       },
       select,
     })
+    return toUserProfile(row)
   }
 
   async delete(id: string): Promise<void> {

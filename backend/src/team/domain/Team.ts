@@ -4,6 +4,7 @@ export type Team = {
   id: string
   name: string
   color: string | null
+  updatedAt: Date
 }
 
 export type CreateTeamInput = Omit<Team, 'id'>

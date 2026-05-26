@@ -6,4 +6,6 @@ export interface IPhaseRepository {
   create(input: CreatePhaseInput): Promise<Phase>
   update(id: string, input: UpdatePhaseInput): Promise<Phase>
   delete(id: string): Promise<void>
+  softDelete(id: string): Promise<void>
+  hasPlayedMatches(id: string): Promise<boolean>
 }

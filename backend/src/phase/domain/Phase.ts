@@ -9,6 +9,7 @@ export type Phase = {
   type: PhaseType
   order: number
   name: string | null
+  updatedAt: Date
 }
 
 export type CreatePhaseInput = Omit<Phase, 'id'>

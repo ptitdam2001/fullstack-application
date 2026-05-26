@@ -9,6 +9,7 @@ export type Group = {
   name: string
   matchMode: MatchMode
   teamIds: string[]
+  updatedAt: Date
 }
 
 export type CreateGroupInput = Omit<Group, 'id'>
