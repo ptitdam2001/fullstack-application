@@ -12,5 +12,5 @@ export type Phase = {
   updatedAt: Date
 }
 
-export type CreatePhaseInput = Omit<Phase, 'id'>
+export type CreatePhaseInput = Omit<Phase, 'id' | 'updatedAt'>
 export type UpdatePhaseInput = Partial<CreatePhaseInput>

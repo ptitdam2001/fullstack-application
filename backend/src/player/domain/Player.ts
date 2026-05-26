@@ -7,5 +7,5 @@ export type Player = {
   updatedAt: Date
 }
 
-export type CreatePlayerInput = Omit<Player, 'id'>
+export type CreatePlayerInput = Omit<Player, 'id' | 'updatedAt'>
 export type UpdatePlayerInput = Partial<Omit<CreatePlayerInput, 'userId' | 'teamId'>>

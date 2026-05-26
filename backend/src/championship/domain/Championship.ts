@@ -26,5 +26,5 @@ export type Championship = {
   updatedAt: Date
 }
 
-export type CreateChampionshipInput = Omit<Championship, 'id'>
+export type CreateChampionshipInput = Omit<Championship, 'id' | 'createdAt' | 'updatedAt'>
 export type UpdateChampionshipInput = Partial<CreateChampionshipInput>

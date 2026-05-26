@@ -12,5 +12,5 @@ export type Group = {
   updatedAt: Date
 }
 
-export type CreateGroupInput = Omit<Group, 'id'>
+export type CreateGroupInput = Omit<Group, 'id' | 'updatedAt'>
 export type UpdateGroupInput = Partial<CreateGroupInput>

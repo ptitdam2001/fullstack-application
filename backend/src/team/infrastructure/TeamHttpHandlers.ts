@@ -29,7 +29,9 @@ export const getTeam = async (ctx: Context, _: Request, res: Response) => {
   try {
     res.json(await teamUseCases.getById(ctx.request.params.id))
   } catch (err) {
-    if (err instanceof TeamNotFoundError) return res.status(404).json({ status: 404, message: err.message })
+    if (err instanceof TeamNotFoundError) {
+      return res.status(404).json({ status: 404, message: err.message })
+    }
     throw err
   }
 }
@@ -47,12 +49,16 @@ export const updateTeam = async (ctx: Context, req: Request, res: Response) => {
   const auth = getAuthPayload(ctx)
   if (!auth.isAdmin) {
     const canAccess = await userTeamUseCases.hasRole(auth.userId, ctx.request.params.id, TeamRole.COACH)
-    if (!canAccess) throw new ForbiddenError()
+    if (!canAccess) {
+      throw new ForbiddenError()
+    }
   }
   try {
     res.json(await teamUseCases.update(ctx.request.params.id, req.body))
   } catch (err) {
-    if (err instanceof TeamNotFoundError) return res.status(404).json({ status: 404, message: err.message })
+    if (err instanceof TeamNotFoundError) {
+      return res.status(404).json({ status: 404, message: err.message })
+    }
     throw err
   }
 }
@@ -63,7 +69,9 @@ export const removeTeam = async (ctx: Context, _: Request, res: Response) => {
     await teamUseCases.delete(ctx.request.params.id)
     res.status(204).send()
   } catch (err) {
-    if (err instanceof TeamNotFoundError) return res.status(404).json({ status: 404, message: err.message })
+    if (err instanceof TeamNotFoundError) {
+      return res.status(404).json({ status: 404, message: err.message })
+    }
     throw err
   }
 }
@@ -76,7 +84,9 @@ export const getTeamPlayers = async (ctx: Context, _: Request, res: Response) =>
   try {
     res.json(await teamUseCases.getPlayers(teamId, { page, count }))
   } catch (err) {
-    if (err instanceof TeamNotFoundError) return res.status(404).json({ status: 404, message: err.message })
+    if (err instanceof TeamNotFoundError) {
+      return res.status(404).json({ status: 404, message: err.message })
+    }
     throw err
   }
 }
@@ -90,7 +100,9 @@ export const getTeamCalendar = async (ctx: Context, _: Request, res: Response) =
   try {
     res.json(await teamUseCases.getCalendar(teamId, { page, count, startDate, endDate }))
   } catch (err) {
-    if (err instanceof TeamNotFoundError) return res.status(404).json({ status: 404, message: err.message })
+    if (err instanceof TeamNotFoundError) {
+      return res.status(404).json({ status: 404, message: err.message })
+    }
     throw err
   }
 }
@@ -99,15 +111,21 @@ export const putUserToTeam = async (ctx: Context, _: Request, res: Response) => 
   const auth = getAuthPayload(ctx)
   if (!auth.isAdmin) {
     const canAccess = await userTeamUseCases.hasRole(auth.userId, ctx.request.params.teamId, TeamRole.COACH)
-    if (!canAccess) throw new ForbiddenError()
+    if (!canAccess) {
+      throw new ForbiddenError()
+    }
   }
   const { teamId, userId } = ctx.request.params
   try {
     await playerUseCases.create({ userId, teamId, jersey: null, position: null })
     res.json(true)
   } catch (err) {
-    if (err instanceof PlayerNotFoundError) return res.status(404).json({ status: 404, message: err.message })
-    if (err instanceof TeamNotFoundError) return res.status(404).json({ status: 404, message: err.message })
+    if (err instanceof PlayerNotFoundError) {
+      return res.status(404).json({ status: 404, message: err.message })
+    }
+    if (err instanceof TeamNotFoundError) {
+      return res.status(404).json({ status: 404, message: err.message })
+    }
     throw err
   }
 }
@@ -116,7 +134,9 @@ export const createPlayer = async (ctx: Context, req: Request, res: Response) =>
   const auth = getAuthPayload(ctx)
   if (!auth.isAdmin) {
     const canAccess = await userTeamUseCases.hasRole(auth.userId, req.body.teamId, TeamRole.COACH)
-    if (!canAccess) throw new ForbiddenError()
+    if (!canAccess) {
+      throw new ForbiddenError()
+    }
   }
   const userId = ctx.request.params.userId
   res.status(201).json(await playerUseCases.create({ ...req.body, userId }))

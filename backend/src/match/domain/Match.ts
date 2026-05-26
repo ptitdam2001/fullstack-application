@@ -28,5 +28,5 @@ export type Match = {
   updatedAt: Date
 }
 
-export type CreateMatchInput = Omit<Match, 'id' | 'status'> & { status?: MatchStatus }
+export type CreateMatchInput = Omit<Match, 'id' | 'status' | 'updatedAt'> & { status?: MatchStatus }
 export type UpdateMatchInput = Partial<CreateMatchInput>

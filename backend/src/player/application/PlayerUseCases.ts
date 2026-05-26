@@ -11,13 +11,17 @@ export class PlayerUseCases {
 
   async update(id: string, input: UpdatePlayerInput) {
     const player = await this.repo.findById(id)
-    if (!player) throw new PlayerNotFoundError(id)
+    if (!player) {
+      throw new PlayerNotFoundError(id)
+    }
     return this.repo.update(id, input)
   }
 
   async delete(id: string) {
     const player = await this.repo.findById(id)
-    if (!player) throw new PlayerNotFoundError(id)
+    if (!player) {
+      throw new PlayerNotFoundError(id)
+    }
     return this.repo.delete(id)
   }
 }

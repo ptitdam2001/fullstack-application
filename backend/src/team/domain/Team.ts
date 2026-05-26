@@ -7,7 +7,7 @@ export type Team = {
   updatedAt: Date
 }
 
-export type CreateTeamInput = Omit<Team, 'id'>
+export type CreateTeamInput = Omit<Team, 'id' | 'updatedAt'>
 export type UpdateTeamInput = Partial<CreateTeamInput>
 
 export type AreaWithoutId = {
