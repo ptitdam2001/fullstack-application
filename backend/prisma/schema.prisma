@@ -32,14 +32,19 @@ type PointsConfig {
 
 model Championship {
   id           String       @id @default(auto()) @map("_id") @db.ObjectId
-  name         String?
+  name         String
   ageCategory  AgeCategory
   season       String
   startDate    DateTime?
   endDate      DateTime?
   pointsConfig PointsConfig
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  deletedAt    DateTime?
 
   phases Phase[]
+
+  @@map("championships")
 }
 
 // ─────────────────────────────────────────
@@ -57,10 +62,13 @@ model Phase {
   type           PhaseType
   order          Int
   name           String?
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
 
   championship Championship @relation(fields: [championshipId], references: [id], onDelete: Cascade)
   groups       Group[]
 
+  @@unique([championshipId, order])
   @@map("phases")
 }
 
@@ -78,12 +86,26 @@ model Group {
   phaseId   String    @db.ObjectId
   name      String
   matchMode MatchMode
-  teamIds   String[]  @db.ObjectId
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
-  phase   Phase   @relation(fields: [phaseId], references: [id], onDelete: Cascade)
-  matches Match[]
+  phase      Phase       @relation(fields: [phaseId], references: [id], onDelete: Cascade)
+  matches    Match[]
+  groupTeams GroupTeam[]
 
-  @@map("poules")
+  @@map("groups")
+}
+
+model GroupTeam {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  groupId String @db.ObjectId
+  teamId  String @db.ObjectId
+
+  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  team  Team  @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@unique([groupId, teamId])
+  @@map("groupTeams")
 }
 
 // ─────────────────────────────────────────
@@ -107,11 +129,14 @@ model User {
   resetToken            String?
   resetTokenExpiry      DateTime?
   createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
 
   players      Player[]
   userTeams    UserTeam[]
   userMatches  UserMatch[]
   joinRequests TeamJoinRequest[]
+
+  @@map("users")
 }
 
 // ─────────────────────────────────────────
@@ -119,12 +144,15 @@ model User {
 // ─────────────────────────────────────────
 
 model Area {
-  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   name      String?
   address   String
   city      String
   longitude Float
   latitude  Float
+  updatedAt DateTime @updatedAt
+
+  @@map("areas")
 }
 
 // ─────────────────────────────────────────
@@ -152,21 +180,41 @@ model Team {
   areas       EmbeddedArea[]
   ageCategory AgeCategory?
 
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime?
   players      Player[]
   userTeams    UserTeam[]
   joinRequests TeamJoinRequest[]
+  // Match participations (home/away) — named to disambiguate two relations to Match
+  homeMatches     Match[] @relation("HomeTeam")
+  awayMatches     Match[] @relation("AwayTeam")
+  forfeitedMatches Match[] @relation("ForfeitTeam")
+  // Group memberships via junction (replaces embedded teamIds array)
+  groupTeams   GroupTeam[]
+
+  @@map("teams")
 }
 
 // ─────────────────────────────────────────
 // PLAYER (profil joueur dans une équipe)
 // ─────────────────────────────────────────
+//
+// Distinction intentionnelle avec UserTeam(PLAYER) :
+//   UserTeam(role=PLAYER) = droits d'accès à l'équipe (membership)
+//   Player                = profil football (jersey, position)
+//
+// Invariant applicatif : tout Player doit avoir un UserTeam(PLAYER) correspondant
+// sur le même (userId, teamId). L'inverse n'est pas vrai — un membre peut ne pas
+// encore avoir de profil football assigné.
+// Cette contrainte est vérifiée dans les use cases, pas en DB.
 
 model Player {
   id       String  @id @default(auto()) @map("_id") @db.ObjectId
   userId   String  @db.ObjectId
   teamId   String  @db.ObjectId
-  jersey   Int?
-  position String?
+  jersey    Int?
+  position  String?
+  updatedAt DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
@@ -213,19 +261,25 @@ enum MatchStatus {
 model Match {
   id          String      @id @default(auto()) @map("_id") @db.ObjectId
   groupId     String?     @db.ObjectId
-  status      MatchStatus @default(SCHEDULED)
+  status      MatchStatus  @default(SCHEDULED)
   scheduledAt DateTime?
-  area        EmbeddedArea
-  homeTeamId  String      @db.ObjectId
+  area        EmbeddedArea?
+  homeTeamId  String       @db.ObjectId
   awayTeamId  String      @db.ObjectId
   homeGoals   Int?
   awayGoals   Int?
-  forfeitedBy String?     @db.ObjectId
+  forfeitedBy String?      @db.ObjectId
+  updatedAt   DateTime     @updatedAt
+  deletedAt   DateTime?
 
-  group       Group?    @relation(fields: [groupId], references: [id])
-  userMatches UserMatch[]
+  group           Group?  @relation(fields: [groupId], references: [id])
+  userMatches     UserMatch[]
+  // Named relations to disambiguate multiple FK to Team
+  homeTeam        Team    @relation("HomeTeam", fields: [homeTeamId], references: [id])
+  awayTeam        Team    @relation("AwayTeam", fields: [awayTeamId], references: [id])
+  forfeitingTeam  Team?   @relation("ForfeitTeam", fields: [forfeitedBy], references: [id])
 
-  @@map("games")
+  @@map("matches")
 }
 
 // ─────────────────────────────────────────
