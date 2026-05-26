@@ -38,5 +38,5 @@ export const getTeamCoaches = async (ctx: Context, _: Request, res: Response) =>
 
 export const getCoachTeams = async (ctx: Context, _: Request, res: Response) => {
   const { userId } = ctx.request.params
-  res.json(await useCases.getUserTeams(userId, TeamRole.PLAYER))
+  res.json(await useCases.getUserTeams(userId, TeamRole.COACH))
 }
