@@ -7,6 +7,9 @@ import { cn, Layout, SidebarInset, SidebarProvider, Separator } from '@repo/desi
 import { TopBar } from './TopBar'
 import { useTheme } from '@Theme/Provider/ThemeProvider'
 
+/**
+ * @todo Define a title for the layout - handball is hardcoded
+ */
 export const ConnectedLayout = () => {
   const currentTheme = useTheme()
 
@@ -22,7 +25,7 @@ export const ConnectedLayout = () => {
       <SidebarInset className="scrollbar-track-background min-w-0">
         <Layout.Root>
           <Layout.Header>
-            <TopBar />
+            <TopBar title="Handball" />
             <Separator orientation="horizontal" />
             <div className="px-2 py-2">
               <Breadcrumbs />

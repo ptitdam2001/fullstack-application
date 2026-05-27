@@ -1,12 +1,10 @@
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarGroupAction,
   SidebarGroupContent,
   SidebarGroupLabel,
-  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -14,37 +12,46 @@ import {
 } from '@repo/design-system'
 import { AuthProvider } from '@Auth/application/AuthProvider'
 import { useCoachDashboard } from '@Dashboard/application/useCoachDashboard'
-import { CalendarDays, CircleUserRound, LayoutDashboard, Plus, Settings } from 'lucide-react'
-import { Link, useNavigate } from 'react-router'
+import { FormattedMessage, useIntl } from 'react-intl'
+import { CalendarDays, LayoutDashboard, Plus, Settings } from 'lucide-react'
+import { useNavigate } from 'react-router'
+import { AppSidebarFooter } from './AppSidebarFooter'
 
 export const CoachAppSidebar = () => {
   const { user } = AuthProvider.useAuthValue()
   const { teams } = useCoachDashboard(user?.id ?? '')
   const navigate = useNavigate()
+  const intl = useIntl()
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader>
-        <Link to="/" className="px-1 pt-1 font-semibold tracking-tight">
-          Handball
-        </Link>
-      </SidebarHeader>
-
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Vue globale</SidebarGroupLabel>
+          <SidebarGroupLabel>
+            <FormattedMessage id="coachSidebar.globalView" />
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton tooltip="Tableau de bord" onClick={() => navigate('/app')}>
+                <SidebarMenuButton
+                  tooltip={intl.formatMessage({ id: 'coachSidebar.dashboard' })}
+                  onClick={() => navigate('/app')}
+                >
                   <LayoutDashboard />
-                  <span>Tableau de bord</span>
+                  <span>
+                    <FormattedMessage id="coachSidebar.dashboard" />
+                  </span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton tooltip="Agenda" onClick={() => navigate('/app/calendar')}>
+                <SidebarMenuButton
+                  tooltip={intl.formatMessage({ id: 'coachSidebar.calendar' })}
+                  onClick={() => navigate('/app/calendar')}
+                >
                   <CalendarDays />
-                  <span>Agenda</span>
+                  <span>
+                    <FormattedMessage id="coachSidebar.calendar" />
+                  </span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
@@ -52,8 +59,13 @@ export const CoachAppSidebar = () => {
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel>Mes équipes</SidebarGroupLabel>
-          <SidebarGroupAction title="Nouvelle équipe" onClick={() => navigate('/teams/new')}>
+          <SidebarGroupLabel>
+            <FormattedMessage id="coachSidebar.myTeams" />
+          </SidebarGroupLabel>
+          <SidebarGroupAction
+            title={intl.formatMessage({ id: 'coachSidebar.newTeam' })}
+            onClick={() => navigate('/teams/new')}
+          >
             <Plus />
           </SidebarGroupAction>
           <SidebarGroupContent>
@@ -61,7 +73,9 @@ export const CoachAppSidebar = () => {
               {teams.length === 0 && (
                 <SidebarMenuItem>
                   <SidebarMenuButton disabled>
-                    <span className="text-muted-foreground text-xs">Aucune équipe</span>
+                    <span className="text-muted-foreground text-xs">
+                      <FormattedMessage id="coachSidebar.noTeam" />
+                    </span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               )}
@@ -83,13 +97,20 @@ export const CoachAppSidebar = () => {
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel>Saison</SidebarGroupLabel>
+          <SidebarGroupLabel>
+            <FormattedMessage id="coachSidebar.season" />
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton tooltip="Paramètres" onClick={() => navigate('/app/settings')}>
+                <SidebarMenuButton
+                  tooltip={intl.formatMessage({ id: 'coachSidebar.settings' })}
+                  onClick={() => navigate('/app/settings')}
+                >
                   <Settings />
-                  <span>Paramètres club</span>
+                  <span>
+                    <FormattedMessage id="coachSidebar.clubSettings" />
+                  </span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
@@ -97,18 +118,7 @@ export const CoachAppSidebar = () => {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton tooltip="Mon profil" onClick={() => navigate('/app/my-profile')}>
-              <CircleUserRound />
-              <span>
-                {user?.firstName} {user?.lastName}
-              </span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarFooter>
+      <AppSidebarFooter />
 
       <SidebarRail />
     </Sidebar>

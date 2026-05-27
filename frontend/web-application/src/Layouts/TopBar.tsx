@@ -1,6 +1,5 @@
 import { ToggleThemeMode } from '@Theme/ToggleThemeMode'
 import { type FC, type ReactNode } from 'react'
-import { AuthActions } from '@Auth/ui/AuthActions/AuthActions'
 import { SidebarTrigger } from '@repo/design-system'
 import { Title } from '@Common/Title'
 import { LanguageSwitcher } from '@I18n/'
@@ -22,7 +21,6 @@ export const TopBar: FC<TopBarProps> = ({ title, children, isAnonymous }) => (
     <div className="flex items-center gap-2 pr-4">
       <LanguageSwitcher />
       <ToggleThemeMode />
-      {!isAnonymous && <AuthActions />}
     </div>
   </section>
 )

@@ -29,7 +29,7 @@ export const TableHead = React.forwardRef<HTMLTableCellElement, TableHeadProps>(
         className={cn(
           'sticky top-0 z-10 table-cell',
           'bg-primary',
-          'text-muted-foreground h-10 px-2 font-medium [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]',
+          'text-muted-foreground h-10 px-2 font-medium [&:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-0.5',
           className
         )}
         style={{ ...style, minWidth: size }}
