@@ -192,6 +192,18 @@
     "chart.role.referee": "Arbitre",
     "chart.role.noRole": "Sans rôle"
   },
+  "coachSidebar": {
+    "globalView": "Vue globale",
+    "dashboard": "Tableau de bord",
+    "calendar": "Agenda",
+    "myTeams": "Mes équipes",
+    "newTeam": "Nouvelle équipe",
+    "noTeam": "Aucune équipe",
+    "season": "Saison",
+    "settings": "Paramètres",
+    "clubSettings": "Paramètres club",
+    "myProfile": "Mon profil"
+  },
   "adminSidebar": {
     "globalView": "Vue globale",
     "management": "Gestion",
