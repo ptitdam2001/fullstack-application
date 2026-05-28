@@ -17,8 +17,8 @@ export const useLoginAction = () => {
     saveAuthStorage({ token: result.token, user })
     dispatch({ token: result.token, user })
 
-    const hasTeam = user.roles?.includes('COACH') || user.roles?.includes('PLAYER')
-    if (!hasTeam) {
+    const hasRole = (user.roles && user.roles.length > 0) || user.isAdmin
+    if (!hasRole) {
       navigate(ONBOARDING_PAGE)
     } else {
       navigate(CONNECTED_HOME)
