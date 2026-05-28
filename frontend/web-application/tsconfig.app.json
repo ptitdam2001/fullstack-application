@@ -42,6 +42,8 @@
       "@Settings/*": ["./src/Settings/*", "./src/Settings/"],
       "@Dashboard": ["./src/Dashboard/index.ts"],
       "@Dashboard/*": ["./src/Dashboard/*", "./src/Dashboard/"],
+      "@Admin": ["./src/Admin/index.ts"],
+      "@Admin/*": ["./src/Admin/*", "./src/Admin/"],
       "@Sdk/*": ["./src/sdk/generated/", "./src/sdk/generated/*"],
       "@Config/*": ["./config/*", "./config/"],
       "@I18n/*": ["src/I18n/*", "src/I18n"],

@@ -19,6 +19,7 @@ import { ActivatePage, ForgottenPasswordPage, LoginPage, RegisterPage, ResetPass
 import { OnboardingScreen } from '@Auth/ui/OnboardingScreen/OnboardingScreen'
 import { TeamBreadcrumb } from '@Teams'
 import { AreaBreadcrumb } from '@Settings'
+import { AdminUsersPage, AdminChampionshipsPage, AdminTeamsPage } from '@Admin'
 
 const AppLayout = () => {
   const navigate = useNavigate()
@@ -82,6 +83,13 @@ const router = createBrowserRouter(
             element={<GameDetail />}
             handle={{ breadcrumb: (params: Record<string, string | undefined>) => params.gameId }}
           />
+        </Route>
+
+        <Route path="admin" handle={{ breadcrumb: 'Administration' }}>
+          <Route index element={<Navigate to="users" />} />
+          <Route path="users" element={<AdminUsersPage />} handle={{ breadcrumb: 'Utilisateurs' }} />
+          <Route path="championships" element={<AdminChampionshipsPage />} handle={{ breadcrumb: 'Championnats' }} />
+          <Route path="teams" element={<AdminTeamsPage />} handle={{ breadcrumb: 'Équipes' }} />
         </Route>
 
         <Route path="settings" element={<SettingsLayout />} handle={{ breadcrumb: 'Paramètres' }}>
