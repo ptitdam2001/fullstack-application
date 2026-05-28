@@ -48,7 +48,7 @@ export const AdminAppSidebar = () => {
               <SidebarMenuItem>
                 <SidebarMenuButton
                   tooltip={formatMessage({ id: 'adminSidebar.championships' })}
-                  onClick={() => navigate('/app/championships')}
+                  onClick={() => navigate('/app/admin/championships')}
                 >
                   <Trophy />
                   <span>{formatMessage({ id: 'adminSidebar.championships' })}</span>
@@ -57,7 +57,7 @@ export const AdminAppSidebar = () => {
               <SidebarMenuItem>
                 <SidebarMenuButton
                   tooltip={formatMessage({ id: 'adminSidebar.teams' })}
-                  onClick={() => navigate('/app/teams')}
+                  onClick={() => navigate('/app/admin/teams')}
                 >
                   <Users />
                   <span>{formatMessage({ id: 'adminSidebar.teams' })}</span>
@@ -76,7 +76,7 @@ export const AdminAppSidebar = () => {
               <SidebarMenuItem>
                 <SidebarMenuButton
                   tooltip={formatMessage({ id: 'adminSidebar.users' })}
-                  onClick={() => navigate('/app/users')}
+                  onClick={() => navigate('/app/admin/users')}
                 >
                   <Users />
                   <span>{formatMessage({ id: 'adminSidebar.users' })}</span>
@@ -85,7 +85,7 @@ export const AdminAppSidebar = () => {
               <SidebarMenuItem>
                 <SidebarMenuButton
                   tooltip={formatMessage({ id: 'adminSidebar.usersInactive' })}
-                  onClick={() => navigate('/app/users/inactive')}
+                  onClick={() => navigate('/app/admin/users')}
                 >
                   <Users />
                   <span>{formatMessage({ id: 'adminSidebar.usersInactive' })}</span>

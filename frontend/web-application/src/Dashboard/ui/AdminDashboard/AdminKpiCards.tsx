@@ -44,27 +44,27 @@ export const AdminKpiCards = ({ pendingScoreCount, pendingActivationCount, champ
         icon={<Clock className="h-4 w-4" />}
         label={formatMessage({ id: 'adminDashboard.kpi.pendingScore' })}
         value={pendingScoreCount}
-        href="/app/games/needsScore"
+        href="/app/games"
         highlight
       />
       <KpiCard
         icon={<AlertCircle className="h-4 w-4" />}
         label={formatMessage({ id: 'adminDashboard.kpi.pendingActivation' })}
         value={pendingActivationCount}
-        href="/app/users/inactive"
+        href="/app/admin/users"
         highlight
       />
       <KpiCard
         icon={<Trophy className="h-4 w-4" />}
         label={formatMessage({ id: 'adminDashboard.kpi.championships' })}
         value={championshipCount}
-        href="/app/championships"
+        href="/app/admin/championships"
       />
       <KpiCard
         icon={<Users className="h-4 w-4" />}
         label={formatMessage({ id: 'adminDashboard.kpi.teams' })}
         value={teamCount}
-        href="/app/teams"
+        href="/app/admin/teams"
       />
     </div>
   )
