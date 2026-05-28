@@ -75,7 +75,14 @@ Un compte bloqué ne peut être débloqué que par **l'Admin**. L'utilisateur do
 
 ### Redirect post-connexion
 
-Après connexion réussie, l'utilisateur est redirigé vers `/dashboard`. Le dashboard s'adapte selon le(s) rôle(s) de l'utilisateur (voir `profiles/*/overview.md`).
+Après connexion réussie, la logique de redirection est la suivante :
+
+| Condition                          | Destination         |
+| ---------------------------------- | ------------------- |
+| `user.roles` non vide (toute valeur) | `/app`            |
+| `user.roles` vide ou absent        | `/app/onboarding`   |
+
+Le dashboard `/app` s'adapte ensuite selon les rôles : admin → `AdminDashboard`, coach/joueur/arbitre → `DashboardTabs`.
 
 ---
 
@@ -97,9 +104,9 @@ Après connexion réussie, l'utilisateur est redirigé vers `/dashboard`. Le das
 
 ## Première connexion — onboarding sans équipe
 
-À la première connexion d'un utilisateur sans `UserTeam` associée, un **écran d'onboarding** est affiché (avant le dashboard).
+À la connexion d'un utilisateur dont `user.roles` est vide ou absent, un **écran d'onboarding** est affiché à la place du dashboard.
 
-> La condition de déclenchement est `UserTeam.count === 0`, pas l'absence de rôles. Un utilisateur assigné comme arbitre sur un match avant toute équipe voit quand même l'onboarding.
+> La condition de déclenchement est `roles.length === 0`. Les admins (`isAdmin: true`) ont toujours au moins un rôle et ne voient jamais l'onboarding.
 
 L'écran propose trois actions, **non mutuellement exclusives** :
 
