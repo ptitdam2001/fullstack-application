@@ -6,8 +6,8 @@ export const AdminQuickActions = () => {
   const { formatMessage } = useIntl()
 
   const actions = [
-    { labelId: 'adminDashboard.actions.teams', href: '/app/teams', icon: <Shield className="h-4 w-4" /> },
-    { labelId: 'adminDashboard.actions.users', href: '/app/users', icon: <Users className="h-4 w-4" /> },
+    { labelId: 'adminDashboard.actions.teams', href: '/app/admin/teams', icon: <Shield className="h-4 w-4" /> },
+    { labelId: 'adminDashboard.actions.users', href: '/app/admin/users', icon: <Users className="h-4 w-4" /> },
     { labelId: 'adminDashboard.actions.games', href: '/app/games', icon: <CalendarDays className="h-4 w-4" /> },
   ]
 
