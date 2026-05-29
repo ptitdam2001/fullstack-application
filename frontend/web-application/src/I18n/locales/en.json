@@ -154,6 +154,12 @@
   "playerDashboard": {
     "noTeam": "You are not a member of any team.",
     "upcomingMatches.title": "Upcoming matches",
+    "upcomingMatches.empty": "No upcoming matches",
+    "recentResults.title": "Recent results",
+    "recentResults.empty": "No recent results",
+    "recentResults.win": "W",
+    "recentResults.draw": "D",
+    "recentResults.loss": "L",
     "standings.title": "Group standings",
     "notEnrolled": "Not enrolled in a championship",
     "standings.rank": "Rank",
@@ -163,6 +169,16 @@
     "standings.drawn": "D",
     "standings.lost": "L",
     "standings.points": "Pts"
+  },
+  "playerSidebar": {
+    "globalView": "Overview",
+    "dashboard": "Dashboard",
+    "myTeam": "My team",
+    "noTeam": "No team",
+    "season": "Season",
+    "calendar": "Calendar",
+    "games": "Matches",
+    "myProfile": "My profile"
   },
   "coachDashboard": {
     "teams.title": "My teams",

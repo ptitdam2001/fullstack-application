@@ -154,6 +154,12 @@
   "playerDashboard": {
     "noTeam": "Vous n'êtes membre d'aucune équipe.",
     "upcomingMatches.title": "Prochains matchs",
+    "upcomingMatches.empty": "Aucun match à venir",
+    "recentResults.title": "Derniers résultats",
+    "recentResults.empty": "Aucun résultat récent",
+    "recentResults.win": "V",
+    "recentResults.draw": "N",
+    "recentResults.loss": "D",
     "standings.title": "Classement de la poule",
     "notEnrolled": "Non inscrit dans un championnat",
     "standings.rank": "Rang",
@@ -163,6 +169,16 @@
     "standings.drawn": "N",
     "standings.lost": "D",
     "standings.points": "Pts"
+  },
+  "playerSidebar": {
+    "globalView": "Vue globale",
+    "dashboard": "Tableau de bord",
+    "myTeam": "Mon équipe",
+    "noTeam": "Aucune équipe",
+    "season": "Saison",
+    "calendar": "Calendrier",
+    "games": "Matchs",
+    "myProfile": "Mon profil"
   },
   "coachDashboard": {
     "teams.title": "Mes équipes",
