@@ -3,7 +3,7 @@ import type { Context } from 'openapi-backend'
 import { UserTeamUseCases } from '../application/UserTeamUseCases.js'
 import { PrismaUserTeamRepository } from './PrismaUserTeamRepository.js'
 import { UserTeamNotFoundError, UserTeamAlreadyExistsError } from '../domain/UserTeamErrors.js'
-import { requireAdmin } from '../../auth/application/requireRoles.js'
+import { requireAdmin, getAuthUserId } from '../../auth/application/requireRoles.js'
 import { TeamRole } from '../domain/UserTeam.js'
 
 const useCases = new UserTeamUseCases(new PrismaUserTeamRepository())
@@ -39,4 +39,9 @@ export const getTeamCoaches = async (ctx: Context, _: Request, res: Response) =>
 export const getCoachTeams = async (ctx: Context, _: Request, res: Response) => {
   const { userId } = ctx.request.params
   res.json(await useCases.getUserTeams(userId, TeamRole.COACH))
+}
+
+export const getMyTeams = async (ctx: Context, _: Request, res: Response) => {
+  const userId = getAuthUserId(ctx)
+  res.json(await useCases.getMyTeams(userId))
 }

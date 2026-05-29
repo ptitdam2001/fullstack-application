@@ -1,5 +1,5 @@
 import type { IUserTeamRepository } from '../ports/IUserTeamRepository.js'
-import type { UserTeam, TeamRole } from '../domain/UserTeam.js'
+import type { UserTeam, UserTeamWithTeam, TeamRole } from '../domain/UserTeam.js'
 import { UserTeamNotFoundError, UserTeamAlreadyExistsError } from '../domain/UserTeamErrors.js'
 
 export class UserTeamUseCases {
@@ -23,6 +23,10 @@ export class UserTeamUseCases {
 
   getUserTeams(userId: string, role: TeamRole): Promise<UserTeam[]> {
     return this.repo.findByUserAndRole(userId, role)
+  }
+
+  getMyTeams(userId: string): Promise<UserTeamWithTeam[]> {
+    return this.repo.findByUser(userId)
   }
 
   hasRole(userId: string, teamId: string, role: TeamRole): Promise<boolean> {

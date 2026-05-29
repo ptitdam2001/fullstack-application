@@ -1,0 +1,15 @@
+meta {
+  name: Get My Teams
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/me/teams
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
