@@ -142,6 +142,17 @@ export const createPlayer = async (ctx: Context, req: Request, res: Response) =>
   res.status(201).json(await playerUseCases.create({ ...req.body, userId }))
 }
 
+export const getTeamCurrentGroup = async (ctx: Context, _: Request, res: Response) => {
+  try {
+    res.json(await teamUseCases.getTeamCurrentGroup(ctx.request.params.teamId))
+  } catch (err) {
+    if (err instanceof TeamNotFoundError) {
+      return res.status(404).json({ status: 404, message: err.message })
+    }
+    throw err
+  }
+}
+
 export const createTeamWithCoach = async (ctx: Context, req: Request, res: Response) => {
   try {
     const coachUserId = getAuthUserId(ctx)
