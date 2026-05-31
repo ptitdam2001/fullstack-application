@@ -1,0 +1,58 @@
+{
+  "name": "@repo/form-factory",
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build && tsc -p tsconfig.build.json",
+    "dev": "vite build --watch",
+    "test": "vitest",
+    "test:unit": "vitest --project 'unit test'",
+    "test:ui": "vitest --ui --coverage",
+    "check:types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
+    "react-hook-form": "7.72.0",
+    "zod": "4.3.6"
+  },
+  "peerDependencies": {
+    "react": ">=19",
+    "react-dom": ">=19"
+  },
+  "prettier": "@repo/prettier-config",
+  "devDependencies": {
+    "@repo/eslint-config": "file:../../tooling/eslint-config",
+    "@repo/prettier-config": "file:../../tooling/prettier-config",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "16.3.2",
+    "@testing-library/user-event": "^14.6.0",
+    "@types/node": "^25.5.0",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "6.0.1",
+    "@vitest/coverage-v8": "4.1.1",
+    "@vitest/ui": "4.1.1",
+    "eslint": "^10.0.0",
+    "jsdom": "29.0.1",
+    "prettier": "3.8.1",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "typescript": "6.0.2",
+    "vite": "8.0.2",
+    "vite-plugin-dts": "^4.5.4",
+    "vitest": "4.1.1"
+  },
+  "engines": {
+    "node": ">=18",
+    "pnpm": ">=3"
+  }
+}
