@@ -1,9 +1,8 @@
-import { Controller, useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { useIntl, FormattedMessage } from 'react-intl'
 import { Button, PasswordInput, Toast } from '@repo/design-system'
 import { Loader2 } from 'lucide-react'
 import { z } from 'zod'
+import { createFormFactory } from '@repo/form-factory'
 import { RegisterBody } from '@Sdk/authentication/authentication.zod'
 import type { RegisterInput } from '@Sdk/model'
 import { ControlledTextInput } from '@Common/Input/TextInput/ControlledTextInput'
@@ -20,6 +19,8 @@ const RegisterFormSchema = RegisterBody.extend({
 
 type RegisterFormValues = z.infer<typeof RegisterFormSchema>
 
+const registerFormFactory = createFormFactory({ schema: RegisterFormSchema })
+
 const getPasswordStrength = (password: string): 0 | 1 | 2 | 3 => {
   let score = 0
   if (password.length >= 8) { score++ }
@@ -35,15 +36,12 @@ export const RegisterForm = () => {
   const intl = useIntl()
   const toast = Toast.useToast()
   const { process, isPending, isSuccess } = useRegisterAction()
-  const { control, handleSubmit, watch } = useForm<RegisterFormValues>({
-    resolver: zodResolver(RegisterFormSchema),
-    mode: 'onBlur',
-  })
+  const { form, Field } = registerFormFactory.useForm({ mode: 'onBlur' })
 
-  const password = watch('password') ?? ''
+  const password = form.watch('password') ?? ''
   const strength = getPasswordStrength(password)
 
-  const onSubmit = async (data: RegisterFormValues) => {
+  const onSubmit = form.handleSubmit(async (data: RegisterFormValues) => {
     try {
       const input: RegisterInput = { firstName: data.firstName, lastName: data.lastName, email: data.email, password: data.password, teamId: data.teamId ?? undefined }
       await process(input)
@@ -55,7 +53,7 @@ export const RegisterForm = () => {
         toast(intl.formatMessage({ id: 'register.error.generic' }))
       }
     }
-  }
+  })
 
   if (isSuccess) {
     return (
@@ -68,32 +66,24 @@ export const RegisterForm = () => {
   }
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
-      <Controller
-        name="firstName"
-        control={control}
-        render={({ field, fieldState }) => (
+    <Form onSubmit={onSubmit} className="flex flex-col">
+      <Field name="firstName">
+        {({ field, fieldState }) => (
           <ControlledTextInput {...field} fieldState={fieldState} label={intl.formatMessage({ id: 'register.field.firstName' })} placeholder={intl.formatMessage({ id: 'register.field.firstName.placeholder' })} required />
         )}
-      />
-      <Controller
-        name="lastName"
-        control={control}
-        render={({ field, fieldState }) => (
+      </Field>
+      <Field name="lastName">
+        {({ field, fieldState }) => (
           <ControlledTextInput {...field} fieldState={fieldState} label={intl.formatMessage({ id: 'register.field.lastName' })} placeholder={intl.formatMessage({ id: 'register.field.lastName.placeholder' })} />
         )}
-      />
-      <Controller
-        name="email"
-        control={control}
-        render={({ field, fieldState }) => (
+      </Field>
+      <Field name="email">
+        {({ field, fieldState }) => (
           <ControlledTextInput {...field} fieldState={fieldState} label={intl.formatMessage({ id: 'register.field.email' })} type="email" placeholder={intl.formatMessage({ id: 'register.field.email.placeholder' })} required />
         )}
-      />
-      <Controller
-        name="teamId"
-        control={control}
-        render={({ field }) => (
+      </Field>
+      <Field name="teamId">
+        {({ field }) => (
           <div className="mb-4">
             <label className="mb-1 block text-sm font-medium">
               <FormattedMessage id="register.field.team" />
@@ -104,11 +94,9 @@ export const RegisterForm = () => {
             </p>
           </div>
         )}
-      />
-      <Controller
-        name="password"
-        control={control}
-        render={({ field, fieldState }) => (
+      </Field>
+      <Field name="password">
+        {({ field, fieldState }) => (
           <div className="relative grid w-full max-w-sm items-center gap-1.5 pb-6">
             <label className="text-sm font-medium leading-none">
               <FormattedMessage id="register.field.password" />
@@ -127,11 +115,9 @@ export const RegisterForm = () => {
             {fieldState.error && <p className="absolute bottom-1 text-sm text-red-500">{fieldState.error.message}</p>}
           </div>
         )}
-      />
-      <Controller
-        name="confirmPassword"
-        control={control}
-        render={({ field, fieldState }) => (
+      </Field>
+      <Field name="confirmPassword">
+        {({ field, fieldState }) => (
           <div className="relative grid w-full max-w-sm items-center gap-1.5 pb-6">
             <label className="text-sm font-medium leading-none">
               <FormattedMessage id="register.field.confirmPassword" />
@@ -140,7 +126,7 @@ export const RegisterForm = () => {
             {fieldState.error && <p className="absolute bottom-1 text-sm text-red-500">{fieldState.error.message}</p>}
           </div>
         )}
-      />
+      </Field>
       <Button type="submit" isDisabled={isPending} className="w-full max-w-sm">
         {isPending && <Loader2 className="animate-spin" />}
         <FormattedMessage id="register.submit" />

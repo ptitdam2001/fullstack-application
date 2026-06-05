@@ -1,14 +1,14 @@
-import { Controller, useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { useIntl, FormattedMessage } from 'react-intl'
 import { Link } from 'react-router'
 import { Button, PasswordInput, Toast } from '@repo/design-system'
 import { Loader2 } from 'lucide-react'
+import { createFormFactory } from '@repo/form-factory'
 import { LoginBody } from '@Sdk/authentication/authentication.zod'
-import type { Login } from '@Sdk/model'
 import { ControlledTextInput } from '@Common/Input/TextInput/ControlledTextInput'
 import { Form } from '@Common/Form/Form'
 import { useLoginAction } from '../../application/useLoginAction'
+
+const signinFormFactory = createFormFactory({ schema: LoginBody })
 
 type SigninFormProps = {
   forgotPasswordHref?: string
@@ -18,12 +18,9 @@ export const SigninForm = ({ forgotPasswordHref }: SigninFormProps) => {
   const intl = useIntl()
   const toast = Toast.useToast()
   const { process, isPending } = useLoginAction()
-  const { control, handleSubmit } = useForm<Login>({
-    resolver: zodResolver(LoginBody),
-    mode: 'onBlur',
-  })
+  const { form, Field } = signinFormFactory.useForm({ mode: 'onBlur' })
 
-  const onSubmit = async (data: Login) => {
+  const onSubmit = form.handleSubmit(async (data) => {
     try {
       await process(data.email!, data.password!)
     } catch (err: unknown) {
@@ -37,18 +34,16 @@ export const SigninForm = ({ forgotPasswordHref }: SigninFormProps) => {
         toast(intl.formatMessage({ id: 'auth.error.invalidCredentials' }))
       }
     }
-  }
+  })
 
   return (
     <div className="flex flex-col gap-6">
       <h2 className="text-2xl font-bold">
         <FormattedMessage id="auth.login" />
       </h2>
-      <Form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
-        <Controller
-          name="email"
-          control={control}
-          render={({ field, fieldState }) => (
+      <Form onSubmit={onSubmit} className="flex flex-col">
+        <Field name="email">
+          {({ field, fieldState }) => (
             <ControlledTextInput
               {...field}
               fieldState={fieldState}
@@ -57,11 +52,9 @@ export const SigninForm = ({ forgotPasswordHref }: SigninFormProps) => {
               placeholder="vous@exemple.com"
             />
           )}
-        />
-        <Controller
-          name="password"
-          control={control}
-          render={({ field, fieldState }) => (
+        </Field>
+        <Field name="password">
+          {({ field, fieldState }) => (
             <div className="relative grid w-full max-w-sm items-center gap-1.5 pb-6">
               <label className="text-sm font-medium leading-none">
                 <FormattedMessage id="auth.password" />
@@ -70,7 +63,7 @@ export const SigninForm = ({ forgotPasswordHref }: SigninFormProps) => {
               {fieldState.error && <p className="absolute bottom-1 text-sm text-red-500">{fieldState.error.message}</p>}
             </div>
           )}
-        />
+        </Field>
         {forgotPasswordHref && (
           <Link to={forgotPasswordHref} className="mb-4 text-sm text-blue-600 hover:underline">
             <FormattedMessage id="auth.forgottenPassword" />

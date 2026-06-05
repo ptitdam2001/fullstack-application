@@ -1,15 +1,15 @@
 import { useState } from 'react'
-import { Controller, useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { useIntl, FormattedMessage } from 'react-intl'
 import { Button, Toast } from '@repo/design-system'
 import { Loader2 } from 'lucide-react'
+import { createFormFactory } from '@repo/form-factory'
 import { ForgotPasswordBody } from '@Sdk/authentication/authentication.zod'
-import type { ForgotPassword } from '@Sdk/model'
 import { ControlledTextInput } from '@Common/Input/TextInput/ControlledTextInput'
 import { Form } from '@Common/Form/Form'
 import { useForgotPasswordAction } from '../../application/useForgotPasswordAction'
 import { useResendActivation } from '../../infrastructure/useAuthApi'
+
+const forgotPasswordFormFactory = createFormFactory({ schema: ForgotPasswordBody })
 
 export const ForgottenPasswordForm = () => {
   const intl = useIntl()
@@ -17,15 +17,12 @@ export const ForgottenPasswordForm = () => {
   const { process, isPending, isSuccess } = useForgotPasswordAction()
   const { mutateAsync: resend, isPending: isResending } = useResendActivation()
   const [sentEmail, setSentEmail] = useState<string>('')
-  const { control, handleSubmit } = useForm<ForgotPassword>({
-    resolver: zodResolver(ForgotPasswordBody),
-    mode: 'onBlur',
-  })
+  const { form, Field } = forgotPasswordFormFactory.useForm({ mode: 'onBlur' })
 
-  const onSubmit = async (data: ForgotPassword) => {
+  const onSubmit = form.handleSubmit(async (data) => {
     await process(data.email!)
     setSentEmail(data.email!)
-  }
+  })
 
   const onResend = async () => {
     try {
@@ -55,14 +52,19 @@ export const ForgottenPasswordForm = () => {
       <h2 className="text-2xl font-bold">
         <FormattedMessage id="auth.forgottenPassword" />
       </h2>
-      <Form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
-        <Controller
-          name="email"
-          control={control}
-          render={({ field, fieldState }) => (
-            <ControlledTextInput {...field} fieldState={fieldState} label={intl.formatMessage({ id: 'auth.email' })} type="email" placeholder="vous@exemple.com" required />
+      <Form onSubmit={onSubmit} className="flex flex-col">
+        <Field name="email">
+          {({ field, fieldState }) => (
+            <ControlledTextInput
+              {...field}
+              fieldState={fieldState}
+              label={intl.formatMessage({ id: 'auth.email' })}
+              type="email"
+              placeholder="vous@exemple.com"
+              required
+            />
           )}
-        />
+        </Field>
         <Button type="submit" isDisabled={isPending} className="w-full max-w-sm">
           {isPending && <Loader2 className="animate-spin" />}
           <FormattedMessage id="auth.resetPassword" />
