@@ -1,13 +1,15 @@
-import { Controller, type SubmitHandler, useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { type SubmitHandler } from 'react-hook-form'
 import { cn } from '@repo/design-system'
 import { CreateAreaBody } from '@Sdk/area/area.zod'
 import { type CreateAreaMutationBody } from '@Sdk/area/area'
+import { createFormFactory } from '@repo/form-factory'
 import { useAreaForm } from '../application/useAreaForm'
 import { ControlledTextInput } from '@Common/Input/TextInput/ControlledTextInput'
 import { Form } from '@Common/Form/Form'
 import { Button, Toast } from '@repo/design-system'
 import { Loader2 } from 'lucide-react'
+
+const areaFormFactory = createFormFactory({ schema: CreateAreaBody })
 
 type AreaFormProps = {
   areaId?: string
@@ -18,11 +20,7 @@ type AreaFormProps = {
 
 export const AreaForm = ({ defaultValues, areaId, onFinish, className }: AreaFormProps) => {
   const toast = Toast.useToast()
-  const { control, handleSubmit, formState } = useForm<CreateAreaMutationBody>({
-    defaultValues,
-    resolver: zodResolver(CreateAreaBody),
-    mode: 'all',
-  })
+  const { form, Field } = areaFormFactory.useForm({ defaultValues, mode: 'all' })
   const { isPending, submit } = useAreaForm()
 
   const onSubmit: SubmitHandler<CreateAreaMutationBody> = async data => {
@@ -36,46 +34,32 @@ export const AreaForm = ({ defaultValues, areaId, onFinish, className }: AreaFor
   }
 
   return (
-    <Form name="areaForm" onSubmit={handleSubmit(onSubmit)} className={cn('h-full', className)}>
-      <Controller
-        name="name"
-        render={({ field, fieldState }) => <ControlledTextInput {...field} fieldState={fieldState} label="Name" />}
-        control={control}
-      />
-
-      <Controller
-        name="address"
-        render={({ field, fieldState }) => <ControlledTextInput {...field} fieldState={fieldState} label="Address" />}
-        control={control}
-      />
-
-      <Controller
-        name="city"
-        render={({ field, fieldState }) => <ControlledTextInput {...field} fieldState={fieldState} label="City" />}
-        control={control}
-      />
-
-      <Controller
-        name="longitude"
-        render={({ field, fieldState }) => (
+    <Form name="areaForm" onSubmit={form.handleSubmit(onSubmit)} className={cn('h-full', className)}>
+      <Field name="name">
+        {({ field, fieldState }) => <ControlledTextInput {...field} fieldState={fieldState} label="Name" />}
+      </Field>
+      <Field name="address">
+        {({ field, fieldState }) => <ControlledTextInput {...field} fieldState={fieldState} label="Address" />}
+      </Field>
+      <Field name="city">
+        {({ field, fieldState }) => <ControlledTextInput {...field} fieldState={fieldState} label="City" />}
+      </Field>
+      <Field name="longitude">
+        {({ field, fieldState }) => (
           <ControlledTextInput {...field} fieldState={fieldState} label="Longitude" type="number" />
         )}
-        control={control}
-      />
-      <Controller
-        name="latitude"
-        render={({ field, fieldState }) => (
+      </Field>
+      <Field name="latitude">
+        {({ field, fieldState }) => (
           <ControlledTextInput {...field} fieldState={fieldState} label="Latitude" type="number" />
         )}
-        control={control}
-      />
-
+      </Field>
       <div className="flex flex-row-reverse py-1">
         <Button
           type="submit"
           variant="outline"
           color="primary"
-          disabled={!formState.isValid || !formState.isDirty || isPending}
+          disabled={!form.formState.isValid || !form.formState.isDirty || isPending}
         >
           {isPending && <Loader2 className="animate-spin" />}
           {areaId ? 'Update' : 'Create'}
