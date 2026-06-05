@@ -27,7 +27,7 @@ const ALIASES = {
 export default defineConfig({
   plugins: [tailwindcss(), react()],
   optimizeDeps: {
-    include: ['@repo/design-system'],
+    include: ['@repo/design-system', '@repo/form-factory'],
   },
   resolve: {
     alias: {
