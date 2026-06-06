@@ -357,6 +357,7 @@ Recurring mistakes confirmed by session history — check these before debugging
 | `openapi-sync`            | "updated openapi", "after openapi change", "sync sdk", "sync bruno"           | Checklist after openapi.yml changes: gen:sdk + Bruno update + nullability sync                                                                     |
 | `spec-writer`             | "écrire une spec", "nouvelle fonctionnalité", "créer une spec", "spec pour X" | Interview structurée → document de spécification fonctionnelle dans `specifications/`                                                              |
 | `spec-tech-writer`        | "specs technique", "partie technique", "enrichir la spec", "technical spec"   | Interview dev senior → section technique (Prisma, OpenAPI, hexagonal, séquence, sécurité) dans la spec existante                                   |
+| `create-form`             | "créer un formulaire", "ajouter un form", "migrer useForm", "nouveau formulaire" | Crée un formulaire avec `@repo/form-factory` : schema Zod, mode de validation, Field + Form + DevTools auto, tests unitaires, story avec play |
 
 > Frontend component and module guidance is also available in package-level CLAUDE.md files:
 >
