@@ -214,9 +214,6 @@ importers:
 
   web-application:
     dependencies:
-      '@hookform/resolvers':
-        specifier: ^5.2.2
-        version: 5.2.2(react-hook-form@7.72.0(react@19.2.4))
       '@repo/design-system':
         specifier: workspace:*
         version: link:../design-system
@@ -235,9 +232,6 @@ importers:
       axios:
         specifier: 1.13.5
         version: 1.13.5
-      clsx:
-        specifier: ^2.1.1
-        version: 2.1.1
       country-flag-icons:
         specifier: ^1.6.14
         version: 1.6.15
@@ -290,9 +284,6 @@ importers:
       '@faker-js/faker':
         specifier: 10.3.0
         version: 10.3.0
-      '@hookform/devtools':
-        specifier: ^4.4.0
-        version: 4.4.0(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@repo/eslint-config':
         specifier: file:../../tooling/eslint-config
         version: file:../tooling/eslint-config(eslint@10.0.2(jiti@2.6.1))(typescript@5.9.3)
