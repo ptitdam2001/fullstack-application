@@ -1,11 +1,11 @@
 import type React from 'react'
 import { useMatches } from 'react-router'
 
-export type BreadcrumbHandle = {
+type BreadcrumbHandle = {
   breadcrumb: React.ReactNode | ((params: Record<string, string | undefined>) => React.ReactNode)
 }
 
-export type BreadcrumbEntry = {
+type BreadcrumbEntry = {
   node: React.ReactNode
   to: string
   isLast: boolean

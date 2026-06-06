@@ -2,10 +2,9 @@ import { cn, Tooltip, AvatarWithBadge } from '@repo/design-system'
 import { TableLoader } from '@Common/Loading'
 import { Suspense, use } from 'react'
 import { ErrorBoundary } from '@Common/ErrorBoundary'
-import type { TeamId } from '../domain/Player'
 import { usePlayerList } from '../application/usePlayerList'
 
-type PlayerListProps = TeamId & { className?: string }
+type PlayerListProps = { teamId: string; className?: string }
 
 const PlayerListInner = ({ teamId, className }: PlayerListProps) => {
   const players = use(usePlayerList(teamId).promise)

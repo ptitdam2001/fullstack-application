@@ -7,7 +7,3 @@ let _navigate: NavigateFn = (path, options) => {
 export const setNavigateFn = (fn: NavigateFn) => {
   _navigate = fn
 }
-
-export const navigateTo = (path: string, options?: { replace?: boolean }) => {
-  _navigate(path, options)
-}

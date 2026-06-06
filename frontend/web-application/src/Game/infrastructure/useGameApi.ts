@@ -1,7 +1,1 @@
-export {
-  useGetGames,
-  useCountAllGames,
-  useGetGamesByMonth,
-  getGetGamesQueryKey,
-  getCountAllGamesQueryKey,
-} from '@Sdk/games/games'
+export { useGetGames, useCountAllGames } from '@Sdk/games/games'

@@ -2,6 +2,25 @@
   "$schema": "https://unpkg.com/knip@5/schema.json",
   "tags": ["-lintignore"],
   "project": ["**/*.{js,ts,tsx}"],
-  "ignore": ["orval.config.ts", "src/mocks/node.ts", "src/mocks/server.ts", "vitest.shims.d.ts"],
-  "ignoreDependencies": ["@vitest/coverage-v8", "playwright", "autoprefixer", "postcss"]
+  "ignore": [
+    "orval.config.ts",
+    "src/mocks/server.ts",
+    "vitest.shims.d.ts",
+    "src/sdk/**",
+    "config/axios-instance.ts",
+    ".storybook/**"
+  ],
+  "ignoreDependencies": [
+    "playwright",
+    "autoprefixer",
+    "postcss",
+    "@repo/design-system",
+    "@repo/form-factory",
+    "@eslint/js",
+    "eslint-plugin-react",
+    "eslint-plugin-react-hooks",
+    "eslint-plugin-react-refresh",
+    "globals",
+    "typescript-eslint"
+  ]
 }

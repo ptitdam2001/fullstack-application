@@ -120,7 +120,7 @@ export function createFormFactory<TSchema extends ZodType<FieldValues, FieldValu
     }
 
     if (!stableRefs.current.Form) {
-      const control = rhfForm.control as Control<FieldValues>
+      const control = rhfForm.control as unknown as Control<FieldValues>
       const Form = function Form({ children, onSubmit, ...props }: FormProps<TValues>): React.ReactElement {
         return (
           <form {...props} onSubmit={rhfForm.handleSubmit(onSubmit)}>

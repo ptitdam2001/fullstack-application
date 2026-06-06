@@ -1,1 +1,1 @@
-export { useGetTeamPlayers, getGetTeamPlayersQueryKey } from '@Sdk/teams/teams'
+export { useGetTeamPlayers } from '@Sdk/teams/teams'

@@ -19,14 +19,12 @@
     "check:dead-code": "knip"
   },
   "dependencies": {
-    "@hookform/resolvers": "^5.2.2",
     "@repo/design-system": "workspace:*",
     "@repo/form-factory": "workspace:*",
     "@tailwindcss/vite": "4.2.1",
     "@tanstack/react-query": "5.90.21",
     "@tanstack/react-query-devtools": "5.91.3",
     "axios": "1.13.5",
-    "clsx": "^2.1.1",
     "country-flag-icons": "^1.6.14",
     "dayjs": "^1.11.19",
     "flat": "^6.0.1",
@@ -47,7 +45,6 @@
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "@faker-js/faker": "10.3.0",
-    "@hookform/devtools": "^4.4.0",
     "@repo/eslint-config": "file:../../tooling/eslint-config",
     "@repo/prettier-config": "file:../../tooling/prettier-config",
     "@storybook/addon-docs": "^10.3.6",

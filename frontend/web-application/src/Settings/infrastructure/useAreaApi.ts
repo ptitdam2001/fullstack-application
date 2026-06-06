@@ -6,5 +6,4 @@ export {
   useUpdateArea,
   getGetAreaListQueryKey,
   getCountAllAreasQueryKey,
-  getGetAreaQueryKey,
 } from '@Sdk/area/area'
