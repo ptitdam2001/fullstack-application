@@ -56,10 +56,10 @@ Demander :
 const { form, Field, FieldArray, Form } = myFactory.useForm({ mode: 'onBlur' })
 ```
 
-- **`form`** — `UseFormReturn<z.output<Schema>>` : handleSubmit, watch, formState, setValue…
+- **`form`** — `UseFormReturn<z.output<Schema>>` : watch, formState, setValue… (`handleSubmit` géré en interne par `Form`)
 - **`Field`** — wrapper typé de `Controller`, children render prop
 - **`FieldArray`** — wrapper typé de `useFieldArray`, children render prop
-- **`Form`** — `<form>` headless avec `@hookform/devtools` auto en DEV (invisible en prod)
+- **`Form`** — `<form>` headless, `onSubmit` requis et typé `SubmitHandler<TValues>`, `handleSubmit` appelé en interne, DevTools auto en DEV
 
 ### Pattern complet
 
@@ -73,16 +73,17 @@ import { useIntl, FormattedMessage } from 'react-intl'
 // ① Factory statique — hors composant, une fois par fichier
 const myFormFactory = createFormFactory({ schema: MySchema })
 
+type MyFormValues = z.infer<typeof MySchema>
 type Props = { onFinish?: VoidFunction }
 
 export const MyForm = ({ onFinish }: Props) => {
   const intl = useIntl()
   const { form, Field, Form } = myFormFactory.useForm({ mode: 'onBlur' })
 
-  const onSubmit = form.handleSubmit(async (data) => {
+  const onSubmit = async (data: MyFormValues) => {
     await someAction(data)
     onFinish?.()
-  })
+  }
 
   return (
     <Form onSubmit={onSubmit} className="flex flex-col">
@@ -317,8 +318,10 @@ const { control, handleSubmit } = useForm({ resolver: zodResolver(schema) })
 - [ ] Schéma Zod identifié ou créé (avec `.extend()` + `.refine()` si champs UI-only)
 - [ ] Mode de validation choisi et justifié
 - [ ] Factory définie **hors composant** (niveau module)
+- [ ] Type `{FormName}Values = z.infer<typeof Schema>` déclaré au niveau module
+- [ ] `const onSubmit = async (data: {FormName}Values) => { ... }` — pas de `form.handleSubmit()` à l'usage
 - [ ] `Form`, `Field` (et `FieldArray` si besoin) destructurés depuis `useForm()`
-- [ ] Aucun import de `Controller`, `useForm`, `zodResolver` de `react-hook-form` / `@hookform/resolvers`
+- [ ] Aucun import de `Controller`, `useForm`, `zodResolver`, `handleSubmit` de `react-hook-form` / `@hookform/resolvers`
 - [ ] Tests unitaires : erreurs de validation + soumission invalide + soumission valide
 - [ ] Story avec `play` couvrant la validation des erreurs
 - [ ] `pnpm check:types` → 0 erreur
