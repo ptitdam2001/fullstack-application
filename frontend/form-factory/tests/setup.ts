@@ -1,4 +1,7 @@
 import '@testing-library/jest-dom'
+import { vi } from 'vitest'
+
+vi.mock('@hookform/devtools', () => ({ DevTool: () => null }))
 
 Object.defineProperty(window, 'matchMedia', {
   writable: true,

@@ -5,7 +5,6 @@ import { Loader2 } from 'lucide-react'
 import { createFormFactory } from '@repo/form-factory'
 import { LoginBody } from '@Sdk/authentication/authentication.zod'
 import { ControlledTextInput } from '@Common/Input/TextInput/ControlledTextInput'
-import { Form } from '@Common/Form/Form'
 import { useLoginAction } from '../../application/useLoginAction'
 
 const signinFormFactory = createFormFactory({ schema: LoginBody })
@@ -18,7 +17,7 @@ export const SigninForm = ({ forgotPasswordHref }: SigninFormProps) => {
   const intl = useIntl()
   const toast = Toast.useToast()
   const { process, isPending } = useLoginAction()
-  const { form, Field } = signinFormFactory.useForm({ mode: 'onBlur' })
+  const { form, Field, Form } = signinFormFactory.useForm({ mode: 'onBlur' })
 
   const onSubmit = form.handleSubmit(async (data) => {
     try {

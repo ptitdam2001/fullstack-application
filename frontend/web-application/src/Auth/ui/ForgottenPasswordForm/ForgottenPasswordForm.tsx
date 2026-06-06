@@ -5,7 +5,6 @@ import { Loader2 } from 'lucide-react'
 import { createFormFactory } from '@repo/form-factory'
 import { ForgotPasswordBody } from '@Sdk/authentication/authentication.zod'
 import { ControlledTextInput } from '@Common/Input/TextInput/ControlledTextInput'
-import { Form } from '@Common/Form/Form'
 import { useForgotPasswordAction } from '../../application/useForgotPasswordAction'
 import { useResendActivation } from '../../infrastructure/useAuthApi'
 
@@ -17,7 +16,7 @@ export const ForgottenPasswordForm = () => {
   const { process, isPending, isSuccess } = useForgotPasswordAction()
   const { mutateAsync: resend, isPending: isResending } = useResendActivation()
   const [sentEmail, setSentEmail] = useState<string>('')
-  const { form, Field } = forgotPasswordFormFactory.useForm({ mode: 'onBlur' })
+  const { form, Field, Form } = forgotPasswordFormFactory.useForm({ mode: 'onBlur' })
 
   const onSubmit = form.handleSubmit(async (data) => {
     await process(data.email!)

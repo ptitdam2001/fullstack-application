@@ -5,7 +5,6 @@ import { Loader2 } from 'lucide-react'
 import { z } from 'zod'
 import { createFormFactory } from '@repo/form-factory'
 import { ResetPasswordBody } from '@Sdk/authentication/authentication.zod'
-import { Form } from '@Common/Form/Form'
 import { useResetPasswordAction } from '../../application/useResetPasswordAction'
 
 const ResetFormSchema = ResetPasswordBody.extend({
@@ -25,7 +24,7 @@ export const ResetPasswordForm = () => {
   const [searchParams] = useSearchParams()
   const token = searchParams.get('token') ?? ''
   const { process, isPending } = useResetPasswordAction()
-  const { form, Field } = resetPasswordFormFactory.useForm({ mode: 'onBlur' })
+  const { form, Field, Form } = resetPasswordFormFactory.useForm({ mode: 'onBlur' })
 
   const onSubmit = form.handleSubmit(async (data: ResetFormValues) => {
     try {

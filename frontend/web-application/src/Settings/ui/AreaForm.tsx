@@ -5,7 +5,6 @@ import { type CreateAreaMutationBody } from '@Sdk/area/area'
 import { createFormFactory } from '@repo/form-factory'
 import { useAreaForm } from '../application/useAreaForm'
 import { ControlledTextInput } from '@Common/Input/TextInput/ControlledTextInput'
-import { Form } from '@Common/Form/Form'
 import { Button, Toast } from '@repo/design-system'
 import { Loader2 } from 'lucide-react'
 
@@ -20,7 +19,7 @@ type AreaFormProps = {
 
 export const AreaForm = ({ defaultValues, areaId, onFinish, className }: AreaFormProps) => {
   const toast = Toast.useToast()
-  const { form, Field } = areaFormFactory.useForm({ defaultValues, mode: 'all' })
+  const { form, Field, Form } = areaFormFactory.useForm({ defaultValues, mode: 'all' })
   const { isPending, submit } = useAreaForm()
 
   const onSubmit: SubmitHandler<CreateAreaMutationBody> = async data => {

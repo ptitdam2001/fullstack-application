@@ -6,7 +6,6 @@ import { createFormFactory } from '@repo/form-factory'
 import { RegisterBody } from '@Sdk/authentication/authentication.zod'
 import type { RegisterInput } from '@Sdk/model'
 import { ControlledTextInput } from '@Common/Input/TextInput/ControlledTextInput'
-import { Form } from '@Common/Form/Form'
 import { TeamSelectField } from '@Teams/ui/TeamSelect/TeamSelectField'
 import { useRegisterAction } from '../../application/useRegisterAction'
 
@@ -36,7 +35,7 @@ export const RegisterForm = () => {
   const intl = useIntl()
   const toast = Toast.useToast()
   const { process, isPending, isSuccess } = useRegisterAction()
-  const { form, Field } = registerFormFactory.useForm({ mode: 'onBlur' })
+  const { form, Field, Form } = registerFormFactory.useForm({ mode: 'onBlur' })
 
   const password = form.watch('password') ?? ''
   const strength = getPasswordStrength(password)

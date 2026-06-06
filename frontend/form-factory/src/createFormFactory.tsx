@@ -12,7 +12,9 @@ import {
   type UseFormReturn,
   type UseFieldArrayReturn,
   type Resolver,
+  type Control,
 } from 'react-hook-form'
+import { DevTool } from '@hookform/devtools'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { type ZodType, type z } from 'zod'
 
@@ -41,10 +43,13 @@ export type FieldArrayComponent<TValues extends FieldValues> = <TName extends Fi
   children: (renderProps: FieldArrayRenderProps<TValues, TName>) => React.ReactNode
 }) => React.ReactElement
 
+export type FormComponent = (props: React.HTMLProps<HTMLFormElement>) => React.ReactElement
+
 export type FormFactoryReturn<TValues extends FieldValues> = {
   form: UseFormReturn<TValues>
   Field: FieldComponent<TValues>
   FieldArray: FieldArrayComponent<TValues>
+  Form: FormComponent
 }
 
 export type FormFactory<TValues extends FieldValues> = {
@@ -71,6 +76,7 @@ export function createFormFactory<TSchema extends ZodType<FieldValues, FieldValu
     const stableRefs = React.useRef<{
       Field?: FieldComponent<TValues>
       FieldArray?: FieldArrayComponent<TValues>
+      Form?: FormComponent
     }>({})
 
     if (!stableRefs.current.Field) {
@@ -108,12 +114,28 @@ export function createFormFactory<TSchema extends ZodType<FieldValues, FieldValu
       stableRefs.current.FieldArray = FieldArray as FieldArrayComponent<TValues>
     }
 
+    if (!stableRefs.current.Form) {
+      const control = rhfForm.control as Control<FieldValues>
+      const Form = function Form({ children, ...props }: React.HTMLProps<HTMLFormElement>): React.ReactElement {
+        return (
+          <form {...props}>
+            {children}
+            {import.meta.env.DEV && <DevTool control={control} />}
+          </form>
+        )
+      }
+      Form.displayName = 'FormFactoryForm'
+      stableRefs.current.Form = Form as FormComponent
+    }
+
     return {
       form: rhfForm,
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       Field: stableRefs.current.Field!,
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       FieldArray: stableRefs.current.FieldArray!,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      Form: stableRefs.current.Form!,
     }
   }
 
