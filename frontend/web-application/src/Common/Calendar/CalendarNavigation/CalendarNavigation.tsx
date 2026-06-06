@@ -33,11 +33,11 @@ export const CalendarNavigation: React.FC<CalendarNavigationProps> = ({ onChange
 
   return (
     <div className="flex items-center gap-2">
-      <Button variant="outline" size="icon" onClick={setPreviousMonth}>
+      <Button variant="outline" size="icon" onPress={setPreviousMonth}>
         <ChevronLeft />
       </Button>
       <header>{currentDate.format('YYYY-MMMM')}</header>
-      <Button variant="outline" size="icon" onClick={setNextMonth}>
+      <Button variant="outline" size="icon" onPress={setNextMonth}>
         <ChevronRight />
       </Button>
     </div>

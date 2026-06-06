@@ -16,7 +16,7 @@ const GameListInner = () => {
       <TablePagination
         count={count ?? 0}
         page={pagination.page}
-        onPageChange={(_: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => changePage(newPage)}
+        onPageChange={changePage}
         rowsPerPage={pagination.rowsPerPage}
         onRowsPerPageChange={event => changeRowsPerPage(parseInt(event.target.value, 10))}
         className="w-full"

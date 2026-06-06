@@ -66,8 +66,7 @@ export const UpdateTeamForm = ({ teamId, defaultValues, onFinish, className }: P
         <Button
           type="submit"
           variant="outline"
-          color="primary"
-          disabled={!form.formState.isValid || !form.formState.isDirty || isPending}
+          isDisabled={!form.formState.isValid || !form.formState.isDirty || isPending}
         >
           {isPending && <Loader2 className="animate-spin" />}
           Update

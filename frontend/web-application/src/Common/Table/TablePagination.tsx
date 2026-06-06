@@ -3,38 +3,16 @@ import { cn } from '@repo/design-system'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 type TablePaginationProps = {
-  /**
-   * The number of rows in the table.
-   */
+  /** Total number of rows. */
   count: number
-  /**
-   * The zero-based index of the current page.
-   */
+  /** Zero-based index of the current page. */
   page: number
-  /**
-   * Callback fired when the page is changed.
-   */
-  onPageChange: (_: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => void
-  /**
-   * The number of rows per page.
-   *
-   * Set -1 to display all the rows.
-   */
+  /** Called when the user navigates to a new page. */
+  onPageChange: (newPage: number) => void
+  /** Number of rows per page. Use -1 to show all rows. */
   rowsPerPage: number
-  /**
-   * Customizes the options of the rows per page select field. If less than two options are
-   * available, no select field will be displayed.
-   * Use -1 for the value with a custom label to show all the rows.
-   * @default [10, 25, 50, 100]
-   */
-  rowsPerPageOptions?: ReadonlyArray<
-    | number
-    | {
-        value: number
-        label: string
-      }
-  >
-
+  /** Options for the rows-per-page selector. @default [10, 25, 50, 100] */
+  rowsPerPageOptions?: ReadonlyArray<number | { value: number; label: string }>
   onRowsPerPageChange?: (event: React.ChangeEvent<HTMLSelectElement>) => void
   className?: string
 }
@@ -49,7 +27,7 @@ export const TablePagination: React.FunctionComponent<TablePaginationProps> = ({
   onRowsPerPageChange,
 }) => (
   <div className={cn('flex max-w-sm items-center justify-between p-4', className)}>
-    <Button variant="outline" size="icon" onClick={evt => onPageChange?.(evt, page - 1)} disabled={page === 0}>
+    <Button variant="outline" size="icon" onPress={() => onPageChange(page - 1)} isDisabled={page === 0}>
       <ChevronLeft />
     </Button>
     <select onChange={onRowsPerPageChange} value={rowsPerPage} className="rounded border p-2">
@@ -75,8 +53,8 @@ export const TablePagination: React.FunctionComponent<TablePaginationProps> = ({
     <Button
       variant="outline"
       size="icon"
-      onClick={evt => onPageChange?.(evt, page + 1)}
-      disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+      onPress={() => onPageChange(page + 1)}
+      isDisabled={page >= Math.ceil(count / rowsPerPage) - 1}
     >
       <ChevronRight />
     </Button>
