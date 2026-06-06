@@ -8,6 +8,8 @@ Headless form factory for the monorepo. Wraps [react-hook-form](https://react-ho
 
 **Why factory?** `createFormFactory` is called once at module level — outside the component. It closes over the schema and returns a stable `useForm` hook. Components never repeat `useForm<MyType>({ resolver: zodResolver(MySchema) })`.
 
+**`Form` component:** returned by `useForm()`, it wraps `<form>` and calls `handleSubmit` internally. Pass your submit handler directly as `onSubmit` — no `form.handleSubmit()` call needed. In development (`import.meta.env.DEV`), `@hookform/devtools` is mounted automatically.
+
 **What it does not do:** render labels, inputs, error messages. Pass a `children` render prop and use whatever components you like.
 
 ---
@@ -32,19 +34,25 @@ Add to the consuming package's `package.json`:
 import { createFormFactory } from '@repo/form-factory'
 import { z } from 'zod'
 
-// Define once at module level
-const loginFactory = createFormFactory({
-  schema: z.object({
-    email: z.string().email(),
-    password: z.string().min(8),
-  }),
+const loginSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
 })
 
-function LoginForm({ onSubmit }: { onSubmit: (data: { email: string; password: string }) => void }) {
-  const { form, Field } = loginFactory.useForm({ mode: 'onBlur' })
+// ① Define once at module level
+const loginFactory = createFormFactory({ schema: loginSchema })
+
+type LoginValues = z.infer<typeof loginSchema>
+
+function LoginForm() {
+  const { form, Field, Form } = loginFactory.useForm({ mode: 'onBlur' })
+
+  const onSubmit = async (data: LoginValues) => {
+    await signIn(data.email, data.password)
+  }
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)}>
+    <Form onSubmit={onSubmit}>
       <Field name="email">
         {({ field, fieldState }) => (
           <label>
@@ -68,7 +76,7 @@ function LoginForm({ onSubmit }: { onSubmit: (data: { email: string; password: s
       <button type="submit" disabled={!form.formState.isValid}>
         Sign in
       </button>
-    </form>
+    </Form>
   )
 }
 ```
@@ -106,6 +114,7 @@ factory.useForm(options?: Omit<UseFormProps<TValues>, 'resolver'>): {
   form: UseFormReturn<TValues>
   Field: FieldComponent<TValues>
   FieldArray: FieldArrayComponent<TValues>
+  Form: FormComponent<TValues>
 }
 ```
 
@@ -113,9 +122,29 @@ factory.useForm(options?: Omit<UseFormProps<TValues>, 'resolver'>): {
 
 | Return value | Description |
 |---|---|
-| `form` | Full react-hook-form return — `handleSubmit`, `formState`, `control`, `register`, `watch`, `setValue`, `setError`, `reset`, etc. |
+| `form` | Full react-hook-form return — `formState`, `watch`, `setValue`, `setError`, `reset`, etc. |
 | `Field` | Headless render-prop component. Type-safe: `name` is constrained to the schema's keys. |
 | `FieldArray` | Headless render-prop component for array fields. |
+| `Form` | Headless `<form>` wrapper. `onSubmit` is required and typed `SubmitHandler<TValues>` — `handleSubmit` is called internally. DevTools auto-mounted in DEV. |
+
+---
+
+### `Form`
+
+```tsx
+<Form onSubmit={onSubmit} className="...">
+  {/* fields */}
+</Form>
+```
+
+**Props:**
+
+| Prop | Type | Description |
+|---|---|---|
+| `onSubmit` | `SubmitHandler<TValues>` | **Required.** Called with validated form data. `handleSubmit` is wired internally. |
+| `...rest` | `React.HTMLProps<HTMLFormElement>` minus `onSubmit` | Any standard `<form>` attribute (`className`, `name`, `id`, …) |
+
+**DevTools:** when `import.meta.env.DEV` is `true`, `@hookform/devtools` is rendered automatically. Dead-code-eliminated in production builds by Vite.
 
 ---
 
@@ -175,21 +204,25 @@ For dynamic lists of fields backed by an array in the schema.
 ```tsx
 const teamSchema = z.object({
   name: z.string().min(1),
-  players: z.array(
-    z.object({ name: z.string().min(1) })
-  ),
+  players: z.array(z.object({ name: z.string().min(1) })),
 })
 
 const teamFactory = createFormFactory({ schema: teamSchema })
 
+type TeamValues = z.infer<typeof teamSchema>
+
 function TeamForm() {
-  const { form, Field, FieldArray } = teamFactory.useForm({
+  const { form, Field, FieldArray, Form } = teamFactory.useForm({
     mode: 'all',
     defaultValues: { name: '', players: [] },
   })
 
+  const onSubmit = async (data: TeamValues) => {
+    await saveTeam(data)
+  }
+
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)}>
+    <Form onSubmit={onSubmit}>
       <Field name="name">
         {({ field, fieldState }) => (
           <>
@@ -218,7 +251,7 @@ function TeamForm() {
       <button type="submit" disabled={!form.formState.isValid || !form.formState.isDirty}>
         Save
       </button>
-    </form>
+    </Form>
   )
 }
 ```
@@ -232,48 +265,55 @@ const registerSchema = z
     password: z.string().min(8),
     confirmPassword: z.string().min(1),
   })
-  .refine((d) => d.password === d.confirmPassword, {
+  .refine(d => d.password === d.confirmPassword, {
     message: 'Passwords do not match',
     path: ['confirmPassword'],
   })
 
 const registerFactory = createFormFactory({ schema: registerSchema })
+
+type RegisterValues = z.infer<typeof registerSchema>
+
+function RegisterForm() {
+  const { form, Field, Form } = registerFactory.useForm({ mode: 'onBlur' })
+
+  const onSubmit = async (data: RegisterValues) => {
+    await register({ email: data.email, password: data.password })
+  }
+
+  return (
+    <Form onSubmit={onSubmit}>
+      {/* fields */}
+    </Form>
+  )
+}
 ```
 
 ### Default values
 
 ```tsx
-const { form, Field } = teamFactory.useForm({
+const { form, Field, Form } = teamFactory.useForm({
   mode: 'all',
   defaultValues: { name: 'Paris FC', players: [{ name: 'Alice' }] },
 })
 ```
 
-### Edit mode (create vs update)
+### Watching a field value
 
 ```tsx
-const teamFactory = createFormFactory({ schema: teamSchema })
+const { form, Field, Form } = factory.useForm({ mode: 'onChange' })
+const password = form.watch('password') ?? ''
+```
 
-function TeamForm({ team }: { team?: Team }) {
-  const { form, Field } = teamFactory.useForm({
-    mode: 'all',
-    defaultValues: team ?? { name: '', players: [] },
-  })
+### Conditional submit button (CRUD)
 
-  const isEdit = !!team
-
-  return (
-    <form onSubmit={form.handleSubmit(isEdit ? onUpdate : onCreate)}>
-      {/* ... */}
-      <button
-        type="submit"
-        disabled={!form.formState.isValid || (!isEdit && !form.formState.isDirty)}
-      >
-        {isEdit ? 'Update' : 'Create'}
-      </button>
-    </form>
-  )
-}
+```tsx
+<button
+  type="submit"
+  disabled={!form.formState.isValid || !form.formState.isDirty || isPending}
+>
+  Save
+</button>
 ```
 
 ---
@@ -324,13 +364,13 @@ The schema drives all types. `name` on `Field` and `FieldArray` is constrained t
 
 ```tsx
 const factory = createFormFactory({ schema: z.object({ email: z.string() }) })
-const { form, Field } = factory.useForm()
+const { Field } = factory.useForm()
 
 <Field name="email">   {/* ✅ */}
 <Field name="emial">   {/* ❌ TypeScript error: "emial" is not a key of the schema */}
 ```
 
-`form.handleSubmit(onSubmit)` is fully typed: `onSubmit` receives `{ email: string }`, not `any`.
+`onSubmit` on `Form` is typed `SubmitHandler<TValues>` — `data` receives `{ email: string }`, not `any`.
 
 ---
 
@@ -339,3 +379,4 @@ const { form, Field } = factory.useForm()
 - Schemas with `.transform()` that change the shape (e.g., string → number) are not supported by the generic. Use `z.coerce.number()` within the field type instead.
 - `FieldArray` requires the schema to declare the field as `z.array(...)`.
 - Nest at most one level of `FieldArray` per form (deeply nested arrays are untested).
+- The factory requires a **static schema** — schemas selected conditionally at runtime based on props require splitting into separate components, each with its own factory.
