@@ -35,9 +35,9 @@ export const UpdateTeamForm = ({ teamId, defaultValues, onFinish, className }: P
     mode: 'all',
   })
 
-  const onSubmit = form.handleSubmit(async data => {
+  const onSubmit = async (data: CreateTeamMutationBody) => {
     try {
-      await submit(data as CreateTeamMutationBody, teamId)
+      await submit(data, teamId)
       toast('Team is well updated')
       onFinish?.()
     } catch {

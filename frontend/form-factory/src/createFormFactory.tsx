@@ -13,6 +13,7 @@ import {
   type UseFieldArrayReturn,
   type Resolver,
   type Control,
+  type SubmitHandler,
 } from 'react-hook-form'
 import { DevTool } from '@hookform/devtools'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -43,13 +44,17 @@ export type FieldArrayComponent<TValues extends FieldValues> = <TName extends Fi
   children: (renderProps: FieldArrayRenderProps<TValues, TName>) => React.ReactNode
 }) => React.ReactElement
 
-export type FormComponent = (props: React.HTMLProps<HTMLFormElement>) => React.ReactElement
+export type FormProps<TValues extends FieldValues> = Omit<React.HTMLProps<HTMLFormElement>, 'onSubmit'> & {
+  onSubmit: SubmitHandler<TValues>
+}
+
+export type FormComponent<TValues extends FieldValues> = (props: FormProps<TValues>) => React.ReactElement
 
 export type FormFactoryReturn<TValues extends FieldValues> = {
   form: UseFormReturn<TValues>
   Field: FieldComponent<TValues>
   FieldArray: FieldArrayComponent<TValues>
-  Form: FormComponent
+  Form: FormComponent<TValues>
 }
 
 export type FormFactory<TValues extends FieldValues> = {
@@ -76,7 +81,7 @@ export function createFormFactory<TSchema extends ZodType<FieldValues, FieldValu
     const stableRefs = React.useRef<{
       Field?: FieldComponent<TValues>
       FieldArray?: FieldArrayComponent<TValues>
-      Form?: FormComponent
+      Form?: FormComponent<TValues>
     }>({})
 
     if (!stableRefs.current.Field) {
@@ -116,16 +121,16 @@ export function createFormFactory<TSchema extends ZodType<FieldValues, FieldValu
 
     if (!stableRefs.current.Form) {
       const control = rhfForm.control as Control<FieldValues>
-      const Form = function Form({ children, ...props }: React.HTMLProps<HTMLFormElement>): React.ReactElement {
+      const Form = function Form({ children, onSubmit, ...props }: FormProps<TValues>): React.ReactElement {
         return (
-          <form {...props}>
+          <form {...props} onSubmit={rhfForm.handleSubmit(onSubmit)}>
             {children}
             {import.meta.env.DEV && <DevTool control={control} />}
           </form>
         )
       }
       Form.displayName = 'FormFactoryForm'
-      stableRefs.current.Form = Form as FormComponent
+      stableRefs.current.Form = Form as FormComponent<TValues>
     }
 
     return {

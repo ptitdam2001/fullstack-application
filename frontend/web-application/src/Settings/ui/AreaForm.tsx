@@ -32,7 +32,7 @@ export const AreaForm = ({ defaultValues, areaId, onFinish, className }: AreaFor
   }
 
   return (
-    <Form name="areaForm" onSubmit={form.handleSubmit(onSubmit)} className={cn('h-full', className)}>
+    <Form name="areaForm" onSubmit={onSubmit} className={cn('h-full', className)}>
       <Field name="name">
         {({ field, fieldState }) => <ControlledTextInput {...field} fieldState={fieldState} label="Name" />}
       </Field>

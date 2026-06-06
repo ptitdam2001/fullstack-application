@@ -40,7 +40,7 @@ export const RegisterForm = () => {
   const password = form.watch('password') ?? ''
   const strength = getPasswordStrength(password)
 
-  const onSubmit = form.handleSubmit(async (data: RegisterFormValues) => {
+  const onSubmit = async (data: RegisterFormValues) => {
     try {
       const input: RegisterInput = { firstName: data.firstName, lastName: data.lastName, email: data.email, password: data.password, teamId: data.teamId ?? undefined }
       await process(input)
@@ -52,7 +52,7 @@ export const RegisterForm = () => {
         toast(intl.formatMessage({ id: 'register.error.generic' }))
       }
     }
-  })
+  }
 
   if (isSuccess) {
     return (

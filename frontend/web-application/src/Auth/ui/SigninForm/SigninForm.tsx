@@ -19,28 +19,29 @@ export const SigninForm = ({ forgotPasswordHref }: SigninFormProps) => {
   const { process, isPending } = useLoginAction()
   const { form, Field, Form } = signinFormFactory.useForm({ mode: 'onBlur' })
 
-  const onSubmit = form.handleSubmit(async (data) => {
-    try {
-      await process(data.email!, data.password!)
-    } catch (err: unknown) {
-      const status = (err as { response?: { status?: number } })?.response?.status
-      const message = (err as { response?: { data?: { message?: string } } })?.response?.data?.message ?? ''
-      if (status === 403 && message.toLowerCase().includes('activé')) {
-        toast(intl.formatMessage({ id: 'auth.error.accountInactive' }))
-      } else if (status === 403) {
-        toast(intl.formatMessage({ id: 'auth.error.accountBlocked' }))
-      } else {
-        toast(intl.formatMessage({ id: 'auth.error.invalidCredentials' }))
-      }
-    }
-  })
-
   return (
     <div className="flex flex-col gap-6">
       <h2 className="text-2xl font-bold">
         <FormattedMessage id="auth.login" />
       </h2>
-      <Form onSubmit={onSubmit} className="flex flex-col">
+      <Form
+        onSubmit={async (data) => {
+          try {
+            await process(data.email!, data.password!)
+          } catch (err: unknown) {
+            const status = (err as { response?: { status?: number } })?.response?.status
+            const message = (err as { response?: { data?: { message?: string } } })?.response?.data?.message ?? ''
+            if (status === 403 && message.toLowerCase().includes('activé')) {
+              toast(intl.formatMessage({ id: 'auth.error.accountInactive' }))
+            } else if (status === 403) {
+              toast(intl.formatMessage({ id: 'auth.error.accountBlocked' }))
+            } else {
+              toast(intl.formatMessage({ id: 'auth.error.invalidCredentials' }))
+            }
+          }
+        }}
+        className="flex flex-col"
+      >
         <Field name="email">
           {({ field, fieldState }) => (
             <ControlledTextInput

@@ -4,6 +4,7 @@ export type {
   FieldComponent,
   FieldArrayRenderProps,
   FieldArrayComponent,
+  FormProps,
   FormComponent,
   FormFactoryReturn,
   FormFactory,

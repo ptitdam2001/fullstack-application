@@ -32,9 +32,9 @@ export const CreateTeamForm = ({ defaultValues, onFinish, className }: Props) =>
     mode: 'all',
   })
 
-  const onSubmit = form.handleSubmit(async data => {
+  const onSubmit = async (data: CreateTeamMutationBody) => {
     try {
-      await submit(data as CreateTeamMutationBody)
+      await submit(data)
       toast('Team is well created')
       onFinish?.()
     } catch {

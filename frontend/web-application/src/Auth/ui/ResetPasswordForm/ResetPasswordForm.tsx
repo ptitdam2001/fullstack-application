@@ -26,20 +26,21 @@ export const ResetPasswordForm = () => {
   const { process, isPending } = useResetPasswordAction()
   const { form, Field, Form } = resetPasswordFormFactory.useForm({ mode: 'onBlur' })
 
-  const onSubmit = form.handleSubmit(async (data: ResetFormValues) => {
-    try {
-      await process(token, data.newPassword)
-    } catch {
-      toast(intl.formatMessage({ id: 'resetPassword.error.generic' }))
-    }
-  })
-
   return (
     <div className="flex flex-col gap-6">
       <h2 className="text-2xl font-bold">
         <FormattedMessage id="resetPassword.title" />
       </h2>
-      <Form onSubmit={onSubmit} className="flex flex-col">
+      <Form
+        onSubmit={async (data: ResetFormValues) => {
+          try {
+            await process(token, data.newPassword)
+          } catch {
+            toast(intl.formatMessage({ id: 'resetPassword.error.generic' }))
+          }
+        }}
+        className="flex flex-col"
+      >
         <Field name="newPassword">
           {({ field, fieldState }) => (
             <div className="relative grid w-full max-w-sm items-center gap-1.5 pb-6">

@@ -18,11 +18,6 @@ export const ForgottenPasswordForm = () => {
   const [sentEmail, setSentEmail] = useState<string>('')
   const { form, Field, Form } = forgotPasswordFormFactory.useForm({ mode: 'onBlur' })
 
-  const onSubmit = form.handleSubmit(async (data) => {
-    await process(data.email!)
-    setSentEmail(data.email!)
-  })
-
   const onResend = async () => {
     try {
       await resend({ data: { email: sentEmail } })
@@ -51,7 +46,13 @@ export const ForgottenPasswordForm = () => {
       <h2 className="text-2xl font-bold">
         <FormattedMessage id="auth.forgottenPassword" />
       </h2>
-      <Form onSubmit={onSubmit} className="flex flex-col">
+      <Form
+        onSubmit={async (data) => {
+          await process(data.email!)
+          setSentEmail(data.email!)
+        }}
+        className="flex flex-col"
+      >
         <Field name="email">
           {({ field, fieldState }) => (
             <ControlledTextInput
