@@ -25,7 +25,7 @@ export const SigninForm = ({ forgotPasswordHref }: SigninFormProps) => {
         <FormattedMessage id="auth.login" />
       </h2>
       <Form
-        onSubmit={async (data) => {
+        onSubmit={async data => {
           try {
             await process(data.email!, data.password!)
           } catch (err: unknown) {
@@ -56,7 +56,7 @@ export const SigninForm = ({ forgotPasswordHref }: SigninFormProps) => {
         <Field name="password">
           {({ field, fieldState }) => (
             <div className="relative grid w-full max-w-sm items-center gap-1.5 pb-6">
-              <label className="text-sm font-medium leading-none">
+              <label className="text-sm leading-none font-medium">
                 <FormattedMessage id="auth.password" />
               </label>
               <PasswordInput {...field} placeholder="••••••••" />

@@ -40,7 +40,7 @@ export const CreateTeamForm = ({ defaultValues, onFinish, className }: Props) =>
     } catch {
       toast('Error during Team creation')
     }
-  })
+  }
 
   return (
     <Form name="teamForm" onSubmit={onSubmit} className={cn('h-full', className)}>
@@ -51,11 +51,21 @@ export const CreateTeamForm = ({ defaultValues, onFinish, className }: Props) =>
       </Field>
       <Field name="color">
         {({ field, fieldState }) => (
-          <ColorInput {...field} label="Jersey color" error={Boolean(fieldState.error)} helperText={fieldState.error?.message} />
+          <ColorInput
+            {...field}
+            label="Jersey color"
+            error={Boolean(fieldState.error)}
+            helperText={fieldState.error?.message}
+          />
         )}
       </Field>
       <div className="flex flex-row-reverse py-1">
-        <Button type="submit" variant="outline" color="primary" disabled={!form.formState.isValid || !form.formState.isDirty || isPending}>
+        <Button
+          type="submit"
+          variant="outline"
+          color="primary"
+          disabled={!form.formState.isValid || !form.formState.isDirty || isPending}
+        >
           {isPending && <Loader2 className="animate-spin" />}
           Create
         </Button>

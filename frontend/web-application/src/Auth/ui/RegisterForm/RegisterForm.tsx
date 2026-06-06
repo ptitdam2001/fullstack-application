@@ -11,7 +11,7 @@ import { useRegisterAction } from '../../application/useRegisterAction'
 
 const RegisterFormSchema = RegisterBody.extend({
   confirmPassword: z.string().min(1),
-}).refine((d) => d.password === d.confirmPassword, {
+}).refine(d => d.password === d.confirmPassword, {
   message: 'Passwords do not match',
   path: ['confirmPassword'],
 })
@@ -22,13 +22,24 @@ const registerFormFactory = createFormFactory({ schema: RegisterFormSchema })
 
 const getPasswordStrength = (password: string): 0 | 1 | 2 | 3 => {
   let score = 0
-  if (password.length >= 8) { score++ }
-  if (/[0-9]/.test(password)) { score++ }
-  if (/[A-Z]/.test(password)) { score++ }
+  if (password.length >= 8) {
+    score++
+  }
+  if (/[0-9]/.test(password)) {
+    score++
+  }
+  if (/[A-Z]/.test(password)) {
+    score++
+  }
   return score as 0 | 1 | 2 | 3
 }
 
-const strengthKeys = ['register.strength.weak', 'register.strength.fair', 'register.strength.good', 'register.strength.strong'] as const
+const strengthKeys = [
+  'register.strength.weak',
+  'register.strength.fair',
+  'register.strength.good',
+  'register.strength.strong',
+] as const
 const strengthColors = ['bg-red-400', 'bg-orange-400', 'bg-yellow-400', 'bg-green-500']
 
 export const RegisterForm = () => {
@@ -42,7 +53,13 @@ export const RegisterForm = () => {
 
   const onSubmit = async (data: RegisterFormValues) => {
     try {
-      const input: RegisterInput = { firstName: data.firstName, lastName: data.lastName, email: data.email, password: data.password, teamId: data.teamId ?? undefined }
+      const input: RegisterInput = {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        password: data.password,
+        teamId: data.teamId ?? undefined,
+      }
       await process(input)
     } catch (err: unknown) {
       const status = (err as { response?: { status?: number } })?.response?.status
@@ -68,17 +85,35 @@ export const RegisterForm = () => {
     <Form onSubmit={onSubmit} className="flex flex-col">
       <Field name="firstName">
         {({ field, fieldState }) => (
-          <ControlledTextInput {...field} fieldState={fieldState} label={intl.formatMessage({ id: 'register.field.firstName' })} placeholder={intl.formatMessage({ id: 'register.field.firstName.placeholder' })} required />
+          <ControlledTextInput
+            {...field}
+            fieldState={fieldState}
+            label={intl.formatMessage({ id: 'register.field.firstName' })}
+            placeholder={intl.formatMessage({ id: 'register.field.firstName.placeholder' })}
+            required
+          />
         )}
       </Field>
       <Field name="lastName">
         {({ field, fieldState }) => (
-          <ControlledTextInput {...field} fieldState={fieldState} label={intl.formatMessage({ id: 'register.field.lastName' })} placeholder={intl.formatMessage({ id: 'register.field.lastName.placeholder' })} />
+          <ControlledTextInput
+            {...field}
+            fieldState={fieldState}
+            label={intl.formatMessage({ id: 'register.field.lastName' })}
+            placeholder={intl.formatMessage({ id: 'register.field.lastName.placeholder' })}
+          />
         )}
       </Field>
       <Field name="email">
         {({ field, fieldState }) => (
-          <ControlledTextInput {...field} fieldState={fieldState} label={intl.formatMessage({ id: 'register.field.email' })} type="email" placeholder={intl.formatMessage({ id: 'register.field.email.placeholder' })} required />
+          <ControlledTextInput
+            {...field}
+            fieldState={fieldState}
+            label={intl.formatMessage({ id: 'register.field.email' })}
+            type="email"
+            placeholder={intl.formatMessage({ id: 'register.field.email.placeholder' })}
+            required
+          />
         )}
       </Field>
       <Field name="teamId">
@@ -97,14 +132,17 @@ export const RegisterForm = () => {
       <Field name="password">
         {({ field, fieldState }) => (
           <div className="relative grid w-full max-w-sm items-center gap-1.5 pb-6">
-            <label className="text-sm font-medium leading-none">
+            <label className="text-sm leading-none font-medium">
               <FormattedMessage id="register.field.password" />
             </label>
             <PasswordInput {...field} placeholder={intl.formatMessage({ id: 'register.field.password.placeholder' })} />
             {password.length > 0 && (
               <div className="mt-1 flex gap-1">
-                {[0, 1, 2].map((i) => (
-                  <div key={i} className={`h-1 flex-1 rounded-full ${i < strength ? strengthColors[strength] : 'bg-slate-200'}`} />
+                {[0, 1, 2].map(i => (
+                  <div
+                    key={i}
+                    className={`h-1 flex-1 rounded-full ${i < strength ? strengthColors[strength] : 'bg-slate-200'}`}
+                  />
                 ))}
                 <span className="ml-2 text-xs text-slate-500">
                   <FormattedMessage id={strengthKeys[strength]} />
@@ -118,7 +156,7 @@ export const RegisterForm = () => {
       <Field name="confirmPassword">
         {({ field, fieldState }) => (
           <div className="relative grid w-full max-w-sm items-center gap-1.5 pb-6">
-            <label className="text-sm font-medium leading-none">
+            <label className="text-sm leading-none font-medium">
               <FormattedMessage id="register.field.confirmPassword" />
             </label>
             <PasswordInput {...field} placeholder="••••••••" />

@@ -47,7 +47,7 @@ export const ForgottenPasswordForm = () => {
         <FormattedMessage id="auth.forgottenPassword" />
       </h2>
       <Form
-        onSubmit={async (data) => {
+        onSubmit={async data => {
           await process(data.email!)
           setSentEmail(data.email!)
         }}

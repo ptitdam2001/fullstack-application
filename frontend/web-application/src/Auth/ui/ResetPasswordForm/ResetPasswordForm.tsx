@@ -9,7 +9,7 @@ import { useResetPasswordAction } from '../../application/useResetPasswordAction
 
 const ResetFormSchema = ResetPasswordBody.extend({
   confirmPassword: z.string().min(1),
-}).refine((d) => d.newPassword === d.confirmPassword, {
+}).refine(d => d.newPassword === d.confirmPassword, {
   message: 'Passwords do not match',
   path: ['confirmPassword'],
 })
@@ -44,10 +44,13 @@ export const ResetPasswordForm = () => {
         <Field name="newPassword">
           {({ field, fieldState }) => (
             <div className="relative grid w-full max-w-sm items-center gap-1.5 pb-6">
-              <label className="text-sm font-medium leading-none">
+              <label className="text-sm leading-none font-medium">
                 <FormattedMessage id="resetPassword.field.newPassword" />
               </label>
-              <PasswordInput {...field} placeholder={intl.formatMessage({ id: 'resetPassword.field.newPassword.placeholder' })} />
+              <PasswordInput
+                {...field}
+                placeholder={intl.formatMessage({ id: 'resetPassword.field.newPassword.placeholder' })}
+              />
               {fieldState.error && <p className="absolute bottom-1 text-sm text-red-500">{fieldState.error.message}</p>}
             </div>
           )}
@@ -55,7 +58,7 @@ export const ResetPasswordForm = () => {
         <Field name="confirmPassword">
           {({ field, fieldState }) => (
             <div className="relative grid w-full max-w-sm items-center gap-1.5 pb-6">
-              <label className="text-sm font-medium leading-none">
+              <label className="text-sm leading-none font-medium">
                 <FormattedMessage id="resetPassword.field.confirmPassword" />
               </label>
               <PasswordInput {...field} placeholder="••••••••" />
