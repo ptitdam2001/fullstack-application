@@ -1,5 +1,13 @@
 import { useEffect } from 'react'
-import { createBrowserRouter, createRoutesFromElements, Navigate, Outlet, Route, RouterProvider, useNavigate } from 'react-router'
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  Navigate,
+  Outlet,
+  Route,
+  RouterProvider,
+  useNavigate,
+} from 'react-router'
 import { setNavigateFn } from '@Common/navigation'
 
 import { AnonymousLayout, ConnectedLayout, RootLayout } from '@Layouts/'

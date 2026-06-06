@@ -3,9 +3,7 @@ import { TeamListPagination } from './TeamListPagination'
 
 describe('TeamListPagination', () => {
   it('renders nothing when totalPages <= 1', () => {
-    const { container } = render(
-      <TeamListPagination page={0} totalPages={1} onPageChange={() => {}} />
-    )
+    const { container } = render(<TeamListPagination page={0} totalPages={1} onPageChange={() => {}} />)
     expect(container.firstChild).toBeNull()
   })
 

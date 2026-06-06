@@ -34,7 +34,7 @@ export const PlayerRecentResults = ({ matches, teamId, teamById }: Props) => {
         <FormattedMessage id="playerDashboard.recentResults.title" />
       </h4>
       <ul className="flex flex-col gap-1">
-        {matches.map((m) => {
+        {matches.map(m => {
           const outcome = getOutcome(m, teamId)
           const isHome = m.homeTeamId === teamId
           const opponent = isHome ? (teamById[m.awayTeamId] ?? '?') : (teamById[m.homeTeamId] ?? '?')
@@ -42,16 +42,13 @@ export const PlayerRecentResults = ({ matches, teamId, teamById }: Props) => {
 
           return (
             <li key={m.id}>
-              <Link
-                to={`/app/games/${m.id}`}
-                className="hover:text-foreground flex items-center gap-2 text-xs"
-              >
+              <Link to={`/app/games/${m.id}`} className="hover:text-foreground flex items-center gap-2 text-xs">
                 <span
                   className={cn(
                     'flex h-5 w-5 shrink-0 items-center justify-center rounded text-[10px] font-bold text-white',
                     outcome === 'win' && 'bg-green-500',
                     outcome === 'draw' && 'bg-muted-foreground',
-                    outcome === 'loss' && 'bg-red-500',
+                    outcome === 'loss' && 'bg-red-500'
                   )}
                 >
                   {intl.formatMessage({ id: `playerDashboard.recentResults.${outcome}` })}

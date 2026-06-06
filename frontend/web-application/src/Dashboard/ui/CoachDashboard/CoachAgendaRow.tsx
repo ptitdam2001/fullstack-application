@@ -16,8 +16,8 @@ export const CoachAgendaRow = ({ match, teamById }: Props) => {
       <div className="bg-background rounded-lg border py-1 text-center">
         {date ? (
           <>
-            <div className="text-base font-semibold leading-tight">{date.getDate()}</div>
-            <div className="text-muted-foreground text-[9px] font-medium uppercase tracking-widest">
+            <div className="text-base leading-tight font-semibold">{date.getDate()}</div>
+            <div className="text-muted-foreground text-[9px] font-medium tracking-widest uppercase">
               {date.toLocaleString('fr-FR', { month: 'short' })}
             </div>
           </>
@@ -37,7 +37,7 @@ export const CoachAgendaRow = ({ match, teamById }: Props) => {
       </div>
 
       {date && (
-        <div className="whitespace-nowrap text-xs font-semibold">
+        <div className="text-xs font-semibold whitespace-nowrap">
           {date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
         </div>
       )}

@@ -31,7 +31,7 @@ const PlayerListInner = ({ teamId, className }: PlayerListProps) => {
               />
             </Tooltip>
           </div>
-          <div className="grow text-sm text-muted-foreground">{player.userId}</div>
+          <div className="text-muted-foreground grow text-sm">{player.userId}</div>
         </li>
       ))}
     </ul>

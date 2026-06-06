@@ -5,16 +5,16 @@ import type { CoachDashboardStats } from '../domain/Dashboard'
 
 export const useCoachDashboard = (userId: string) => {
   const { data: userTeams = [] } = useGetCoachTeams(userId)
-  const teamIds = userTeams.map((ut) => ut.teamId)
+  const teamIds = userTeams.map(ut => ut.teamId)
 
   const { data: allTeams = [] } = useGetTeams()
-  const teams = allTeams.filter((t) => teamIds.includes(t.id))
+  const teams = allTeams.filter(t => teamIds.includes(t.id))
 
   const { data: allMatches = [] } = useGetMatches()
   const now = new Date()
   const upcomingMatches = allMatches
     .filter(
-      (currentMatch) =>
+      currentMatch =>
         (teamIds.includes(currentMatch.homeTeamId) || teamIds.includes(currentMatch.awayTeamId)) &&
         currentMatch.scheduledAt != null &&
         new Date(currentMatch.scheduledAt) >= now

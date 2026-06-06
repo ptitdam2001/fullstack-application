@@ -16,12 +16,12 @@ export const CoachDashboard = () => {
 
       <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
         <div>
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider">Mes équipes</h2>
+          <h2 className="mb-3 text-sm font-semibold tracking-wider uppercase">Mes équipes</h2>
           {teams.length === 0 ? (
             <p className="text-muted-foreground text-sm">Aucune équipe</p>
           ) : (
             <div className="flex flex-col gap-2">
-              {teams.map((team) => (
+              {teams.map(team => (
                 <CoachTeamTile key={team.id} team={team} />
               ))}
             </div>
@@ -29,7 +29,7 @@ export const CoachDashboard = () => {
         </div>
 
         <div>
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider">Prochains matchs</h2>
+          <h2 className="mb-3 text-sm font-semibold tracking-wider uppercase">Prochains matchs</h2>
           <CoachAgenda matches={upcomingMatches} teams={teams} />
         </div>
       </div>

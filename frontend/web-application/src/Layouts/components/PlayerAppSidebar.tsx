@@ -17,7 +17,7 @@ import { AppSidebarFooter } from './AppSidebarFooter'
 
 export const PlayerAppSidebar = () => {
   const { data: myTeams = [] } = useGetMyTeams()
-  const playerTeams = myTeams.filter((ut) => ut.role === 'PLAYER').map((ut) => ut.team)
+  const playerTeams = myTeams.filter(ut => ut.role === 'PLAYER').map(ut => ut.team)
   const navigate = useNavigate()
   const intl = useIntl()
 
@@ -60,7 +60,7 @@ export const PlayerAppSidebar = () => {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               )}
-              {playerTeams.map((team) => (
+              {playerTeams.map(team => (
                 <SidebarMenuItem key={team.id}>
                   <SidebarMenuButton tooltip={team.name} onClick={() => navigate(`/app/team/${team.id}`)}>
                     <span

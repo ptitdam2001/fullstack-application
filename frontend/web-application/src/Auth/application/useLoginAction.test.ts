@@ -18,7 +18,7 @@ vi.mock('./AuthProvider', () => ({
   },
 }))
 
-vi.mock('react-router', async (importOriginal) => {
+vi.mock('react-router', async importOriginal => {
   const actual = await importOriginal<typeof import('react-router')>()
   return { ...actual, useNavigate: () => mockNavigate }
 })
@@ -70,7 +70,9 @@ describe('useLoginAction', () => {
   })
 
   it('throws on 403 (account inactive or blocked)', async () => {
-    server.use(http.post('*/login', () => HttpResponse.json({ message: 'Compte non activé', status: 403 }, { status: 403 })))
+    server.use(
+      http.post('*/login', () => HttpResponse.json({ message: 'Compte non activé', status: 403 }, { status: 403 }))
+    )
     const { result } = renderHookWithProviders(() => useLoginAction())
 
     await expect(result.current.process('a@b.com', 'password')).rejects.toThrow()

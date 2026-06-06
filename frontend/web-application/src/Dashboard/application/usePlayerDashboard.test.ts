@@ -92,7 +92,7 @@ describe('filterRecentResults', () => {
 
   it('limits to 5 results', () => {
     const matches = Array.from({ length: 7 }, (_, i) =>
-      makeMatch({ id: `m${i}`, scheduledAt: `2025-04-0${i + 1}T10:00:00Z`, status: 'PLAYED', homeTeamId: TEAM_ID }),
+      makeMatch({ id: `m${i}`, scheduledAt: `2025-04-0${i + 1}T10:00:00Z`, status: 'PLAYED', homeTeamId: TEAM_ID })
     )
     expect(filterRecentResults(matches, TEAM_ID)).toHaveLength(5)
   })

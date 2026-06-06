@@ -1,4 +1,9 @@
-import { type CreateAreaMutationBody, type UpdateAreaMutationBody, useCreateArea, useUpdateArea } from '../infrastructure/useAreaApi'
+import {
+  type CreateAreaMutationBody,
+  type UpdateAreaMutationBody,
+  useCreateArea,
+  useUpdateArea,
+} from '../infrastructure/useAreaApi'
 
 export const useAreaForm = () => {
   const { mutateAsync: createFunc, isPending: isPendingCreate, isSuccess: isSuccessCreate } = useCreateArea()

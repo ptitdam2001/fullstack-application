@@ -8,8 +8,32 @@ const OTHER_TEAM_ID = 'team-2'
 const mockStandings = {
   groupId: 'group-1',
   rows: [
-    { teamId: OTHER_TEAM_ID, rank: 1, played: 5, won: 4, drawn: 1, lost: 0, forfeited: 0, goalsFor: 10, goalsAgainst: 3, goalDifference: 7, points: 13 },
-    { teamId: TEAM_ID, rank: 2, played: 5, won: 3, drawn: 0, lost: 2, forfeited: 0, goalsFor: 7, goalsAgainst: 6, goalDifference: 1, points: 9 },
+    {
+      teamId: OTHER_TEAM_ID,
+      rank: 1,
+      played: 5,
+      won: 4,
+      drawn: 1,
+      lost: 0,
+      forfeited: 0,
+      goalsFor: 10,
+      goalsAgainst: 3,
+      goalDifference: 7,
+      points: 13,
+    },
+    {
+      teamId: TEAM_ID,
+      rank: 2,
+      played: 5,
+      won: 3,
+      drawn: 0,
+      lost: 2,
+      forfeited: 0,
+      goalsFor: 7,
+      goalsAgainst: 6,
+      goalDifference: 1,
+      points: 9,
+    },
   ],
 }
 
@@ -43,7 +67,7 @@ describe('PlayerStandingsTable', () => {
   it('highlights the player team row', () => {
     const { container } = render(<PlayerStandingsTable teamId={TEAM_ID} userId="user-1" />)
     const rows = container.querySelectorAll('tbody tr')
-    const playerRow = Array.from(rows).find((row) => row.textContent?.includes('Mon Équipe'))
+    const playerRow = Array.from(rows).find(row => row.textContent?.includes('Mon Équipe'))
     expect(playerRow?.className).toContain('bg-primary/10')
     expect(playerRow?.className).toContain('font-bold')
   })
@@ -51,7 +75,7 @@ describe('PlayerStandingsTable', () => {
   it('does not highlight other team rows', () => {
     const { container } = render(<PlayerStandingsTable teamId={TEAM_ID} userId="user-1" />)
     const rows = container.querySelectorAll('tbody tr')
-    const otherRow = Array.from(rows).find((row) => row.textContent?.includes('Adversaire'))
+    const otherRow = Array.from(rows).find(row => row.textContent?.includes('Adversaire'))
     expect(otherRow?.className).not.toContain('bg-primary/10')
   })
 

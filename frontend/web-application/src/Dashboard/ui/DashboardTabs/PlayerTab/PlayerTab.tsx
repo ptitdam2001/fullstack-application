@@ -13,8 +13,14 @@ export const PlayerTab = () => {
         </p>
       ) : (
         <div className="flex flex-col gap-4">
-          {playerTeams.map((team) => (
-            <PlayerTeamCard key={team.id} team={team} allTeams={allTeams} upcomingMatches={upcomingMatches} allMatches={allMatches} />
+          {playerTeams.map(team => (
+            <PlayerTeamCard
+              key={team.id}
+              team={team}
+              allTeams={allTeams}
+              upcomingMatches={upcomingMatches}
+              allMatches={allMatches}
+            />
           ))}
         </div>
       )}

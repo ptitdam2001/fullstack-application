@@ -21,7 +21,7 @@ export const PlayerStandingsTable = ({ teamId, userId: _userId }: Props) => {
     )
   }
 
-  const teamNameById = Object.fromEntries(allTeams.map((t) => [t.id, t.name]))
+  const teamNameById = Object.fromEntries(allTeams.map(t => [t.id, t.name]))
 
   return (
     <div className="overflow-x-auto">
@@ -29,18 +29,35 @@ export const PlayerStandingsTable = ({ teamId, userId: _userId }: Props) => {
       <table className="w-full text-sm">
         <thead>
           <tr className="text-muted-foreground border-b text-left text-xs">
-            <th className="py-1 pr-3"><FormattedMessage id="playerDashboard.standings.rank" /></th>
-            <th className="py-1 pr-3"><FormattedMessage id="playerDashboard.standings.team" /></th>
-            <th className="py-1 pr-3 text-center"><FormattedMessage id="playerDashboard.standings.played" /></th>
-            <th className="py-1 pr-3 text-center"><FormattedMessage id="playerDashboard.standings.won" /></th>
-            <th className="py-1 pr-3 text-center"><FormattedMessage id="playerDashboard.standings.drawn" /></th>
-            <th className="py-1 pr-3 text-center"><FormattedMessage id="playerDashboard.standings.lost" /></th>
-            <th className="py-1 text-center font-bold"><FormattedMessage id="playerDashboard.standings.points" /></th>
+            <th className="py-1 pr-3">
+              <FormattedMessage id="playerDashboard.standings.rank" />
+            </th>
+            <th className="py-1 pr-3">
+              <FormattedMessage id="playerDashboard.standings.team" />
+            </th>
+            <th className="py-1 pr-3 text-center">
+              <FormattedMessage id="playerDashboard.standings.played" />
+            </th>
+            <th className="py-1 pr-3 text-center">
+              <FormattedMessage id="playerDashboard.standings.won" />
+            </th>
+            <th className="py-1 pr-3 text-center">
+              <FormattedMessage id="playerDashboard.standings.drawn" />
+            </th>
+            <th className="py-1 pr-3 text-center">
+              <FormattedMessage id="playerDashboard.standings.lost" />
+            </th>
+            <th className="py-1 text-center font-bold">
+              <FormattedMessage id="playerDashboard.standings.points" />
+            </th>
           </tr>
         </thead>
         <tbody>
-          {standings.rows.map((row) => (
-            <tr key={row.teamId} className={cn('border-b last:border-0', row.teamId === teamId && 'bg-primary/10 font-bold')}>
+          {standings.rows.map(row => (
+            <tr
+              key={row.teamId}
+              className={cn('border-b last:border-0', row.teamId === teamId && 'bg-primary/10 font-bold')}
+            >
               <td className="py-1.5 pr-3">{row.rank}</td>
               <td className="py-1.5 pr-3">{teamNameById[row.teamId] ?? row.teamId}</td>
               <td className="py-1.5 pr-3 text-center">{row.played}</td>

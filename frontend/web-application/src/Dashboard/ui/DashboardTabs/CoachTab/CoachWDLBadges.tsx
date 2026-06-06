@@ -8,7 +8,7 @@ type Props = {
 
 export const CoachWDLBadges = ({ teamId, matches }: Props) => {
   const playedMatches = matches.filter(
-    (m) => m.status === MatchStatus.PLAYED && (m.homeTeamId === teamId || m.awayTeamId === teamId),
+    m => m.status === MatchStatus.PLAYED && (m.homeTeamId === teamId || m.awayTeamId === teamId)
   )
 
   let W = 0,
@@ -18,9 +18,13 @@ export const CoachWDLBadges = ({ teamId, matches }: Props) => {
     const isHome = m.homeTeamId === teamId
     const teamGoals = isHome ? (m.homeGoals ?? 0) : (m.awayGoals ?? 0)
     const oppGoals = isHome ? (m.awayGoals ?? 0) : (m.homeGoals ?? 0)
-    if (teamGoals > oppGoals) { W++ }
-    else if (teamGoals === oppGoals) { D++ }
-    else { L++ }
+    if (teamGoals > oppGoals) {
+      W++
+    } else if (teamGoals === oppGoals) {
+      D++
+    } else {
+      L++
+    }
   }
 
   return (

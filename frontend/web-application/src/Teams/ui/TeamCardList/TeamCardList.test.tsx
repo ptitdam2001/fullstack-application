@@ -15,18 +15,30 @@ const teams: Team[] = [
 
 describe('TeamCardList', () => {
   it('renders all team names', () => {
-    render(<MemoryRouter><TeamCardList teams={teams} /></MemoryRouter>)
+    render(
+      <MemoryRouter>
+        <TeamCardList teams={teams} />
+      </MemoryRouter>
+    )
     expect(screen.getByText('Les Rouges')).toBeInTheDocument()
     expect(screen.getByText('Les Bleus')).toBeInTheDocument()
   })
 
   it('renders city for teams with areas', () => {
-    render(<MemoryRouter><TeamCardList teams={teams} /></MemoryRouter>)
+    render(
+      <MemoryRouter>
+        <TeamCardList teams={teams} />
+      </MemoryRouter>
+    )
     expect(screen.getByText('Lyon')).toBeInTheDocument()
   })
 
   it('renders correct number of list items', () => {
-    render(<MemoryRouter><TeamCardList teams={teams} /></MemoryRouter>)
+    render(
+      <MemoryRouter>
+        <TeamCardList teams={teams} />
+      </MemoryRouter>
+    )
     expect(screen.getAllByRole('option')).toHaveLength(2)
   })
 })

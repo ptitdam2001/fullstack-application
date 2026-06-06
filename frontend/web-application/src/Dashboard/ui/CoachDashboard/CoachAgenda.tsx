@@ -7,7 +7,7 @@ type Props = {
 }
 
 export const CoachAgenda = ({ matches, teams }: Props) => {
-  const teamById = Object.fromEntries(teams.map((t) => [t.id, t]))
+  const teamById = Object.fromEntries(teams.map(t => [t.id, t]))
 
   if (matches.length === 0) {
     return <div className="text-muted-foreground py-10 text-center text-sm">Aucun match à venir</div>
@@ -15,7 +15,7 @@ export const CoachAgenda = ({ matches, teams }: Props) => {
 
   return (
     <div className="space-y-1">
-      {matches.map((match) => (
+      {matches.map(match => (
         <CoachAgendaRow key={match.id} match={match} teamById={teamById} />
       ))}
     </div>

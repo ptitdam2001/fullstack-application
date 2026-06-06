@@ -8,9 +8,7 @@ import { TeamCard } from './TeamCard'
 // react-intl is globally mocked in tests/setup.ts
 // FormattedMessage renders its `id` prop — assert on the key, not the translated string
 
-const wrapper = ({ children }: { children: ReactNode }) => (
-  <MemoryRouter>{children}</MemoryRouter>
-)
+const wrapper = ({ children }: { children: ReactNode }) => <MemoryRouter>{children}</MemoryRouter>
 
 const primaryArea: Area = {
   _id: 'area-1',

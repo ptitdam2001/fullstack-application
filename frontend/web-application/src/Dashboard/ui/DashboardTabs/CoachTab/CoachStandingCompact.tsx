@@ -19,7 +19,7 @@ export const CoachStandingCompact = ({ teamId }: Props) => {
     )
   }
 
-  const row = standings.rows.find((r) => r.teamId === teamId)
+  const row = standings.rows.find(r => r.teamId === teamId)
   if (!row) {
     return null
   }
@@ -27,7 +27,7 @@ export const CoachStandingCompact = ({ teamId }: Props) => {
   return (
     <Link
       to={`/app/standings?groupId=${currentGroup.groupId}`}
-      className="text-primary hover:underline text-xs font-semibold"
+      className="text-primary text-xs font-semibold hover:underline"
     >
       {row.rank} / {standings.rows.length}
     </Link>

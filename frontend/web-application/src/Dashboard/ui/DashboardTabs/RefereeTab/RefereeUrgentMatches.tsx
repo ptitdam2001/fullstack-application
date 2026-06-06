@@ -15,11 +15,11 @@ export const RefereeUrgentMatches = ({ matches, teamNames }: Props) => {
 
   return (
     <div>
-      <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider">
+      <h3 className="mb-3 text-sm font-semibold tracking-wider uppercase">
         <FormattedMessage id="refereeDashboard.urgent.title" />
       </h3>
       <ul className="flex flex-col gap-2">
-        {matches.map((m) => {
+        {matches.map(m => {
           const daysAgo = dayjs().diff(dayjs(m.scheduledAt), 'day')
           return (
             <li
@@ -43,10 +43,7 @@ export const RefereeUrgentMatches = ({ matches, teamNames }: Props) => {
                   <FormattedMessage id="refereeDashboard.urgent.daysAgo" values={{ days: daysAgo }} />
                 </span>
               </div>
-              <Link
-                to={`/app/games/${m.id}/score`}
-                className="text-primary hover:underline text-xs font-medium"
-              >
+              <Link to={`/app/games/${m.id}/score`} className="text-primary text-xs font-medium hover:underline">
                 <FormattedMessage id="refereeDashboard.urgent.action" />
               </Link>
             </li>

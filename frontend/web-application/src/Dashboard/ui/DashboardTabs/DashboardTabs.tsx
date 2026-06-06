@@ -17,7 +17,7 @@ const ROLE_TABS = [
 ]
 
 export const DashboardTabs = ({ roles }: DashboardTabsProps) => {
-  const activeTabs = ROLE_TABS.filter((t) => roles.includes(t.role))
+  const activeTabs = ROLE_TABS.filter(t => roles.includes(t.role))
 
   if (activeTabs.length === 0) {
     return (
@@ -25,7 +25,7 @@ export const DashboardTabs = ({ roles }: DashboardTabsProps) => {
         <p className="text-muted-foreground">
           <FormattedMessage id="dashboard.noRole.message" />
         </p>
-        <Link to="/app/team" className="text-primary hover:underline text-sm font-medium">
+        <Link to="/app/team" className="text-primary text-sm font-medium hover:underline">
           <FormattedMessage id="dashboard.noRole.cta" />
         </Link>
       </section>
@@ -35,7 +35,7 @@ export const DashboardTabs = ({ roles }: DashboardTabsProps) => {
   return (
     <Tabs defaultValue={activeTabs[0].role} className="flex flex-1 flex-col gap-0 p-4 pt-0">
       <TabsList className="mb-4 w-fit">
-        {activeTabs.map((t) => (
+        {activeTabs.map(t => (
           <TabsTrigger key={t.role} value={t.role}>
             <FormattedMessage id={t.labelKey} />
           </TabsTrigger>

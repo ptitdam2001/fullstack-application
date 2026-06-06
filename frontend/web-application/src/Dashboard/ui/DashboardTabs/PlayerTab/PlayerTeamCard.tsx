@@ -17,11 +17,9 @@ type Props = {
 export const PlayerTeamCard = ({ team, allTeams, upcomingMatches, allMatches }: Props) => {
   const { data: currentGroup } = useGetTeamCurrentGroup(team.id)
 
-  const teamById = Object.fromEntries(allTeams.map((t) => [t.id, t.name]))
+  const teamById = Object.fromEntries(allTeams.map(t => [t.id, t.name]))
 
-  const teamUpcoming = upcomingMatches
-    .filter((m) => m.homeTeamId === team.id || m.awayTeamId === team.id)
-    .slice(0, 5)
+  const teamUpcoming = upcomingMatches.filter(m => m.homeTeamId === team.id || m.awayTeamId === team.id).slice(0, 5)
 
   const recentResults = filterRecentResults(allMatches, team.id)
 
@@ -43,7 +41,7 @@ export const PlayerTeamCard = ({ team, allTeams, upcomingMatches, allMatches }: 
             <FormattedMessage id="playerDashboard.upcomingMatches.title" />
           </h4>
           <ul className="flex flex-col gap-1">
-            {teamUpcoming.map((m) => {
+            {teamUpcoming.map(m => {
               const isHome = m.homeTeamId === team.id
               const opponent = isHome ? (teamById[m.awayTeamId] ?? '?') : (teamById[m.homeTeamId] ?? '?')
               return (
@@ -64,9 +62,7 @@ export const PlayerTeamCard = ({ team, allTeams, upcomingMatches, allMatches }: 
         </div>
       )}
 
-      {recentResults.length > 0 && (
-        <PlayerRecentResults matches={recentResults} teamId={team.id} teamById={teamById} />
-      )}
+      {recentResults.length > 0 && <PlayerRecentResults matches={recentResults} teamId={team.id} teamById={teamById} />}
 
       <div>
         <h4 className="mb-2 text-xs font-semibold tracking-wider uppercase">

@@ -20,7 +20,9 @@ describe('useTeamForm', () => {
   })
 
   it('submit with teamId calls update mutation', async () => {
-    server.use(http.put('/team/:id', () => HttpResponse.json({ id: '1', name: 'Updated', color: '#0000ff', areas: [] })))
+    server.use(
+      http.put('/team/:id', () => HttpResponse.json({ id: '1', name: 'Updated', color: '#0000ff', areas: [] }))
+    )
 
     const { result } = renderHookWithProviders(() => useTeamForm())
     result.current.submit({ name: 'Updated', color: '#0000ff', id: '1' }, '1')

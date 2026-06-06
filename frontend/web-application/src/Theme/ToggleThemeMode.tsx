@@ -1,4 +1,11 @@
-import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuLabel, DropdownMenuItem } from '@repo/design-system'
+import {
+  Button,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuLabel,
+  DropdownMenuItem,
+} from '@repo/design-system'
 import { type Theme, useSetTheme, useTheme } from './Provider/ThemeProvider'
 import { ContrastIcon, MoonIcon, SunIcon, SunMoonIcon } from 'lucide-react'
 import { FormattedMessage } from 'react-intl'
