@@ -67,7 +67,7 @@ Le design system contient des composants React **sans logique métier** (boutons
 | Routing              | React Router v7                        | File-based routing, loaders/actions, compatible SSR futur                         |
 | Server state         | TanStack Query v5                      | Cache, invalidation, états de chargement/erreur gérés automatiquement             |
 | SDK API              | orval                                  | Génère hooks TanStack Query + types TypeScript + schémas Zod depuis `openapi.yml` |
-| Formulaires          | react-hook-form + résolveurs Zod       | Intégration native avec les schémas Zod générés par orval                         |
+| Formulaires          | `@repo/form-factory` (factory headless) | Encapsule `useForm + zodResolver + Controller`. API : `Field`, `FieldArray`, `Form` avec DevTools auto en DEV. Voir `specifications/15-form-factory.md` |
 | Internationalisation | react-intl                             | Gestion des messages, pluriels, formats de dates                                  |
 | Mocking (dev)        | MSW (Mock Service Worker)              | Intercepte les requêtes au niveau réseau, identique en dev et en test             |
 | Tests unitaires      | Vitest + React Testing Library + jsdom | Cohérence avec le design system                                                   |
