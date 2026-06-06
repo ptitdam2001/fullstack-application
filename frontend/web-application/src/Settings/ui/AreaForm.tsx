@@ -1,4 +1,3 @@
-import { type SubmitHandler } from 'react-hook-form'
 import { cn } from '@repo/design-system'
 import { CreateAreaBody } from '@Sdk/area/area.zod'
 import { type CreateAreaMutationBody } from '@Sdk/area/area'
@@ -22,7 +21,7 @@ export const AreaForm = ({ defaultValues, areaId, onFinish, className }: AreaFor
   const { form, Field, Form } = areaFormFactory.useForm({ defaultValues, mode: 'all' })
   const { isPending, submit } = useAreaForm()
 
-  const onSubmit: SubmitHandler<CreateAreaMutationBody> = async data => {
+  const onSubmit = async (data: CreateAreaMutationBody) => {
     try {
       await submit(data, areaId)
       toast(areaId ? 'Area is well updated' : 'Area is well created')
