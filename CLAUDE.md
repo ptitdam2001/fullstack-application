@@ -42,6 +42,7 @@ All feature work must align with the business rules defined in `specifications/`
 | `specifications/08-architecture-hexagonale.md` | Architecture — hexagonal structure, port interfaces per domain          |
 | `specifications/09-implementation-roadmap.md`  | Implementation roadmap — 4 phases from init to full frontend            |
 | `specifications/15-form-factory.md`            | Form factory — `@repo/form-factory` API, modes de validation, formulaires migrés |
+| `specifications/16-strategie-de-test.md`       | Test strategy — pyramid, conventions, API coverage matrix, E2E flow matrix |
 
 > When adding a new feature or modifying existing domain logic, update the relevant spec first, then propagate to `openapi.yml`, backend, and frontend.
 
