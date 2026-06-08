@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express'
 import type { Context } from 'openapi-backend'
+import type { UpdateTeamInput } from '../domain/Team.js'
 import { TeamUseCases } from '../application/TeamUseCases.js'
 import { PrismaTeamRepository } from './PrismaTeamRepository.js'
 import { PlayerUseCases } from '../../player/application/PlayerUseCases.js'
@@ -53,8 +54,12 @@ export const updateTeam = async (ctx: Context, req: Request, res: Response) => {
       throw new ForbiddenError()
     }
   }
+  // The OpenAPI body is validated against the `Team` schema (id/areas required),
+  // but `UpdateTeamInput` only persists name/color — Prisma rejects `id` as an
+  // unknown `data` argument, so only the updatable fields are forwarded.
+  const { name, color }: UpdateTeamInput = req.body
   try {
-    res.json(await teamUseCases.update(ctx.request.params.id, req.body))
+    res.json(await teamUseCases.update(ctx.request.params.id, { name, color }))
   } catch (err) {
     if (err instanceof TeamNotFoundError) {
       return res.status(404).json({ status: 404, message: err.message })
