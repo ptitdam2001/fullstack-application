@@ -13,7 +13,8 @@
     "lint": "eslint .",
     "check:format": "prettier --check .",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:functional": "vitest run --config vitest.functional.config.ts"
   },
   "keywords": [],
   "author": "",
@@ -53,10 +54,13 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/morgan": "^1.9.10",
     "@types/node": "^25.3.1",
+    "@types/supertest": "^7.2.0",
     "esbuild": "0.27.3",
     "eslint": "^10.0.0",
     "prettier": "^3.0.0",
     "prettier-plugin-tailwindcss": "^0.6.0",
+    "supertest": "^7.2.2",
+    "testcontainers": "^12.0.1",
     "tsx": "^4.19.1",
     "typescript": "^5.9.3",
     "vitest": "^4.1.5"
