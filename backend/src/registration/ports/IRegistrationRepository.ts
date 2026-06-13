@@ -2,6 +2,7 @@ import type { RegistrationUser, CreateRegistrationInput } from '../domain/Regist
 
 export interface IRegistrationRepository {
   existsByEmail(email: string): Promise<boolean>
+  findById(userId: string): Promise<RegistrationUser | null>
   findByEmail(email: string): Promise<RegistrationUser | null>
   findByActivationToken(token: string): Promise<RegistrationUser | null>
   findByResetToken(token: string): Promise<RegistrationUser | null>

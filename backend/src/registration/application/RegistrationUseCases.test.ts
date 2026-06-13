@@ -4,6 +4,7 @@ import type { IRegistrationRepository } from '../ports/IRegistrationRepository.j
 import type { IEmailService } from '../ports/IEmailService.js'
 import type { IAuthService } from '../../auth/ports/IAuthService.js'
 import { EmailAlreadyUsedError, InvalidTokenError } from '../domain/RegistrationErrors.js'
+import { UserNotFoundError } from '../../user/domain/UserErrors.js'
 
 const now = new Date()
 const future = new Date(now.getTime() + 3_600_000)
@@ -26,6 +27,7 @@ const mockUser = {
 
 const makeRepo = (overrides: Partial<IRegistrationRepository> = {}): IRegistrationRepository => ({
   existsByEmail: vi.fn().mockResolvedValue(false),
+  findById: vi.fn().mockResolvedValue(mockUser),
   findByEmail: vi.fn().mockResolvedValue(mockUser),
   findByActivationToken: vi.fn().mockResolvedValue(mockUser),
   findByResetToken: vi.fn().mockResolvedValue(mockUser),
@@ -211,6 +213,14 @@ describe('RegistrationUseCases.adminActivateUser', () => {
     await new RegistrationUseCases(repo, makeEmailService(), makeAuthService()).adminActivateUser('user-1')
     expect(repo.adminActivateUser).toHaveBeenCalledWith('user-1')
   })
+
+  it('throws UserNotFoundError when userId does not exist', async () => {
+    const repo = makeRepo({ findById: vi.fn().mockResolvedValue(null) })
+    await expect(
+      new RegistrationUseCases(repo, makeEmailService(), makeAuthService()).adminActivateUser('unknown')
+    ).rejects.toThrow(UserNotFoundError)
+    expect(repo.adminActivateUser).not.toHaveBeenCalled()
+  })
 })
 
 describe('RegistrationUseCases.adminUnblockUser', () => {
@@ -218,5 +228,13 @@ describe('RegistrationUseCases.adminUnblockUser', () => {
     const repo = makeRepo()
     await new RegistrationUseCases(repo, makeEmailService(), makeAuthService()).adminUnblockUser('user-1')
     expect(repo.adminUnblockUser).toHaveBeenCalledWith('user-1')
+  })
+
+  it('throws UserNotFoundError when userId does not exist', async () => {
+    const repo = makeRepo({ findById: vi.fn().mockResolvedValue(null) })
+    await expect(
+      new RegistrationUseCases(repo, makeEmailService(), makeAuthService()).adminUnblockUser('unknown')
+    ).rejects.toThrow(UserNotFoundError)
+    expect(repo.adminUnblockUser).not.toHaveBeenCalled()
   })
 })

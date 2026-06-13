@@ -3,6 +3,7 @@ import type { IEmailService } from '../ports/IEmailService.js'
 import type { IAuthService } from '../../auth/ports/IAuthService.js'
 import type { RegistrationUser, RegisterInput } from '../domain/Registration.js'
 import { EmailAlreadyUsedError, InvalidTokenError } from '../domain/RegistrationErrors.js'
+import { UserNotFoundError } from '../../user/domain/UserErrors.js'
 
 const ACTIVATION_EXPIRY_HOURS = (): number => parseInt(process.env.ACTIVATION_TOKEN_EXPIRY_HOURS ?? '48')
 const RESET_EXPIRY_MS = 7 * 24 * 3_600_000
@@ -97,10 +98,18 @@ export class RegistrationUseCases {
   }
 
   async adminActivateUser(userId: string): Promise<void> {
+    const user = await this.repo.findById(userId)
+    if (!user) {
+      throw new UserNotFoundError()
+    }
     await this.repo.adminActivateUser(userId)
   }
 
   async adminUnblockUser(userId: string): Promise<void> {
+    const user = await this.repo.findById(userId)
+    if (!user) {
+      throw new UserNotFoundError()
+    }
     await this.repo.adminUnblockUser(userId)
   }
 }

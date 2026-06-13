@@ -54,7 +54,7 @@ export const createApp = async (): Promise<Application> => {
 
   const registerRateLimit = rateLimit({
     windowMs: 60 * 60 * 1000,
-    limit: 5,
+    limit: Number(process.env.REGISTER_RATE_LIMIT) || 5,
     standardHeaders: 'draft-8',
     legacyHeaders: false,
     message: { status: 429, message: 'Too many registration attempts, please try again later.' },

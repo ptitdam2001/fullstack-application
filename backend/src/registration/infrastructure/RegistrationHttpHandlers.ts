@@ -4,6 +4,7 @@ import { RegistrationUseCases } from '../application/RegistrationUseCases.js'
 import { getAuthUserId, requireAdmin } from '../../auth/application/requireRoles.js'
 import { EmailAlreadyUsedError, InvalidTokenError } from '../domain/RegistrationErrors.js'
 import { UnauthorizedError, ForbiddenError } from '../../auth/domain/AuthErrors.js'
+import { UserNotFoundError } from '../../user/domain/UserErrors.js'
 import { PrismaRegistrationRepository } from './PrismaRegistrationRepository.js'
 import { NoopEmailService } from './NoopEmailService.js'
 import { JwtAuthService } from '../../auth/infrastructure/JwtAuthService.js'
@@ -89,10 +90,10 @@ export const declareReferee = async (ctx: Context, _: Request, res: Response) =>
   }
 }
 
-export const adminActivateUser = async (ctx: Context, req: Request, res: Response) => {
+export const adminActivateUser = async (ctx: Context, _: Request, res: Response) => {
   try {
     requireAdmin(ctx)
-    await useCases.adminActivateUser(req.params.userId)
+    await useCases.adminActivateUser(ctx.request.params.userId as string)
     return res.status(200).send()
   } catch (err) {
     if (err instanceof UnauthorizedError) {
@@ -100,16 +101,19 @@ export const adminActivateUser = async (ctx: Context, req: Request, res: Respons
     }
     if (err instanceof ForbiddenError) {
       return res.status(403).json({ message: 'Forbidden', status: 403 })
+    }
+    if (err instanceof UserNotFoundError) {
+      return res.status(404).json({ message: 'User not found', status: 404 })
     }
     logger.error(err)
     return res.status(500).json({ message: 'Error! Something went wrong.', status: 500 })
   }
 }
 
-export const adminUnblockUser = async (ctx: Context, req: Request, res: Response) => {
+export const adminUnblockUser = async (ctx: Context, _: Request, res: Response) => {
   try {
     requireAdmin(ctx)
-    await useCases.adminUnblockUser(req.params.userId)
+    await useCases.adminUnblockUser(ctx.request.params.userId as string)
     return res.status(200).send()
   } catch (err) {
     if (err instanceof UnauthorizedError) {
@@ -117,6 +121,9 @@ export const adminUnblockUser = async (ctx: Context, req: Request, res: Response
     }
     if (err instanceof ForbiddenError) {
       return res.status(403).json({ message: 'Forbidden', status: 403 })
+    }
+    if (err instanceof UserNotFoundError) {
+      return res.status(404).json({ message: 'User not found', status: 404 })
     }
     logger.error(err)
     return res.status(500).json({ message: 'Error! Something went wrong.', status: 500 })

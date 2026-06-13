@@ -23,6 +23,10 @@ export class PrismaRegistrationRepository implements IRegistrationRepository {
     return user !== null
   }
 
+  async findById(userId: string): Promise<RegistrationUser | null> {
+    return prisma.user.findUnique({ where: { id: userId }, select })
+  }
+
   async findByEmail(email: string): Promise<RegistrationUser | null> {
     return prisma.user.findUnique({ where: { email }, select })
   }
