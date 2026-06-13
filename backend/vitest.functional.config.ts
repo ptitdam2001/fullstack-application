@@ -15,6 +15,7 @@ export default defineConfig({
     // Run test files sequentially against the single shared container — each
     // file resets the database (tests/support/database.ts#resetDatabase),
     // parallel files would wipe each other's fixtures mid-run.
+    fileParallelism: false,
     pool: 'forks',
     poolOptions: {
       forks: {
