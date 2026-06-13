@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express'
 import type { Context } from 'openapi-backend'
+import type { MatchStatus } from '../domain/Match.js'
 import { MatchUseCases } from '../application/MatchUseCases.js'
 import { PrismaMatchRepository } from './PrismaMatchRepository.js'
 import { MatchNotFoundError } from '../domain/MatchErrors.js'
@@ -14,14 +15,23 @@ export const countMatches = async (_: Context, __: Request, res: Response) => {
 export const getMatches = async (ctx: Context, _: Request, res: Response) => {
   const page = Number(ctx.request.query.page) || 1
   const count = Number(ctx.request.query.count) || 20
-  res.json(await useCases.getAll({ page, count }))
+  const status = ctx.request.query.status as string | undefined
+  const pastDue = ctx.request.query.pastDue === 'true'
+  res.json(
+    await useCases.getAll(
+      { page, count },
+      { status: status as MatchStatus | undefined, pastDue: pastDue || undefined }
+    )
+  )
 }
 
 export const getMatch = async (ctx: Context, _: Request, res: Response) => {
   try {
     res.json(await useCases.getById(ctx.request.params.id))
   } catch (err) {
-    if (err instanceof MatchNotFoundError) return res.status(404).json({ status: 404, message: err.message })
+    if (err instanceof MatchNotFoundError) {
+      return res.status(404).json({ status: 404, message: err.message })
+    }
     throw err
   }
 }
@@ -36,7 +46,9 @@ export const editMatch = async (ctx: Context, req: Request, res: Response) => {
   try {
     res.json(await useCases.update(ctx.request.params.id, req.body))
   } catch (err) {
-    if (err instanceof MatchNotFoundError) return res.status(404).json({ status: 404, message: err.message })
+    if (err instanceof MatchNotFoundError) {
+      return res.status(404).json({ status: 404, message: err.message })
+    }
     throw err
   }
 }
@@ -47,7 +59,9 @@ export const removeMatch = async (ctx: Context, _: Request, res: Response) => {
     await useCases.delete(ctx.request.params.id)
     res.status(204).send()
   } catch (err) {
-    if (err instanceof MatchNotFoundError) return res.status(404).json({ status: 404, message: err.message })
+    if (err instanceof MatchNotFoundError) {
+      return res.status(404).json({ status: 404, message: err.message })
+    }
     throw err
   }
 }

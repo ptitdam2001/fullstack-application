@@ -1,4 +1,5 @@
 import { execFileSync } from 'node:child_process'
+import { MongoClient } from 'mongodb'
 import { GenericContainer, Wait, type StartedTestContainer } from 'testcontainers'
 
 /**
@@ -98,19 +99,34 @@ export const teardown = async (): Promise<void> => {
  * container (i.e. after `setup()` has run, when test files call this).
  */
 export const resetDatabase = async (): Promise<void> => {
-  const { prisma } = await import('../../utils/prismaClient')
-  await Promise.all([
-    prisma.championship.deleteMany({}),
-    prisma.phase.deleteMany({}),
-    prisma.group.deleteMany({}),
-    prisma.groupTeam.deleteMany({}),
-    prisma.user.deleteMany({}),
-    prisma.area.deleteMany({}),
-    prisma.team.deleteMany({}),
-    prisma.player.deleteMany({}),
-    prisma.userTeam.deleteMany({}),
-    prisma.match.deleteMany({}),
-    prisma.teamJoinRequest.deleteMany({}),
-    prisma.userMatch.deleteMany({}),
-  ])
+  // Use the native MongoDB driver — NOT Prisma — for cleanup.
+  //
+  // Prisma 6.x + MongoDB: deleteMany() and $runCommandRaw() both resolve their
+  // Promises before MongoDB applies the write (fire-and-forget), causing deferred
+  // deletes to race with the test body. Wrapping in $transaction causes write
+  // conflicts because Prisma spawns internal sessions for application-level
+  // Restrict checks. The native driver's deleteMany() resolves only after the
+  // write is acknowledged by MongoDB, with no Prisma-level FK checks.
+  const client = new MongoClient(process.env.DATABASE_URL!)
+  await client.connect()
+  try {
+    const db = client.db()
+    // All collections can be cleared in parallel — no FK constraints at driver level.
+    await Promise.all([
+      db.collection('userMatches').deleteMany({}),
+      db.collection('matches').deleteMany({}),
+      db.collection('players').deleteMany({}),
+      db.collection('userTeams').deleteMany({}),
+      db.collection('teamJoinRequests').deleteMany({}),
+      db.collection('groupTeams').deleteMany({}),
+      db.collection('teams').deleteMany({}),
+      db.collection('users').deleteMany({}),
+      db.collection('groups').deleteMany({}),
+      db.collection('phases').deleteMany({}),
+      db.collection('championships').deleteMany({}),
+      db.collection('areas').deleteMany({}),
+    ])
+  } finally {
+    await client.close()
+  }
 }
