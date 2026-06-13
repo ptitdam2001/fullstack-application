@@ -45,7 +45,7 @@ export const createApp = async (): Promise<Application> => {
 
   const loginRateLimit = rateLimit({
     windowMs: 15 * 60 * 1000,
-    limit: 10,
+    limit: Number(process.env.LOGIN_RATE_LIMIT) || 10,
     standardHeaders: 'draft-8',
     legacyHeaders: false,
     message: { status: 429, message: 'Too many login attempts, please try again later.' },

@@ -18,6 +18,7 @@ interface UserOverrides {
   isAdmin?: boolean
   isReferee?: boolean
   isActive?: boolean
+  isBlocked?: boolean
 }
 
 export const createUser = async (overrides: UserOverrides = {}): Promise<User> =>

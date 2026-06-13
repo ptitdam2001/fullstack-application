@@ -32,6 +32,7 @@ export default defineConfig({
       FRONTEND_URL: 'http://localhost:5173',
       MAX_LOGIN_ATTEMPTS: '5',
       ACTIVATION_TOKEN_EXPIRY_HOURS: '48',
+      LOGIN_RATE_LIMIT: '1000',
     },
   },
 })
