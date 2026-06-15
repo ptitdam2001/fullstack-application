@@ -1270,6 +1270,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Phase"
+        409:
+          description: "A phase with this order already exists in the championship"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorOutput"
 
   /phase/{id}:
     get:
