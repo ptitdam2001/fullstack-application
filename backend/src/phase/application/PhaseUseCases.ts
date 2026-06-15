@@ -11,13 +11,15 @@ export class PhaseUseCases {
 
   async getById(id: string) {
     const phase = await this.repo.findById(id)
-    if (!phase) throw new PhaseNotFoundError(id)
+    if (!phase) {
+      throw new PhaseNotFoundError(id)
+    }
     return phase
   }
 
   async create(input: CreatePhaseInput) {
     const existing = await this.repo.findByChampionshipId(input.championshipId)
-    if (existing.some((p) => p.order === input.order)) {
+    if (existing.some(p => p.order === input.order)) {
       throw new PhaseDuplicateOrderError(input.championshipId, input.order)
     }
     return this.repo.create(input)
