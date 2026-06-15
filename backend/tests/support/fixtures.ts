@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt'
-import { AgeCategory, TeamRole, type Team, type User } from '@prisma/client'
+import { AgeCategory, PhaseType, TeamRole, type Championship, type Phase, type Team, type User } from '@prisma/client'
 import { prisma } from '../../utils/prismaClient'
 
 export const FIXTURE_PASSWORD = 'Test@1234'
@@ -40,6 +40,32 @@ export const createTeam = (overrides: Partial<{ name: string; ageCategory: AgeCa
     data: {
       name: unique('Team'),
       ageCategory: AgeCategory.Senior,
+      ...overrides,
+    },
+  })
+
+export const createChampionship = (
+  overrides: Partial<{ name: string; ageCategory: AgeCategory; season: string }> = {}
+): Promise<Championship> =>
+  prisma.championship.create({
+    data: {
+      name: unique('Championnat'),
+      ageCategory: AgeCategory.U13,
+      season: '2025-2026',
+      pointsConfig: { win: 3, draw: 2, loss: 1, forfeit: 0 },
+      ...overrides,
+    },
+  })
+
+export const createPhase = (
+  championshipId: string,
+  overrides: Partial<{ type: PhaseType; order: number; name: string | null }> = {}
+): Promise<Phase> =>
+  prisma.phase.create({
+    data: {
+      championshipId,
+      type: PhaseType.GROUP,
+      order: 1,
       ...overrides,
     },
   })
