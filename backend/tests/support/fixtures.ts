@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt'
-import { AgeCategory, PhaseType, TeamRole, type Championship, type Phase, type Team, type User } from '@prisma/client'
+import { AgeCategory, MatchMode, PhaseType, TeamRole, type Championship, type Group, type Phase, type Team, type User } from '@prisma/client'
 import { prisma } from '../../utils/prismaClient'
 
 export const FIXTURE_PASSWORD = 'Test@1234'
@@ -69,6 +69,22 @@ export const createPhase = (
       ...overrides,
     },
   })
+
+export const createGroup = (
+  phaseId: string,
+  overrides: Partial<{ name: string; matchMode: MatchMode; teamIds: string[] }> = {}
+): Promise<Group> => {
+  const { teamIds = [], ...rest } = overrides
+  return prisma.group.create({
+    data: {
+      phaseId,
+      name: unique('Poule'),
+      matchMode: MatchMode.SINGLE,
+      ...rest,
+      groupTeams: { create: teamIds.map((teamId) => ({ teamId })) },
+    },
+  })
+}
 
 export const assignUserToTeam = (userId: string, teamId: string, role: TeamRole) =>
   prisma.userTeam.create({ data: { userId, teamId, role } })

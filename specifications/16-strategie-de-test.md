@@ -160,13 +160,13 @@ Légende : ✅ couvert · ❌ test fonctionnel à écrire (S3) · 🚫 route dé
 
 #### Group (5 opérations)
 
-| Méthode | Path                      | operationId      | Statut           |
-| ------- | ------------------------- | ---------------- | ---------------- |
-| GET     | `/phase/{phaseId}/groups` | `getPhaseGroups` | ❌ à écrire (S3) |
-| POST    | `/group`                  | `createGroup`    | ❌ à écrire (S3) |
-| GET     | `/group/{id}`             | `getGroup`       | ❌ à écrire (S3) |
-| PATCH   | `/group/{id}`             | `updateGroup`    | ❌ à écrire (S3) |
-| DELETE  | `/group/{id}`             | `removeGroup`    | ❌ à écrire (S3) |
+| Méthode | Path                      | operationId      | Statut                    |
+| ------- | ------------------------- | ---------------- | --------------------------- |
+| GET     | `/phase/{phaseId}/groups` | `getPhaseGroups` | ✅ couvert (`group.test.ts`) |
+| POST    | `/group`                  | `createGroup`    | ✅ couvert (`group.test.ts`) |
+| GET     | `/group/{id}`             | `getGroup`       | ✅ couvert (`group.test.ts`) |
+| PATCH   | `/group/{id}`             | `updateGroup`    | ✅ couvert (`group.test.ts`) |
+| DELETE  | `/group/{id}`             | `removeGroup`    | ✅ couvert (`group.test.ts`) |
 
 #### Standings (1 opération)
 
