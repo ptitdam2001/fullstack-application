@@ -171,7 +171,6 @@ paths:
       description: ""
       tags:
         - Users
-      security: []
       parameters: []
       requestBody:
         content:

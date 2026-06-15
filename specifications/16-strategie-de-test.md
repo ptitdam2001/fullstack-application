@@ -93,13 +93,13 @@ Légende : ✅ couvert · ❌ test fonctionnel à écrire (S3) · 🚫 route dé
 
 #### User (5 opérations)
 
-| Méthode | Path          | operationId  | Statut           |
-| ------- | ------------- | ------------ | ---------------- |
-| GET     | `/users`      | `getUsers`   | ❌ à écrire (S3) |
-| POST    | `/user`       | `createUser` | ❌ à écrire (S3) |
-| DELETE  | `/user/{id}`  | `removeUser` | ❌ à écrire (S3) |
-| PATCH   | `/user/{id}`  | `updateUser` | ❌ à écrire (S3) |
-| GET     | `/users/{id}` | `getUser`    | ❌ à écrire (S3) |
+| Méthode | Path          | operationId  | Statut                     |
+| ------- | ------------- | ------------ | --------------------------- |
+| GET     | `/users`      | `getUsers`   | ✅ couvert (`user.test.ts`)  |
+| POST    | `/user`       | `createUser` | ✅ couvert (`user.test.ts`)  |
+| DELETE  | `/user/{id}`  | `removeUser` | ✅ couvert (`user.test.ts`)  |
+| PATCH   | `/user/{id}`  | `updateUser` | ✅ couvert (`user.test.ts`)  |
+| GET     | `/users/{id}` | `getUser`    | ✅ couvert (`user.test.ts`)  |
 
 #### Team (12 opérations) — pilote S1
 
