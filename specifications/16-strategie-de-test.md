@@ -141,12 +141,12 @@ Légende : ✅ couvert · ❌ test fonctionnel à écrire (S3) · 🚫 route dé
 
 | Méthode | Path | operationId | Statut |
 | --- | --- | --- | --- |
-| GET | `/championships` | `getChampionships` | ❌ à écrire (S3) |
-| GET | `/championships/count` | `countChampionships` | ❌ à écrire (S3) |
-| POST | `/championship` | `createChampionship` | ❌ à écrire (S3) |
-| GET | `/championship/{id}` | `getChampionship` | ❌ à écrire (S3) |
-| PATCH | `/championship/{id}` | `updateChampionship` | ❌ à écrire (S3) |
-| DELETE | `/championship/{id}` | `removeChampionship` | ❌ à écrire (S3) |
+| GET | `/championships` | `getChampionships` | ✅ couvert (`championship.test.ts`) |
+| GET | `/championships/count` | `countChampionships` | ✅ couvert (`championship.test.ts`) |
+| POST | `/championship` | `createChampionship` | ✅ couvert (`championship.test.ts`) |
+| GET | `/championship/{id}` | `getChampionship` | ✅ couvert (`championship.test.ts`) |
+| PATCH | `/championship/{id}` | `updateChampionship` | ✅ couvert (`championship.test.ts`) |
+| DELETE | `/championship/{id}` | `removeChampionship` | ✅ couvert (`championship.test.ts`) |
 
 #### Phase (5 opérations)
 
