@@ -9,7 +9,7 @@ export const getGroupStandings = async (ctx: Context, _: Request, res: Response)
   try {
     res.json(await useCases.getGroupStandings(ctx.request.params.groupId))
   } catch (err) {
-    if (err instanceof Error && err.name === 'NotFoundError') {
+    if (err instanceof Error && 'code' in err && err.code === 'P2025') {
       return res.status(404).json({ status: 404, message: 'Group not found' })
     }
     throw err

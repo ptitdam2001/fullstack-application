@@ -170,9 +170,9 @@ Légende : ✅ couvert · ❌ test fonctionnel à écrire (S3) · 🚫 route dé
 
 #### Standings (1 opération)
 
-| Méthode | Path                         | operationId         | Statut                                                                                                               |
-| ------- | ---------------------------- | ------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| GET     | `/group/{groupId}/standings` | `getGroupStandings` | ❌ à écrire (S3) — calcul des classements et tiebreakers (`specifications/05-standings.md`) à couvrir spécifiquement |
+| Méthode | Path                         | operationId         | Statut                                                                                                                 |
+| ------- | ---------------------------- | ------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| GET     | `/group/{groupId}/standings` | `getGroupStandings` | ✅ couvert (`standings.test.ts`)                                                                                        |
 
 #### Match (6 opérations)
 
