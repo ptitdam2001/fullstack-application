@@ -2542,7 +2542,6 @@ components:
       properties:
         championshipId:
           type: string
-          format: uuid
         type:
           $ref: "#/components/schemas/PhaseType"
         order:
