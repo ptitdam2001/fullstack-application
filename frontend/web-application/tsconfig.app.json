@@ -22,7 +22,6 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
 
-    "baseUrl": ".",
     "paths": {
       "@Auth/*": ["./src/Auth/*", "./src/Auth/"],
       "@Layouts/*": ["./src/Layouts/*", "./src/Layouts/"],
