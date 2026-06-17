@@ -2,7 +2,12 @@ import type { Request, Response } from 'express'
 import type { Context } from 'openapi-backend'
 import { AuthUseCases } from '../application/AuthUseCases.js'
 import { getAuthUserId } from '../application/requireRoles.js'
-import { InvalidCredentialsError, AccountBlockedError, AccountInactiveError, UnauthorizedError } from '../domain/AuthErrors.js'
+import {
+  InvalidCredentialsError,
+  AccountBlockedError,
+  AccountInactiveError,
+  UnauthorizedError,
+} from '../domain/AuthErrors.js'
 import { UserNotFoundError } from '../../user/domain/UserErrors.js'
 import { PrismaUserRepository } from '../../user/infrastructure/PrismaUserRepository.js'
 import { PrismaUserTeamRepository } from '../../userTeam/infrastructure/PrismaUserTeamRepository'
@@ -36,9 +41,7 @@ export const login = async (_: Context, req: Request, res: Response) => {
   }
 }
 
-export const logout = async (_: Context, __: Request, res: Response) => {
-  return res.status(200).send()
-}
+export const logout = async (_: Context, __: Request, res: Response) => res.status(200).send()
 
 export const me = async (ctx: Context, _: Request, res: Response) => {
   try {

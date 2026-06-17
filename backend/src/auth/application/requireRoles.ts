@@ -4,13 +4,17 @@ import { ForbiddenError, UnauthorizedError } from '../domain/AuthErrors.js'
 
 export function getAuthPayload(ctx: Context): TokenPayload {
   const payload = ctx.security?.jwtAuth as TokenPayload | undefined
-  if (!payload?.userId) throw new UnauthorizedError()
+  if (!payload?.userId) {
+    throw new UnauthorizedError()
+  }
   return payload
 }
 
 export function requireAdmin(ctx: Context): void {
   const payload = getAuthPayload(ctx)
-  if (!payload.isAdmin) throw new ForbiddenError()
+  if (!payload.isAdmin) {
+    throw new ForbiddenError()
+  }
 }
 
 export function getAuthUserId(ctx: Context): string {

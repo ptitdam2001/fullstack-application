@@ -14,7 +14,9 @@ export const assignCoach = async (ctx: Context, _: Request, res: Response) => {
   try {
     res.status(201).json(await useCases.assign(userId, teamId, TeamRole.COACH))
   } catch (err) {
-    if (err instanceof UserTeamAlreadyExistsError) return res.status(409).json({ status: 409, message: err.message })
+    if (err instanceof UserTeamAlreadyExistsError) {
+      return res.status(409).json({ status: 409, message: err.message })
+    }
     throw err
   }
 }
@@ -26,7 +28,9 @@ export const removeCoach = async (ctx: Context, _: Request, res: Response) => {
     await useCases.remove(userId, teamId, TeamRole.COACH)
     res.status(204).send()
   } catch (err) {
-    if (err instanceof UserTeamNotFoundError) return res.status(404).json({ status: 404, message: err.message })
+    if (err instanceof UserTeamNotFoundError) {
+      return res.status(404).json({ status: 404, message: err.message })
+    }
     throw err
   }
 }
