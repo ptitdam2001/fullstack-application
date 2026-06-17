@@ -74,22 +74,22 @@ Légende : ✅ couvert · ❌ test fonctionnel à écrire (S3) · 🚫 route dé
 
 | Méthode | Path      | operationId | Statut           |
 | ------- | --------- | ----------- | ---------------- |
-| GET     | `/me`     | `me`        | ❌ à écrire (S3) |
-| POST    | `/login`  | `login`     | ❌ à écrire (S3) |
-| POST    | `/logout` | `logout`    | ❌ à écrire (S3) |
+| GET     | `/me`     | `me`        | ✅ couvert (`auth.test.ts`) |
+| POST    | `/login`  | `login`     | ✅ couvert (`auth.test.ts`) |
+| POST    | `/logout` | `logout`    | ✅ couvert (`auth.test.ts`) |
 
 #### Registration (8 opérations)
 
 | Méthode | Path                       | operationId         | Statut           |
 | ------- | -------------------------- | ------------------- | ---------------- |
-| POST    | `/register`                | `register`          | ❌ à écrire (S3) |
-| POST    | `/forgot-password`         | `forgotPassword`    | ❌ à écrire (S3) |
-| POST    | `/activate`                | `activateAccount`   | ❌ à écrire (S3) |
-| POST    | `/resend-activation`       | `resendActivation`  | ❌ à écrire (S3) |
-| POST    | `/reset-password`          | `resetPassword`     | ❌ à écrire (S3) |
-| PATCH   | `/users/{userId}/activate` | `adminActivateUser` | ❌ à écrire (S3) |
-| PATCH   | `/users/{userId}/unblock`  | `adminUnblockUser`  | ❌ à écrire (S3) |
-| POST    | `/me/referee`              | `declareReferee`    | ❌ à écrire (S3) |
+| POST    | `/register`                | `register`          | ✅ couvert (`registration.test.ts`) |
+| POST    | `/forgot-password`         | `forgotPassword`    | ✅ couvert (`registration.test.ts`) |
+| POST    | `/activate`                | `activateAccount`   | ✅ couvert (`registration.test.ts`) |
+| POST    | `/resend-activation`       | `resendActivation`  | ✅ couvert (`registration.test.ts`) |
+| POST    | `/reset-password`          | `resetPassword`     | ✅ couvert (`registration.test.ts`) |
+| PATCH   | `/users/{userId}/activate` | `adminActivateUser` | ✅ couvert (`registration.test.ts`) |
+| PATCH   | `/users/{userId}/unblock`  | `adminUnblockUser`  | ✅ couvert (`registration.test.ts`) |
+| POST    | `/me/referee`              | `declareReferee`    | ✅ couvert (`registration.test.ts`) |
 
 #### User (5 opérations)
 
@@ -132,10 +132,10 @@ Légende : ✅ couvert · ❌ test fonctionnel à écrire (S3) · 🚫 route dé
 
 | Méthode | Path                                | operationId        | Statut           |
 | ------- | ----------------------------------- | ------------------ | ---------------- |
-| GET     | `/match/{matchId}/referees`         | `getMatchReferees` | ❌ à écrire (S3) |
-| POST    | `/match/{matchId}/referee/{userId}` | `assignReferee`    | ❌ à écrire (S3) |
-| DELETE  | `/match/{matchId}/referee/{userId}` | `removeReferee`    | ❌ à écrire (S3) |
-| GET     | `/user/{userId}/referee-matches`    | `getUserMatches`   | ❌ à écrire (S3) |
+| GET     | `/match/{matchId}/referees`         | `getMatchReferees` | ✅ couvert (`match.referees.test.ts`) |
+| POST    | `/match/{matchId}/referee/{userId}` | `assignReferee`    | ✅ couvert (`match.referees.test.ts`) |
+| DELETE  | `/match/{matchId}/referee/{userId}` | `removeReferee`    | ✅ couvert (`match.referees.test.ts`) |
+| GET     | `/user/{userId}/referee-matches`    | `getUserMatches`   | ✅ couvert (`match.referees.test.ts`) |
 
 #### Championship (6 opérations)
 
@@ -178,12 +178,12 @@ Légende : ✅ couvert · ❌ test fonctionnel à écrire (S3) · 🚫 route dé
 
 | Méthode | Path             | operationId    | Statut                                                                              |
 | ------- | ---------------- | -------------- | ----------------------------------------------------------------------------------- |
-| GET     | `/matches`       | `getMatches`   | ❌ à écrire (S3)                                                                    |
-| GET     | `/matches/count` | `countMatches` | ❌ à écrire (S3)                                                                    |
-| POST    | `/match`         | `addMatch`     | ❌ à écrire (S3)                                                                    |
-| GET     | `/match/{id}`    | `getMatch`     | ❌ à écrire (S3)                                                                    |
-| PATCH   | `/match/{id}`    | `editMatch`    | ❌ à écrire (S3) — inclut forfait et auto-génération (`specifications/03-match.md`) |
-| DELETE  | `/match/{id}`    | `removeMatch`  | ❌ à écrire (S3)                                                                    |
+| GET     | `/matches`       | `getMatches`   | ✅ couvert (`match.crud.test.ts`) |
+| GET     | `/matches/count` | `countMatches` | ✅ couvert (`match.crud.test.ts`) |
+| POST    | `/match`         | `addMatch`     | ✅ couvert (`match.crud.test.ts`) |
+| GET     | `/match/{id}`    | `getMatch`     | ✅ couvert (`match.crud.test.ts`) |
+| PATCH   | `/match/{id}`    | `editMatch`    | ✅ couvert (`match.crud.test.ts`) |
+| DELETE  | `/match/{id}`    | `removeMatch`  | ✅ couvert (`match.crud.test.ts`) |
 
 #### TeamJoinRequest (3 opérations)
 
