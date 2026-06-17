@@ -14,7 +14,7 @@ const useCases = new TeamJoinRequestUseCases(new PrismaTeamJoinRequestRepository
 export const createTeamJoinRequest = async (ctx: Context, req: Request, res: Response) => {
   try {
     const userId = getAuthUserId(ctx)
-    const { teamId } = req.params
+    const { teamId } = ctx.request.params
     const { requestedRole } = req.body as { requestedRole: TeamRole }
     const request = await useCases.createRequest(userId, teamId, requestedRole)
     return res.status(201).json(request)
@@ -32,7 +32,7 @@ export const createTeamJoinRequest = async (ctx: Context, req: Request, res: Res
 
 export const getTeamJoinRequests = async (ctx: Context, req: Request, res: Response) => {
   try {
-    const { teamId } = req.params
+    const { teamId } = ctx.request.params
     const status = req.query.status as JoinRequestStatus | undefined
     const requests = await useCases.getTeamRequests(teamId, status)
     return res.status(200).json(requests)
@@ -48,7 +48,7 @@ export const getTeamJoinRequests = async (ctx: Context, req: Request, res: Respo
 export const updateTeamJoinRequest = async (ctx: Context, req: Request, res: Response) => {
   try {
     const approverId = getAuthUserId(ctx)
-    const { teamId, requestId } = req.params
+    const { teamId, requestId } = ctx.request.params
     const { action } = req.body as { action: 'approve' | 'refuse' }
     const request = await useCases.updateRequest(requestId, teamId, action, approverId)
     return res.status(200).json(request)
