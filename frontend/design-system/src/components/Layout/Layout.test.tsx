@@ -71,17 +71,17 @@ describe('Layout.Content', () => {
 
   it('applies stretch align by default', () => {
     const { container } = render(<Layout.Content />)
-    expect(container.firstChild).toHaveClass('items-stretch')
+    expect(container.firstChild?.firstChild).toHaveClass('items-stretch')
   })
 
   it('applies center align', () => {
     const { container } = render(<Layout.Content align="center" />)
-    expect(container.firstChild).toHaveClass('items-center')
+    expect(container.firstChild?.firstChild).toHaveClass('items-center')
   })
 
   it('applies start align', () => {
     const { container } = render(<Layout.Content align="start" />)
-    expect(container.firstChild).toHaveClass('items-start')
+    expect(container.firstChild?.firstChild).toHaveClass('items-start')
   })
 })
 

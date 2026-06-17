@@ -42,7 +42,7 @@ export default defineConfig({
     globals: true,
     setupFiles: './tests/setup.ts',
     reporters: ['default', 'html', 'json'],
-    exclude: ['**/node_modules/**', '**/dist/**', '**/src/sdk/**', '**/src/mocks/**', 'public', '.storybook', 'config'],
+    exclude: ['**/node_modules/**', '**/dist/**', '**/src/sdk/**', '**/src/mocks/**', 'public', '.storybook', 'config', 'e2e/**'],
     outputFile: './coverage/report.html',
   },
 })
