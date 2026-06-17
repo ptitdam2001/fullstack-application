@@ -122,7 +122,7 @@ Légende : ✅ couvert · ❌ test fonctionnel à écrire (S3) · 🚫 route dé
 
 | Méthode | Path                            | operationId      | Statut                      |
 | ------- | ------------------------------- | ---------------- | --------------------------- |
-| GET     | `/me/teams`                     | `getMyTeams`     | ❌ à écrire (S3)            |
+| GET     | `/me/teams`                     | `getMyTeams`     | ✅ couvert (`userTeam.getMyTeams.test.ts`) |
 | GET     | `/team/{teamId}/coaches`        | `getTeamCoaches` | ✅ couvert (`team.test.ts`) |
 | POST    | `/team/{teamId}/coach/{userId}` | `assignCoach`    | ✅ couvert (`team.test.ts`) |
 | DELETE  | `/team/{teamId}/coach/{userId}` | `removeCoach`    | ✅ couvert (`team.test.ts`) |
@@ -189,9 +189,9 @@ Légende : ✅ couvert · ❌ test fonctionnel à écrire (S3) · 🚫 route dé
 
 | Méthode | Path                                        | operationId             | Statut           |
 | ------- | ------------------------------------------- | ----------------------- | ---------------- |
-| POST    | `/teams/{teamId}/join-requests`             | `createTeamJoinRequest` | ❌ à écrire (S3) |
-| GET     | `/teams/{teamId}/join-requests`             | `getTeamJoinRequests`   | ❌ à écrire (S3) |
-| PATCH   | `/teams/{teamId}/join-requests/{requestId}` | `updateTeamJoinRequest` | ❌ à écrire (S3) |
+| POST    | `/teams/{teamId}/join-requests`             | `createTeamJoinRequest` | ✅ couvert (`teamJoinRequest.test.ts`) |
+| GET     | `/teams/{teamId}/join-requests`             | `getTeamJoinRequests`   | ✅ couvert (`teamJoinRequest.test.ts`) |
+| PATCH   | `/teams/{teamId}/join-requests/{requestId}` | `updateTeamJoinRequest` | ✅ couvert (`teamJoinRequest.test.ts`) |
 
 #### Area (6 opérations) — ⚠️ non implémenté
 
