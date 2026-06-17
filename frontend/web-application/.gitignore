@@ -29,3 +29,8 @@ src/sdk/
 src/spotify/generated
 
 *storybook.log
+
+# Playwright
+e2e/.auth/
+playwright-report/
+test-results/

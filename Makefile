@@ -1,4 +1,4 @@
-.PHONY: seed help test-backend-unit test-backend-func db-test-up db-test-down
+.PHONY: seed help test-backend-unit test-backend-func db-test-up db-test-down test-e2e
 
 TEST_MONGO_CONTAINER := fullstack-test-mongo
 TEST_MONGO_PORT := 27018
@@ -26,6 +26,9 @@ db-test-up: ## Démarre un Mongo replica de test isolé sur le port 27018 (debug
 
 db-test-down: ## Arrête et supprime le Mongo replica de test de debug local
 	docker rm -f $(TEST_MONGO_CONTAINER)
+
+test-e2e: ## Lance les tests E2E frontend (Playwright + MSW, Vite dev server)
+	cd frontend/web-application && pnpm test:e2e
 
 # ─── Futurs scripts ───────────────────────────────────────────────────────────
 # Ajouter les targets ici en suivant le pattern : target: ## Description

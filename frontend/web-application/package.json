@@ -16,7 +16,8 @@
     "check:types": "tsc --noEmit",
     "check:format": "prettier -c .",
     "check:lint": "eslint .",
-    "check:dead-code": "knip"
+    "check:dead-code": "knip",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@repo/design-system": "workspace:*",
