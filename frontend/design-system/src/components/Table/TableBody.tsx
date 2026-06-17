@@ -1,4 +1,3 @@
-import * as React from 'react'
 import { TableBody as AriaTableBody, type TableBodyProps } from 'react-aria-components'
 
 import { cn } from '../../utils/cn'

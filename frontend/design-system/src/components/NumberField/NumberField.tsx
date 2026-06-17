@@ -1,4 +1,3 @@
-import * as React from 'react'
 import { NumberField as AriaNumberField, Group, Label, FieldError } from 'react-aria-components'
 import type { NumberFieldProps as AriaNumberFieldProps } from 'react-aria-components'
 import { MinusIcon, PlusIcon } from 'lucide-react'

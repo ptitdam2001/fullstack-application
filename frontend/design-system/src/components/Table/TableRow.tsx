@@ -1,4 +1,3 @@
-import * as React from 'react'
 import { Row, type RowProps } from 'react-aria-components'
 
 import { cn } from '../../utils/cn'

@@ -16,7 +16,7 @@ export const ForgottenPasswordForm = () => {
   const { process, isPending, isSuccess } = useForgotPasswordAction()
   const { mutateAsync: resend, isPending: isResending } = useResendActivation()
   const [sentEmail, setSentEmail] = useState<string>('')
-  const { form, Field, Form } = forgotPasswordFormFactory.useForm({ mode: 'onBlur' })
+  const { Field, Form } = forgotPasswordFormFactory.useForm({ mode: 'onBlur' })
 
   const onResend = async () => {
     try {

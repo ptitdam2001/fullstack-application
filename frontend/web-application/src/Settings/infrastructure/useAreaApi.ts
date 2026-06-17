@@ -7,3 +7,4 @@ export {
   getGetAreaListQueryKey,
   getCountAllAreasQueryKey,
 } from '@Sdk/area/area'
+export type { CreateAreaMutationBody, UpdateAreaMutationBody } from '@Sdk/area/area'

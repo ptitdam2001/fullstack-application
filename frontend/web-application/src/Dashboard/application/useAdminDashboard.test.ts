@@ -3,7 +3,6 @@ import type { Match } from '@Sdk/model/match'
 import { buildRoleDistribution, buildFeedEvents } from './useAdminDashboard'
 
 const makeMatch = (overrides: Partial<Match> & { id: string }): Match => ({
-  id: overrides.id,
   area: {
     name: 'Terrain A',
     id: '',
@@ -18,7 +17,6 @@ const makeMatch = (overrides: Partial<Match> & { id: string }): Match => ({
 })
 
 const makeUser = (overrides: Partial<User> & { _id: string }): User => ({
-  _id: overrides._id,
   isAdmin: false,
   isActive: true,
   isBlocked: false,

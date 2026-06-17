@@ -1,4 +1,3 @@
-import * as React from 'react'
 import { Cell, type CellProps } from 'react-aria-components'
 
 import { cn } from '../../utils/cn'

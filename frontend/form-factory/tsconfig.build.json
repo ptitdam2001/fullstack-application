@@ -10,6 +10,7 @@
     "moduleDetection": "force",
     "jsx": "react-jsx",
     "strict": true,
+    "types": ["vite/client"],
     "rootDir": "./src",
     "declaration": true,
     "declarationDir": "./dist",

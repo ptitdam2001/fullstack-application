@@ -22,7 +22,7 @@
   "dependencies": {
     "@hookform/devtools": "^4.4.0",
     "@hookform/resolvers": "^5.2.2",
-    "react-hook-form": "7.72.0",
+    "react-hook-form": "7.79.0",
     "zod": "4.3.6"
   },
   "peerDependencies": {
@@ -37,20 +37,20 @@
     "@testing-library/react": "16.3.2",
     "@testing-library/user-event": "^14.6.0",
     "@types/node": "^25.5.0",
-    "@types/react": "19.2.14",
+    "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "6.0.1",
-    "@vitest/coverage-v8": "4.1.1",
-    "@vitest/ui": "4.1.1",
+    "@vitest/coverage-v8": "4.1.9",
+    "@vitest/ui": "4.1.9",
     "eslint": "^10.0.0",
-    "jsdom": "29.0.1",
+    "jsdom": "29.1.1",
     "prettier": "3.8.1",
-    "react": "19.2.4",
-    "react-dom": "19.2.4",
-    "typescript": "6.0.2",
-    "vite": "8.0.2",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "typescript": "6.0.3",
+    "vite": "8.0.16",
     "vite-plugin-dts": "^4.5.4",
-    "vitest": "4.1.1"
+    "vitest": "4.1.9"
   },
   "engines": {
     "node": ">=18",

@@ -9,7 +9,7 @@ const teams: Team[] = [
     id: '2',
     name: 'Les Bleus',
     color: '#0000ff',
-    areas: [{ name: 'Stade A', city: 'Lyon', address: null, longitude: 0, latitude: 0 }],
+    areas: [{ _id: 'area-2', name: 'Stade A', city: 'Lyon', address: '', longitude: 0, latitude: 0 }],
   },
 ]
 

@@ -17,7 +17,7 @@ export const SigninForm = ({ forgotPasswordHref }: SigninFormProps) => {
   const intl = useIntl()
   const toast = Toast.useToast()
   const { process, isPending } = useLoginAction()
-  const { form, Field, Form } = signinFormFactory.useForm({ mode: 'onBlur' })
+  const { Field, Form } = signinFormFactory.useForm({ mode: 'onBlur' })
 
   return (
     <div className="flex flex-col gap-6">

@@ -2,13 +2,14 @@ import { useGetTeamCurrentGroup } from '@Sdk/teams/teams'
 import { FormattedMessage } from 'react-intl'
 import { Link } from 'react-router'
 import type { Team } from '@Sdk/model/team'
+import type { UserTeamWithTeamTeam } from '@Sdk/model/userTeamWithTeamTeam'
 import type { Match } from '@Sdk/model/match'
 import { PlayerStandingsTable } from './PlayerStandingsTable'
 import { PlayerRecentResults } from './PlayerRecentResults'
 import { filterRecentResults } from '@Dashboard/application/usePlayerDashboard'
 
 type Props = {
-  team: Team
+  team: UserTeamWithTeamTeam
   allTeams: Team[]
   upcomingMatches: Match[]
   allMatches: Match[]

@@ -1,4 +1,3 @@
-import * as React from 'react'
 import { TableHeader as AriaTableHeader, type TableHeaderProps } from 'react-aria-components'
 
 import { cn } from '../../utils/cn'

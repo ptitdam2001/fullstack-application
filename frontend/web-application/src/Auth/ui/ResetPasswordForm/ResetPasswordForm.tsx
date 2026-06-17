@@ -24,7 +24,7 @@ export const ResetPasswordForm = () => {
   const [searchParams] = useSearchParams()
   const token = searchParams.get('token') ?? ''
   const { process, isPending } = useResetPasswordAction()
-  const { form, Field, Form } = resetPasswordFormFactory.useForm({ mode: 'onBlur' })
+  const { Field, Form } = resetPasswordFormFactory.useForm({ mode: 'onBlur' })
 
   return (
     <div className="flex flex-col gap-6">

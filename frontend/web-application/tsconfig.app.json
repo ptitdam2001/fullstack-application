@@ -45,7 +45,7 @@
       "@Admin/*": ["./src/Admin/*", "./src/Admin/"],
       "@Sdk/*": ["./src/sdk/generated/", "./src/sdk/generated/*"],
       "@Config/*": ["./config/*", "./config/"],
-      "@I18n/*": ["src/I18n/*", "src/I18n"],
+      "@I18n/*": ["./src/I18n/*", "./src/I18n"],
       "@/*": ["./src/*"],
       "@repo/design-system": ["../design-system/src/index.ts"],
       "@repo/design-system/*": ["../design-system/src/*"],

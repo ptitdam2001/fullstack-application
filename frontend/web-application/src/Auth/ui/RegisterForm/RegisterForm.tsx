@@ -122,7 +122,7 @@ export const RegisterForm = () => {
             <label className="mb-1 block text-sm font-medium">
               <FormattedMessage id="register.field.team" />
             </label>
-            <TeamSelectField value={field.value ?? null} onChange={field.onChange} />
+            <TeamSelectField value={field.value ?? undefined} onChange={field.onChange} />
             <p className="mt-1 text-xs text-slate-500">
               <FormattedMessage id="register.field.team.hint" />
             </p>

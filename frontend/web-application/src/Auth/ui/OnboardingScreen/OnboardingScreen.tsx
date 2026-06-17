@@ -26,7 +26,7 @@ export const OnboardingScreen = () => {
 
   const handleDeclareReferee = async () => {
     try {
-      await declareReferee({})
+      await declareReferee()
       setRefereeRegistered(true)
       toast(intl.formatMessage({ id: 'onboarding.referee.done' }))
     } catch {
@@ -94,7 +94,7 @@ export const OnboardingScreen = () => {
               <FormattedMessage id="onboarding.joinTeam.description" />
             </p>
             <div className="space-y-3">
-              <TeamSelectField value={joinTeamId} onChange={setJoinTeamId} />
+              <TeamSelectField value={joinTeamId ?? undefined} onChange={e => setJoinTeamId(e.target.value || null)} />
               <select
                 value={joinRole}
                 onChange={e => setJoinRole(e.target.value as 'PLAYER' | 'COACH')}

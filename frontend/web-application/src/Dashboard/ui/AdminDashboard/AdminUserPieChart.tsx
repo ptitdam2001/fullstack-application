@@ -30,7 +30,7 @@ export const AdminUserPieChart = ({ distribution }: Props) => {
                 <Cell key={`cell-${index}`} fill={entry.color} />
               ))}
             </Pie>
-            <Tooltip formatter={(value: number) => [value, 'coucou']} />
+            <Tooltip formatter={(value) => [value, 'coucou']} />
             <Legend />
           </PieChart>
         </ResponsiveContainer>

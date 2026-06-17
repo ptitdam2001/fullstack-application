@@ -5,12 +5,13 @@ import { Input } from '@repo/design-system'
 import { cn } from '@repo/design-system'
 import { useTestId } from '@Common/hooks/useTestId'
 
-type Props = InputHTMLAttributes<unknown> &
+type Props = Omit<InputHTMLAttributes<unknown>, 'value'> &
   BaseInputProps & {
     label?: ReactNode
     fieldState: ControllerFieldState
     required?: boolean
     testId?: string
+    value?: string | number | readonly string[] | null
   }
 
 export const ControlledTextInput = ({ label, fieldState, value, required, testId, ...props }: Props) => {
@@ -26,7 +27,7 @@ export const ControlledTextInput = ({ label, fieldState, value, required, testId
         {label}
         {required && <span className="text-red-500">*</span>}
       </label>
-      <Input {...props} value={value} required={required} data-testid={testIds.input} />
+      <Input {...props} value={value ?? ''} required={required} data-testid={testIds.input} />
       <div
         className={cn(
           'absolute bottom-1 text-sm text-red-500 transition-[height] duration-300',

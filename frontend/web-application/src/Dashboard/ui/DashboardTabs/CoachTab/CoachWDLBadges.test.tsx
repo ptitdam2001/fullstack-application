@@ -4,8 +4,7 @@ import type { Match } from '@Sdk/model/match'
 import { CoachWDLBadges } from './CoachWDLBadges'
 
 const makeMatch = (overrides: Partial<Match> & { id: string }): Match => ({
-  id: overrides.id,
-  area: { name: 'Terrain A' },
+  area: { id: 'area-1', name: 'Terrain A', address: '', city: '', longitude: 0, latitude: 0 },
   homeTeamId: 'home-1',
   awayTeamId: 'away-1',
   status: 'PLAYED',

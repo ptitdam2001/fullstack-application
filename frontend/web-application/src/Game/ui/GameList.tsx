@@ -1,4 +1,4 @@
-import React, { Suspense, use } from 'react'
+import { Suspense, use } from 'react'
 import { useGameList } from '../application/useGameList'
 import { GameListRaw } from './GameListRaw'
 import { TableLoader } from '@Common/Loading'
