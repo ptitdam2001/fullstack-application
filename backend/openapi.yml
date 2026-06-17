@@ -2388,13 +2388,10 @@ components:
         id:
           type: string
           nullable: false
-          format: uuid
         userId:
           type: string
-          format: uuid
         teamId:
           type: string
-          format: uuid
         jersey:
           type: integer
           nullable: true

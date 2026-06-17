@@ -144,7 +144,8 @@ export const createPlayer = async (ctx: Context, req: Request, res: Response) =>
     }
   }
   const userId = ctx.request.params.userId
-  res.status(201).json(await playerUseCases.create({ ...req.body, userId }))
+  const { teamId, jersey, position } = req.body as { teamId: string; jersey?: number; position?: string }
+  res.status(201).json(await playerUseCases.create({ userId, teamId, jersey: jersey ?? null, position: position ?? null }))
 }
 
 export const getTeamCurrentGroup = async (ctx: Context, _: Request, res: Response) => {
