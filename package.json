@@ -1,13 +1,13 @@
 {
   "name": "fullstack-application",
   "devDependencies": {
-    "@commitlint/cli": "^19.4.0",
-    "@commitlint/config-conventional": "^19.2.2",
-    "@commitlint/cz-commitlint": "^19.4.0",
-    "@commitlint/types": "^19.0.3",
+    "@commitlint/cli": "^21.0.2",
+    "@commitlint/config-conventional": "^21.0.2",
+    "@commitlint/cz-commitlint": "^21.0.2",
+    "@commitlint/types": "^21.0.1",
     "@types/bun": "latest",
-    "commitizen": "^4.3.0",
-    "husky": "^9.1.5"
+    "commitizen": "^4.3.2",
+    "husky": "^9.1.7"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
