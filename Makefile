@@ -1,4 +1,4 @@
-.PHONY: seed help test-backend-unit test-backend-func db-test-up db-test-down test-e2e
+.PHONY: seed help test-backend-unit test-backend-func db-test-up db-test-down test-e2e up down
 
 TEST_MONGO_CONTAINER := fullstack-test-mongo
 TEST_MONGO_PORT := 27018
@@ -30,11 +30,12 @@ db-test-down: ## Arrête et supprime le Mongo replica de test de debug local
 test-e2e: ## Lance les tests E2E frontend (Playwright + MSW, Vite dev server)
 	cd frontend/web-application && pnpm test:e2e
 
-# ─── Futurs scripts ───────────────────────────────────────────────────────────
-# Ajouter les targets ici en suivant le pattern : target: ## Description
-# Exemple :
-#   up: ## Lance la stack complète via Docker
-#     docker compose up -d
-#
-#   install: ## Configure la stack pour la première installation
-#     ./scripts/install/setup.sh
+# ─── Docker dev ───────────────────────────────────────────────────────────────
+
+COMPOSE_DEV := docker compose -f deployment/docker-compose.yml
+
+up: ## Lance la stack dev via Docker (API + Mongo + Swagger)
+	$(COMPOSE_DEV) up -d --build
+
+down: ## Arrête la stack dev
+	$(COMPOSE_DEV) down

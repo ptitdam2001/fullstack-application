@@ -84,7 +84,7 @@ pnpm --filter @repo/design-system storybook        # Storybook dev server on por
 ### Root
 
 ```bash
-docker compose up    # Swagger Editor (:8081), Swagger UI (:8082), frontend (:3000)
+docker compose -f deployment/docker-compose.yml up  # API (:4000), Swagger UI (:8082), Mongo Express (:8083)
 git cz               # Commitizen for conventional commits
 ```
 
