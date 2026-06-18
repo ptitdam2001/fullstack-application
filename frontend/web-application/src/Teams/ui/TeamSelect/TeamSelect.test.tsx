@@ -7,39 +7,28 @@ const teams = [
 ]
 
 describe('TeamSelect', () => {
-  it('renders all team options', () => {
+  it('renders trigger button', () => {
     render(<TeamSelect teams={teams} />)
-    expect(screen.getByRole('option', { name: 'Les Rouges' })).toBeInTheDocument()
-    expect(screen.getByRole('option', { name: 'Les Bleus' })).toBeInTheDocument()
+    expect(screen.getByRole('button')).toBeInTheDocument()
   })
 
-  it('renders placeholder option in single mode', () => {
-    render(<TeamSelect teams={teams} placeholder="Select a team…" />)
-    expect(screen.getByRole('option', { name: 'Select a team…' })).toBeInTheDocument()
+  it('renders label when provided', () => {
+    render(<TeamSelect teams={teams} label="Équipe" />)
+    expect(screen.getByText('Équipe')).toBeInTheDocument()
   })
 
-  it('does not render placeholder in multiple mode', () => {
-    render(<TeamSelect teams={teams} multiple placeholder="Select a team…" />)
-    expect(screen.queryByRole('option', { name: 'Select a team…' })).not.toBeInTheDocument()
+  it('renders without crashing when teams is empty', () => {
+    render(<TeamSelect teams={[]} />)
+    expect(screen.getByRole('button')).toBeInTheDocument()
   })
 
-  it('renders as multiple select when multiple=true', () => {
-    const { container } = render(<TeamSelect teams={teams} multiple />)
-    expect(container.querySelector('select')).toHaveAttribute('multiple')
+  it('forwards isDisabled', () => {
+    render(<TeamSelect teams={teams} isDisabled />)
+    expect(screen.getByRole('button')).toBeDisabled()
   })
 
-  it('renders empty list without crashing', () => {
-    const { container } = render(<TeamSelect teams={[]} />)
-    expect(container.querySelector('select')).toBeInTheDocument()
-  })
-
-  it('forwards className', () => {
-    const { container } = render(<TeamSelect teams={[]} className="custom" />)
-    expect(container.querySelector('select')).toHaveClass('custom')
-  })
-
-  it('forwards aria-invalid', () => {
-    const { container } = render(<TeamSelect teams={[]} aria-invalid={true} />)
-    expect(container.querySelector('select')).toHaveAttribute('aria-invalid', 'true')
+  it('renders select data-slot', () => {
+    const { container } = render(<TeamSelect teams={teams} />)
+    expect(container.querySelector('[data-slot="select"]')).toBeInTheDocument()
   })
 })

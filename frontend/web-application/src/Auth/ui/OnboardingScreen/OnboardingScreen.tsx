@@ -94,7 +94,7 @@ export const OnboardingScreen = () => {
               <FormattedMessage id="onboarding.joinTeam.description" />
             </p>
             <div className="space-y-3">
-              <TeamSelectField value={joinTeamId ?? undefined} onChange={e => setJoinTeamId(e.target.value || null)} />
+              <TeamSelectField value={joinTeamId ?? undefined} onChange={(key) => setJoinTeamId(key || null)} />
               <select
                 value={joinRole}
                 onChange={e => setJoinRole(e.target.value as 'PLAYER' | 'COACH')}
