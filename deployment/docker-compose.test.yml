@@ -1,0 +1,47 @@
+services:
+  mongodb-test:
+    image: prismagraphql/mongo-single-replica:4.4.3-bionic
+    environment:
+      MONGO_INITDB_DATABASE: app
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      INIT_WAIT_SEC: 10
+    ports:
+      - "27019:27017"
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api-test:
+    build:
+      context: ..
+      dockerfile: deployment/backend/Dockerfile
+    ports:
+      - "4001:3000"
+    environment:
+      PORT: "3000"
+      DATABASE_URL: mongodb://root:example@mongodb-test:27017/app?authSource=admin&directConnection=true
+      JWT_SECRET: smoke-test-secret
+      JWT_EXPIRE: "2h"
+      CRYPT_SALT: "8"
+      ACTIVATION_TOKEN_EXPIRY_HOURS: "48"
+      MAX_LOGIN_ATTEMPTS: "1000"
+      LOGIN_RATE_LIMIT: "1000"
+      REGISTER_RATE_LIMIT: "1000"
+      FRONTEND_URL: http://localhost:3001
+    depends_on:
+      mongodb-test:
+        condition: service_healthy
+
+  front-test:
+    build:
+      context: ..
+      dockerfile: deployment/frontend/Dockerfile
+      args:
+        VITE_BACKEND_BASEURL: http://localhost:4001/
+    ports:
+      - "3001:80"
+    depends_on:
+      - api-test

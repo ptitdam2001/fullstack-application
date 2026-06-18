@@ -17,6 +17,10 @@ COPY tooling/prettier-config/ /app/tooling/prettier-config/
 
 RUN pnpm install --frozen-lockfile
 
+# Vite env vars (inlined at build time via import.meta.env)
+ARG VITE_BACKEND_BASEURL
+ENV VITE_BACKEND_BASEURL=${VITE_BACKEND_BASEURL}
+
 # Copy source
 COPY frontend/design-system/ design-system/
 COPY frontend/form-factory/ form-factory/
