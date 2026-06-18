@@ -1,9 +1,7 @@
 import { defineConfig, devices } from '@playwright/test'
 
-/**
- * E2E tests run against the Vite dev server (not production build) so that
- * MSW Service Worker is active — see ADR-0003.
- */
+const SMOKE_BASE_URL = process.env.SMOKE_BASE_URL ?? 'http://localhost:3001'
+
 export default defineConfig({
   testDir: './e2e',
   fullyParallel: true,
@@ -17,9 +15,10 @@ export default defineConfig({
   },
 
   projects: [
+    // ── MSW-mocked E2E (Vite dev server) ──
     {
       name: 'setup',
-      testMatch: /.*\.setup\.ts/,
+      testMatch: /setup\/.*\.setup\.ts/,
     },
     {
       name: 'chromium',
@@ -28,6 +27,26 @@ export default defineConfig({
         storageState: 'e2e/.auth/user.json',
       },
       dependencies: ['setup'],
+    },
+
+    // ── Full-stack smoke (Docker test stack) ──
+    {
+      name: 'smoke-setup',
+      testMatch: /smoke\/.*\.setup\.ts/,
+      use: {
+        baseURL: SMOKE_BASE_URL,
+      },
+    },
+    {
+      name: 'fullstack-smoke',
+      testDir: './e2e/smoke',
+      testMatch: /.*\.spec\.ts/,
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: SMOKE_BASE_URL,
+        storageState: 'e2e/.auth/smoke-user.json',
+      },
+      dependencies: ['smoke-setup'],
     },
   ],
 
