@@ -25,6 +25,7 @@ export const SigninForm = ({ forgotPasswordHref }: SigninFormProps) => {
         <FormattedMessage id="auth.login" />
       </h2>
       <Form
+        data-testid="signin-form"
         onSubmit={async data => {
           try {
             await process(data.email!, data.password!)
@@ -50,6 +51,7 @@ export const SigninForm = ({ forgotPasswordHref }: SigninFormProps) => {
               label={intl.formatMessage({ id: 'auth.email' })}
               type="email"
               placeholder="vous@exemple.com"
+              data-testid="signin-email"
             />
           )}
         </Field>
@@ -59,7 +61,7 @@ export const SigninForm = ({ forgotPasswordHref }: SigninFormProps) => {
               <label className="text-sm leading-none font-medium">
                 <FormattedMessage id="auth.password" />
               </label>
-              <PasswordInput {...field} placeholder="••••••••" />
+              <PasswordInput {...field} placeholder="••••••••" data-testid="signin-password" />
               {fieldState.error && <p className="absolute bottom-1 text-sm text-red-500">{fieldState.error.message}</p>}
             </div>
           )}
@@ -69,7 +71,7 @@ export const SigninForm = ({ forgotPasswordHref }: SigninFormProps) => {
             <FormattedMessage id="auth.forgottenPassword" />
           </Link>
         )}
-        <Button type="submit" isDisabled={isPending} className="w-full max-w-sm">
+        <Button type="submit" isDisabled={isPending} className="w-full max-w-sm" data-testid="signin-submit">
           {isPending && <Loader2 className="animate-spin" />}
           <FormattedMessage id="auth.signin" />
         </Button>

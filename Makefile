@@ -7,7 +7,7 @@ help: ## Affiche les commandes disponibles
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' Makefile | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2}'
 
 seed: ## Crée le jeu de données de test en base (idempotent)
-	cd backend && NODE_PATH=$$(pwd)/node_modules npx tsx ../scripts/seed/index.ts
+	cd backend && NODE_PATH=$$(pwd)/node_modules pnpm exec tsx ../scripts/seed/index.ts
 
 test-backend-unit: ## Lance les tests unitaires backend (Vitest, repositories mockés)
 	cd backend && pnpm test
@@ -53,7 +53,7 @@ stack-test-down: ## Arrête la stack test et supprime les volumes
 	$(COMPOSE_TEST) down -v
 
 test-e2e-smoke: ## Lance les tests E2E smoke (nécessite stack-test-up)
-	cd frontend/web-application && pnpm exec playwright test --project=fullstack-smoke
+	cd frontend/web-application && npx playwright test --project=fullstack-smoke
 
 # ─── Suite complète ──────────────────────────────────────────────────────────
 

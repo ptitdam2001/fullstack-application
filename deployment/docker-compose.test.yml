@@ -24,7 +24,7 @@ services:
       PORT: "3000"
       DATABASE_URL: mongodb://root:example@mongodb-test:27017/app?authSource=admin&directConnection=true
       JWT_SECRET: smoke-test-secret
-      JWT_EXPIRE: "2h"
+      JWT_EXPIRE: "7200"
       CRYPT_SALT: "8"
       ACTIVATION_TOKEN_EXPIRY_HOURS: "48"
       MAX_LOGIN_ATTEMPTS: "1000"

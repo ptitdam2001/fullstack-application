@@ -184,3 +184,4 @@ dist
 .claude/settings.local.json
 **/.agents/
 **/skills-lock.json
+.playwright-mcp/

@@ -46,6 +46,7 @@
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "@faker-js/faker": "10.3.0",
+    "@playwright/test": "1.58.2",
     "@repo/eslint-config": "file:../../tooling/eslint-config",
     "@repo/prettier-config": "file:../../tooling/prettier-config",
     "@storybook/addon-docs": "^10.4.2",

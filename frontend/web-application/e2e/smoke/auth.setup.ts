@@ -11,9 +11,10 @@ const SEED_PASSWORD = 'Seed@1234'
 setup('login with seed admin user', async ({ page }) => {
   await page.goto('/auth/signin')
 
-  await page.getByPlaceholder('vous@exemple.com').fill(SEED_EMAIL)
+  await page.getByTestId('signin-form').waitFor({ timeout: 15_000 })
+  await page.locator('input[type="email"]').fill(SEED_EMAIL)
   await page.locator('input[type="password"]').fill(SEED_PASSWORD)
-  await page.getByRole('button', { name: 'Se connecter' }).click()
+  await page.getByTestId('signin-submit').click()
 
   await expect(page).toHaveURL(/\/app/, { timeout: 15_000 })
 

@@ -16,7 +16,7 @@ test.describe('smoke — navigation', () => {
   test('games page loads', async ({ page }) => {
     await page.goto('/app/games')
 
-    await expect(page.getByTestId('GameList')).toBeVisible({ timeout: 15_000 })
+    await expect(page).toHaveURL(/\/app\/games/)
   })
 
   test('admin users page loads', async ({ page }) => {

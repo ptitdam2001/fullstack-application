@@ -6,6 +6,10 @@ RUN corepack enable && corepack prepare pnpm@10.13.1 --activate
 WORKDIR /app/backend
 COPY backend/package.json backend/pnpm-lock.yaml ./
 
+# Tooling packages referenced via file: in devDependencies
+COPY tooling/eslint-config/ /app/tooling/eslint-config/
+COPY tooling/prettier-config/ /app/tooling/prettier-config/
+
 RUN apk add --no-cache python3 make g++ && \
     pnpm install --frozen-lockfile && \
     apk del --purge python3 make g++ && \
@@ -24,6 +28,9 @@ RUN corepack enable && corepack prepare pnpm@10.13.1 --activate
 
 WORKDIR /app/backend
 COPY backend/package.json backend/pnpm-lock.yaml ./
+
+COPY tooling/eslint-config/ /app/tooling/eslint-config/
+COPY tooling/prettier-config/ /app/tooling/prettier-config/
 
 RUN apk add --no-cache python3 make g++ && \
     pnpm install --frozen-lockfile --prod && \
