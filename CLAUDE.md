@@ -20,6 +20,12 @@ backend/                      # Express v5 + OpenAPI-backend + Prisma + MongoDB
 frontend/
   design-system/              # @repo/design-system — React Aria + Tailwind components
   web-application/            # application-material — SPA consuming the design system
+deployment/
+  docker-compose.yml          # Dev stack (API + Mongo + Swagger)
+  docker-compose.test.yml     # Isolated test stack for smoke E2E
+  backend/Dockerfile          # Backend multi-stage build
+  frontend/Dockerfile         # Frontend multi-stage build (pnpm + Nginx)
+  frontend/nginx.conf         # SPA routing config
 specifications/               # Business domain specifications (source of truth for features)
 tooling/
   eslint-config/              # @repo/eslint-config — shared ESLint flat config (base/node/react)
@@ -86,6 +92,12 @@ pnpm --filter @repo/design-system storybook        # Storybook dev server on por
 ```bash
 docker compose -f deployment/docker-compose.yml up  # API (:4000), Swagger UI (:8082), Mongo Express (:8083)
 git cz               # Commitizen for conventional commits
+make help             # List all Makefile targets
+make up               # Start dev stack (Docker)
+make test             # Run all tests (unit + func + e2e mocked)
+make stack-test-up    # Build + seed isolated test stack (:27019, :4001, :3001)
+make test-e2e-smoke   # Run Playwright smoke tests against test stack
+make stack-test-down  # Tear down test stack
 ```
 
 ## Sources of Truth
