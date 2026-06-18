@@ -1,23 +1,13 @@
 import { describe, it, expect } from 'vitest'
 import { render } from '@testing-library/react'
 import { Select } from './Select'
-import { SelectValue } from './SelectValue'
-import { SelectContent } from './SelectContent'
 import { SelectItem } from './SelectItem'
-import { Button } from '../Button/Button'
-import { Label } from 'react-aria-components'
 
 function BasicSelect() {
   return (
-    <Select>
-      <Label>Country</Label>
-      <Button>
-        <SelectValue />
-      </Button>
-      <SelectContent>
-        <SelectItem id="fr">France</SelectItem>
-        <SelectItem id="uk">UK</SelectItem>
-      </SelectContent>
+    <Select label="Country">
+      <SelectItem id="fr">France</SelectItem>
+      <SelectItem id="uk">UK</SelectItem>
     </Select>
   )
 }
@@ -40,13 +30,10 @@ describe('Select', () => {
 })
 
 describe('SelectItem', () => {
-  it('sets data-slot="select"', () => {
+  it('data-slot="select" present with items', () => {
     const { container } = render(
       <Select>
-        <Button><SelectValue /></Button>
-        <SelectContent>
-          <SelectItem id="a">Option A</SelectItem>
-        </SelectContent>
+        <SelectItem id="a">Option A</SelectItem>
       </Select>
     )
     expect(container.querySelector('[data-slot="select"]')).toBeInTheDocument()

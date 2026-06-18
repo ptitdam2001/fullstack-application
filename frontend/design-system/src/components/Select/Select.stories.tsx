@@ -1,19 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent, within } from 'storybook/test'
-import { ChevronDownIcon } from 'lucide-react'
-import { Label } from 'react-aria-components'
 
-import { Button } from '../Button/Button'
 import { Select } from './Select'
-import { SelectValue } from './SelectValue'
-import { SelectContent } from './SelectContent'
 import { SelectItem } from './SelectItem'
 import { SelectSection } from './SelectSection'
 
 const meta = {
   component: Select,
   decorators: [
-    Story => (
+    (Story) => (
       <div className="flex min-h-48 items-start justify-center pt-8">
         <Story />
       </div>
@@ -26,20 +21,13 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
-  render: args => (
-    <Select {...args}>
-      <Label className="mb-1 block text-sm font-medium">Catégorie d'âge</Label>
-      <Button variant="outline" className="w-48 justify-between">
-        <SelectValue placeholder="Choisir..." />
-        <ChevronDownIcon className="size-4 opacity-50" />
-      </Button>
-      <SelectContent>
-        <SelectItem id="u11">U11</SelectItem>
-        <SelectItem id="u13">U13</SelectItem>
-        <SelectItem id="u15">U15</SelectItem>
-        <SelectItem id="u17">U17</SelectItem>
-        <SelectItem id="u19">U19</SelectItem>
-      </SelectContent>
+  render: (args) => (
+    <Select {...args} label="Catégorie d'âge" placeholder="Choisir...">
+      <SelectItem id="u11">U11</SelectItem>
+      <SelectItem id="u13">U13</SelectItem>
+      <SelectItem id="u15">U15</SelectItem>
+      <SelectItem id="u17">U17</SelectItem>
+      <SelectItem id="u19">U19</SelectItem>
     </Select>
   ),
   play: async ({ canvasElement }) => {
@@ -54,57 +42,51 @@ export const Default: Story = {
   },
 }
 
+export const WithDescription: Story = {
+  render: (args) => (
+    <Select
+      {...args}
+      label="Catégorie d'âge"
+      placeholder="Choisir..."
+      description="Sélectionnez la catégorie d'âge de votre équipe."
+    >
+      <SelectItem id="u11">U11</SelectItem>
+      <SelectItem id="u13">U13</SelectItem>
+      <SelectItem id="u15">U15</SelectItem>
+    </Select>
+  ),
+}
+
 export const WithSections: Story = {
-  render: args => (
-    <Select {...args}>
-      <Label className="mb-1 block text-sm font-medium">Catégorie</Label>
-      <Button variant="outline" className="w-48 justify-between">
-        <SelectValue placeholder="Choisir..." />
-        <ChevronDownIcon className="size-4 opacity-50" />
-      </Button>
-      <SelectContent>
-        <SelectSection header="Jeunes">
-          <SelectItem id="u11">U11</SelectItem>
-          <SelectItem id="u13">U13</SelectItem>
-          <SelectItem id="u15">U15</SelectItem>
-        </SelectSection>
-        <SelectSection header="Seniors">
-          <SelectItem id="open">Open</SelectItem>
-          <SelectItem id="vets">Vétérans</SelectItem>
-        </SelectSection>
-      </SelectContent>
+  render: (args) => (
+    <Select {...args} label="Catégorie" placeholder="Choisir...">
+      <SelectSection header="Jeunes">
+        <SelectItem id="u11">U11</SelectItem>
+        <SelectItem id="u13">U13</SelectItem>
+        <SelectItem id="u15">U15</SelectItem>
+      </SelectSection>
+      <SelectSection header="Seniors">
+        <SelectItem id="open">Open</SelectItem>
+        <SelectItem id="vets">Vétérans</SelectItem>
+      </SelectSection>
     </Select>
   ),
 }
 
 export const Disabled: Story = {
-  render: args => (
-    <Select {...args} isDisabled>
-      <Label className="mb-1 block text-sm font-medium">Catégorie</Label>
-      <Button variant="outline" className="w-48 justify-between">
-        <SelectValue placeholder="Désactivé" />
-        <ChevronDownIcon className="size-4 opacity-50" />
-      </Button>
-      <SelectContent>
-        <SelectItem id="u13">U13</SelectItem>
-      </SelectContent>
+  render: (args) => (
+    <Select {...args} label="Catégorie" placeholder="Désactivé" isDisabled>
+      <SelectItem id="u13">U13</SelectItem>
     </Select>
   ),
 }
 
 export const KeyboardNavigation: Story = {
-  render: args => (
-    <Select {...args}>
-      <Label className="mb-1 block text-sm font-medium">Catégorie d'âge</Label>
-      <Button variant="outline" className="w-48 justify-between">
-        <SelectValue placeholder="Choisir..." />
-        <ChevronDownIcon className="size-4 opacity-50" />
-      </Button>
-      <SelectContent>
-        <SelectItem id="u11">U11</SelectItem>
-        <SelectItem id="u13">U13</SelectItem>
-        <SelectItem id="u15">U15</SelectItem>
-      </SelectContent>
+  render: (args) => (
+    <Select {...args} label="Catégorie d'âge" placeholder="Choisir...">
+      <SelectItem id="u11">U11</SelectItem>
+      <SelectItem id="u13">U13</SelectItem>
+      <SelectItem id="u15">U15</SelectItem>
     </Select>
   ),
   play: async ({ canvasElement }) => {
