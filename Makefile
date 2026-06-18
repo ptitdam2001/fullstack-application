@@ -1,4 +1,4 @@
-.PHONY: seed help test-backend-unit test-backend-func db-test-up db-test-down test-e2e up down
+.PHONY: seed help test-backend-unit test-backend-func db-test-up db-test-down test-e2e up down stack-test-up stack-test-down test-e2e-smoke test
 
 TEST_MONGO_CONTAINER := fullstack-test-mongo
 TEST_MONGO_PORT := 27018
@@ -39,3 +39,22 @@ up: ## Lance la stack dev via Docker (API + Mongo + Swagger)
 
 down: ## Arrête la stack dev
 	$(COMPOSE_DEV) down
+
+# ─── Docker test (smoke E2E) ─────────────────────────────────────────────────
+
+COMPOSE_TEST := docker compose -f deployment/docker-compose.test.yml
+SEED_TEST_URL := mongodb://root:example@localhost:27019/app?authSource=admin&directConnection=true
+
+stack-test-up: ## Lance la stack test isolée (build + seed)
+	$(COMPOSE_TEST) up -d --build --wait
+	DATABASE_URL=$(SEED_TEST_URL) $(MAKE) seed
+
+stack-test-down: ## Arrête la stack test et supprime les volumes
+	$(COMPOSE_TEST) down -v
+
+test-e2e-smoke: ## Lance les tests E2E smoke (nécessite stack-test-up)
+	cd frontend/web-application && pnpm exec playwright test --project=fullstack-smoke
+
+# ─── Suite complète ──────────────────────────────────────────────────────────
+
+test: test-backend-unit test-backend-func test-e2e ## Lance tous les tests (unit + func + e2e mocked)
