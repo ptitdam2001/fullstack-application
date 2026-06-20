@@ -12,7 +12,7 @@ export const AreaPages = () => (
     <div className="flex-flex-grow-1">
       <AreaList
         actions={address => (
-          <Link to={`${address._id}/edit`}>
+          <Link to={`${address.id}/edit`}>
             <Edit />
           </Link>
         )}

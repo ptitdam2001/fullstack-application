@@ -17,7 +17,7 @@ export const Default: Story = {
       name: 'Test Address',
       address: '123 Test St',
       city: 'Test City',
-      _id: faker.string.uuid(),
+      id: faker.string.uuid(),
       longitude: 1,
       latitude: 1,
     },

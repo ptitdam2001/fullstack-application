@@ -25,7 +25,7 @@ const BaseAreaList = ({ actions }: AreaListProps) => {
         </Table.TableHeader>
         <Table.TableBody>
           {addresses.map(address => (
-            <Table.TableRow key={address._id}>
+            <Table.TableRow key={address.id}>
               <Table.TableCell>
                 <Address address={address} />
               </Table.TableCell>

@@ -11,7 +11,7 @@ import { TeamCard } from './TeamCard'
 const wrapper = ({ children }: { children: ReactNode }) => <MemoryRouter>{children}</MemoryRouter>
 
 const primaryArea: Area = {
-  _id: 'area-1',
+  id: 'area-1',
   name: 'Municipal Stadium',
   address: '1 Stadium Street',
   city: 'Lyon',

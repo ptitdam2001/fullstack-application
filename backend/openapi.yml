@@ -1961,7 +1961,6 @@ components:
           nullable: false
           format: float
       required:
-        - _id
         - address
         - city
         - longitude
@@ -1971,9 +1970,9 @@ components:
         - $ref: "#/components/schemas/AreaWithoutId"
         - type: object
           required:
-            - _id
+            - id
           properties:
-            _id:
+            id:
               type: string
               format: uuid
     ForgotPassword:
@@ -2244,7 +2243,7 @@ components:
           nullable: false
           type: string
           format: email
-        _id:
+        id:
           type: string
           format: uuid
         isAdmin:
@@ -2271,7 +2270,7 @@ components:
           items:
             $ref: "#/components/schemas/UserRole"
       required:
-        - _id
+        - id
         - email
         - lastName
         - firstName

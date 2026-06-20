@@ -21,10 +21,10 @@ export const buildFeedEvents = ({
   const events: FeedEvent[] = [
     ...(inactiveUsers ?? []).map(
       (u): FeedEvent => ({
-        id: `activation-${u._id}`,
+        id: `activation-${u.id}`,
         type: 'ACTIVATION_REQUEST',
         date: u.createdAt ?? now,
-        href: `/app/users/${u._id}`,
+        href: `/app/users/${u.id}`,
         actionLabel: 'adminDashboard.feed.activate',
         firstName: u.firstName,
         lastName: u.lastName ?? '',

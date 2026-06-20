@@ -16,7 +16,7 @@ const makeMatch = (overrides: Partial<Match> & { id: string }): Match => ({
   ...overrides,
 })
 
-const makeUser = (overrides: Partial<User> & { _id: string }): User => ({
+const makeUser = (overrides: Partial<User> & { id: string }): User => ({
   isAdmin: false,
   isActive: true,
   isBlocked: false,
@@ -28,7 +28,7 @@ const makeUser = (overrides: Partial<User> & { _id: string }): User => ({
 })
 
 const admin: User = {
-  _id: '1',
+  id: '1',
   isAdmin: true,
   lastName: 'Admin',
   firstName: 'Admin',
@@ -39,7 +39,7 @@ const admin: User = {
 }
 
 const user: User = {
-  _id: '1',
+  id: '1',
   isAdmin: false,
   lastName: 'User',
   firstName: 'User',
@@ -55,7 +55,7 @@ describe('buildFeedEvents', () => {
   })
 
   it('maps inactiveUsers to ACTIVATION_REQUEST events', () => {
-    const u = makeUser({ _id: 'u1', createdAt: '2025-01-01T00:00:00Z' })
+    const u = makeUser({ id: 'u1', createdAt: '2025-01-01T00:00:00Z' })
     const [event] = buildFeedEvents({ inactiveUsers: [u] })
     expect(event.type).toBe('ACTIVATION_REQUEST')
     expect(event.id).toBe('activation-u1')
