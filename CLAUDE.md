@@ -2,6 +2,11 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Tech Stack
+
+- Primary language: TypeScript. Use TypeScript for all new code with strict typing.
+- Config in YAML, data in JSON, docs in Markdown.
+
 ## Architecture Patterns
 
 - This is a pnpm monorepo with a design-system package; rebuild the design-system (`pnpm --filter @repo/design-system build`) before consuming apps when CSS or exports change.
@@ -36,23 +41,26 @@ tooling/
 
 All feature work must align with the business rules defined in `specifications/`. Read the relevant spec before implementing any domain logic.
 
-| File                                           | Domain                                                                  |
-| ---------------------------------------------- | ----------------------------------------------------------------------- |
-| `specifications/01-domain-glossary.md`         | Glossary — canonical definitions for all domain concepts                |
-| `specifications/02-championship.md`            | Championship — age categories, phases, points config, multi-phase rules |
-| `specifications/03-match.md`                   | Match — structure, statuses, scoring, forfeit, auto-generation          |
-| `specifications/04-team.md`                    | Team — color, venue, age category, championship enrollment              |
-| `specifications/05-standings.md`               | Standings — points calculation, tiebreakers, inter-group ranking        |
-| `specifications/06-user-profiles.md`           | User profiles — roles (Admin/Coach/Referee/Player), permission matrix   |
-| `specifications/07-technical-choices.md`       | Technical choices — backend, design-system, application stack           |
-| `specifications/08-architecture-hexagonale.md` | Architecture — hexagonal structure, port interfaces per domain          |
-| `specifications/09-implementation-roadmap.md`  | Implementation roadmap — 4 phases from init to full frontend            |
+| File                                           | Domain                                                                           |
+| ---------------------------------------------- | -------------------------------------------------------------------------------- |
+| `specifications/01-domain-glossary.md`         | Glossary — canonical definitions for all domain concepts                         |
+| `specifications/02-championship.md`            | Championship — age categories, phases, points config, multi-phase rules          |
+| `specifications/03-match.md`                   | Match — structure, statuses, scoring, forfeit, auto-generation                   |
+| `specifications/04-team.md`                    | Team — color, venue, age category, championship enrollment                       |
+| `specifications/05-standings.md`               | Standings — points calculation, tiebreakers, inter-group ranking                 |
+| `specifications/06-user-profiles.md`           | User profiles — roles (Admin/Coach/Referee/Player), permission matrix            |
+| `specifications/07-technical-choices.md`       | Technical choices — backend, design-system, application stack                    |
+| `specifications/08-architecture-hexagonale.md` | Architecture — hexagonal structure, port interfaces per domain                   |
+| `specifications/09-implementation-roadmap.md`  | Implementation roadmap — 4 phases from init to full frontend                     |
 | `specifications/15-form-factory.md`            | Form factory — `@repo/form-factory` API, modes de validation, formulaires migrés |
-| `specifications/16-strategie-de-test.md`       | Test strategy — pyramid, conventions, API coverage matrix, E2E flow matrix |
+| `specifications/16-strategie-de-test.md`       | Test strategy — pyramid, conventions, API coverage matrix, E2E flow matrix       |
 
 > When adding a new feature or modifying existing domain logic, update the relevant spec first, then propagate to `openapi.yml`, backend, and frontend.
 
 ## Commands
+
+- Run the test suite before committing.
+- Run lint/type-check after editing TypeScript files.
 
 ### Backend (`backend/`)
 
@@ -143,6 +151,14 @@ specifications/ (business rules)
 ```
 
 > `pnpm generate:prisma` regenerates the Prisma **client** from `schema.prisma`. It does **not** read `openapi.yml` — the two sources must be kept in sync manually.
+
+### Documentation sync on API changes
+
+When a public API changes (`openapi.yml`, new/modified route, changed schema), update in the same changeset:
+
+1. The relevant specification in `specifications/` (if business rules changed)
+2. The relevant Markdown docs (README, CLAUDE.md tables, domain docs)
+3. Summarize what was updated at the end of the changeset
 
 ## Backend Architecture
 
@@ -360,18 +376,18 @@ Recurring mistakes confirmed by session history — check these before debugging
 
 ## Project Skills
 
-| Skill                     | Trigger                                                                       | Description                                                                                                                                        |
-| ------------------------- | ----------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `create-backend-domain`   | "créer un domaine", "scaffolder X"                                            | Scaffolds a hexagonal backend domain (domain/ports/application/infrastructure + tests + OpenAPI)                                                   |
-| `design-system-component` | "créer un composant", "ajouter au design system"                              | Creates a component in `@repo/design-system` (react-aria + Tailwind + Storybook + co-located tests)                                                |
-| `frontend-feature-module` | "créer le module X", "ajouter une feature"                                    | Scaffolds a frontend feature module following hexagonal architecture (domain/infrastructure/application/ui)                                        |
-| `react-component`         | "créer un composant", "nouveau composant React", "implémenter la vue"         | Creates a React component in the web app: ESLint/Prettier rules, i18n (FormattedMessage), Design System priority, sub-components, co-located tests |
-| `react-aria-testing`      | "tester un composant react-aria", "play function", "test tooltip/hover"       | Testing patterns for react-aria: no userEvent.hover, correct interaction APIs, Tailwind v4 data attributes                                         |
-| `rebuild-ds`              | "rebuild design system", "change not showing", "vite cache"                   | Steps to rebuild @repo/design-system and clear stale Vite cache                                                                                    |
-| `openapi-sync`            | "updated openapi", "after openapi change", "sync sdk", "sync bruno"           | Checklist after openapi.yml changes: gen:sdk + Bruno update + nullability sync                                                                     |
-| `spec-writer`             | "écrire une spec", "nouvelle fonctionnalité", "créer une spec", "spec pour X" | Interview structurée → document de spécification fonctionnelle dans `specifications/`                                                              |
-| `spec-tech-writer`        | "specs technique", "partie technique", "enrichir la spec", "technical spec"   | Interview dev senior → section technique (Prisma, OpenAPI, hexagonal, séquence, sécurité) dans la spec existante                                   |
-| `create-form`             | "créer un formulaire", "ajouter un form", "migrer useForm", "nouveau formulaire" | Crée un formulaire avec `@repo/form-factory` : schema Zod, mode de validation, Field + Form + DevTools auto, tests unitaires, story avec play |
+| Skill                     | Trigger                                                                          | Description                                                                                                                                        |
+| ------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `create-backend-domain`   | "créer un domaine", "scaffolder X"                                               | Scaffolds a hexagonal backend domain (domain/ports/application/infrastructure + tests + OpenAPI)                                                   |
+| `design-system-component` | "créer un composant", "ajouter au design system"                                 | Creates a component in `@repo/design-system` (react-aria + Tailwind + Storybook + co-located tests)                                                |
+| `frontend-feature-module` | "créer le module X", "ajouter une feature"                                       | Scaffolds a frontend feature module following hexagonal architecture (domain/infrastructure/application/ui)                                        |
+| `react-component`         | "créer un composant", "nouveau composant React", "implémenter la vue"            | Creates a React component in the web app: ESLint/Prettier rules, i18n (FormattedMessage), Design System priority, sub-components, co-located tests |
+| `react-aria-testing`      | "tester un composant react-aria", "play function", "test tooltip/hover"          | Testing patterns for react-aria: no userEvent.hover, correct interaction APIs, Tailwind v4 data attributes                                         |
+| `rebuild-ds`              | "rebuild design system", "change not showing", "vite cache"                      | Steps to rebuild @repo/design-system and clear stale Vite cache                                                                                    |
+| `openapi-sync`            | "updated openapi", "after openapi change", "sync sdk", "sync bruno"              | Checklist after openapi.yml changes: gen:sdk + Bruno update + nullability sync                                                                     |
+| `spec-writer`             | "écrire une spec", "nouvelle fonctionnalité", "créer une spec", "spec pour X"    | Interview structurée → document de spécification fonctionnelle dans `specifications/`                                                              |
+| `spec-tech-writer`        | "specs technique", "partie technique", "enrichir la spec", "technical spec"      | Interview dev senior → section technique (Prisma, OpenAPI, hexagonal, séquence, sécurité) dans la spec existante                                   |
+| `create-form`             | "créer un formulaire", "ajouter un form", "migrer useForm", "nouveau formulaire" | Crée un formulaire avec `@repo/form-factory` : schema Zod, mode de validation, Field + Form + DevTools auto, tests unitaires, story avec play      |
 
 > Frontend component and module guidance is also available in package-level CLAUDE.md files:
 >

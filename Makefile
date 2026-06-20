@@ -1,4 +1,4 @@
-.PHONY: seed help test-backend-unit test-backend-func db-test-up db-test-down test-e2e up down stack-test-up stack-test-down test-e2e-smoke test
+.PHONY: seed help test-backend-unit test-backend-func db-test-up db-test-down test-e2e up down stack-test-up stack-test-down test-e2e-smoke test check lint gen ds-build
 
 TEST_MONGO_CONTAINER := fullstack-test-mongo
 TEST_MONGO_PORT := 27018
@@ -54,6 +54,24 @@ stack-test-down: ## Arrête la stack test et supprime les volumes
 
 test-e2e-smoke: ## Lance les tests E2E smoke (nécessite stack-test-up)
 	cd frontend/web-application && npx playwright test --project=fullstack-smoke
+
+# ─── Vérifications ───────────────────────────────────────────────────────────
+
+check: ## Type-check backend + frontend
+	cd backend && pnpm check:type
+	cd frontend/web-application && pnpm check:types
+
+lint: ## Lint backend + frontend
+	cd backend && pnpm lint
+	cd frontend/web-application && pnpm lint
+
+gen: ## Régénère Prisma client + frontend SDK
+	cd backend && pnpm generate:prisma
+	cd frontend/web-application && pnpm gen:sdk
+
+ds-build: ## Rebuild design system + clear Vite cache
+	pnpm --filter @repo/design-system build
+	rm -rf frontend/web-application/node_modules/.vite
 
 # ─── Suite complète ──────────────────────────────────────────────────────────
 
