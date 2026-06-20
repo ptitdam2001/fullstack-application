@@ -162,6 +162,9 @@ export * from './components/DatePicker/Calendar'
 
 export * from './components/Tooltip/Tooltip'
 
+export * from './components/Typography/Typography'
+export * from './components/Typography/TypographyVariants'
+
 export * from './components/ThemeToggle/ThemeToggle'
 
 export * from './components/Layout/Layout'
