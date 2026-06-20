@@ -3,6 +3,7 @@ import { FormattedMessage } from 'react-intl'
 import { UserCheck, AlertTriangle, CheckCircle, Users } from 'lucide-react'
 import type { FeedEvent } from '@Dashboard/domain/Dashboard'
 import { cn } from '@repo/design-system'
+import { AdminLiveFeederEventLabel } from './AdminLiveFeedEventLabel'
 
 const EVENT_CONFIG = {
   ACTIVATION_REQUEST: { icon: <UserCheck className="h-4 w-4 text-amber-500" />, color: 'border-l-amber-400' },
@@ -16,28 +17,12 @@ type Props = { event: FeedEvent }
 export const AdminLiveFeedEvent = ({ event }: Props) => {
   const config = EVENT_CONFIG[event.type]
 
-  const label = (() => {
-    switch (event.type) {
-      case 'ACTIVATION_REQUEST':
-        return (
-          <FormattedMessage
-            id="adminDashboard.feed.event.activationRequest"
-            values={{ firstName: event.firstName, lastName: event.lastName }}
-          />
-        )
-      case 'FORFEIT':
-        return <FormattedMessage id="adminDashboard.feed.event.forfeit" />
-      case 'MATCH_COMPLETED':
-        return <FormattedMessage id="adminDashboard.feed.event.matchCompleted" />
-      default:
-        return null
-    }
-  })()
-
   return (
     <div className={cn(`bg-card flex items-center gap-3 rounded-md border border-l-4 p-3`, config.color)}>
       {config.icon}
-      <span className="flex-1 text-sm">{label}</span>
+      <span className="flex-1 text-sm">
+        <AdminLiveFeederEventLabel event={event} />
+      </span>
       {event.href && (
         <Link to={event.href} className="text-muted-foreground hover:text-foreground text-xs transition-colors">
           →

@@ -9,7 +9,7 @@ export const AdminDashboard = () => {
     useAdminDashboard()
 
   return (
-    <section className="flex flex-1 flex-col gap-4 p-4 pt-0">
+    <section className="flex flex-1 flex-col gap-4 p-4">
       <AdminKpiCards
         pendingScoreCount={pendingScoreCount}
         pendingActivationCount={pendingActivationCount}
