@@ -63,4 +63,11 @@ if [ ${#REMINDERS[@]} -gt 0 ]; then
   echo ""
 fi
 
+# Auto-format changed file with prettier (if it's a formattable file)
+if [ -n "$FILE_PATH" ] && [ -f "$FILE_PATH" ]; then
+  if echo "$FILE_PATH" | grep -qE '\.(ts|tsx|js|jsx|json|css|md|yaml|yml)$'; then
+    npx prettier --write "$FILE_PATH" 2>/dev/null
+  fi
+fi
+
 exit 0
