@@ -212,30 +212,3 @@ Admin → AdminTeamsPage → click Trash2 → navigate(/app/admin/teams/:id/dele
         → Error → toast "Erreur lors de la suppression"
     → Admin click "Annuler" ou ferme dialog → navigate(-1)
 ```
-
-### Clés i18n
-
-```json
-{
-  "adminTeams.title": "Gestion des équipes",
-  "adminTeams.table.name": "Nom",
-  "adminTeams.table.color": "Couleur",
-  "adminTeams.table.ageCategory": "Catégorie",
-  "adminTeams.table.venue": "Lieu",
-  "adminTeams.table.actions": "Actions",
-  "adminTeams.table.empty": "Aucune équipe trouvée",
-  "adminTeams.action.create": "Nouvelle équipe",
-  "adminTeams.action.edit": "Modifier",
-  "adminTeams.action.delete": "Supprimer",
-  "adminTeams.delete.title": "Supprimer l'équipe",
-  "adminTeams.delete.description": "Êtes-vous sûr de vouloir supprimer l'équipe « {teamName} » ? Les matchs et classements associés seront préservés.",
-  "adminTeams.delete.confirm": "Supprimer",
-  "adminTeams.delete.cancel": "Annuler",
-  "adminTeams.toast.created": "Équipe créée avec succès",
-  "adminTeams.toast.updated": "Équipe modifiée avec succès",
-  "adminTeams.toast.deleted": "Équipe supprimée avec succès",
-  "adminTeams.toast.deleteError": "Erreur lors de la suppression de l'équipe",
-  "adminTeams.dialog.create.title": "Créer une équipe",
-  "adminTeams.dialog.edit.title": "Modifier l'équipe"
-}
-```
