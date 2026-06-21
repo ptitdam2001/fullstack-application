@@ -23,7 +23,10 @@ export const ColorInput = ({
   helperText,
   open = false,
   onChange,
+  onBlur,
   testId,
+  name,
+  ref: _ref,
   ...props
 }: ColorInputProps) => {
   const currentTheme = useTheme()
@@ -35,17 +38,23 @@ export const ColorInput = ({
   const handleChange = (newColor: string) => {
     setColor(newColor)
     onChange(newColor)
-    setOpenPopover(false)
+  }
+
+  const handleOpenChange = (isOpen: boolean) => {
+    setOpenPopover(isOpen)
+    if (!isOpen) {
+      onBlur?.()
+    }
   }
 
   return (
     <div className="ColorInput flex content-center gap-2 py-2">
       {label && (
-        <label htmlFor={props.name} className="align-middle" data-testid={testIds.label}>
+        <label htmlFor={name} className="align-middle" data-testid={testIds.label}>
           {label}
         </label>
       )}
-      <Popover open={openPopover} onOpenChange={setOpenPopover}>
+      <Popover open={openPopover} onOpenChange={handleOpenChange}>
         <PopoverTrigger>
           {triggerProps => (
             <button

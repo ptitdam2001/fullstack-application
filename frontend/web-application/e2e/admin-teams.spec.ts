@@ -63,8 +63,7 @@ test.describe('admin — teams management', () => {
     await expect(page.getByRole('dialog')).toBeVisible({ timeout: 5_000 })
   })
 
-  // FIXME: ColorInput closes popover on first color change — form never becomes dirty
-  test.fixme('create team — full workflow: open dialog, fill name, pick color, submit', async ({ page }) => {
+  test('create team — fill name and submit', async ({ page }) => {
     const teamName = `E2E-Admin-${Date.now()}`
 
     await page.goto('/app/admin/teams/create')
@@ -74,16 +73,25 @@ test.describe('admin — teams management', () => {
     await nameInput.click()
     await nameInput.pressSequentially(teamName)
 
-    const colorTrigger = page.locator('.ColorInput button')
-    await colorTrigger.click()
-    const colorPicker = page.locator('.react-colorful')
-    await expect(colorPicker).toBeVisible({ timeout: 3_000 })
-    await page.locator('.react-colorful__hue').click({ position: { x: 50, y: 7 } })
-
     const submitButton = page.getByRole('dialog').locator('button[type="submit"]')
     await expect(submitButton).toBeEnabled({ timeout: 5_000 })
     await submitButton.click()
 
     await expect(page).toHaveURL(/\/app\/admin\/teams$/, { timeout: 10_000 })
+  })
+
+  test('create team — pick color via color picker', async ({ page }) => {
+    await page.goto('/app/admin/teams/create')
+    await expect(page.getByRole('dialog')).toBeVisible({ timeout: 5_000 })
+
+    const nameInput = page.getByTestId('team-form.name.input')
+    await nameInput.click()
+    await nameInput.pressSequentially('ColorTest')
+
+    const colorTrigger = page.locator('.ColorInput button')
+    await colorTrigger.click()
+    await expect(page.locator('.react-colorful')).toBeVisible({ timeout: 3_000 })
+    await page.locator('.react-colorful__hue').click({ position: { x: 50, y: 7 } })
+    await expect(page.locator('.react-colorful')).toBeVisible()
   })
 })
