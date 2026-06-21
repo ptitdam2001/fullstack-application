@@ -1,6 +1,8 @@
 import { getAreaMock } from '@Sdk/area/area.msw'
 import { getAuthenticationMock } from '@Sdk/authentication/authentication.msw'
+import { getChampionshipMock } from '@Sdk/championship/championship.msw'
 import { getGamesMock } from '@Sdk/games/games.msw'
+import { getMatchMock } from '@Sdk/match/match.msw'
 import { getTeamMock } from '@Sdk/team/team.msw'
 import { getGetTeamsMockHandler, getTeamsMock, getGetTeamsResponseMock } from '@Sdk/teams/teams.msw'
 import { getGetCoachTeamsMockHandler } from '@Sdk/user-team/user-team.msw'
@@ -13,7 +15,9 @@ export const handlers = [
   getGetCoachTeamsMockHandler([mockCoachUserTeam]),
   ...getAreaMock(),
   ...getAuthenticationMock(),
+  ...getChampionshipMock(),
   ...getGamesMock(),
+  ...getMatchMock(),
   ...getTeamMock(),
   ...getTeamsMock(),
   ...getUsersMock(),
