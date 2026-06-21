@@ -6,4 +6,4 @@ export {
   getCountTeamsQueryKey,
 } from '@Sdk/teams/teams'
 
-export { useGetTeam, useCreateTeam, useUpdateTeam } from '@Sdk/team/team'
+export { useGetTeam, useCreateTeam, useUpdateTeam, useRemoveTeam } from '@Sdk/team/team'
