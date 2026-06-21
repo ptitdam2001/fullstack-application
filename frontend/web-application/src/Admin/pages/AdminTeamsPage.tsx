@@ -1,7 +1,7 @@
 import { Suspense, use } from 'react'
 import { Outlet, useNavigate } from 'react-router'
 import { FormattedMessage } from 'react-intl'
-import { Button, Layout, Separator } from '@repo/design-system'
+import { Button, Layout, Separator, Typography } from '@repo/design-system'
 import { CirclePlus } from 'lucide-react'
 import { ErrorBoundary } from '@Common/ErrorBoundary'
 import { TableLoader } from '@Common/Loading'
@@ -43,9 +43,9 @@ export const AdminTeamsPage = () => {
     <Layout.Root>
       <Layout.Header>
         <div className="flex items-center justify-between px-4 py-2">
-          <h1 className="text-lg font-semibold">
+          <Typography.Title1>
             <FormattedMessage id="adminTeams.title" />
-          </h1>
+          </Typography.Title1>
           <Button variant="outline" size="sm" onPress={() => navigate('create')}>
             <CirclePlus className="h-4 w-4" />
             <FormattedMessage id="adminTeams.action.create" />
