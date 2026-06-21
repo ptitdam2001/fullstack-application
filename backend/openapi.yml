@@ -2374,13 +2374,11 @@ components:
           format: color
         areas:
           type: array
-          minItems: 1
           items:
             $ref: "#/components/schemas/Area"
       required:
         - id
         - name
-        - areas
     Player:
       type: object
       properties:
