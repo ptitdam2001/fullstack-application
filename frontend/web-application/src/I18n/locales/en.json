@@ -259,5 +259,27 @@
     "error.passwordMismatch": "Passwords do not match.",
     "error.emailInUse": "This email address is already registered.",
     "error.generic": "An error occurred. Please try again."
+  },
+  "adminTeams": {
+    "title": "Team Management",
+    "table.name": "Name",
+    "table.color": "Color",
+    "table.ageCategory": "Category",
+    "table.venue": "Venue",
+    "table.actions": "Actions",
+    "table.empty": "No teams found",
+    "action.create": "New Team",
+    "action.edit": "Edit",
+    "action.delete": "Delete",
+    "delete.title": "Delete Team",
+    "delete.description": "Are you sure you want to delete the team \"{teamName}\"? Matches and standings will be preserved.",
+    "delete.confirm": "Delete",
+    "delete.cancel": "Cancel",
+    "toast.created": "Team created successfully",
+    "toast.updated": "Team updated successfully",
+    "toast.deleted": "Team deleted successfully",
+    "toast.deleteError": "Failed to delete team",
+    "dialog.create.title": "Create Team",
+    "dialog.edit.title": "Edit Team"
   }
 }

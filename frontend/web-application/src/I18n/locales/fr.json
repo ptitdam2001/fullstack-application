@@ -259,5 +259,27 @@
     "error.passwordMismatch": "Les mots de passe ne correspondent pas.",
     "error.emailInUse": "Cette adresse e-mail est déjà utilisée.",
     "error.generic": "Une erreur est survenue. Veuillez réessayer."
+  },
+  "adminTeams": {
+    "title": "Gestion des équipes",
+    "table.name": "Nom",
+    "table.color": "Couleur",
+    "table.ageCategory": "Catégorie",
+    "table.venue": "Lieu",
+    "table.actions": "Actions",
+    "table.empty": "Aucune équipe trouvée",
+    "action.create": "Nouvelle équipe",
+    "action.edit": "Modifier",
+    "action.delete": "Supprimer",
+    "delete.title": "Supprimer l'équipe",
+    "delete.description": "Êtes-vous sûr de vouloir supprimer l'équipe « {teamName} » ? Les matchs et classements associés seront préservés.",
+    "delete.confirm": "Supprimer",
+    "delete.cancel": "Annuler",
+    "toast.created": "Équipe créée avec succès",
+    "toast.updated": "Équipe modifiée avec succès",
+    "toast.deleted": "Équipe supprimée avec succès",
+    "toast.deleteError": "Erreur lors de la suppression de l'équipe",
+    "dialog.create.title": "Créer une équipe",
+    "dialog.edit.title": "Modifier l'équipe"
   }
 }
