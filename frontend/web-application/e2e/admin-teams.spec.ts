@@ -60,4 +60,26 @@ test.describe('admin — teams management', () => {
     await page.goto('/app/admin/teams/create')
     await expect(page.getByRole('dialog')).toBeVisible({ timeout: 5_000 })
   })
+
+  test('create team — full workflow: open dialog, fill name, pick color, submit', async ({ page }) => {
+    const teamName = `E2E-Admin-${Date.now()}`
+
+    await page.goto('/app/admin/teams/create')
+    await expect(page.getByRole('dialog')).toBeVisible({ timeout: 5_000 })
+
+    const nameInput = page.getByTestId('team-form.name.input')
+    await nameInput.click()
+    await nameInput.fill(teamName)
+
+    const colorTrigger = page.locator('.ColorInput button')
+    await colorTrigger.click()
+    const colorPicker = page.locator('.react-colorful')
+    await expect(colorPicker).toBeVisible({ timeout: 3_000 })
+    await page.locator('.react-colorful__saturation').click({ position: { x: 80, y: 40 } })
+
+    await expect(page.getByRole('button', { name: 'Create' })).toBeEnabled({ timeout: 5_000 })
+    await page.getByRole('button', { name: 'Create' }).click()
+
+    await expect(page).toHaveURL(/\/app\/admin\/teams$/, { timeout: 10_000 })
+  })
 })
