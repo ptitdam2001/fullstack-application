@@ -1,4 +1,4 @@
-import { Suspense, use } from 'react'
+import { Suspense, use, useState } from 'react'
 import { Outlet, useNavigate } from 'react-router'
 import { FormattedMessage } from 'react-intl'
 import { Button, Layout, Separator, Typography } from '@repo/design-system'
@@ -8,9 +8,16 @@ import { TableLoader } from '@Common/Loading'
 import { TablePagination } from '@Common/Table/TablePagination'
 import { useTeamList } from '@Teams/application/useTeamList'
 import { AdminTeamTable } from '@Teams/ui/Admin/AdminTeamTable'
+import { AdminTeamFormSheet } from '@Teams/ui/Admin/AdminTeamFormSheet'
 import type { Team } from '@Teams/domain/Team'
 
-const AdminTeamListContent = () => {
+type SheetState = { open: boolean; teamId?: string }
+
+type AdminTeamListContentProps = {
+  onEdit: (teamId: string) => void
+}
+
+const AdminTeamListContent = ({ onEdit }: AdminTeamListContentProps) => {
   const { query, countQuery, pagination, changePage } = useTeamList(25)
   const teams = use(query.promise)
   const count = use(countQuery.promise)
@@ -20,7 +27,7 @@ const AdminTeamListContent = () => {
     <section className="flex h-full w-full flex-col gap-0.5">
       <AdminTeamTable
         teams={teams as (Team & { ageCategory?: string })[]}
-        onEdit={(teamId) => navigate(`${teamId}/edit`)}
+        onEdit={onEdit}
         onDelete={(team) => navigate(`${team.id}/delete`)}
       />
       <div className="min-h-10">
@@ -37,7 +44,11 @@ const AdminTeamListContent = () => {
 }
 
 export const AdminTeamsPage = () => {
-  const navigate = useNavigate()
+  const [sheetState, setSheetState] = useState<SheetState>({ open: false })
+
+  const openCreate = () => setSheetState({ open: true, teamId: undefined })
+  const openEdit = (teamId: string) => setSheetState({ open: true, teamId })
+  const closeSheet = (open: boolean) => setSheetState((s) => ({ ...s, open }))
 
   return (
     <Layout.Root>
@@ -46,21 +57,22 @@ export const AdminTeamsPage = () => {
           <Typography.Title1>
             <FormattedMessage id="adminTeams.title" />
           </Typography.Title1>
-          <Button variant="outline" size="sm" onPress={() => navigate('create')}>
+          <Button variant="outline" size="sm" onPress={openCreate}>
             <CirclePlus className="h-4 w-4" />
             <FormattedMessage id="adminTeams.action.create" />
           </Button>
         </div>
         <Separator orientation="horizontal" />
       </Layout.Header>
-    <Layout.Content>
-      <ErrorBoundary>
-        <Suspense fallback={<TableLoader nbCols={5} nbRows={10} />}>
-          <AdminTeamListContent />
-        </Suspense>
-      </ErrorBoundary>
-      <Outlet />
-    </Layout.Content>
-  </Layout.Root>
+      <Layout.Content>
+        <ErrorBoundary>
+          <Suspense fallback={<TableLoader nbCols={5} nbRows={10} />}>
+            <AdminTeamListContent onEdit={openEdit} />
+          </Suspense>
+        </ErrorBoundary>
+        <Outlet />
+      </Layout.Content>
+      <AdminTeamFormSheet open={sheetState.open} onOpenChange={closeSheet} teamId={sheetState.teamId} />
+    </Layout.Root>
   )
 }

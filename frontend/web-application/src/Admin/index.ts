@@ -1,6 +1,4 @@
 export { AdminUsersPage } from './pages/AdminUsersPage'
 export { AdminChampionshipsPage } from './pages/AdminChampionshipsPage'
 export { AdminTeamsPage } from './pages/AdminTeamsPage'
-export { AdminTeamCreatePage } from './pages/AdminTeamCreatePage'
-export { AdminTeamEditPage } from './pages/AdminTeamEditPage'
 export { AdminTeamDeletePage } from './pages/AdminTeamDeletePage'
