@@ -3,6 +3,8 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 import tailwindcss from '@tailwindcss/vite'
+import { storybookTest } from '@storybook/addon-vitest/vitest-plugin'
+import { playwright } from '@vitest/browser-playwright'
 
 const ALIASES = {
   '@Auth': path.resolve(__dirname, './src/Auth'),
@@ -23,9 +25,16 @@ const ALIASES = {
   '@I18n': path.resolve(__dirname, './src/I18n'),
 }
 
+const storybookPlugins = await storybookTest({ configDir: path.join(__dirname, '.storybook') })
+
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [tailwindcss(), react()],
+  server: {
+    fs: {
+      allow: ['../'],
+    },
+  },
   optimizeDeps: {
     include: ['@repo/design-system', '@repo/form-factory'],
   },
@@ -34,15 +43,35 @@ export default defineConfig({
       ...ALIASES,
     },
   },
-  // server: {
-  //   port: 3000,
-  // },
   test: {
-    environment: 'jsdom',
     globals: true,
-    setupFiles: './tests/setup.ts',
     reporters: ['default', 'html', 'json'],
-    exclude: ['**/node_modules/**', '**/dist/**', '**/src/sdk/**', '**/src/mocks/**', 'public', '.storybook', 'config', 'e2e/**'],
     outputFile: './coverage/report.html',
+    projects: [
+      {
+        extends: true,
+        test: {
+          name: 'unit',
+          environment: 'jsdom',
+          setupFiles: ['./tests/setup.ts'],
+          include: ['src/**/*.test.{ts,tsx}', 'src/**/*.spec.{ts,tsx}'],
+          exclude: ['**/node_modules/**', '**/dist/**', '**/src/sdk/**', '**/src/mocks/**', 'e2e/**'],
+        },
+      },
+      {
+        extends: true,
+        plugins: storybookPlugins,
+        test: {
+          name: 'storybook',
+          browser: {
+            enabled: true,
+            headless: true,
+            provider: playwright({}),
+            instances: [{ browser: 'chromium' }],
+          },
+          setupFiles: ['./.storybook/vitest.setup.ts'],
+        },
+      },
+    ],
   },
 })

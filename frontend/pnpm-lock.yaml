@@ -323,6 +323,9 @@ importers:
       '@vitest/browser':
         specifier: 4.1.5
         version: 4.1.5(msw@2.12.10(@types/node@25.5.0)(typescript@6.0.3))(vite@8.0.10(@types/node@25.5.0)(esbuild@0.27.4)(jiti@2.6.1)(yaml@2.8.2))(vitest@4.1.5)
+      '@vitest/browser-playwright':
+        specifier: 4.1.5
+        version: 4.1.5(msw@2.12.10(@types/node@25.5.0)(typescript@6.0.3))(playwright@1.58.2)(vite@8.0.10(@types/node@25.5.0)(esbuild@0.27.4)(jiti@2.6.1)(yaml@2.8.2))(vitest@4.1.5)
       '@vitest/coverage-v8':
         specifier: 4.1.5
         version: 4.1.5(@vitest/browser@4.1.5)(vitest@4.1.5)
@@ -8949,7 +8952,6 @@ snapshots:
       - msw
       - utf-8-validate
       - vite
-    optional: true
 
   '@vitest/browser-playwright@4.1.5(msw@2.12.10(@types/node@25.5.0)(typescript@6.0.3))(playwright@1.58.2)(vite@8.0.16(@types/node@25.5.0)(esbuild@0.27.4)(jiti@2.6.1)(yaml@2.8.2))(vitest@4.1.9)':
     dependencies:
