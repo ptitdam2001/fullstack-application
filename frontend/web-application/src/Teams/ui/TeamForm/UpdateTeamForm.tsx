@@ -44,7 +44,6 @@ export const UpdateTeamForm = ({ teamId, defaultValues, onFinish, className }: P
       toast('Error during Team update')
     }
   }
-
   return (
     <Form name="teamForm" onSubmit={onSubmit} className={cn('h-full', className)}>
       <Field name="name">
@@ -63,11 +62,7 @@ export const UpdateTeamForm = ({ teamId, defaultValues, onFinish, className }: P
         )}
       </Field>
       <div className="flex flex-row-reverse py-1">
-        <Button
-          type="submit"
-          variant="outline"
-          isDisabled={!form.formState.isValid || !form.formState.isDirty || isPending}
-        >
+        <Button type="submit" variant="outline" isDisabled={!form.formState.isDirty || isPending}>
           {isPending && <Loader2 className="animate-spin" />}
           Update
         </Button>
