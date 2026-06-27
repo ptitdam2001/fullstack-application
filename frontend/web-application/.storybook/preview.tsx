@@ -6,6 +6,7 @@ import '../src/index.css'
 import React from 'react'
 import { reactQueryClient } from '../config/reactQueryClient'
 import { ThemeProvider } from '@Theme/Provider/ThemeProvider'
+import { Toast } from '@repo/design-system'
 import { localStorageDecorator } from './decorators/localstorage'
 import { intlDecorator } from './decorators/intl'
 /*
@@ -33,7 +34,9 @@ const preview: Preview = {
   decorators: [
     storyFn => (
       <QueryClientProvider client={reactQueryClient}>
-        <ThemeProvider>{storyFn()}</ThemeProvider>
+        <ThemeProvider>
+          <Toast.Provider>{storyFn()}</Toast.Provider>
+        </ThemeProvider>
       </QueryClientProvider>
     ),
     intlDecorator,
