@@ -1,9 +1,9 @@
 ---
-openapi: "3.1.0"
+openapi: '3.1.0'
 info:
-  version: "1"
-  title: ""
-  description: ""
+  version: '1'
+  title: ''
+  description: ''
 paths:
   /me:
     get:
@@ -11,18 +11,18 @@ paths:
       tags:
         - Authentication
       responses:
-        "200":
+        '200':
           description: Current user
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserWithoutPassword"
-        "401":
+                $ref: '#/components/schemas/UserWithoutPassword'
+        '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
   /me/teams:
     get:
       operationId: getMyTeams
@@ -30,20 +30,20 @@ paths:
       tags:
         - UserTeam
       responses:
-        "200":
+        '200':
           description: List of UserTeams with embedded team data
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/UserTeamWithTeam"
-        "401":
+                  $ref: '#/components/schemas/UserTeamWithTeam'
+        '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
   /login:
     post:
       operationId: login
@@ -54,20 +54,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Login"
+              $ref: '#/components/schemas/Login'
       responses:
-        "200":
+        '200':
           description: Logged in succesfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/TokenData"
+                $ref: '#/components/schemas/TokenData'
         404:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
   /logout:
     post:
       operationId: logout
@@ -77,11 +77,11 @@ paths:
         200:
           description: succesful current user's Logout
         500:
-          description: "Internal error"
+          description: 'Internal error'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
   /register:
     post:
       operationId: register
@@ -93,26 +93,26 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/RegisterInput"
+              $ref: '#/components/schemas/RegisterInput'
       responses:
-        "201":
+        '201':
           description: User created successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserWithoutPassword"
-        "409":
+                $ref: '#/components/schemas/UserWithoutPassword'
+        '409':
           description: Email already in use
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
-        "500":
+                $ref: '#/components/schemas/ErrorOutput'
+        '500':
           description: Internal error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
 
   /forgot-password:
     post:
@@ -124,22 +124,22 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ForgotPassword"
+              $ref: '#/components/schemas/ForgotPassword'
       responses:
         200:
-          description: "successful"
+          description: 'successful'
         500:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
   /users:
     get:
-      operationId: "getUsers"
+      operationId: 'getUsers'
       tags:
         - Users
-      description: ""
+      description: ''
       parameters:
         - in: query
           name: page
@@ -158,17 +158,17 @@ paths:
           description: Filter by active status (false = inactive/pending activation)
       responses:
         200:
-          description: "Get list of users"
+          description: 'Get list of users'
           content:
             application/json:
               schema:
-                type: "array"
+                type: 'array'
                 items:
-                  $ref: "#/components/schemas/User"
+                  $ref: '#/components/schemas/User'
   /user:
     post:
-      operationId: "createUser"
-      description: ""
+      operationId: 'createUser'
+      description: ''
       tags:
         - Users
       parameters: []
@@ -176,20 +176,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/User"
+              $ref: '#/components/schemas/User'
       responses:
         200:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
+                $ref: '#/components/schemas/User'
         500:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
   /user/{userId}/player:
     post:
       operationId: createPlayer
@@ -197,34 +197,34 @@ paths:
       tags:
         - Team
       parameters:
-        - in: "path"
-          name: "userId"
+        - in: 'path'
+          name: 'userId'
           required: true
           schema:
-            type: "string"
+            type: 'string'
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Player"
+              $ref: '#/components/schemas/Player'
       responses:
         200:
-          description: "successful"
+          description: 'successful'
           content:
             application/json:
               schema:
                 type: string
         404:
-          description: "User or team does not exist"
+          description: 'User or team does not exist'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
 
   /teams:
     get:
-      operationId: "getTeams"
-      description: "get list of teams"
+      operationId: 'getTeams'
+      description: 'get list of teams'
       tags:
         - Teams
       security: []
@@ -241,13 +241,13 @@ paths:
           description: The numbers of items to return
       responses:
         200:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
-                type: "array"
+                type: 'array'
                 items:
-                  $ref: "#/components/schemas/Team"
+                  $ref: '#/components/schemas/Team'
   /teams/count:
     get:
       operationId: countTeams
@@ -258,15 +258,15 @@ paths:
       parameters: []
       responses:
         200:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Count"
+                $ref: '#/components/schemas/Count'
   /team:
     post:
-      operationId: "createTeam"
-      description: "Create a team. Any authenticated user can create a team and automatically becomes its coach."
+      operationId: 'createTeam'
+      description: 'Create a team. Any authenticated user can create a team and automatically becomes its coach.'
       tags:
         - Team
       parameters: []
@@ -274,177 +274,177 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/TeamWithoutId"
+              $ref: '#/components/schemas/TeamWithoutId'
       responses:
         200:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
-                type: "string"
+                type: 'string'
   /team/{id}:
     delete:
-      operationId: "removeTeam"
-      description: ""
+      operationId: 'removeTeam'
+      description: ''
       tags:
         - Team
       parameters:
-        - in: "path"
-          name: "id"
+        - in: 'path'
+          name: 'id'
           required: true
           schema:
-            type: "string"
+            type: 'string'
       responses:
         200:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
-                type: "string"
+                type: 'string'
     get:
-      operationId: "getTeam"
-      description: "get a team info"
+      operationId: 'getTeam'
+      description: 'get a team info'
       tags:
         - Team
       parameters:
-        - in: "path"
-          name: "id"
+        - in: 'path'
+          name: 'id'
           required: true
           schema:
-            type: "string"
+            type: 'string'
       responses:
         200:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Team"
+                $ref: '#/components/schemas/Team'
         404:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
     patch:
-      operationId: "updateTeam"
-      description: "Update a team. Requires Admin or Coach of the team."
+      operationId: 'updateTeam'
+      description: 'Update a team. Requires Admin or Coach of the team.'
       tags:
         - Team
       parameters:
-        - in: "path"
-          name: "id"
+        - in: 'path'
+          name: 'id'
           required: true
           schema:
-            type: "string"
+            type: 'string'
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Team"
+              $ref: '#/components/schemas/Team'
       responses:
         200:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Team"
+                $ref: '#/components/schemas/Team'
         403:
-          description: "Forbidden — requires Admin or Coach role on this team"
+          description: 'Forbidden — requires Admin or Coach role on this team'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
         404:
-          description: "Team not found"
+          description: 'Team not found'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
 
   /team/{teamId}/players:
     get:
       operationId: getTeamPlayers
-      description: "Get list of player"
+      description: 'Get list of player'
       tags:
         - Teams
       parameters:
-        - in: "path"
-          name: "teamId"
+        - in: 'path'
+          name: 'teamId'
           required: true
           schema:
-            type: "string"
-        - in: "query"
-          name: "count"
+            type: 'string'
+        - in: 'query'
+          name: 'count'
           schema:
-            type: "integer"
-        - in: "query"
-          name: "page"
+            type: 'integer'
+        - in: 'query'
+          name: 'page'
           schema:
-            type: "integer"
+            type: 'integer'
       responses:
         200:
-          description: "list of player about current team"
+          description: 'list of player about current team'
           content:
             application/json:
               schema:
-                type: "array"
+                type: 'array'
                 items:
-                  $ref: "#/components/schemas/Player"
+                  $ref: '#/components/schemas/Player'
         404:
-          description: "not found team"
+          description: 'not found team'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
   /team/{teamId}/calendar:
     get:
       operationId: getTeamCalendar
-      description: "Get calendar of given team"
+      description: 'Get calendar of given team'
       tags:
         - Teams
       parameters:
-        - in: "path"
-          name: "teamId"
+        - in: 'path'
+          name: 'teamId'
           required: true
           schema:
-            type: "string"
-        - in: "query"
-          name: "count"
+            type: 'string'
+        - in: 'query'
+          name: 'count'
           schema:
-            type: "integer"
-        - in: "query"
-          name: "page"
+            type: 'integer'
+        - in: 'query'
+          name: 'page'
           schema:
-            type: "integer"
-        - in: "query"
-          name: "startDate"
+            type: 'integer'
+        - in: 'query'
+          name: 'startDate'
           schema:
-            type: "string"
+            type: 'string'
             format: date-time
-        - in: "query"
-          name: "endDate"
+        - in: 'query'
+          name: 'endDate'
           schema:
-            type: "string"
+            type: 'string'
             format: date-time
       responses:
         200:
-          description: "games of given team"
+          description: 'games of given team'
           content:
             application/json:
               schema:
-                type: "array"
+                type: 'array'
                 items:
-                  $ref: "#/components/schemas/Game"
+                  $ref: '#/components/schemas/Game'
         404:
-          description: "not found team"
+          description: 'not found team'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
   /team/{teamId}/player/{userId}:
     post:
       operationId: putUserToTeam
-      description: "Set a player to the team"
+      description: 'Set a player to the team'
       tags:
         - Teams
       parameters:
@@ -460,11 +460,11 @@ paths:
             type: string
       responses:
         404:
-          description: "team or user are not found"
+          description: 'team or user are not found'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
         200:
           description: Successful
           content:
@@ -474,7 +474,7 @@ paths:
   /team/{teamId}/coaches:
     get:
       operationId: getTeamCoaches
-      description: "List coaches assigned to a team"
+      description: 'List coaches assigned to a team'
       tags:
         - UserTeam
       parameters:
@@ -485,17 +485,17 @@ paths:
             type: string
       responses:
         200:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/UserTeam"
+                  $ref: '#/components/schemas/UserTeam'
   /team/{teamId}/coach/{userId}:
     post:
       operationId: assignCoach
-      description: "Assign a coach to a team"
+      description: 'Assign a coach to a team'
       tags:
         - UserTeam
       parameters:
@@ -511,20 +511,20 @@ paths:
             type: string
       responses:
         201:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserTeam"
+                $ref: '#/components/schemas/UserTeam'
         409:
-          description: "Coach already assigned to this team"
+          description: 'Coach already assigned to this team'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
     delete:
       operationId: removeCoach
-      description: "Remove a coach from a team"
+      description: 'Remove a coach from a team'
       tags:
         - UserTeam
       parameters:
@@ -540,17 +540,17 @@ paths:
             type: string
       responses:
         204:
-          description: "Removed"
+          description: 'Removed'
         404:
-          description: "Assignment not found"
+          description: 'Assignment not found'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
   /user/{userId}/coach-teams:
     get:
       operationId: getCoachTeams
-      description: "List teams managed by a coach"
+      description: 'List teams managed by a coach'
       tags:
         - UserTeam
       parameters:
@@ -561,17 +561,17 @@ paths:
             type: string
       responses:
         200:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/UserTeam"
+                  $ref: '#/components/schemas/UserTeam'
   /match/{matchId}/referees:
     get:
       operationId: getMatchReferees
-      description: "List referees assigned to a match"
+      description: 'List referees assigned to a match'
       tags:
         - UserMatch
       parameters:
@@ -582,17 +582,17 @@ paths:
             type: string
       responses:
         200:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/UserMatch"
+                  $ref: '#/components/schemas/UserMatch'
   /match/{matchId}/referee/{userId}:
     post:
       operationId: assignReferee
-      description: "Assign a referee to a match"
+      description: 'Assign a referee to a match'
       tags:
         - UserMatch
       parameters:
@@ -608,20 +608,20 @@ paths:
             type: string
       responses:
         201:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserMatch"
+                $ref: '#/components/schemas/UserMatch'
         409:
-          description: "Referee already assigned to this match"
+          description: 'Referee already assigned to this match'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
     delete:
       operationId: removeReferee
-      description: "Remove a referee from a match"
+      description: 'Remove a referee from a match'
       tags:
         - UserMatch
       parameters:
@@ -637,17 +637,17 @@ paths:
             type: string
       responses:
         204:
-          description: "Removed"
+          description: 'Removed'
         404:
-          description: "Assignment not found"
+          description: 'Assignment not found'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
   /user/{userId}/referee-matches:
     get:
       operationId: getUserMatches
-      description: "List matches where a user is referee"
+      description: 'List matches where a user is referee'
       tags:
         - UserMatch
       parameters:
@@ -658,103 +658,103 @@ paths:
             type: string
       responses:
         200:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/UserMatch"
+                  $ref: '#/components/schemas/UserMatch'
   /user/{id}:
     delete:
-      operationId: "removeUser"
-      description: ""
+      operationId: 'removeUser'
+      description: ''
       tags:
         - Users
       parameters:
-        - in: "path"
-          name: "id"
+        - in: 'path'
+          name: 'id'
           required: true
           schema:
-            type: "string"
+            type: 'string'
 
       responses:
         200:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
-                type: "boolean"
+                type: 'boolean'
         404:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
     patch:
-      operationId: "updateUser"
-      description: ""
+      operationId: 'updateUser'
+      description: ''
       tags:
         - Users
       parameters:
-        - in: "path"
-          name: "id"
+        - in: 'path'
+          name: 'id'
           required: true
           schema:
-            type: "string"
+            type: 'string'
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UpdateUserInput"
+              $ref: '#/components/schemas/UpdateUserInput'
       responses:
         200:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
+                $ref: '#/components/schemas/User'
         404:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
   /users/{id}:
     get:
-      operationId: "getUser"
-      description: ""
+      operationId: 'getUser'
+      description: ''
       tags:
         - Users
       parameters:
-        - in: "path"
-          name: "id"
+        - in: 'path'
+          name: 'id'
           required: true
           schema:
-            type: "string"
+            type: 'string'
       responses:
         200:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
+                $ref: '#/components/schemas/User'
         403:
-          description: "Bad Request"
+          description: 'Bad Request'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
         404:
-          description: "Not found user"
+          description: 'Not found user'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
   /areas:
     get:
-      operationId: "getAreaList"
-      description: "get list of areas"
+      operationId: 'getAreaList'
+      description: 'get list of areas'
       tags:
         - Area
       parameters:
@@ -770,15 +770,15 @@ paths:
           description: The numbers of items to return
       responses:
         200:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Area"
+                  $ref: '#/components/schemas/Area'
     post:
-      description: "create an area"
+      description: 'create an area'
       operationId: createArea
       tags:
         - Area
@@ -786,20 +786,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/AreaWithoutId"
+              $ref: '#/components/schemas/AreaWithoutId'
       responses:
         200:
-          description: "successful"
+          description: 'successful'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Area"
+                $ref: '#/components/schemas/Area'
         500:
-          description: "Error during creation"
+          description: 'Error during creation'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
   /areas/count:
     get:
       operationId: countAllAreas
@@ -809,96 +809,96 @@ paths:
       parameters: []
       responses:
         200:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Count"
+                $ref: '#/components/schemas/Count'
 
   /areas/{id}:
     get:
-      description: "Get an area"
+      description: 'Get an area'
       operationId: getArea
       tags:
         - Area
       parameters:
-        - in: "path"
-          name: "id"
+        - in: 'path'
+          name: 'id'
           required: true
           schema:
-            type: "string"
+            type: 'string'
       responses:
         200:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Area"
+                $ref: '#/components/schemas/Area'
         404:
-          description: "Not found area"
+          description: 'Not found area'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
 
     delete:
-      description: "delete an area"
+      description: 'delete an area'
       operationId: deleteArea
       tags:
         - Area
       parameters:
-        - in: "path"
-          name: "id"
+        - in: 'path'
+          name: 'id'
           required: true
           schema:
-            type: "string"
+            type: 'string'
       responses:
         200:
-          description: ""
+          description: ''
         404:
-          description: "Not found"
+          description: 'Not found'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
     patch:
-      description: "update an area"
+      description: 'update an area'
       operationId: updateArea
       tags:
         - Area
       parameters:
-        - in: "path"
-          name: "id"
+        - in: 'path'
+          name: 'id'
           required: true
           schema:
-            type: "string"
+            type: 'string'
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/AreaWithoutId"
+              $ref: '#/components/schemas/AreaWithoutId'
       responses:
         200:
-          description: "successful"
+          description: 'successful'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Area"
+                $ref: '#/components/schemas/Area'
         404:
-          description: "Not found"
+          description: 'Not found'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
         500:
-          description: "Error during creation"
+          description: 'Error during creation'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
   /games/{year}/{month}:
     get:
-      description: "get list of match for a given month"
+      description: 'get list of match for a given month'
       operationId: getGamesByMonth
       tags:
         - Games
@@ -915,16 +915,16 @@ paths:
             type: integer
       responses:
         200:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Game"
+                  $ref: '#/components/schemas/Game'
   /games:
     get:
-      description: "get list of match"
+      description: 'get list of match'
       operationId: getGames
       tags:
         - Games
@@ -941,13 +941,13 @@ paths:
           description: The numbers of items to return
       responses:
         200:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Game"
+                  $ref: '#/components/schemas/Game'
   /games/count:
     get:
       operationId: countAllGames
@@ -957,24 +957,24 @@ paths:
       parameters: []
       responses:
         200:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Count"
+                $ref: '#/components/schemas/Count'
   /team/{teamId}/games:
     get:
-      description: "get list of match about current team"
+      description: 'get list of match about current team'
       operationId: getTeamGames
       tags:
         - Games
         - Team
       parameters:
-        - in: "path"
-          name: "teamId"
+        - in: 'path'
+          name: 'teamId'
           required: true
           schema:
-            type: "string"
+            type: 'string'
         - in: query
           name: page
           schema:
@@ -987,22 +987,22 @@ paths:
           description: The numbers of items to return
       responses:
         200:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Game"
+                  $ref: '#/components/schemas/Game'
         404:
-          description: "Team not found"
+          description: 'Team not found'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
   /game:
     post:
-      description: "Create a game"
+      description: 'Create a game'
       operationId: createMatch
       tags:
         - Games
@@ -1011,91 +1011,91 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Game"
+              $ref: '#/components/schemas/Game'
       responses:
         200:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Game"
+                  $ref: '#/components/schemas/Game'
         500:
-          description: "Internal error"
+          description: 'Internal error'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
   /game/{id}:
     patch:
-      description: "Create a game"
+      description: 'Create a game'
       operationId: updateMatch
       tags:
         - Games
       parameters:
-        - in: "path"
-          name: "id"
+        - in: 'path'
+          name: 'id'
           required: true
           schema:
-            type: "string"
+            type: 'string'
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Game"
+              $ref: '#/components/schemas/Game'
       responses:
         200:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Game"
+                  $ref: '#/components/schemas/Game'
         404:
-          description: "Not found game"
+          description: 'Not found game'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
         500:
-          description: "Internal error"
+          description: 'Internal error'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
     delete:
-      description: "Delete a game"
+      description: 'Delete a game'
       operationId: removeGame
       tags:
         - Games
       parameters:
-        - in: "path"
-          name: "id"
+        - in: 'path'
+          name: 'id'
           required: true
           schema:
-            type: "string"
+            type: 'string'
       responses:
         200:
-          description: ""
+          description: ''
         404:
-          description: "Not found game"
+          description: 'Not found game'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
         500:
-          description: "Internal error"
+          description: 'Internal error'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
 
   /championships:
     get:
       operationId: getChampionships
-      description: "Get list of championships"
+      description: 'Get list of championships'
       tags:
         - Championship
       security: []
@@ -1110,52 +1110,52 @@ paths:
             type: integer
       responses:
         200:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Championship"
+                  $ref: '#/components/schemas/Championship'
 
   /championships/count:
     get:
       operationId: countChampionships
-      description: "Count championships"
+      description: 'Count championships'
       tags:
         - Championship
       security: []
       responses:
         200:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Count"
+                $ref: '#/components/schemas/Count'
 
   /championship:
     post:
       operationId: createChampionship
-      description: "Create a championship"
+      description: 'Create a championship'
       tags:
         - Championship
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ChampionshipInput"
+              $ref: '#/components/schemas/ChampionshipInput'
       responses:
         201:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Championship"
+                $ref: '#/components/schemas/Championship'
 
   /championship/{id}:
     get:
       operationId: getChampionship
-      description: "Get a championship"
+      description: 'Get a championship'
       tags:
         - Championship
       security: []
@@ -1167,20 +1167,20 @@ paths:
             type: string
       responses:
         200:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Championship"
+                $ref: '#/components/schemas/Championship'
         404:
-          description: "Not found"
+          description: 'Not found'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
     patch:
       operationId: updateChampionship
-      description: "Update a championship"
+      description: 'Update a championship'
       tags:
         - Championship
       parameters:
@@ -1193,23 +1193,23 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ChampionshipInput"
+              $ref: '#/components/schemas/ChampionshipInput'
       responses:
         200:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Championship"
+                $ref: '#/components/schemas/Championship'
         404:
-          description: "Not found"
+          description: 'Not found'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
     delete:
       operationId: removeChampionship
-      description: "Delete a championship"
+      description: 'Delete a championship'
       tags:
         - Championship
       parameters:
@@ -1220,18 +1220,18 @@ paths:
             type: string
       responses:
         204:
-          description: "Deleted"
+          description: 'Deleted'
         404:
-          description: "Not found"
+          description: 'Not found'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
 
   /championship/{championshipId}/phases:
     get:
       operationId: getChampionshipPhases
-      description: "Get phases of a championship"
+      description: 'Get phases of a championship'
       tags:
         - Phase
       security: []
@@ -1243,43 +1243,43 @@ paths:
             type: string
       responses:
         200:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Phase"
+                  $ref: '#/components/schemas/Phase'
 
   /phase:
     post:
       operationId: createPhase
-      description: "Create a phase"
+      description: 'Create a phase'
       tags:
         - Phase
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/PhaseInput"
+              $ref: '#/components/schemas/PhaseInput'
       responses:
         201:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Phase"
+                $ref: '#/components/schemas/Phase'
         409:
-          description: "A phase with this order already exists in the championship"
+          description: 'A phase with this order already exists in the championship'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
 
   /phase/{id}:
     get:
       operationId: getPhase
-      description: "Get a phase"
+      description: 'Get a phase'
       tags:
         - Phase
       security: []
@@ -1291,20 +1291,20 @@ paths:
             type: string
       responses:
         200:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Phase"
+                $ref: '#/components/schemas/Phase'
         404:
-          description: "Not found"
+          description: 'Not found'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
     patch:
       operationId: updatePhase
-      description: "Update a phase"
+      description: 'Update a phase'
       tags:
         - Phase
       parameters:
@@ -1317,23 +1317,23 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/PhaseInput"
+              $ref: '#/components/schemas/PhaseInput'
       responses:
         200:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Phase"
+                $ref: '#/components/schemas/Phase'
         404:
-          description: "Not found"
+          description: 'Not found'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
     delete:
       operationId: removePhase
-      description: "Delete a phase"
+      description: 'Delete a phase'
       tags:
         - Phase
       parameters:
@@ -1344,18 +1344,18 @@ paths:
             type: string
       responses:
         204:
-          description: "Deleted"
+          description: 'Deleted'
         404:
-          description: "Not found"
+          description: 'Not found'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
 
   /phase/{phaseId}/groups:
     get:
       operationId: getPhaseGroups
-      description: "Get groups (poules) of a phase"
+      description: 'Get groups (poules) of a phase'
       tags:
         - Group
       security: []
@@ -1367,37 +1367,37 @@ paths:
             type: string
       responses:
         200:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Group"
+                  $ref: '#/components/schemas/Group'
 
   /group:
     post:
       operationId: createGroup
-      description: "Create a group (poule)"
+      description: 'Create a group (poule)'
       tags:
         - Group
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/GroupInput"
+              $ref: '#/components/schemas/GroupInput'
       responses:
         201:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Group"
+                $ref: '#/components/schemas/Group'
 
   /group/{id}:
     get:
       operationId: getGroup
-      description: "Get a group (poule)"
+      description: 'Get a group (poule)'
       tags:
         - Group
       security: []
@@ -1409,20 +1409,20 @@ paths:
             type: string
       responses:
         200:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Group"
+                $ref: '#/components/schemas/Group'
         404:
-          description: "Not found"
+          description: 'Not found'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
     patch:
       operationId: updateGroup
-      description: "Update a group (poule)"
+      description: 'Update a group (poule)'
       tags:
         - Group
       parameters:
@@ -1435,23 +1435,23 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/GroupInput"
+              $ref: '#/components/schemas/GroupInput'
       responses:
         200:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Group"
+                $ref: '#/components/schemas/Group'
         404:
-          description: "Not found"
+          description: 'Not found'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
     delete:
       operationId: removeGroup
-      description: "Delete a group (poule)"
+      description: 'Delete a group (poule)'
       tags:
         - Group
       parameters:
@@ -1462,18 +1462,18 @@ paths:
             type: string
       responses:
         204:
-          description: "Deleted"
+          description: 'Deleted'
         404:
-          description: "Not found"
+          description: 'Not found'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
 
   /group/{groupId}/standings:
     get:
       operationId: getGroupStandings
-      description: "Get standings for a group (poule)"
+      description: 'Get standings for a group (poule)'
       tags:
         - Standings
       security: []
@@ -1485,22 +1485,22 @@ paths:
             type: string
       responses:
         200:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GroupStandings"
+                $ref: '#/components/schemas/GroupStandings'
         404:
-          description: "Not found"
+          description: 'Not found'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
 
   /matches:
     get:
       operationId: getMatches
-      description: "Get list of matches"
+      description: 'Get list of matches'
       tags:
         - Match
       parameters:
@@ -1515,7 +1515,7 @@ paths:
         - in: query
           name: status
           schema:
-            $ref: "#/components/schemas/MatchStatus"
+            $ref: '#/components/schemas/MatchStatus'
           description: Filter by match status
         - in: query
           name: pastDue
@@ -1524,51 +1524,51 @@ paths:
           description: If true, only return matches where scheduledAt is in the past
       responses:
         200:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Match"
+                  $ref: '#/components/schemas/Match'
 
   /matches/count:
     get:
       operationId: countMatches
-      description: "Count matches"
+      description: 'Count matches'
       tags:
         - Match
       responses:
         200:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Count"
+                $ref: '#/components/schemas/Count'
 
   /match:
     post:
       operationId: addMatch
-      description: "Create a match"
+      description: 'Create a match'
       tags:
         - Match
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/MatchInput"
+              $ref: '#/components/schemas/MatchInput'
       responses:
         201:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Match"
+                $ref: '#/components/schemas/Match'
 
   /match/{id}:
     get:
       operationId: getMatch
-      description: "Get a match"
+      description: 'Get a match'
       tags:
         - Match
       parameters:
@@ -1579,20 +1579,20 @@ paths:
             type: string
       responses:
         200:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Match"
+                $ref: '#/components/schemas/Match'
         404:
-          description: "Not found"
+          description: 'Not found'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
     patch:
       operationId: editMatch
-      description: "Update a match"
+      description: 'Update a match'
       tags:
         - Match
       parameters:
@@ -1605,23 +1605,23 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/MatchInput"
+              $ref: '#/components/schemas/MatchInput'
       responses:
         200:
-          description: ""
+          description: ''
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Match"
+                $ref: '#/components/schemas/Match'
         404:
-          description: "Not found"
+          description: 'Not found'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
     delete:
       operationId: removeMatch
-      description: "Delete a match"
+      description: 'Delete a match'
       tags:
         - Match
       parameters:
@@ -1632,13 +1632,13 @@ paths:
             type: string
       responses:
         204:
-          description: "Deleted"
+          description: 'Deleted'
         404:
-          description: "Not found"
+          description: 'Not found'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
 
   /activate:
     post:
@@ -1651,16 +1651,16 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ActivateAccountInput"
+              $ref: '#/components/schemas/ActivateAccountInput'
       responses:
-        "200":
+        '200':
           description: Account activated successfully
-        "400":
+        '400':
           description: Invalid or expired token
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
 
   /resend-activation:
     post:
@@ -1673,9 +1673,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ResendActivationInput"
+              $ref: '#/components/schemas/ResendActivationInput'
       responses:
-        "200":
+        '200':
           description: Email sent (always 200 for anti-enumeration)
 
   /reset-password:
@@ -1689,16 +1689,16 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ResetPasswordInput"
+              $ref: '#/components/schemas/ResetPasswordInput'
       responses:
-        "200":
+        '200':
           description: Password reset successfully
-        "400":
+        '400':
           description: Invalid or expired token
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
 
   /users/{userId}/activate:
     patch:
@@ -1712,14 +1712,14 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: User activated by admin
-        "404":
+        '404':
           description: User not found
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
 
   /users/{userId}/unblock:
     patch:
@@ -1733,14 +1733,14 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: User unblocked by admin
-        "404":
+        '404':
           description: User not found
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
 
   /me/referee:
     post:
@@ -1748,14 +1748,14 @@ paths:
       tags:
         - Authentication
       responses:
-        "200":
+        '200':
           description: User declared as referee
-        "401":
+        '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
 
   /teams/with-coach:
     post:
@@ -1767,20 +1767,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateTeamWithCoachInput"
+              $ref: '#/components/schemas/CreateTeamWithCoachInput'
       responses:
-        "201":
+        '201':
           description: Team created and user assigned as coach
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/TeamWithCoachResult"
-        "400":
+                $ref: '#/components/schemas/TeamWithCoachResult'
+        '400':
           description: Validation error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
 
   /teams/{teamId}/join-requests:
     post:
@@ -1798,20 +1798,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateTeamJoinRequestInput"
+              $ref: '#/components/schemas/CreateTeamJoinRequestInput'
       responses:
-        "201":
+        '201':
           description: Join request created
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/TeamJoinRequest"
-        "409":
+                $ref: '#/components/schemas/TeamJoinRequest'
+        '409':
           description: Already a member
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
     get:
       operationId: getTeamJoinRequests
       tags:
@@ -1825,16 +1825,16 @@ paths:
         - in: query
           name: status
           schema:
-            $ref: "#/components/schemas/JoinRequestStatus"
+            $ref: '#/components/schemas/JoinRequestStatus'
       responses:
-        "200":
+        '200':
           description: List of join requests
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/TeamJoinRequest"
+                  $ref: '#/components/schemas/TeamJoinRequest'
 
   /teams/{teamId}/join-requests/{requestId}:
     patch:
@@ -1857,25 +1857,25 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UpdateTeamJoinRequestInput"
+              $ref: '#/components/schemas/UpdateTeamJoinRequestInput'
       responses:
-        "200":
+        '200':
           description: Join request updated
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/TeamJoinRequest"
-        "404":
+                $ref: '#/components/schemas/TeamJoinRequest'
+        '404':
           description: Request not found or not pending
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
 
   /teams/{teamId}/current-group:
     get:
       operationId: getTeamCurrentGroup
-      description: "Get the current group (poule) the team is enrolled in"
+      description: 'Get the current group (poule) the team is enrolled in'
       tags:
         - Teams
       parameters:
@@ -1885,29 +1885,29 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: Current group info, or null if not enrolled
           content:
             application/json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/TeamCurrentGroup"
-                  - type: "null"
-        "404":
+                  - $ref: '#/components/schemas/TeamCurrentGroup'
+                  - type: 'null'
+        '404':
           description: Team not found
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorOutput"
+                $ref: '#/components/schemas/ErrorOutput'
 
 security:
   - jwtAuth: []
 components:
   securitySchemes:
     jwtAuth:
-      type: "http"
-      scheme: "bearer"
-      bearerFormat: "JWT"
+      type: 'http'
+      scheme: 'bearer'
+      bearerFormat: 'JWT'
   schemas:
     RegisterInput:
       type: object
@@ -1967,7 +1967,7 @@ components:
         - latitude
     Area:
       allOf:
-        - $ref: "#/components/schemas/AreaWithoutId"
+        - $ref: '#/components/schemas/AreaWithoutId'
         - type: object
           required:
             - id
@@ -2037,7 +2037,7 @@ components:
         - requestedRole
       properties:
         requestedRole:
-          $ref: "#/components/schemas/TeamRole"
+          $ref: '#/components/schemas/TeamRole'
     UpdateTeamJoinRequestInput:
       type: object
       required:
@@ -2070,9 +2070,9 @@ components:
           type: string
           nullable: false
         requestedRole:
-          $ref: "#/components/schemas/TeamRole"
+          $ref: '#/components/schemas/TeamRole'
         status:
-          $ref: "#/components/schemas/JoinRequestStatus"
+          $ref: '#/components/schemas/JoinRequestStatus'
         createdAt:
           type: string
           format: date-time
@@ -2093,14 +2093,14 @@ components:
           type: string
           nullable: false
         ageCategory:
-          $ref: "#/components/schemas/AgeCategory"
+          $ref: '#/components/schemas/AgeCategory'
         color:
           type: string
           nullable: false
         areas:
           type: array
           items:
-            $ref: "#/components/schemas/AreaWithoutId"
+            $ref: '#/components/schemas/AreaWithoutId'
     TeamWithCoachResult:
       type: object
       required:
@@ -2108,9 +2108,9 @@ components:
         - userTeam
       properties:
         team:
-          $ref: "#/components/schemas/Team"
+          $ref: '#/components/schemas/Team'
         userTeam:
-          $ref: "#/components/schemas/UserTeam"
+          $ref: '#/components/schemas/UserTeam'
     TeamRole:
       type: string
       enum:
@@ -2134,7 +2134,7 @@ components:
           type: string
           format: uuid
         role:
-          $ref: "#/components/schemas/TeamRole"
+          $ref: '#/components/schemas/TeamRole'
     UserTeamWithTeam:
       type: object
       required:
@@ -2154,7 +2154,7 @@ components:
           type: string
           format: uuid
         role:
-          $ref: "#/components/schemas/TeamRole"
+          $ref: '#/components/schemas/TeamRole'
         team:
           type: object
           required:
@@ -2268,7 +2268,7 @@ components:
           type: array
           description: Contextual roles derived from team memberships and isReferee flag
           items:
-            $ref: "#/components/schemas/UserRole"
+            $ref: '#/components/schemas/UserRole'
       required:
         - id
         - email
@@ -2285,14 +2285,14 @@ components:
           type: string
         firstName:
           nullable: false
-          type: "string"
+          type: 'string'
         email:
           nullable: false
-          type: "string"
+          type: 'string'
           format: email
         id:
           nullable: false
-          type: "string"
+          type: 'string'
           format: uuid
         isAdmin:
           type: boolean
@@ -2353,7 +2353,7 @@ components:
         color:
           nullable: true
           type: string
-          example: "#222abb"
+          example: '#222abb'
           format: color
       required:
         - name
@@ -2362,7 +2362,6 @@ components:
       properties:
         id:
           type: string
-          format: uuid
         name:
           type: string
           nullable: false
@@ -2370,12 +2369,12 @@ components:
         color:
           nullable: true
           type: string
-          example: "#222abb"
+          example: '#222abb'
           format: color
         areas:
           type: array
           items:
-            $ref: "#/components/schemas/Area"
+            $ref: '#/components/schemas/Area'
       required:
         - id
         - name
@@ -2401,7 +2400,7 @@ components:
         - teamId
     GameTeam:
       allOf:
-        - $ref: "#/components/schemas/Team"
+        - $ref: '#/components/schemas/Team'
         - type: object
           required:
             - score
@@ -2424,13 +2423,13 @@ components:
           nullable: true
           format: date-time
         area:
-          $ref: "#/components/schemas/Area"
+          $ref: '#/components/schemas/Area'
         teams:
-          type: "array"
+          type: 'array'
           minItems: 2
           maxItems: 2
           items:
-            $ref: "#/components/schemas/GameTeam"
+            $ref: '#/components/schemas/GameTeam'
       required:
         - id
         - teams
@@ -2439,10 +2438,10 @@ components:
       properties:
         status:
           nullable: false
-          type: "number"
+          type: 'number'
         message:
           nullable: false
-          type: "string"
+          type: 'string'
 
     MatchArea:
       type: object
@@ -2488,13 +2487,13 @@ components:
           type: string
           nullable: true
         status:
-          $ref: "#/components/schemas/MatchStatus"
+          $ref: '#/components/schemas/MatchStatus'
         scheduledAt:
           type: string
           format: date-time
           nullable: true
         area:
-          $ref: "#/components/schemas/MatchArea"
+          $ref: '#/components/schemas/MatchArea'
         homeTeamId:
           type: string
         awayTeamId:
@@ -2511,7 +2510,7 @@ components:
 
     Match:
       allOf:
-        - $ref: "#/components/schemas/MatchInput"
+        - $ref: '#/components/schemas/MatchInput'
         - type: object
           required:
             - id
@@ -2536,7 +2535,7 @@ components:
         championshipId:
           type: string
         type:
-          $ref: "#/components/schemas/PhaseType"
+          $ref: '#/components/schemas/PhaseType'
         order:
           type: integer
         name:
@@ -2545,7 +2544,7 @@ components:
 
     Phase:
       allOf:
-        - $ref: "#/components/schemas/PhaseInput"
+        - $ref: '#/components/schemas/PhaseInput'
         - type: object
           required:
             - id
@@ -2573,7 +2572,7 @@ components:
         name:
           type: string
         matchMode:
-          $ref: "#/components/schemas/MatchMode"
+          $ref: '#/components/schemas/MatchMode'
         teamIds:
           type: array
           items:
@@ -2581,7 +2580,7 @@ components:
 
     Group:
       allOf:
-        - $ref: "#/components/schemas/GroupInput"
+        - $ref: '#/components/schemas/GroupInput'
         - type: object
           required:
             - id
@@ -2641,7 +2640,7 @@ components:
         rows:
           type: array
           items:
-            $ref: "#/components/schemas/StandingRow"
+            $ref: '#/components/schemas/StandingRow'
 
     AgeCategory:
       type: string
@@ -2681,7 +2680,7 @@ components:
           type: string
           nullable: true
         ageCategory:
-          $ref: "#/components/schemas/AgeCategory"
+          $ref: '#/components/schemas/AgeCategory'
         season:
           type: string
         startDate:
@@ -2693,11 +2692,11 @@ components:
           format: date-time
           nullable: true
         pointsConfig:
-          $ref: "#/components/schemas/PointsConfig"
+          $ref: '#/components/schemas/PointsConfig'
 
     Championship:
       allOf:
-        - $ref: "#/components/schemas/ChampionshipInput"
+        - $ref: '#/components/schemas/ChampionshipInput'
         - type: object
           required:
             - id
