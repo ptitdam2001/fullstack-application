@@ -2,19 +2,19 @@
 
 ## Définition
 
-Une équipe est un participant inscrit à un championnat. Elle est identifiée par une **couleur** et associée à un **lieu de match** (terrain). Une équipe appartient à une catégorie d'âge et peut participer à plusieurs championnats (saisons différentes ou championnats de même catégorie).
+Une équipe est un participant inscrit à un championnat. Elle est identifiée par une **couleur** et associée à un **lieu de match** (terrain). Une équipe appartient à une catégorie d'âge (entité admin-gérée, voir `19-age-category.md`) et peut participer à plusieurs championnats (saisons différentes ou championnats de même catégorie).
 
 ---
 
 ## Structure d'une équipe
 
-| Attribut         | Type          | Description                                         |
-| ---------------- | ------------- | --------------------------------------------------- |
-| `name`           | string        | Nom de l'équipe (ex. "Rouge", "Bleu Ciel")          |
-| `color`          | Color         | Couleur principale représentant l'équipe            |
-| `secondaryColor` | Color \| null | Couleur secondaire (optionnelle, pour les maillots) |
-| `venue`          | Venue         | Lieu de match associé (terrain domicile)            |
-| `ageCategory`    | AgeCategory   | Catégorie d'âge de l'équipe                         |
+| Attribut         | Type          | Description                                                     |
+| ---------------- | ------------- | --------------------------------------------------------------- |
+| `name`           | string        | Nom de l'équipe (ex. "Rouge", "Bleu Ciel")                      |
+| `color`          | Color         | Couleur principale représentant l'équipe                        |
+| `secondaryColor` | Color \| null | Couleur secondaire (optionnelle, pour les maillots)             |
+| `venue`          | Venue         | Lieu de match associé (terrain domicile)                        |
+| `ageCategoryId`  | ObjectId      | FK vers `AgeCategory` — obligatoire (voir `19-age-category.md`) |
 
 ---
 
