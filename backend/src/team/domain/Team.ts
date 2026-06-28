@@ -1,5 +1,3 @@
-import type { AgeCategory } from '../../championship/domain/Championship.js'
-
 export type Team = {
   id: string
   name: string
@@ -20,7 +18,7 @@ export type AreaWithoutId = {
 
 export type CreateTeamWithCoachInput = {
   name: string
-  ageCategory: AgeCategory
+  ageCategoryId: string | null
   color: string
   areas: AreaWithoutId[]
 }

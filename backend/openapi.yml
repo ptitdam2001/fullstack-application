@@ -2085,15 +2085,15 @@ components:
       type: object
       required:
         - name
-        - ageCategory
         - color
         - areas
       properties:
         name:
           type: string
           nullable: false
-        ageCategory:
-          $ref: '#/components/schemas/AgeCategory'
+        ageCategoryId:
+          type: string
+          nullable: true
         color:
           type: string
           nullable: false
@@ -2672,15 +2672,16 @@ components:
     ChampionshipInput:
       type: object
       required:
-        - ageCategory
+        - ageCategoryId
         - season
         - pointsConfig
       properties:
         name:
           type: string
           nullable: true
-        ageCategory:
-          $ref: '#/components/schemas/AgeCategory'
+        ageCategoryId:
+          type: string
+          nullable: false
         season:
           type: string
         startDate:

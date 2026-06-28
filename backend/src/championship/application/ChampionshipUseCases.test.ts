@@ -2,12 +2,11 @@ import { describe, it, expect, vi } from 'vitest'
 import { ChampionshipUseCases } from './ChampionshipUseCases.js'
 import type { IChampionshipRepository } from '../ports/IChampionshipRepository.js'
 import { ChampionshipNotFoundError } from '../domain/ChampionshipErrors.js'
-import { AgeCategory } from '../domain/Championship.js'
 
 const mockChampionship = {
   id: 'championship-1',
   name: 'Championnat U13 2024',
-  ageCategory: AgeCategory.U13,
+  ageCategoryId: '507f1f77bcf86cd799439013',
   season: '2024-2025',
   startDate: new Date('2024-09-01'),
   endDate: new Date('2025-05-31'),
@@ -55,7 +54,7 @@ describe('ChampionshipUseCases.create', () => {
     const repo = makeRepo()
     const input = {
       name: 'Championnat U13 2024',
-      ageCategory: AgeCategory.U13,
+      ageCategoryId: '507f1f77bcf86cd799439013',
       season: '2024-2025',
       startDate: new Date('2024-09-01'),
       endDate: new Date('2025-05-31'),

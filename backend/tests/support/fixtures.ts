@@ -1,5 +1,16 @@
 import bcrypt from 'bcrypt'
-import { AgeCategory, MatchMode, PhaseType, TeamRole, type Championship, type Group, type Phase, type Team, type User } from '@prisma/client'
+import {
+  Genre,
+  MatchMode,
+  PhaseType,
+  TeamRole,
+  type AgeCategory,
+  type Championship,
+  type Group,
+  type Phase,
+  type Team,
+  type User,
+} from '@prisma/client'
 import { prisma } from '../../utils/prismaClient'
 
 export const FIXTURE_PASSWORD = 'Test@1234'
@@ -35,27 +46,35 @@ export const createUser = async (overrides: UserOverrides = {}): Promise<User> =
 
 export const createAdmin = (overrides: UserOverrides = {}): Promise<User> => createUser({ isAdmin: true, ...overrides })
 
-export const createTeam = (overrides: Partial<{ name: string; ageCategory: AgeCategory }> = {}): Promise<Team> =>
+export const createAgeCategory = (overrides: Partial<{ label: string; genre: Genre }> = {}): Promise<AgeCategory> =>
+  prisma.ageCategory.upsert({
+    where: { label_genre: { label: overrides.label ?? 'U13', genre: overrides.genre ?? Genre.MALE } },
+    create: { label: overrides.label ?? 'U13', genre: overrides.genre ?? Genre.MALE },
+    update: {},
+  })
+
+export const createTeam = (overrides: Partial<{ name: string; ageCategoryId: string }> = {}): Promise<Team> =>
   prisma.team.create({
     data: {
       name: unique('Team'),
-      ageCategory: AgeCategory.Senior,
       ...overrides,
     },
   })
 
-export const createChampionship = (
-  overrides: Partial<{ name: string; ageCategory: AgeCategory; season: string }> = {}
-): Promise<Championship> =>
-  prisma.championship.create({
+export const createChampionship = async (
+  overrides: Partial<{ name: string; ageCategoryId: string; season: string }> = {}
+): Promise<Championship> => {
+  const ageCategoryId = overrides.ageCategoryId ?? (await createAgeCategory()).id
+  return prisma.championship.create({
     data: {
       name: unique('Championnat'),
-      ageCategory: AgeCategory.U13,
+      ageCategoryId,
       season: '2025-2026',
       pointsConfig: { win: 3, draw: 2, loss: 1, forfeit: 0 },
       ...overrides,
     },
   })
+}
 
 export const createPhase = (
   championshipId: string,
@@ -81,7 +100,7 @@ export const createGroup = (
       name: unique('Poule'),
       matchMode: MatchMode.SINGLE,
       ...rest,
-      groupTeams: { create: teamIds.map((teamId) => ({ teamId })) },
+      groupTeams: { create: teamIds.map(teamId => ({ teamId })) },
     },
   })
 }

@@ -1,12 +1,3 @@
-export enum AgeCategory {
-  U9 = 'U9',
-  U11 = 'U11',
-  U13 = 'U13',
-  U15 = 'U15',
-  U18 = 'U18',
-  Senior = 'Senior',
-}
-
 export type PointsConfig = {
   win: number
   draw: number
@@ -17,7 +8,7 @@ export type PointsConfig = {
 export type Championship = {
   id: string
   name: string
-  ageCategory: AgeCategory
+  ageCategoryId: string
   season: string
   startDate: Date | null
   endDate: Date | null

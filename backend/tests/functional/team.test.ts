@@ -1,11 +1,18 @@
 import { randomBytes, randomUUID } from 'node:crypto'
 import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
-import { AgeCategory, TeamRole } from '@prisma/client'
+import { TeamRole } from '@prisma/client'
 import { prisma } from '../../utils/prismaClient'
 import { authHeaderFor } from '../support/authenticate'
 import { createTestAgent } from '../support/client'
 import { resetDatabase } from '../support/database'
-import { assignUserToTeam, createAdmin, createPlayerOfTeam, createTeam, createUser } from '../support/fixtures'
+import {
+  assignUserToTeam,
+  createAdmin,
+  createAgeCategory,
+  createPlayerOfTeam,
+  createTeam,
+  createUser,
+} from '../support/fixtures'
 
 /**
  * MongoDB rejects non-ObjectId strings on `@db.ObjectId` fields with a 500
@@ -351,7 +358,6 @@ describe('team domain — functional API', () => {
       const user = await createUser()
       const payload = {
         name: 'Transactional FC',
-        ageCategory: AgeCategory.U13,
         color: '#123abc',
         areas: [
           {
@@ -392,10 +398,11 @@ describe('team domain — functional API', () => {
 
     it('returns the current group when the team is enrolled', async () => {
       const team = await createTeam()
+      const { id: ageCategoryId } = await createAgeCategory()
       const championship = await prisma.championship.create({
         data: {
           name: 'D1',
-          ageCategory: AgeCategory.Senior,
+          ageCategoryId,
           season: '2025-2026',
           pointsConfig: { win: 3, draw: 1, loss: 0, forfeit: -1 },
         },

@@ -14,13 +14,25 @@ datasource db {
 // CHAMPIONSHIP
 // ─────────────────────────────────────────
 
-enum AgeCategory {
-  U9
-  U11
-  U13
-  U15
-  U18
-  Senior
+enum Genre {
+  MALE
+  FEMALE
+  MIXED
+}
+
+model AgeCategory {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  label     String
+  genre     Genre
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  teams         Team[]
+  championships Championship[]
+
+  @@unique([label, genre])
+  @@map("ageCategories")
 }
 
 type PointsConfig {
@@ -31,10 +43,10 @@ type PointsConfig {
 }
 
 model Championship {
-  id           String       @id @default(auto()) @map("_id") @db.ObjectId
-  name         String
-  ageCategory  AgeCategory
-  season       String
+  id              String      @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  ageCategoryId   String      @db.ObjectId
+  season          String
   startDate    DateTime?
   endDate      DateTime?
   pointsConfig PointsConfig
@@ -42,7 +54,8 @@ model Championship {
   updatedAt    DateTime     @updatedAt
   deletedAt    DateTime?
 
-  phases Phase[]
+  ageCategory AgeCategory @relation(fields: [ageCategoryId], references: [id])
+  phases      Phase[]
 
   @@map("championships")
 }
@@ -174,23 +187,25 @@ type EmbeddedArea {
 // ─────────────────────────────────────────
 
 model Team {
-  id          String         @id @default(auto()) @map("_id") @db.ObjectId
-  name        String
-  color       String?
-  areas       EmbeddedArea[]
-  ageCategory AgeCategory?
+  id              String         @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  color           String?
+  areas           EmbeddedArea[]
+  ageCategoryId   String?        @db.ObjectId
 
   updatedAt    DateTime  @updatedAt
   deletedAt    DateTime?
+
+  ageCategory  AgeCategory?      @relation(fields: [ageCategoryId], references: [id])
   players      Player[]
   userTeams    UserTeam[]
   joinRequests TeamJoinRequest[]
   // Match participations (home/away) — named to disambiguate two relations to Match
-  homeMatches     Match[] @relation("HomeTeam")
-  awayMatches     Match[] @relation("AwayTeam")
+  homeMatches      Match[] @relation("HomeTeam")
+  awayMatches      Match[] @relation("AwayTeam")
   forfeitedMatches Match[] @relation("ForfeitTeam")
   // Group memberships via junction (replaces embedded teamIds array)
-  groupTeams   GroupTeam[]
+  groupTeams GroupTeam[]
 
   @@map("teams")
 }

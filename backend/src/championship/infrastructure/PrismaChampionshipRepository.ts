@@ -6,7 +6,7 @@ import type { Championship, CreateChampionshipInput, UpdateChampionshipInput } f
 const select = {
   id: true,
   name: true,
-  ageCategory: true,
+  ageCategoryId: true,
   season: true,
   startDate: true,
   endDate: true,
@@ -21,7 +21,12 @@ export class PrismaChampionshipRepository implements IChampionshipRepository {
   }
 
   async findAll({ page, count }: PaginationOptions): Promise<Championship[]> {
-    return prisma.championship.findMany({ where: { ...notDeleted }, skip: (page - 1) * count, take: count, select }) as Promise<Championship[]>
+    return prisma.championship.findMany({
+      where: { ...notDeleted },
+      skip: (page - 1) * count,
+      take: count,
+      select,
+    }) as Promise<Championship[]>
   }
 
   async findById(id: string): Promise<Championship | null> {

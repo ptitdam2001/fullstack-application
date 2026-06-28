@@ -1,7 +1,13 @@
 import { prisma } from '../../../utils/prismaClient.js'
 import { notDeleted } from '../../../utils/softDelete.js'
 import type { ITeamRepository, TeamPlayersOptions, TeamCalendarOptions, GameSummary } from '../ports/ITeamRepository.js'
-import type { Team, CreateTeamInput, UpdateTeamInput, CreateTeamWithCoachInput, TeamCurrentGroup } from '../domain/Team.js'
+import type {
+  Team,
+  CreateTeamInput,
+  UpdateTeamInput,
+  CreateTeamWithCoachInput,
+  TeamCurrentGroup,
+} from '../domain/Team.js'
 import type { Player } from '../../player/domain/Player.js'
 import type { UserTeam } from '../../userTeam/domain/UserTeam.js'
 
@@ -11,11 +17,17 @@ export class PrismaTeamRepository implements ITeamRepository {
   }
 
   async findAll(): Promise<Team[]> {
-    return prisma.team.findMany({ where: { ...notDeleted }, select: { id: true, name: true, color: true, updatedAt: true } })
+    return prisma.team.findMany({
+      where: { ...notDeleted },
+      select: { id: true, name: true, color: true, updatedAt: true },
+    })
   }
 
   async findById(id: string): Promise<Team | null> {
-    return prisma.team.findFirst({ where: { id, ...notDeleted }, select: { id: true, name: true, color: true, updatedAt: true } })
+    return prisma.team.findFirst({
+      where: { id, ...notDeleted },
+      select: { id: true, name: true, color: true, updatedAt: true },
+    })
   }
 
   async create(input: CreateTeamInput): Promise<Team> {
@@ -23,7 +35,11 @@ export class PrismaTeamRepository implements ITeamRepository {
   }
 
   async update(id: string, input: UpdateTeamInput): Promise<Team> {
-    return prisma.team.update({ where: { id }, data: input, select: { id: true, name: true, color: true, updatedAt: true } })
+    return prisma.team.update({
+      where: { id },
+      data: input,
+      select: { id: true, name: true, color: true, updatedAt: true },
+    })
   }
 
   async delete(id: string): Promise<void> {
@@ -52,7 +68,7 @@ export class PrismaTeamRepository implements ITeamRepository {
       orderBy: { scheduledAt: 'asc' },
       select: { id: true, scheduledAt: true, homeTeamId: true, awayTeamId: true, homeGoals: true, awayGoals: true },
     })
-    return matches.map((m) => ({
+    return matches.map(m => ({
       id: m.id,
       date: m.scheduledAt,
       teams: [
@@ -62,14 +78,17 @@ export class PrismaTeamRepository implements ITeamRepository {
     }))
   }
 
-  async createWithCoach(input: CreateTeamWithCoachInput, coachUserId: string): Promise<{ team: Team; userTeam: UserTeam }> {
-    return prisma.$transaction(async (tx) => {
+  async createWithCoach(
+    input: CreateTeamWithCoachInput,
+    coachUserId: string
+  ): Promise<{ team: Team; userTeam: UserTeam }> {
+    return prisma.$transaction(async tx => {
       const team = await tx.team.create({
         data: {
           name: input.name,
           color: input.color,
-          ageCategory: input.ageCategory,
-          areas: input.areas.map((a) => ({
+          ageCategoryId: input.ageCategoryId,
+          areas: input.areas.map(a => ({
             id: crypto.randomUUID(),
             name: a.name,
             address: a.address,
@@ -93,9 +112,13 @@ export class PrismaTeamRepository implements ITeamRepository {
   async findCurrentGroup(teamId: string): Promise<TeamCurrentGroup | null> {
     const gt = await prisma.groupTeam.findFirst({
       where: { teamId },
-      select: { group: { select: { id: true, name: true, phaseId: true, phase: { select: { championshipId: true } } } } },
+      select: {
+        group: { select: { id: true, name: true, phaseId: true, phase: { select: { championshipId: true } } } },
+      },
     })
-    if (!gt) { return null }
+    if (!gt) {
+      return null
+    }
     return {
       groupId: gt.group.id,
       groupName: gt.group.name,

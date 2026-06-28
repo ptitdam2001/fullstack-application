@@ -4,25 +4,26 @@ import { prisma } from '../../utils/prismaClient.js'
 import { authHeaderFor } from '../support/authenticate.js'
 import { createTestAgent } from '../support/client.js'
 import { resetDatabase } from '../support/database.js'
-import { createAdmin, createTeam, createUser } from '../support/fixtures.js'
+import { createAdmin, createAgeCategory, createTeam, createUser } from '../support/fixtures.js'
 
 /** MongoDB rejects non-ObjectId strings on @db.ObjectId fields with a 500.
  *  Use a well-formed but absent ObjectId for "unknown id" cases. */
 const unknownObjectId = (): string => randomBytes(12).toString('hex')
 
-const championshipInput = (overrides: Record<string, unknown> = {}) => ({
-  name: 'Championnat U13 2026',
-  ageCategory: 'U13',
-  season: '2025-2026',
-  pointsConfig: { win: 3, draw: 2, loss: 1, forfeit: 0 },
-  ...overrides,
-})
-
-const createChampionship = (overrides: Record<string, unknown> = {}) =>
-  prisma.championship.create({ data: championshipInput(overrides) as never })
-
 describe('championship domain — functional API', () => {
   let agent: Awaited<ReturnType<typeof createTestAgent>>
+  let defaultAgeCategoryId: string
+
+  const championshipInput = (overrides: Record<string, unknown> = {}) => ({
+    name: 'Championnat U13 2026',
+    ageCategoryId: defaultAgeCategoryId,
+    season: '2025-2026',
+    pointsConfig: { win: 3, draw: 2, loss: 1, forfeit: 0 },
+    ...overrides,
+  })
+
+  const createChampionship = (overrides: Record<string, unknown> = {}) =>
+    prisma.championship.create({ data: championshipInput(overrides) as never })
 
   beforeAll(async () => {
     agent = await createTestAgent()
@@ -30,6 +31,7 @@ describe('championship domain — functional API', () => {
 
   beforeEach(async () => {
     await resetDatabase()
+    defaultAgeCategoryId = (await createAgeCategory()).id
   })
 
   describe('getChampionships — GET /championships', () => {
@@ -43,7 +45,9 @@ describe('championship domain — functional API', () => {
     })
 
     it('excludes soft-deleted championships', async () => {
-      await prisma.championship.create({ data: { ...championshipInput({ name: 'Deleted' }), deletedAt: new Date() } as never })
+      await prisma.championship.create({
+        data: { ...championshipInput({ name: 'Deleted' }), deletedAt: new Date() } as never,
+      })
 
       const res = await agent.get('/championships')
 
@@ -101,7 +105,7 @@ describe('championship domain — functional API', () => {
       expect(res.status).toBe(201)
       expect(res.body).toMatchObject({
         name: 'Championnat U13 2026',
-        ageCategory: 'U13',
+        ageCategoryId: defaultAgeCategoryId,
         season: '2025-2026',
         pointsConfig: { win: 3, draw: 2, loss: 1, forfeit: 0 },
       })
