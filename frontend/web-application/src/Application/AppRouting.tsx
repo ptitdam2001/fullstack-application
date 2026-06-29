@@ -125,6 +125,11 @@ const router = createBrowserRouter(
             />
             <Route element={<AreaEditPage />} path="create" handle={{ breadcrumb: 'Créer' }} />
           </Route>
+          <Route
+            path="age-categories"
+            element={<AdminAgeCategoriesPage />}
+            handle={{ breadcrumb: "Catégories d'âge" }}
+          />
         </Route>
       </Route>
 
