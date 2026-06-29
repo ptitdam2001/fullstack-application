@@ -52,7 +52,7 @@ export const OnboardingScreen = () => {
       return
     }
     try {
-      await createTeam({ data: { name: newTeamName, ageCategory: 'Senior', color: '#000000', areas: [] } })
+      await createTeam({ data: { name: newTeamName, color: '#000000', areas: [] } })
       setTeamCreated(true)
       toast(intl.formatMessage({ id: 'onboarding.createTeam.done' }))
     } catch {

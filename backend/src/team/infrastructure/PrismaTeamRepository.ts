@@ -19,26 +19,29 @@ export class PrismaTeamRepository implements ITeamRepository {
   async findAll(): Promise<Team[]> {
     return prisma.team.findMany({
       where: { ...notDeleted },
-      select: { id: true, name: true, color: true, updatedAt: true },
+      select: { id: true, name: true, color: true, ageCategoryId: true, updatedAt: true },
     })
   }
 
   async findById(id: string): Promise<Team | null> {
     return prisma.team.findFirst({
       where: { id, ...notDeleted },
-      select: { id: true, name: true, color: true, updatedAt: true },
+      select: { id: true, name: true, color: true, ageCategoryId: true, updatedAt: true },
     })
   }
 
   async create(input: CreateTeamInput): Promise<Team> {
-    return prisma.team.create({ data: input, select: { id: true, name: true, color: true, updatedAt: true } })
+    return prisma.team.create({
+      data: input,
+      select: { id: true, name: true, color: true, ageCategoryId: true, updatedAt: true },
+    })
   }
 
   async update(id: string, input: UpdateTeamInput): Promise<Team> {
     return prisma.team.update({
       where: { id },
       data: input,
-      select: { id: true, name: true, color: true, updatedAt: true },
+      select: { id: true, name: true, color: true, ageCategoryId: true, updatedAt: true },
     })
   }
 
@@ -97,7 +100,7 @@ export class PrismaTeamRepository implements ITeamRepository {
             latitude: a.latitude,
           })),
         },
-        select: { id: true, name: true, color: true, updatedAt: true },
+        select: { id: true, name: true, color: true, ageCategoryId: true, updatedAt: true },
       })
 
       const userTeam = await tx.userTeam.create({

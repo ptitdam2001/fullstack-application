@@ -280,7 +280,9 @@
     "toast.deleted": "Team deleted successfully",
     "toast.deleteError": "Failed to delete team",
     "dialog.create.title": "Create Team",
-    "dialog.edit.title": "Edit Team"
+    "dialog.edit.title": "Edit Team",
+    "form.ageCategoryId": "Age category",
+    "form.ageCategoryId.none": "No category"
   },
   "adminAgeCategories": {
     "title": "Age Categories",

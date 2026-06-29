@@ -7,6 +7,7 @@ import { Button, Toast } from '@repo/design-system'
 import { Loader2 } from 'lucide-react'
 import type { CreateTeamMutationBody, TeamWithoutId } from '../../domain/Team'
 import { useTeamForm } from '../../application/useTeamForm'
+import { AgeCategorySelect } from '@AgeCategory/ui/AgeCategorySelect/AgeCategorySelect'
 
 const initialValues: TeamWithoutId = {
   name: '',
@@ -28,6 +29,7 @@ export const CreateTeamForm = ({ defaultValues, onFinish, className }: Props) =>
     defaultValues: {
       name: defaultValues?.name ?? initialValues.name,
       color: defaultValues?.color ?? initialValues.color,
+      ageCategoryId: defaultValues?.ageCategoryId ?? null,
     },
     mode: 'all',
   })
@@ -58,6 +60,9 @@ export const CreateTeamForm = ({ defaultValues, onFinish, className }: Props) =>
             helperText={fieldState.error?.message}
           />
         )}
+      </Field>
+      <Field name="ageCategoryId">
+        {({ field }) => <AgeCategorySelect value={field.value} onChange={field.onChange} />}
       </Field>
       <div className="flex flex-row-reverse py-1">
         <Button

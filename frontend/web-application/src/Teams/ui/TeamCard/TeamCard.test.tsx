@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router'
 import { type ReactNode } from 'react'
 import { describe, expect, it } from 'vitest'
-import { type Area, type Team } from '../../domain/Team'
+import { type Area, type TeamWithAgeCategoryLabel } from '../../domain/Team'
 import { TeamCard } from './TeamCard'
 
 // react-intl is globally mocked in tests/setup.ts
@@ -19,12 +19,12 @@ const primaryArea: Area = {
   latitude: 45.74,
 }
 
-const team: Team & { ageCategory?: string } = {
+const team: TeamWithAgeCategoryLabel = {
   id: '1',
   name: 'Les Rouges',
   color: '#e53e3e',
   areas: [primaryArea],
-  ageCategory: 'U18',
+  ageCategoryLabel: 'U18',
 }
 
 describe('TeamCard', () => {
@@ -50,8 +50,8 @@ describe('TeamCard', () => {
     expect(screen.getByText('U18')).toBeInTheDocument()
   })
 
-  it('does not render an age category badge when ageCategory is absent', () => {
-    render(<TeamCard team={{ ...team, ageCategory: undefined }} />, { wrapper })
+  it('does not render an age category badge when ageCategoryLabel is absent', () => {
+    render(<TeamCard team={{ ...team, ageCategoryLabel: undefined }} />, { wrapper })
     expect(screen.queryByText('U18')).not.toBeInTheDocument()
   })
 

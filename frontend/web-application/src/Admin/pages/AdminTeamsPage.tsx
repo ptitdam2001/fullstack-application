@@ -10,6 +10,8 @@ import { useTeamList } from '@Teams/application/useTeamList'
 import { AdminTeamTable } from '@Teams/ui/Admin/AdminTeamTable'
 import { AdminTeamFormSheet } from '@Teams/ui/Admin/AdminTeamFormSheet'
 import type { Team } from '@Teams/domain/Team'
+import { useGetAgeCategories } from '@AgeCategory/infrastructure/useAgeCategoryApi'
+import type { AgeCategory } from '@AgeCategory'
 
 type SheetState = { open: boolean; teamId?: string }
 
@@ -19,14 +21,17 @@ type AdminTeamListContentProps = {
 
 const AdminTeamListContent = ({ onEdit }: AdminTeamListContentProps) => {
   const { query, countQuery, pagination, changePage } = useTeamList(25)
-  const teams = use(query.promise)
+  const teams = use(query.promise) as Team[]
   const count = use(countQuery.promise)
+  const ageCategoriesQuery = useGetAgeCategories({ page: 1, count: 100 })
+  const ageCategories = (ageCategoriesQuery.data ?? []) as AgeCategory[]
+  const ageCategoryMap = Object.fromEntries(ageCategories.map((ac) => [ac.id, ac.label]))
   const navigate = useNavigate()
 
   return (
     <section className="flex h-full w-full flex-col gap-0.5">
       <AdminTeamTable
-        teams={teams as (Team & { ageCategory?: string })[]}
+        teams={teams.map((t) => ({ ...t, ageCategoryLabel: t.ageCategoryId ? ageCategoryMap[t.ageCategoryId] : undefined }))}
         onEdit={onEdit}
         onDelete={(team) => navigate(`${team.id}/delete`)}
       />

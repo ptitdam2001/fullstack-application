@@ -2,10 +2,10 @@ import { Button } from '@repo/design-system'
 import { Pencil, Trash2 } from 'lucide-react'
 import { useIntl } from 'react-intl'
 import { Table } from '@Common/Table/Table'
-import type { Team } from '../../domain/Team'
+import type { Team, TeamWithAgeCategoryLabel } from '../../domain/Team'
 
 type AdminTeamTableRowProps = {
-  team: Team & { ageCategory?: string }
+  team: TeamWithAgeCategoryLabel
   onEdit: (teamId: string) => void
   onDelete: (team: Team) => void
 }
@@ -23,7 +23,7 @@ export const AdminTeamTableRow = ({ team, onEdit, onDelete }: AdminTeamTableRowP
         )}
       </Table.TableCell>
       <Table.TableCell className="font-medium">{team.name}</Table.TableCell>
-      <Table.TableCell>{team.ageCategory ?? '—'}</Table.TableCell>
+      <Table.TableCell>{team.ageCategoryLabel ?? '—'}</Table.TableCell>
       <Table.TableCell>{team.areas?.[0]?.name ?? '—'}</Table.TableCell>
       <Table.TableCell className="text-right">
         <div className="flex justify-end gap-1">

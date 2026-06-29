@@ -1,12 +1,10 @@
 import { Badge, Button, Card } from '@repo/design-system'
 import { FormattedMessage, useIntl } from '@I18n/translation'
 import { useNavigate } from 'react-router'
-import { type Team } from '../../domain/Team'
+import { type TeamWithAgeCategoryLabel } from '../../domain/Team'
 import { TeamCardVenue } from './TeamCardVenue'
 
-type TeamWithAgeCategory = Team & { ageCategory?: string }
-
-type Props = { team: TeamWithAgeCategory }
+type Props = { team: TeamWithAgeCategoryLabel }
 
 export const TeamCard = ({ team }: Props) => {
   const navigate = useNavigate()
@@ -25,9 +23,9 @@ export const TeamCard = ({ team }: Props) => {
         <Card.Title className="text-base font-bold">{team.name}</Card.Title>
       </Card.Header>
       <Card.Content className="flex flex-col gap-2 px-3">
-        {team.ageCategory && (
+        {team.ageCategoryLabel && (
           <Badge variant="secondary" aria-label={intl.formatMessage({ id: 'teamCard.ageCategory' })}>
-            {team.ageCategory}
+            {team.ageCategoryLabel}
           </Badge>
         )}
         <TeamCardVenue areas={team.areas} />

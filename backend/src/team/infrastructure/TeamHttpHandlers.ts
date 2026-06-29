@@ -57,9 +57,9 @@ export const updateTeam = async (ctx: Context, req: Request, res: Response) => {
   // The OpenAPI body is validated against the `Team` schema (id/areas required),
   // but `UpdateTeamInput` only persists name/color — Prisma rejects `id` as an
   // unknown `data` argument, so only the updatable fields are forwarded.
-  const { name, color }: UpdateTeamInput = req.body
+  const { name, color, ageCategoryId }: UpdateTeamInput = req.body
   try {
-    res.json(await teamUseCases.update(ctx.request.params.id, { name, color }))
+    res.json(await teamUseCases.update(ctx.request.params.id, { name, color, ageCategoryId }))
   } catch (err) {
     if (err instanceof TeamNotFoundError) {
       return res.status(404).json({ status: 404, message: err.message })
@@ -145,7 +145,9 @@ export const createPlayer = async (ctx: Context, req: Request, res: Response) =>
   }
   const userId = ctx.request.params.userId
   const { teamId, jersey, position } = req.body as { teamId: string; jersey?: number; position?: string }
-  res.status(201).json(await playerUseCases.create({ userId, teamId, jersey: jersey ?? null, position: position ?? null }))
+  res
+    .status(201)
+    .json(await playerUseCases.create({ userId, teamId, jersey: jersey ?? null, position: position ?? null }))
 }
 
 export const getTeamCurrentGroup = async (ctx: Context, _: Request, res: Response) => {

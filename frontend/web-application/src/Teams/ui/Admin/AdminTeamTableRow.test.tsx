@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react'
 import { type ReactNode } from 'react'
 import { describe, expect, it, vi } from 'vitest'
-import { type Area, type Team } from '../../domain/Team'
+import { type Area, type TeamWithAgeCategoryLabel } from '../../domain/Team'
 import { AdminTeamTableRow } from './AdminTeamTableRow'
 
 const wrapper = ({ children }: { children: ReactNode }) => (
@@ -19,12 +19,12 @@ const primaryArea: Area = {
   latitude: 45.74,
 }
 
-const team: Team & { ageCategory?: string } = {
+const team: TeamWithAgeCategoryLabel = {
   id: '1',
   name: 'Les Rouges',
   color: '#e53e3e',
   areas: [primaryArea],
-  ageCategory: 'U18',
+  ageCategoryLabel: 'U18',
 }
 
 describe('AdminTeamTableRow', () => {
@@ -51,7 +51,7 @@ describe('AdminTeamTableRow', () => {
   })
 
   it('renders — when ageCategory is absent', () => {
-    render(<AdminTeamTableRow team={{ ...team, ageCategory: undefined }} onEdit={vi.fn()} onDelete={vi.fn()} />, {
+    render(<AdminTeamTableRow team={{ ...team, ageCategoryLabel: undefined }} onEdit={vi.fn()} onDelete={vi.fn()} />, {
       wrapper,
     })
     const cells = screen.getAllByRole('cell')

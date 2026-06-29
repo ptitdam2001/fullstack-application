@@ -1,11 +1,11 @@
 import { render, screen, fireEvent } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
-import { type Team } from '../../domain/Team'
+import { type TeamWithAgeCategoryLabel } from '../../domain/Team'
 import { AdminTeamTable } from './AdminTeamTable'
 
-const teams: (Team & { ageCategory?: string })[] = [
-  { id: '1', name: 'Les Rouges', color: '#e53e3e', areas: [], ageCategory: 'U18' },
-  { id: '2', name: 'Les Bleus', color: '#3182ce', areas: [], ageCategory: 'U15' },
+const teams: TeamWithAgeCategoryLabel[] = [
+  { id: '1', name: 'Les Rouges', color: '#e53e3e', areas: [], ageCategoryLabel: 'U18' },
+  { id: '2', name: 'Les Bleus', color: '#3182ce', areas: [], ageCategoryLabel: 'U15' },
   { id: '3', name: 'Les Verts', color: '#38a169', areas: [] },
 ]
 

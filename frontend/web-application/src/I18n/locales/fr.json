@@ -280,7 +280,9 @@
     "toast.deleted": "Équipe supprimée avec succès",
     "toast.deleteError": "Erreur lors de la suppression de l'équipe",
     "dialog.create.title": "Créer une équipe",
-    "dialog.edit.title": "Modifier l'équipe"
+    "dialog.edit.title": "Modifier l'équipe",
+    "form.ageCategoryId": "Catégorie d'âge",
+    "form.ageCategoryId.none": "Aucune catégorie"
   },
   "adminAgeCategories": {
     "title": "Catégories d'âge",

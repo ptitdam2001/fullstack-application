@@ -2488,6 +2488,9 @@ components:
           type: string
           example: '#222abb'
           format: color
+        ageCategoryId:
+          type: string
+          nullable: true
       required:
         - name
     Team:
@@ -2504,6 +2507,9 @@ components:
           type: string
           example: '#222abb'
           format: color
+        ageCategoryId:
+          type: string
+          nullable: true
         areas:
           type: array
           items:

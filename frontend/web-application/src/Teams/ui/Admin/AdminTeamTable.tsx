@@ -1,10 +1,10 @@
 import { FormattedMessage } from 'react-intl'
 import { Table } from '@Common/Table/Table'
-import type { Team } from '../../domain/Team'
+import type { Team, TeamWithAgeCategoryLabel } from '../../domain/Team'
 import { AdminTeamTableRow } from './AdminTeamTableRow'
 
 type AdminTeamTableProps = {
-  teams: (Team & { ageCategory?: string })[]
+  teams: TeamWithAgeCategoryLabel[]
   onEdit: (teamId: string) => void
   onDelete: (team: Team) => void
 }

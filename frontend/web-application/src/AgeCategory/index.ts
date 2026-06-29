@@ -1,4 +1,5 @@
 export { AdminAgeCategoryTable } from './ui/Admin/AdminAgeCategoryTable'
 export { AdminAgeCategoryFormSheet } from './ui/Admin/AdminAgeCategoryFormSheet'
 export { ConfirmDeleteAgeCategoryDialog } from './ui/Admin/ConfirmDeleteAgeCategoryDialog'
+export { AgeCategorySelect } from './ui/AgeCategorySelect/AgeCategorySelect'
 export type { AgeCategory, AgeCategoryInput, Genre } from './domain/AgeCategory'

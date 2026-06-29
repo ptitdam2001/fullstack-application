@@ -2,6 +2,7 @@ export type Team = {
   id: string
   name: string
   color: string | null
+  ageCategoryId: string | null
   updatedAt: Date
 }
 
