@@ -164,30 +164,48 @@ export const useFeatureForm = () => {
 
 ---
 
-## Étape 4 — `ui/` — composants purs
+## Étape 4 — `ui/` — boucle TDD par composant
 
-Chaque composant dans son propre dossier co-localisé avec son test :
+### Mode TDD — ordre obligatoire pour chaque composant
+
+Pour chaque composant `ui/`, respecter ce cycle :
+
+```
+1. RED    → écrire FeatureCard.test.tsx   (le composant n'existe pas encore → tests échouent)
+2. GREEN  → écrire FeatureCard.tsx        (faire passer les tests)
+3. STORY  → écrire FeatureCard.stories.tsx (valider le comportement interactif)
+```
+
+Ne pas écrire un composant sans avoir son test.  
+Ne pas merger un composant interactif sans avoir ses stories avec play functions.
+
+Chaque composant dans son propre dossier co-localisé :
 
 ```
 src/Feature/ui/
 ├── FeatureCard/
-│   ├── FeatureCard.tsx
-│   └── FeatureCard.test.tsx
+│   ├── FeatureCard.test.tsx   ← RED d'abord
+│   ├── FeatureCard.tsx        ← GREEN ensuite
+│   └── FeatureCard.stories.tsx
 ├── FeatureCardGrid/
+│   ├── FeatureCardGrid.test.tsx
 │   ├── FeatureCardGrid.tsx
-│   └── FeatureCardGrid.test.tsx
+│   └── FeatureCardGrid.stories.tsx
 ├── FeatureCardList/
+│   ├── FeatureCardList.test.tsx
 │   ├── FeatureCardList.tsx
-│   └── FeatureCardList.test.tsx
+│   └── FeatureCardList.stories.tsx
 ├── FeatureBreadcrumb/
-│   ├── FeatureBreadcrumb.tsx
-│   └── FeatureBreadcrumb.test.tsx
+│   ├── FeatureBreadcrumb.test.tsx
+│   └── FeatureBreadcrumb.tsx
 ├── FeatureForm/
+│   ├── FeatureForm.test.tsx
 │   ├── FeatureForm.tsx
-│   └── FeatureForm.test.tsx
+│   └── FeatureForm.stories.tsx
 └── FeatureList/
+    ├── FeatureList.test.tsx
     ├── FeatureList.tsx
-    └── FeatureList.test.tsx
+    └── FeatureList.stories.tsx
 ```
 
 ### Composant carte (présentation pure)
@@ -382,38 +400,387 @@ export const FeatureCreatePage = () => {
 
 ---
 
-## Étape 6 — Tests unitaires (co-localisés)
+## Étape 6 — Tests unitaires (TDD — écrire avant le composant)
 
-**Application hooks** — avec `renderHook` :
-```ts
-import { renderHookWithProviders } from '@Common/testUtils'
-import { useFeatureForm } from './useFeatureForm'
+### Principe
 
-describe('useFeatureForm', () => {
-  it('submit calls create when no id provided', async () => {
-    const { result } = renderHookWithProviders(() => useFeatureForm())
-    result.current.submit({ name: 'Test' })
-    await waitFor(() => expect(result.current.isSuccess).toBe(true))
+Écrire le fichier `.test.tsx` **avant** le composant. Les tests doivent être en **rouge** quand on les écrit, puis **verts** une fois le composant implémenté.
+
+### Contexte des tests
+
+- `react-intl` est **globalement mocké** dans `tests/setup.ts` → `FormattedMessage` rend son `id` brut, `useIntl().formatMessage()` aussi.
+- Asserter sur la **clé i18n**, pas la valeur traduite.
+- Pas de `IntlProvider`, `QueryClientProvider`, ni `MemoryRouter` dans les tests composants purs — si le test en a besoin, c'est un signe que le composant n'est pas pur.
+
+### Composants UI purs (props only)
+
+```tsx
+// FeatureCard.test.tsx — écrire AVANT FeatureCard.tsx
+import { render, screen, fireEvent } from '@testing-library/react'
+import { describe, expect, it, vi } from 'vitest'
+import type { FeatureType } from '../../domain/Feature'
+import { FeatureCard } from './FeatureCard'
+
+const feature: FeatureType = { id: '1', name: 'Mon Feature', status: 'ACTIVE' }
+
+describe('FeatureCard', () => {
+  it('renders the name', () => {
+    render(<FeatureCard feature={feature} onEdit={vi.fn()} onDelete={vi.fn()} />)
+    expect(screen.getByText('Mon Feature')).toBeInTheDocument()
+  })
+
+  it('renders the i18n key for status', () => {
+    render(<FeatureCard feature={feature} onEdit={vi.fn()} onDelete={vi.fn()} />)
+    expect(screen.getByText('feature.status.ACTIVE')).toBeInTheDocument()
+  })
+
+  it('calls onEdit with id when edit button is clicked', () => {
+    const onEdit = vi.fn()
+    render(<FeatureCard feature={feature} onEdit={onEdit} onDelete={vi.fn()} />)
+    fireEvent.click(screen.getByLabelText('feature.action.edit'))
+    expect(onEdit).toHaveBeenCalledWith('1')
+  })
+
+  it('calls onDelete with feature when delete button is clicked', () => {
+    const onDelete = vi.fn()
+    render(<FeatureCard feature={feature} onEdit={vi.fn()} onDelete={onDelete} />)
+    fireEvent.click(screen.getByLabelText('feature.action.delete'))
+    expect(onDelete).toHaveBeenCalledWith(feature)
   })
 })
 ```
 
-**Composants UI** — avec RTL (sans providers réseau — signe de pureté) :
-```tsx
-import { render } from '@testing-library/react'
-import { FeatureCard } from './FeatureCard'
+### Tableau (Table)
 
-describe('FeatureCard', () => {
-  it('renders the feature name', () => {
-    const { getByText } = render(<FeatureCard feature={{ id: '1', name: 'Mon Feature' }} />)
-    expect(getByText('Mon Feature')).toBeInTheDocument()
+Couvrir : headers, rendu de chaque ligne, état vide, forwarding des callbacks.
+
+```tsx
+// FeatureTable.test.tsx
+import { render, screen, fireEvent } from '@testing-library/react'
+import { describe, expect, it, vi } from 'vitest'
+import type { FeatureType } from '../../domain/Feature'
+import { FeatureTable } from './FeatureTable'
+
+const features: FeatureType[] = [
+  { id: '1', name: 'Alpha', status: 'ACTIVE' },
+  { id: '2', name: 'Beta', status: 'DRAFT' },
+]
+
+describe('FeatureTable', () => {
+  it('renders table headers', () => {
+    render(<FeatureTable features={features} onEdit={vi.fn()} onDelete={vi.fn()} />)
+    expect(screen.getByText('feature.table.name')).toBeInTheDocument()
+    expect(screen.getByText('feature.table.status')).toBeInTheDocument()
+  })
+
+  it('renders a row per feature', () => {
+    render(<FeatureTable features={features} onEdit={vi.fn()} onDelete={vi.fn()} />)
+    expect(screen.getByText('Alpha')).toBeInTheDocument()
+    expect(screen.getByText('Beta')).toBeInTheDocument()
+  })
+
+  it('renders empty state', () => {
+    render(<FeatureTable features={[]} onEdit={vi.fn()} onDelete={vi.fn()} />)
+    expect(screen.getByText('feature.table.empty')).toBeInTheDocument()
+  })
+
+  it('forwards onEdit', () => {
+    const onEdit = vi.fn()
+    render(<FeatureTable features={features} onEdit={onEdit} onDelete={vi.fn()} />)
+    fireEvent.click(screen.getAllByLabelText('feature.action.edit')[0])
+    expect(onEdit).toHaveBeenCalledWith('1')
+  })
+
+  it('forwards onDelete', () => {
+    const onDelete = vi.fn()
+    render(<FeatureTable features={features} onEdit={vi.fn()} onDelete={onDelete} />)
+    fireEvent.click(screen.getAllByLabelText('feature.action.delete')[1])
+    expect(onDelete).toHaveBeenCalledWith(features[1])
+  })
+})
+```
+
+### Sheet (create/edit) avec mock des dépendances
+
+```tsx
+// FeatureFormSheet.test.tsx
+import { render, screen } from '@testing-library/react'
+import { describe, expect, it, vi } from 'vitest'
+import { FeatureFormSheet } from './FeatureFormSheet'
+
+// Mocker les dépendances à réseau
+vi.mock('../../infrastructure/useFeatureApi', () => ({
+  useGetFeature: vi.fn(),
+}))
+vi.mock('./FeatureForm', () => ({
+  FeatureForm: ({ featureId }: { featureId?: string }) => (
+    <div data-testid="feature-form" data-feature-id={featureId} />
+  ),
+}))
+vi.mock('@Common/Loading/LinearProgress', () => ({
+  LinearProgress: () => <div data-testid="linear-progress" />,
+}))
+vi.mock('@Common/NotFound', () => ({
+  NotFound: () => <div data-testid="not-found" />,
+}))
+
+import { useGetFeature } from '../../infrastructure/useFeatureApi'
+const mockedUseGetFeature = vi.mocked(useGetFeature)
+
+describe('FeatureFormSheet', () => {
+  describe('create mode', () => {
+    it('renders create title', () => {
+      render(<FeatureFormSheet open onOpenChange={vi.fn()} />)
+      expect(screen.getByText('feature.dialog.create.title')).toBeInTheDocument()
+    })
+  })
+
+  describe('edit mode', () => {
+    const mockData = { id: '1', name: 'Alpha', status: 'ACTIVE' }
+
+    it('renders form with featureId when loaded', () => {
+      mockedUseGetFeature.mockReturnValue({ data: mockData, isLoading: false, isError: false } as never)
+      render(<FeatureFormSheet open onOpenChange={vi.fn()} featureId="1" />)
+      expect(screen.getByTestId('feature-form')).toHaveAttribute('data-feature-id', '1')
+    })
+
+    it('renders LinearProgress while loading', () => {
+      mockedUseGetFeature.mockReturnValue({ data: undefined, isLoading: true, isError: false } as never)
+      render(<FeatureFormSheet open onOpenChange={vi.fn()} featureId="1" />)
+      expect(screen.getByTestId('linear-progress')).toBeInTheDocument()
+    })
+
+    it('renders NotFound on error', () => {
+      mockedUseGetFeature.mockReturnValue({ data: undefined, isLoading: false, isError: true } as never)
+      render(<FeatureFormSheet open onOpenChange={vi.fn()} featureId="1" />)
+      expect(screen.getByTestId('not-found')).toBeInTheDocument()
+    })
+  })
+
+  it('does not render content when closed', () => {
+    render(<FeatureFormSheet open={false} onOpenChange={vi.fn()} />)
+    expect(screen.queryByTestId('feature-form')).not.toBeInTheDocument()
+  })
+})
+```
+
+### Dialog de confirmation
+
+```tsx
+// ConfirmDeleteFeatureDialog.test.tsx
+import { render, screen, fireEvent } from '@testing-library/react'
+import { describe, expect, it, vi } from 'vitest'
+import { ConfirmDeleteFeatureDialog } from './ConfirmDeleteFeatureDialog'
+
+describe('ConfirmDeleteFeatureDialog', () => {
+  const defaultProps = { name: 'Alpha', open: true, onOpenChange: vi.fn(), onConfirm: vi.fn(), isPending: false }
+
+  it('renders title and description', () => {
+    render(<ConfirmDeleteFeatureDialog {...defaultProps} />)
+    expect(screen.getByText('feature.delete.title')).toBeInTheDocument()
+    expect(screen.getByText('feature.delete.description')).toBeInTheDocument()
+  })
+
+  it('calls onConfirm on confirm click', () => {
+    const onConfirm = vi.fn()
+    render(<ConfirmDeleteFeatureDialog {...defaultProps} onConfirm={onConfirm} />)
+    fireEvent.click(screen.getByText('feature.delete.confirm'))
+    expect(onConfirm).toHaveBeenCalled()
+  })
+
+  it('calls onOpenChange(false) on cancel click', () => {
+    const onOpenChange = vi.fn()
+    render(<ConfirmDeleteFeatureDialog {...defaultProps} onOpenChange={onOpenChange} />)
+    fireEvent.click(screen.getByText('feature.delete.cancel'))
+    expect(onOpenChange).toHaveBeenCalledWith(false)
+  })
+
+  it('disables confirm when isPending', () => {
+    render(<ConfirmDeleteFeatureDialog {...defaultProps} isPending />)
+    expect(screen.getByText('feature.delete.confirm').closest('button')).toBeDisabled()
+  })
+})
+```
+
+### Application hooks
+
+```ts
+// useFeatureForm.test.ts
+import { renderHookWithProviders } from '@Common/testUtils'
+import { useFeatureForm } from './useFeatureForm'
+
+describe('useFeatureForm', () => {
+  it('exposes isPending false initially', () => {
+    const { result } = renderHookWithProviders(() => useFeatureForm())
+    expect(result.current.isPending).toBe(false)
   })
 })
 ```
 
 ---
 
-## Étape 7 — Routing
+## Étape 7 — Stories Storybook (play functions + fn())
+
+### Principe
+
+Les stories valident le comportement **interactif** : keyboard, ouverture/fermeture, submit, callbacks.
+Elles s'exécutent dans le navigateur (vrai DOM, vrai IntlProvider, vrai MSW) — complémentaires aux tests RTL.
+
+### Contexte Storybook
+
+- `IntlProvider` est actif → utiliser les **traductions réelles** (FR) dans les `play`, pas les clés i18n.
+- MSW est actif → déclarer les handlers dans `parameters.msw.handlers`.
+- Les callbacks testables passent par **`fn()` de `storybook/test`**.
+
+### Formulaire (pattern principal)
+
+```tsx
+// FeatureForm.stories.tsx
+import type { Meta, StoryObj } from '@storybook/react-vite'
+import { fn, within, userEvent, expect, waitFor } from 'storybook/test'
+import { getCreateFeatureMockHandler, getUpdateFeatureMockHandler } from '@Sdk/feature/feature.msw'
+import { FeatureForm } from './FeatureForm'
+
+const meta = {
+  component: FeatureForm,
+  title: 'Feature/FeatureForm',
+  args: {
+    onFinish: fn(),   // ← spy sur le callback → assertable dans play
+  },
+  parameters: {
+    msw: { handlers: [getCreateFeatureMockHandler(), getUpdateFeatureMockHandler()] },
+  },
+} satisfies Meta<typeof FeatureForm>
+
+export default meta
+type Story = StoryObj<typeof meta>
+
+// ─── Create mode ──────────────────────────────────────────────────────────────
+
+export const CreateButtonDisabled: Story = {
+  name: 'Create — bouton désactivé initialement',
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    expect(canvas.getByRole('button', { name: /nouvelle feature/i })).toBeDisabled()
+  },
+}
+
+export const CreateSubmit: Story = {
+  name: 'Create — soumettre appelle onFinish',
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement)
+
+    await userEvent.type(canvas.getByRole('textbox', { name: /nom/i }), 'Alpha')
+    // Si Select requis :
+    await userEvent.click(canvas.getByRole('button', { name: /statut/i }))
+    await userEvent.click(await canvas.findByRole('option', { name: /actif/i }))
+
+    const submit = canvas.getByRole('button', { name: /créer/i })
+    await waitFor(() => expect(submit).not.toBeDisabled())
+    await userEvent.click(submit)
+
+    await waitFor(() => expect(args.onFinish).toHaveBeenCalled())
+  },
+}
+
+// ─── Edit mode ────────────────────────────────────────────────────────────────
+
+const existing = { name: 'Alpha', status: 'ACTIVE' as const }
+
+export const EditDisabledInitially: Story = {
+  name: 'Edit — bouton désactivé si non modifié',
+  args: { featureId: 'f-1', defaultValues: existing },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    expect(canvas.getByRole('button', { name: /mettre à jour/i })).toBeDisabled()
+  },
+}
+
+export const EditSubmit: Story = {
+  name: 'Edit — soumettre appelle onFinish',
+  args: { featureId: 'f-1', defaultValues: existing },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement)
+    const nameInput = canvas.getByRole('textbox', { name: /nom/i })
+
+    await userEvent.clear(nameInput)
+    await userEvent.type(nameInput, 'Alpha modifié')
+
+    const submit = canvas.getByRole('button', { name: /mettre à jour/i })
+    await waitFor(() => expect(submit).not.toBeDisabled())
+    await userEvent.click(submit)
+
+    await waitFor(() => expect(args.onFinish).toHaveBeenCalled())
+  },
+}
+```
+
+### Dialog de confirmation
+
+```tsx
+// ConfirmDeleteFeatureDialog.stories.tsx
+import type { Meta, StoryObj } from '@storybook/react-vite'
+import { fn, within, userEvent, expect } from 'storybook/test'
+import { ConfirmDeleteFeatureDialog } from './ConfirmDeleteFeatureDialog'
+
+const meta = {
+  component: ConfirmDeleteFeatureDialog,
+  title: 'Feature/ConfirmDeleteFeatureDialog',
+  args: {
+    name: 'Alpha',
+    open: true,
+    isPending: false,
+    onConfirm: fn(),     // ← spy
+    onOpenChange: fn(),  // ← spy
+  },
+} satisfies Meta<typeof ConfirmDeleteFeatureDialog>
+
+export default meta
+type Story = StoryObj<typeof meta>
+
+export const Default: Story = { name: 'Dialogue de confirmation' }
+
+export const ClickConfirm: Story = {
+  name: 'Confirmer appelle onConfirm',
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement)
+    await userEvent.click(canvas.getByRole('button', { name: /supprimer/i }))
+    expect(args.onConfirm).toHaveBeenCalled()
+  },
+}
+
+export const ClickCancel: Story = {
+  name: 'Annuler appelle onOpenChange(false)',
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement)
+    await userEvent.click(canvas.getByRole('button', { name: /annuler/i }))
+    expect(args.onOpenChange).toHaveBeenCalledWith(false)
+  },
+}
+
+export const Pending: Story = {
+  name: 'Bouton désactivé pendant suppression',
+  args: { isPending: true },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    expect(canvas.getByRole('button', { name: /supprimer/i })).toBeDisabled()
+  },
+}
+```
+
+### Règles stories
+
+| Règle | Raison |
+|---|---|
+| `fn()` sur tous les callbacks (onFinish, onConfirm, onOpenChange) | Assertable dans play, visible dans Storybook Actions |
+| Textes de play en **traductions réelles** (FR) | IntlProvider actif — les clés i18n ne sont pas rendues |
+| `await waitFor(...)` autour des assertions asynchrones | MSW a un délai → résultats pas immédiats |
+| Un play par comportement observable | Clarté + isolation des échecs |
+| Handlers MSW dans `parameters.msw.handlers` | Évite les vraies requêtes réseau |
+
+---
+
+## Étape 8 — Routing
 
 Ajouter dans `src/Application/AppRouting.tsx` :
 
@@ -440,7 +807,7 @@ Ajouter l'alias dans `vite.config.ts` si le module est nouveau :
 
 ---
 
-## Étape 8 — Barrel export
+## Étape 9 — Barrel export
 
 ```ts
 // src/Feature/index.ts
@@ -458,7 +825,7 @@ export * from './pages'
 
 ---
 
-## Étape 9 — Audit architectural (checklist avant commit)
+## Étape 10 — Audit architectural (checklist avant commit)
 
 Avant de committer, vérifier chaque point :
 
@@ -472,14 +839,18 @@ Avant de committer, vérifier chaque point :
 | Chaque composant `ui/` dans son propre dossier | `src/Feature/ui/FeatureCard/FeatureCard.tsx` etc. |
 | `Grid.Root` / `List.Root` ont `h-full` dans le contexte `Layout.Content` | Vérifier className |
 | Tests UI sans QueryClientProvider | `grep -r "QueryClient" src/Feature/ui/` → zéro résultat |
+| Chaque composant interactif a une story avec play | `grep -r "play:" src/Feature/ui/` → résultats pour chaque Form/Dialog |
+| `fn()` sur tous les callbacks dans les stories | Callbacks assertables → visibles dans Storybook Actions |
+| Stories passent en mode storybook Vitest | `pnpm vitest run --project storybook src/Feature` → zéro échec |
 
 ---
 
-## Étape 10 — Vérification finale
+## Étape 11 — Vérification finale
 
 ```bash
 pnpm --filter application-material check:types   # Zéro erreur TypeScript
-pnpm --filter application-material test          # Tests co-localisés passent
+pnpm --filter application-material test          # Unit tests passent
+pnpm --filter application-material storybook     # Stories s'ouvrent, plays réussissent
 ```
 
 Vérifier manuellement :
@@ -488,3 +859,4 @@ Vérifier manuellement :
 - Modal create/edit s'ouvre via Outlet
 - Invalidation du cache après mutation (liste se rafraîchit)
 - Breadcrumb affiche le bon nom
+- Stories avec play functions passent dans Storybook UI
