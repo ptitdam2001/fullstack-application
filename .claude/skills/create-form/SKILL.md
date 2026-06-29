@@ -154,14 +154,32 @@ const password = form.watch('password') ?? ''
 
 ### formState — bouton conditionnel
 
+⚠️ **Piège : court-circuit du Proxy `formState`**
+
+`form.formState` est un Proxy react-hook-form qui enregistre des subscriptions lors de l'accès aux propriétés. Avec `||`, si `isValid = false`, JavaScript court-circuite et `isDirty` n'est **jamais lu** → aucune subscription créée → le composant ne se re-rend pas quand `isDirty` change.
+
+**❌ Ne pas faire** :
 ```tsx
+// isDirty jamais accédé quand isValid = false → pas de subscription
+isDisabled={!form.formState.isValid || !form.formState.isDirty || isPending}
+```
+
+**✅ Toujours extraire les deux avant le JSX** pour forcer la création des deux subscriptions :
+```tsx
+const isValid = form.formState.isValid
+const isDirty = form.formState.isDirty
+// ...
 <Button
   type="submit"
-  disabled={!form.formState.isValid || !form.formState.isDirty || isPending}
+  isDisabled={!isValid || !isDirty || isPending}
 >
   Submit
 </Button>
 ```
+
+Même règle pour toute combinaison de propriétés `formState` dans une expression court-circuitée (`||` / `&&`).
+
+Applies to `mode: 'all'` especially — where `isValid`/`isDirty` gate a submit button.
 
 ### defaultValues
 

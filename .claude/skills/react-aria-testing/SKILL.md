@@ -92,3 +92,56 @@ play: async ({ canvasElement }) => {
 ```
 
 No play function = incomplete story for any component with open/close, focus, keyboard, or selection behavior.
+
+---
+
+## Storybook browser tests (Chromium via `@storybook/addon-vitest`)
+
+Play functions run in a real browser. Deux règles critiques qui n'existent pas en jsdom.
+
+### 1. `findByRole` (async) pour la première query — Suspense i18n
+
+Le decorator `intlDecorator` utilise `use(dictionaryPromise)` (React Suspense). La story peut rendre `<div />` vide le temps que le cache i18n se charge. `getByRole` (sync) rate ce cas.
+
+**❌** :
+```tsx
+const input = canvas.getByRole('textbox', { name: /label/i })  // peut trouver <div /> vide
+```
+
+**✅** :
+```tsx
+const input = await canvas.findByRole('textbox', { name: /label/i })  // attend la résolution Suspense
+```
+
+Utiliser `findByRole` pour la **première** query de la play function. Les queries suivantes peuvent rester sync si le composant est déjà monté.
+
+### 2. Select / ListBox — options dans un portal
+
+react-aria `Select` rend ses options dans `document.body` via un portal. `canvas.getByRole('option')` ne les trouvera pas.
+
+**Pattern correct** :
+```tsx
+// Ouvrir
+await userEvent.click(canvas.getByRole('button', { name: /genre/i }))
+// Attendre le listbox (dans document.body)
+const listbox = await within(document.body).findByRole('listbox')
+// Cliquer la première option
+await userEvent.click(within(listbox).getAllByRole('option')[0])
+// Ou par texte (sans avoir besoin du role) :
+await userEvent.click(within(document.body).getByText('Male'))
+```
+
+**Vérifier la sélection** : après le clic, le listbox se ferme et le trigger affiche la valeur — `canvas.getByText('Male')` dans le canvas (pas document.body).
+
+### 3. Attendre les effets asynchrones post-interaction
+
+Après une interaction qui modifie l'état du formulaire, utiliser `waitFor` pour laisser React commettre :
+
+```tsx
+import { waitFor } from 'storybook/test'
+
+await userEvent.click(within(listbox).getAllByRole('option')[0])
+await waitFor(() => {
+  expect(canvas.getByRole('button', { name: /submit/i })).not.toBeDisabled()
+})
+```
