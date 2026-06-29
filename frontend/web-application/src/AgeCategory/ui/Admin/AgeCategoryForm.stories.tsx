@@ -38,7 +38,8 @@ export const CreateButtonInitiallyDisabled: Story = {
   args: {},
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    expect(canvas.getByRole('button', { name: /nouvelle catégorie/i })).toBeDisabled()
+    const button = await canvas.findByRole('button', { name: /new category|nouvelle catégorie/i })
+    expect(button).toBeDisabled()
   },
 }
 
@@ -47,12 +48,12 @@ export const CreateFillLabelOnly: Story = {
   args: {},
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    const labelInput = canvas.getByRole('textbox', { name: /libellé/i })
+    const labelInput = await canvas.findByRole('textbox', { name: /label|libellé/i })
 
     await userEvent.clear(labelInput)
     await userEvent.type(labelInput, 'U13')
 
-    expect(canvas.getByRole('button', { name: /nouvelle catégorie/i })).toBeDisabled()
+    expect(canvas.getByRole('button', { name: /new category|nouvelle catégorie/i })).toBeDisabled()
   },
 }
 
@@ -61,15 +62,17 @@ export const CreateFillAll: Story = {
   args: {},
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
+    const labelInput = await canvas.findByRole('textbox', { name: /label|libellé/i })
 
-    await userEvent.clear(canvas.getByRole('textbox', { name: /libellé/i }))
-    await userEvent.type(canvas.getByRole('textbox', { name: /libellé/i }), 'U13')
+    await userEvent.clear(labelInput)
+    await userEvent.type(labelInput, 'U13')
 
     await userEvent.click(canvas.getByRole('button', { name: /genre/i }))
-    await userEvent.click(await canvas.findByRole('option', { name: /masculin/i }))
+    const listbox = await within(document.body).findByRole('listbox')
+    await userEvent.click(within(listbox).getAllByRole('option')[0])
 
     await waitFor(() => {
-      expect(canvas.getByRole('button', { name: /nouvelle catégorie/i })).not.toBeDisabled()
+      expect(canvas.getByRole('button', { name: /new category|nouvelle catégorie/i })).not.toBeDisabled()
     })
   },
 }
@@ -79,14 +82,16 @@ export const CreateSubmit: Story = {
   args: {},
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
+    const labelInput = await canvas.findByRole('textbox', { name: /label|libellé/i })
 
-    await userEvent.clear(canvas.getByRole('textbox', { name: /libellé/i }))
-    await userEvent.type(canvas.getByRole('textbox', { name: /libellé/i }), 'U13')
+    await userEvent.clear(labelInput)
+    await userEvent.type(labelInput, 'U13')
 
     await userEvent.click(canvas.getByRole('button', { name: /genre/i }))
-    await userEvent.click(await canvas.findByRole('option', { name: /masculin/i }))
+    await within(document.body).findByRole('listbox')
+    await userEvent.keyboard('{Enter}')
 
-    const submitButton = canvas.getByRole('button', { name: /nouvelle catégorie/i })
+    const submitButton = canvas.getByRole('button', { name: /new category|nouvelle catégorie/i })
     await waitFor(() => expect(submitButton).not.toBeDisabled())
     await userEvent.click(submitButton)
 
@@ -108,7 +113,8 @@ export const EditButtonInitiallyDisabled: Story = {
   args: { ageCategoryId: 'age-category-1', defaultValues: existingAgeCategory },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    expect(canvas.getByRole('button', { name: /mettre à jour/i })).toBeDisabled()
+    const button = await canvas.findByRole('button', { name: /update|mettre à jour/i })
+    expect(button).toBeDisabled()
   },
 }
 
@@ -117,13 +123,13 @@ export const EditModifyLabel: Story = {
   args: { ageCategoryId: 'age-category-1', defaultValues: existingAgeCategory },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    const labelInput = canvas.getByRole('textbox', { name: /libellé/i })
+    const labelInput = await canvas.findByRole('textbox', { name: /label|libellé/i })
 
     await userEvent.clear(labelInput)
     await userEvent.type(labelInput, 'U15')
 
     await waitFor(() => {
-      expect(canvas.getByRole('button', { name: /mettre à jour/i })).not.toBeDisabled()
+      expect(canvas.getByRole('button', { name: /update|mettre à jour/i })).not.toBeDisabled()
     })
   },
 }
@@ -133,12 +139,12 @@ export const EditSubmit: Story = {
   args: { ageCategoryId: 'age-category-1', defaultValues: existingAgeCategory },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
-    const labelInput = canvas.getByRole('textbox', { name: /libellé/i })
+    const labelInput = await canvas.findByRole('textbox', { name: /label|libellé/i })
 
     await userEvent.clear(labelInput)
     await userEvent.type(labelInput, 'U15')
 
-    const button = canvas.getByRole('button', { name: /mettre à jour/i })
+    const button = await canvas.findByRole('button', { name: /update|mettre à jour/i })
     await waitFor(() => expect(button).not.toBeDisabled())
     await userEvent.click(button)
 
