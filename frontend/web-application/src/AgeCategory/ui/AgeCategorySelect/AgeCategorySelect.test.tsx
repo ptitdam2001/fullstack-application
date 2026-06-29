@@ -1,15 +1,19 @@
 import { render, screen, fireEvent } from '@testing-library/react'
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { mockAgeCategories } from '../../../mocks/fixtures'
 import { AgeCategorySelect } from './AgeCategorySelect'
 
 vi.mock('../../infrastructure/useAgeCategoryApi', () => ({
-  useGetAgeCategories: vi.fn().mockReturnValue({
-    data: [
-      { id: 'age-cat-1', label: 'U13', genre: 'MALE', createdAt: '2024-01-01T00:00:00Z', updatedAt: '2024-01-01T00:00:00Z' },
-      { id: 'age-cat-2', label: 'U15', genre: 'FEMALE', createdAt: '2024-01-01T00:00:00Z', updatedAt: '2024-01-01T00:00:00Z' },
-    ],
-  }),
+  useGetAgeCategories: vi.fn(),
 }))
+
+import { useGetAgeCategories } from '../../infrastructure/useAgeCategoryApi'
+
+const mockedUseGetAgeCategories = vi.mocked(useGetAgeCategories)
+
+beforeEach(() => {
+  mockedUseGetAgeCategories.mockReturnValue({ data: mockAgeCategories } as never)
+})
 
 describe('AgeCategorySelect', () => {
   it('renders the label', () => {

@@ -2,31 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { fn, within, userEvent, expect, waitFor } from 'storybook/test'
 import { getCreateTeamMockHandler, getUpdateTeamMockHandler } from '@Sdk/team/team.msw'
 import { getGetAgeCategoriesMockHandler } from '@Sdk/age-category/age-category.msw'
+import { mockAgeCategories } from '../../../mocks/fixtures'
 import { TeamForm } from './TeamForm'
-
-const MOCK_AGE_CATEGORIES = [
-  {
-    id: 'age-cat-1',
-    label: 'U13',
-    genre: 'MALE' as const,
-    createdAt: '2024-01-01T00:00:00Z',
-    updatedAt: '2024-01-01T00:00:00Z',
-  },
-  {
-    id: 'age-cat-2',
-    label: 'U15',
-    genre: 'FEMALE' as const,
-    createdAt: '2024-01-01T00:00:00Z',
-    updatedAt: '2024-01-01T00:00:00Z',
-  },
-  {
-    id: 'age-cat-3',
-    label: 'Senior',
-    genre: 'MIXED' as const,
-    createdAt: '2024-01-01T00:00:00Z',
-    updatedAt: '2024-01-01T00:00:00Z',
-  },
-]
 
 const meta = {
   component: TeamForm,
@@ -46,7 +23,7 @@ const meta = {
       handlers: [
         getCreateTeamMockHandler(),
         getUpdateTeamMockHandler(),
-        getGetAgeCategoriesMockHandler(MOCK_AGE_CATEGORIES),
+        getGetAgeCategoriesMockHandler(mockAgeCategories),
       ],
     },
   },

@@ -1,31 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { fn, within, userEvent, expect, waitFor } from 'storybook/test'
 import { getGetAgeCategoriesMockHandler } from '@Sdk/age-category/age-category.msw'
+import { mockAgeCategories } from '../../../mocks/fixtures'
 import { AgeCategorySelect } from './AgeCategorySelect'
-
-const MOCK_AGE_CATEGORIES = [
-  {
-    id: 'age-cat-1',
-    label: 'U13',
-    genre: 'MALE' as const,
-    createdAt: '2024-01-01T00:00:00Z',
-    updatedAt: '2024-01-01T00:00:00Z',
-  },
-  {
-    id: 'age-cat-2',
-    label: 'U15',
-    genre: 'FEMALE' as const,
-    createdAt: '2024-01-01T00:00:00Z',
-    updatedAt: '2024-01-01T00:00:00Z',
-  },
-  {
-    id: 'age-cat-3',
-    label: 'Senior',
-    genre: 'MIXED' as const,
-    createdAt: '2024-01-01T00:00:00Z',
-    updatedAt: '2024-01-01T00:00:00Z',
-  },
-]
 
 const meta = {
   component: AgeCategorySelect,
@@ -43,7 +20,7 @@ const meta = {
   ],
   parameters: {
     msw: {
-      handlers: [getGetAgeCategoriesMockHandler(MOCK_AGE_CATEGORIES)],
+      handlers: [getGetAgeCategoriesMockHandler(mockAgeCategories)],
     },
   },
 } satisfies Meta<typeof AgeCategorySelect>
