@@ -1,5 +1,5 @@
 import { Select, SelectItem } from '@repo/design-system'
-import { useIntl } from 'react-intl'
+import { FormattedMessage, useIntl } from 'react-intl'
 import { useGetAgeCategories } from '../../infrastructure/useAgeCategoryApi'
 
 type Props = {
@@ -11,18 +11,18 @@ type Props = {
 export const AgeCategorySelect = ({ label, value, onChange }: Props) => {
   const intl = useIntl()
   const { data } = useGetAgeCategories({ page: 1, count: 100 })
-  const ageCategories = (data ?? []) as Array<{ id: string; label: string }>
+  const ageCategories = data ?? []
 
   return (
     <Select
       label={label ?? intl.formatMessage({ id: 'adminTeams.form.ageCategoryId' })}
       selectedKey={value ?? ''}
-      onSelectionChange={(key) => onChange(key === '' ? null : (key as string))}
+      onSelectionChange={key => onChange(key === '' ? null : (key as string))}
     >
       <SelectItem id="">{intl.formatMessage({ id: 'adminTeams.form.ageCategoryId.none' })}</SelectItem>
-      {ageCategories.map((ac) => (
+      {ageCategories.map(ac => (
         <SelectItem key={ac.id} id={ac.id}>
-          {ac.label}
+          {ac.label} - <FormattedMessage id={`adminAgeCategories.genre.${ac.genre}`} />
         </SelectItem>
       ))}
     </Select>

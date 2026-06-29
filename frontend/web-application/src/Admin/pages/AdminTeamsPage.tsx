@@ -1,6 +1,6 @@
 import { Suspense, use, useState } from 'react'
 import { Outlet, useNavigate } from 'react-router'
-import { FormattedMessage } from 'react-intl'
+import { FormattedMessage, useIntl } from 'react-intl'
 import { Button, Layout, Separator, Typography } from '@repo/design-system'
 import { CirclePlus } from 'lucide-react'
 import { ErrorBoundary } from '@Common/ErrorBoundary'
@@ -20,20 +20,29 @@ type AdminTeamListContentProps = {
 }
 
 const AdminTeamListContent = ({ onEdit }: AdminTeamListContentProps) => {
+  const intl = useIntl()
   const { query, countQuery, pagination, changePage } = useTeamList(25)
   const teams = use(query.promise) as Team[]
   const count = use(countQuery.promise)
   const ageCategoriesQuery = useGetAgeCategories({ page: 1, count: 100 })
   const ageCategories = (ageCategoriesQuery.data ?? []) as AgeCategory[]
-  const ageCategoryMap = Object.fromEntries(ageCategories.map((ac) => [ac.id, ac.label]))
+  const ageCategoryMap = Object.fromEntries(
+    ageCategories.map(ac => [
+      ac.id,
+      `${ac.label} - ${intl.formatMessage({ id: `adminAgeCategories.genre.${ac.genre}` })}`,
+    ])
+  )
   const navigate = useNavigate()
 
   return (
     <section className="flex h-full w-full flex-col gap-0.5">
       <AdminTeamTable
-        teams={teams.map((t) => ({ ...t, ageCategoryLabel: t.ageCategoryId ? ageCategoryMap[t.ageCategoryId] : undefined }))}
+        teams={teams.map(t => ({
+          ...t,
+          ageCategoryLabel: t.ageCategoryId ? ageCategoryMap[t.ageCategoryId] : undefined,
+        }))}
         onEdit={onEdit}
-        onDelete={(team) => navigate(`${team.id}/delete`)}
+        onDelete={team => navigate(`${team.id}/delete`)}
       />
       <div className="min-h-10">
         <TablePagination
@@ -53,7 +62,7 @@ export const AdminTeamsPage = () => {
 
   const openCreate = () => setSheetState({ open: true, teamId: undefined })
   const openEdit = (teamId: string) => setSheetState({ open: true, teamId })
-  const closeSheet = (open: boolean) => setSheetState((s) => ({ ...s, open }))
+  const closeSheet = (open: boolean) => setSheetState(s => ({ ...s, open }))
 
   return (
     <Layout.Root>

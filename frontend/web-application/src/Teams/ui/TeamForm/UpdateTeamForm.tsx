@@ -8,6 +8,7 @@ import { Loader2 } from 'lucide-react'
 import type { CreateTeamMutationBody, Team, TeamWithoutId } from '../../domain/Team'
 import { useTeamForm } from '../../application/useTeamForm'
 import { AgeCategorySelect } from '@AgeCategory/ui/AgeCategorySelect/AgeCategorySelect'
+import { useIntl } from 'react-intl'
 
 const initialValues: TeamWithoutId = {
   name: '',
@@ -24,6 +25,7 @@ type Props = {
 }
 
 export const UpdateTeamForm = ({ teamId, defaultValues, onFinish, className }: Props) => {
+  const { formatMessage } = useIntl()
   const toast = Toast.useToast()
   const { isPending, submit } = useTeamForm()
   const { form, Field, Form } = updateTeamFormFactory.useForm({
@@ -40,36 +42,39 @@ export const UpdateTeamForm = ({ teamId, defaultValues, onFinish, className }: P
   const onSubmit = async (data: CreateTeamMutationBody) => {
     try {
       await submit(data, teamId)
-      toast('Team is well updated')
+      toast(formatMessage({ id: 'adminTeams.toast.updated' }))
       onFinish?.()
     } catch {
-      toast('Error during Team update')
+      toast(formatMessage({ id: 'adminTeams.toast.updateError' }))
     }
   }
   return (
     <Form name="teamForm" onSubmit={onSubmit} className={cn('h-full', className)}>
       <Field name="name">
         {({ field, fieldState }) => (
-          <ControlledTextInput {...field} fieldState={fieldState} label="Name" testId="team-form.name" />
+          <ControlledTextInput {...field} fieldState={fieldState} label={formatMessage({ id: 'adminTeams.form.name' })} testId="team-form.name" />
         )}
       </Field>
+
+      <Field name="ageCategoryId">
+        {({ field }) => <AgeCategorySelect value={field.value} onChange={field.onChange} />}
+      </Field>
+
       <Field name="color">
         {({ field, fieldState }) => (
           <ColorInput
             {...field}
-            label="Jersey color"
+            label={formatMessage({ id: 'adminTeams.form.color' })}
             error={Boolean(fieldState.error)}
             helperText={fieldState.error?.message}
           />
         )}
       </Field>
-      <Field name="ageCategoryId">
-        {({ field }) => <AgeCategorySelect value={field.value} onChange={field.onChange} />}
-      </Field>
+
       <div className="flex flex-row-reverse py-1">
         <Button type="submit" variant="outline" isDisabled={!form.formState.isDirty || isPending}>
           {isPending && <Loader2 className="animate-spin" />}
-          Update
+          {formatMessage({ id: 'adminTeams.form.submit.update' })}
         </Button>
       </div>
     </Form>
