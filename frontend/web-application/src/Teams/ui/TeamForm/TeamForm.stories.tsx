@@ -77,8 +77,9 @@ export const CreateSelectAgeCategory: Story = {
     await userEvent.clear(canvas.getByTestId('team-form.name.input'))
     await userEvent.type(canvas.getByTestId('team-form.name.input'), 'Les Rouges')
 
-    await userEvent.click(canvas.getByRole('button', { name: /catégorie d'âge/i }))
-    await userEvent.click(await canvas.findByRole('option', { name: /u13/i }))
+    await userEvent.click(await canvas.findByRole('button', { name: /catégorie d'âge|age category/i }))
+    const listbox = await within(document.body).findByRole('listbox')
+    await userEvent.click(await within(listbox).findByRole('option', { name: /u13/i }))
 
     await waitFor(() => {
       expect(canvas.getByRole('button', { name: /create/i })).not.toBeDisabled()
