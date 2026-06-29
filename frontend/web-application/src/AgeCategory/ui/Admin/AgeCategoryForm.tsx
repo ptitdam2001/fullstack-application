@@ -37,6 +37,9 @@ export const AgeCategoryForm = ({ defaultValues, ageCategoryId, onFinish }: AgeC
     }
   }
 
+  const isValid = form.formState.isValid
+  const isDirty = form.formState.isDirty
+
   return (
     <Form name="ageCategoryForm" onSubmit={onSubmit} className="flex h-full flex-col gap-4">
       <Field name="label">
@@ -52,11 +55,11 @@ export const AgeCategoryForm = ({ defaultValues, ageCategoryId, onFinish }: AgeC
         {({ field }) => (
           <Select
             label={intl.formatMessage({ id: 'adminAgeCategories.form.genre' })}
-            selectedKey={field.value as string}
-            onSelectionChange={key => field.onChange(key as string)}
+            value={(field.value as string) ?? null}
+            onChange={key => field.onChange(key)}
           >
             {GENRES.map(genre => (
-              <SelectItem key={genre} id={genre}>
+              <SelectItem key={genre} id={genre} textValue={genre}>
                 <FormattedMessage id={`adminAgeCategories.genre.${genre}`} />
               </SelectItem>
             ))}
@@ -67,14 +70,12 @@ export const AgeCategoryForm = ({ defaultValues, ageCategoryId, onFinish }: AgeC
         <Button
           type="submit"
           variant="outline"
-          isDisabled={!form.formState.isValid || !form.formState.isDirty || isPending}
+          isDisabled={!isValid || !isDirty || isPending}
         >
           {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
-          {ageCategoryId ? (
-            <FormattedMessage id="adminAgeCategories.action.update" />
-          ) : (
-            <FormattedMessage id="adminAgeCategories.action.create" />
-          )}
+          <FormattedMessage
+            id={ageCategoryId ? 'adminAgeCategories.action.update' : 'adminAgeCategories.action.create'}
+          />
         </Button>
       </div>
     </Form>

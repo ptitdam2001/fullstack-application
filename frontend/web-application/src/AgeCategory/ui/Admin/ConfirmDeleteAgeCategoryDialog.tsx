@@ -33,7 +33,7 @@ export const ConfirmDeleteAgeCategoryDialog = ({
           <DialogTitle>
             <FormattedMessage id="adminAgeCategories.delete.title" />
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="pt-3 pb-5">
             <FormattedMessage id="adminAgeCategories.delete.description" values={{ label }} />
           </DialogDescription>
         </DialogHeader>

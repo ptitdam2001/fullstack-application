@@ -16,18 +16,19 @@ type Props = Omit<InputHTMLAttributes<unknown>, 'value'> &
 
 export const ControlledTextInput = ({ label, fieldState, value, required, testId, ...props }: Props) => {
   const testIds = useTestId(testId, ['label', 'input', 'error'])
+  const inputId = props.id ?? props.name
 
   return (
     <div className="relative grid w-full max-w-sm items-center gap-1.5 pb-6">
       <label
-        htmlFor={props.name}
+        htmlFor={inputId}
         className="text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
         data-testid={testIds.label}
       >
         {label}
         {required && <span className="text-red-500">*</span>}
       </label>
-      <Input {...props} value={value ?? ''} required={required} data-testid={testIds.input} />
+      <Input {...props} id={inputId} value={value ?? ''} required={required} data-testid={testIds.input} />
       <div
         className={cn(
           'absolute bottom-1 text-sm text-red-500 transition-[height] duration-300',
