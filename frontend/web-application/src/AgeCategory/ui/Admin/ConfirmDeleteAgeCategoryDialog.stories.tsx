@@ -23,18 +23,18 @@ export const Default: Story = {
 
 export const ClickConfirm: Story = {
   name: 'Cliquer Supprimer appelle onConfirm',
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement)
-    await userEvent.click(canvas.getByRole('button', { name: /supprimer/i }))
+  play: async ({ args }) => {
+    const confirmButton = await within(document.body).findByRole('button', { name: /delete|supprimer/i })
+    await userEvent.click(confirmButton)
     expect(args.onConfirm).toHaveBeenCalled()
   },
 }
 
 export const ClickCancel: Story = {
   name: 'Cliquer Annuler appelle onOpenChange(false)',
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement)
-    await userEvent.click(canvas.getByRole('button', { name: /annuler/i }))
+  play: async ({ args }) => {
+    const cancelButton = await within(document.body).findByRole('button', { name: /cancel|annuler/i })
+    await userEvent.click(cancelButton)
     expect(args.onOpenChange).toHaveBeenCalledWith(false)
   },
 }
@@ -42,9 +42,8 @@ export const ClickCancel: Story = {
 export const Pending: Story = {
   name: 'Bouton désactivé pendant la suppression',
   args: { isPending: true },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    const confirmButton = canvas.getByRole('button', { name: /supprimer/i })
+  play: async () => {
+    const confirmButton = await within(document.body).findByRole('button', { name: /delete|supprimer/i })
     expect(confirmButton).toBeDisabled()
   },
 }

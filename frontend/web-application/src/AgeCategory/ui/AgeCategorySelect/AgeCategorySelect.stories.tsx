@@ -41,8 +41,9 @@ export const SelectOption: Story = {
   name: 'Sélectionner une catégorie appelle onChange(id)',
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
-    await userEvent.click(canvas.getByRole('button', { name: /catégorie d'âge/i }))
-    await userEvent.click(await canvas.findByRole('option', { name: /u13/i }))
+    await userEvent.click(await canvas.findByRole('button', { name: /catégorie d'âge|age category/i }))
+    const listbox = await within(document.body).findByRole('listbox')
+    await userEvent.click(await within(listbox).findByRole('option', { name: /u13/i }))
     await waitFor(() => expect(args.onChange).toHaveBeenCalledWith('age-cat-1'))
   },
 }
@@ -52,8 +53,9 @@ export const SelectNone: Story = {
   args: { value: 'age-cat-1' },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
-    await userEvent.click(canvas.getByRole('button', { name: /catégorie d'âge/i }))
-    await userEvent.click(await canvas.findByRole('option', { name: /aucune catégorie/i }))
+    await userEvent.click(await canvas.findByRole('button', { name: /catégorie d'âge|age category/i }))
+    const listbox = await within(document.body).findByRole('listbox')
+    await userEvent.click(within(listbox).getByRole('option', { name: /aucune catégorie|no category/i }))
     await waitFor(() => expect(args.onChange).toHaveBeenCalledWith(null))
   },
 }
