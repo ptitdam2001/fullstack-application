@@ -1,0 +1,20 @@
+meta {
+  name: Get Age Categories
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/age-categories
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:query {
+  page: 1
+  count: 20
+}

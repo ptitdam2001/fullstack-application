@@ -1,0 +1,15 @@
+meta {
+  name: Get Age Category
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/age-category/{{ageCategoryId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

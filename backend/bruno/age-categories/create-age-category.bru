@@ -1,0 +1,28 @@
+meta {
+  name: Create Age Category
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/age-category
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "label": "U13",
+    "genre": "MALE"
+  }
+}
+
+script:post-response {
+  if (res.status === 201 && res.body.id) {
+    bru.setVar("ageCategoryId", res.body.id);
+  }
+}

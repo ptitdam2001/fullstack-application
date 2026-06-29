@@ -1,0 +1,21 @@
+meta {
+  name: Edit Age Category
+  type: http
+  seq: 5
+}
+
+patch {
+  url: {{baseUrl}}/age-category/{{ageCategoryId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "label": "U15"
+  }
+}

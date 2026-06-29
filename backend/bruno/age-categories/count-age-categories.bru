@@ -1,0 +1,15 @@
+meta {
+  name: Count Age Categories
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/age-categories/count
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
