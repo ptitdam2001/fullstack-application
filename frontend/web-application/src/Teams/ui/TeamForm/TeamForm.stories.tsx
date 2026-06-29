@@ -1,11 +1,39 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { within, userEvent, expect, waitFor } from 'storybook/test'
+import { fn, within, userEvent, expect, waitFor } from 'storybook/test'
 import { getCreateTeamMockHandler, getUpdateTeamMockHandler } from '@Sdk/team/team.msw'
+import { getGetAgeCategoriesMockHandler } from '@Sdk/age-category/age-category.msw'
 import { TeamForm } from './TeamForm'
+
+const MOCK_AGE_CATEGORIES = [
+  {
+    id: 'age-cat-1',
+    label: 'U13',
+    genre: 'MALE' as const,
+    createdAt: '2024-01-01T00:00:00Z',
+    updatedAt: '2024-01-01T00:00:00Z',
+  },
+  {
+    id: 'age-cat-2',
+    label: 'U15',
+    genre: 'FEMALE' as const,
+    createdAt: '2024-01-01T00:00:00Z',
+    updatedAt: '2024-01-01T00:00:00Z',
+  },
+  {
+    id: 'age-cat-3',
+    label: 'Senior',
+    genre: 'MIXED' as const,
+    createdAt: '2024-01-01T00:00:00Z',
+    updatedAt: '2024-01-01T00:00:00Z',
+  },
+]
 
 const meta = {
   component: TeamForm,
   title: 'Teams/TeamForm',
+  args: {
+    onFinish: fn(),
+  },
   decorators: [
     Story => (
       <div className="h-screen w-96 p-6">
@@ -15,7 +43,11 @@ const meta = {
   ],
   parameters: {
     msw: {
-      handlers: [getCreateTeamMockHandler(), getUpdateTeamMockHandler()],
+      handlers: [
+        getCreateTeamMockHandler(),
+        getUpdateTeamMockHandler(),
+        getGetAgeCategoriesMockHandler(MOCK_AGE_CATEGORIES),
+      ],
     },
   },
 } satisfies Meta<typeof TeamForm>
@@ -59,10 +91,28 @@ export const CreateFillName: Story = {
   },
 }
 
-export const CreateSubmit: Story = {
-  name: 'Create — soumettre le formulaire',
+export const CreateSelectAgeCategory: Story = {
+  name: "Create — sélectionner une catégorie d'âge",
   args: {},
   play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+
+    await userEvent.clear(canvas.getByTestId('team-form.name.input'))
+    await userEvent.type(canvas.getByTestId('team-form.name.input'), 'Les Rouges')
+
+    await userEvent.click(canvas.getByRole('button', { name: /catégorie d'âge/i }))
+    await userEvent.click(await canvas.findByRole('option', { name: /u13/i }))
+
+    await waitFor(() => {
+      expect(canvas.getByRole('button', { name: /create/i })).not.toBeDisabled()
+    })
+  },
+}
+
+export const CreateSubmit: Story = {
+  name: 'Create — soumettre appelle onFinish',
+  args: {},
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
     const nameInput = canvas.getByTestId('team-form.name.input')
 
@@ -74,10 +124,7 @@ export const CreateSubmit: Story = {
 
     await userEvent.click(button)
 
-    // MSW a un delay de 500ms — le bouton doit passer en loading
-    await waitFor(() => {
-      expect(canvas.getByRole('button', { name: /create/i })).toBeDisabled()
-    })
+    await waitFor(() => expect(args.onFinish).toHaveBeenCalled())
   },
 }
 
@@ -88,6 +135,7 @@ const existingTeam = {
   name: 'Les Bleus',
   color: '#3182ce',
   areas: [],
+  ageCategoryId: 'age-cat-1',
 }
 
 export const Edit: Story = {
@@ -134,12 +182,12 @@ export const EditModifyName: Story = {
 }
 
 export const EditSubmit: Story = {
-  name: 'Edit — soumettre les modifications',
+  name: 'Edit — soumettre appelle onFinish',
   args: {
     teamId: 'team-1',
     defaultValues: existingTeam,
   },
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
     const nameInput = canvas.getByTestId('team-form.name.input')
 
@@ -151,8 +199,6 @@ export const EditSubmit: Story = {
 
     await userEvent.click(button)
 
-    await waitFor(() => {
-      expect(canvas.getByRole('button', { name: /update/i })).toBeDisabled()
-    })
+    await waitFor(() => expect(args.onFinish).toHaveBeenCalled())
   },
 }
