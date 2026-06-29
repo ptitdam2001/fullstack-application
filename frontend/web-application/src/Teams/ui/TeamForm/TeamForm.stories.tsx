@@ -44,7 +44,7 @@ export const CreateButtonInitiallyDisabled: Story = {
   args: {},
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    const button = canvas.getByRole('button', { name: /create/i })
+    const button = await canvas.findByRole('button', { name: /create/i })
     expect(button).toBeDisabled()
   },
 }
