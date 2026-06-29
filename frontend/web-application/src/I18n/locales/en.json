@@ -281,5 +281,32 @@
     "toast.deleteError": "Failed to delete team",
     "dialog.create.title": "Create Team",
     "dialog.edit.title": "Edit Team"
+  },
+  "adminAgeCategories": {
+    "title": "Age Categories",
+    "table.label": "Label",
+    "table.genre": "Genre",
+    "table.actions": "Actions",
+    "table.empty": "No age categories found",
+    "action.create": "New Category",
+    "action.edit": "Edit",
+    "action.delete": "Delete",
+    "action.update": "Update",
+    "delete.title": "Delete Age Category",
+    "delete.description": "Are you sure you want to delete the category \"{label}\"?",
+    "delete.confirm": "Delete",
+    "delete.cancel": "Cancel",
+    "toast.created": "Category created successfully",
+    "toast.updated": "Category updated successfully",
+    "toast.deleted": "Category deleted successfully",
+    "toast.deleteError": "Failed to delete category",
+    "toast.error": "Failed to save category",
+    "dialog.create.title": "Create Age Category",
+    "dialog.edit.title": "Edit Age Category",
+    "form.label": "Label",
+    "form.genre": "Genre",
+    "genre.MALE": "Male",
+    "genre.FEMALE": "Female",
+    "genre.MIXED": "Mixed"
   }
 }

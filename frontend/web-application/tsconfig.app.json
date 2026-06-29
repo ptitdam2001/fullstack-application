@@ -43,6 +43,8 @@
       "@Dashboard/*": ["./src/Dashboard/*", "./src/Dashboard/"],
       "@Admin": ["./src/Admin/index.ts"],
       "@Admin/*": ["./src/Admin/*", "./src/Admin/"],
+      "@AgeCategory": ["./src/AgeCategory/index.ts"],
+      "@AgeCategory/*": ["./src/AgeCategory/*", "./src/AgeCategory/"],
       "@Sdk/*": ["./src/sdk/generated/", "./src/sdk/generated/*"],
       "@Config/*": ["./config/*", "./config/"],
       "@I18n/*": ["./src/I18n/*", "./src/I18n"],

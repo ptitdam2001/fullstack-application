@@ -281,5 +281,32 @@
     "toast.deleteError": "Erreur lors de la suppression de l'équipe",
     "dialog.create.title": "Créer une équipe",
     "dialog.edit.title": "Modifier l'équipe"
+  },
+  "adminAgeCategories": {
+    "title": "Catégories d'âge",
+    "table.label": "Libellé",
+    "table.genre": "Genre",
+    "table.actions": "Actions",
+    "table.empty": "Aucune catégorie d'âge trouvée",
+    "action.create": "Nouvelle catégorie",
+    "action.edit": "Modifier",
+    "action.delete": "Supprimer",
+    "action.update": "Mettre à jour",
+    "delete.title": "Supprimer la catégorie d'âge",
+    "delete.description": "Êtes-vous sûr de vouloir supprimer la catégorie « {label} » ?",
+    "delete.confirm": "Supprimer",
+    "delete.cancel": "Annuler",
+    "toast.created": "Catégorie créée avec succès",
+    "toast.updated": "Catégorie modifiée avec succès",
+    "toast.deleted": "Catégorie supprimée avec succès",
+    "toast.deleteError": "Erreur lors de la suppression",
+    "toast.error": "Erreur lors de l'enregistrement",
+    "dialog.create.title": "Créer une catégorie d'âge",
+    "dialog.edit.title": "Modifier la catégorie d'âge",
+    "form.label": "Libellé",
+    "form.genre": "Genre",
+    "genre.MALE": "Masculin",
+    "genre.FEMALE": "Féminin",
+    "genre.MIXED": "Mixte"
   }
 }

@@ -27,7 +27,13 @@ import { ActivatePage, ForgottenPasswordPage, LoginPage, RegisterPage, ResetPass
 import { OnboardingScreen } from '@Auth/ui/OnboardingScreen/OnboardingScreen'
 import { TeamBreadcrumb } from '@Teams'
 import { AreaBreadcrumb } from '@Settings'
-import { AdminUsersPage, AdminChampionshipsPage, AdminTeamsPage, AdminTeamDeletePage } from '@Admin'
+import {
+  AdminUsersPage,
+  AdminChampionshipsPage,
+  AdminTeamsPage,
+  AdminTeamDeletePage,
+  AdminAgeCategoriesPage,
+} from '@Admin'
 
 const AppLayout = () => {
   const navigate = useNavigate()
@@ -100,6 +106,11 @@ const router = createBrowserRouter(
           <Route path="teams" element={<AdminTeamsPage />} handle={{ breadcrumb: 'Équipes' }}>
             <Route path=":teamId/delete" element={<AdminTeamDeletePage />} handle={{ breadcrumb: 'Supprimer' }} />
           </Route>
+          <Route
+            path="age-categories"
+            element={<AdminAgeCategoriesPage />}
+            handle={{ breadcrumb: "Catégories d'âge" }}
+          />
         </Route>
 
         <Route path="settings" element={<SettingsLayout />} handle={{ breadcrumb: 'Paramètres' }}>
