@@ -1,10 +1,9 @@
 import { useState } from 'react'
 import { useIntl, FormattedMessage } from 'react-intl'
-import { Button, Toast } from '@repo/design-system'
+import { Button, TextInputField, Toast } from '@repo/design-system'
 import { Loader2 } from 'lucide-react'
 import { createFormFactory } from '@repo/form-factory'
 import { ForgotPasswordBody } from '@Sdk/authentication/authentication.zod'
-import { ControlledTextInput } from '@Common/Input/TextInput/ControlledTextInput'
 import { useForgotPasswordAction } from '../../application/useForgotPasswordAction'
 import { useResendActivation } from '../../infrastructure/useAuthApi'
 
@@ -55,13 +54,16 @@ export const ForgottenPasswordForm = () => {
       >
         <Field name="email">
           {({ field, fieldState }) => (
-            <ControlledTextInput
-              {...field}
-              fieldState={fieldState}
+            <TextInputField
+              name={field.name}
+              value={field.value}
+              onChange={field.onChange}
+              onBlur={field.onBlur}
               label={intl.formatMessage({ id: 'auth.email' })}
               type="email"
               placeholder="vous@exemple.com"
-              required
+              isRequired
+              errorMessage={fieldState.error?.message}
             />
           )}
         </Field>

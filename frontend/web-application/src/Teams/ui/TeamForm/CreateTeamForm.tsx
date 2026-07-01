@@ -1,7 +1,7 @@
 import { cn } from '@repo/design-system'
 import { createFormFactory } from '@repo/form-factory'
 import { CreateTeamBody } from '../../domain/Team'
-import { ControlledTextInput } from '@Common/Input/TextInput/ControlledTextInput'
+import { TextInputField } from '@repo/design-system'
 import { ColorInput } from '@Common/Input/ColorInput/ColorInput'
 import { Button, Toast } from '@repo/design-system'
 import { Loader2 } from 'lucide-react'
@@ -50,11 +50,14 @@ export const CreateTeamForm = ({ defaultValues, onFinish, className }: Props) =>
     <Form name="teamForm" onSubmit={onSubmit} className={cn('flex h-full flex-col gap-3', className)}>
       <Field name="name">
         {({ field, fieldState }) => (
-          <ControlledTextInput
-            {...field}
-            fieldState={fieldState}
+          <TextInputField
+            name={field.name}
+            value={field.value}
+            onChange={field.onChange}
+            onBlur={field.onBlur}
             label={formatMessage({ id: 'adminTeams.form.name' })}
-            testId="team-form.name"
+            errorMessage={fieldState.error?.message}
+            data-testid="team-form.name"
           />
         )}
       </Field>

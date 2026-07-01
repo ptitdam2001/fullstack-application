@@ -1,9 +1,8 @@
 import { FormattedMessage, useIntl } from 'react-intl'
-import { Button, Select, SelectItem, Toast } from '@repo/design-system'
+import { Button, Select, SelectItem, TextInputField, Toast } from '@repo/design-system'
 import { Loader2 } from 'lucide-react'
 import { createFormFactory } from '@repo/form-factory'
 import { CreateAgeCategoryBody } from '@Sdk/age-category/age-category.zod'
-import { ControlledTextInput } from '@Common/Input/TextInput/ControlledTextInput'
 import type { AgeCategoryInput } from '../../domain/AgeCategory'
 import { useAgeCategoryMutations } from '../../application/useAgeCategoryMutations'
 
@@ -44,10 +43,13 @@ export const AgeCategoryForm = ({ defaultValues, ageCategoryId, onFinish }: AgeC
     <Form name="ageCategoryForm" onSubmit={onSubmit} className="flex h-full flex-col gap-4">
       <Field name="label">
         {({ field, fieldState }) => (
-          <ControlledTextInput
-            {...field}
-            fieldState={fieldState}
+          <TextInputField
+            name={field.name}
+            value={field.value}
+            onChange={field.onChange}
+            onBlur={field.onBlur}
             label={intl.formatMessage({ id: 'adminAgeCategories.form.label' })}
+            errorMessage={fieldState.error?.message}
           />
         )}
       </Field>

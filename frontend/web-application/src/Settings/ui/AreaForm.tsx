@@ -3,8 +3,7 @@ import { CreateAreaBody } from '@Sdk/area/area.zod'
 import { type CreateAreaMutationBody } from '@Sdk/area/area'
 import { createFormFactory } from '@repo/form-factory'
 import { useAreaForm } from '../application/useAreaForm'
-import { ControlledTextInput } from '@Common/Input/TextInput/ControlledTextInput'
-import { Button, Toast } from '@repo/design-system'
+import { Button, TextInputField, Toast } from '@repo/design-system'
 import { Loader2 } from 'lucide-react'
 
 const areaFormFactory = createFormFactory({ schema: CreateAreaBody })
@@ -34,22 +33,28 @@ export const AreaForm = ({ defaultValues, areaId, onFinish, className }: AreaFor
   return (
     <Form name="areaForm" onSubmit={onSubmit} className={cn('h-full', className)}>
       <Field name="name">
-        {({ field, fieldState }) => <ControlledTextInput {...field} fieldState={fieldState} label="Name" />}
+        {({ field, fieldState }) => (
+          <TextInputField name={field.name} value={field.value} onChange={field.onChange} onBlur={field.onBlur} label="Name" errorMessage={fieldState.error?.message} />
+        )}
       </Field>
       <Field name="address">
-        {({ field, fieldState }) => <ControlledTextInput {...field} fieldState={fieldState} label="Address" />}
+        {({ field, fieldState }) => (
+          <TextInputField name={field.name} value={field.value} onChange={field.onChange} onBlur={field.onBlur} label="Address" errorMessage={fieldState.error?.message} />
+        )}
       </Field>
       <Field name="city">
-        {({ field, fieldState }) => <ControlledTextInput {...field} fieldState={fieldState} label="City" />}
+        {({ field, fieldState }) => (
+          <TextInputField name={field.name} value={field.value} onChange={field.onChange} onBlur={field.onBlur} label="City" errorMessage={fieldState.error?.message} />
+        )}
       </Field>
       <Field name="longitude">
         {({ field, fieldState }) => (
-          <ControlledTextInput {...field} fieldState={fieldState} label="Longitude" type="number" />
+          <TextInputField name={field.name} value={field.value} onChange={field.onChange} onBlur={field.onBlur} label="Longitude" type="number" errorMessage={fieldState.error?.message} />
         )}
       </Field>
       <Field name="latitude">
         {({ field, fieldState }) => (
-          <ControlledTextInput {...field} fieldState={fieldState} label="Latitude" type="number" />
+          <TextInputField name={field.name} value={field.value} onChange={field.onChange} onBlur={field.onBlur} label="Latitude" type="number" errorMessage={fieldState.error?.message} />
         )}
       </Field>
       <div className="flex flex-row-reverse py-1">

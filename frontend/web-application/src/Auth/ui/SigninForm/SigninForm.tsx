@@ -1,10 +1,9 @@
 import { useIntl, FormattedMessage } from 'react-intl'
 import { Link } from 'react-router'
-import { Button, PasswordInput, Toast } from '@repo/design-system'
+import { Button, PasswordInput, TextInputField, Toast } from '@repo/design-system'
 import { Loader2 } from 'lucide-react'
 import { createFormFactory } from '@repo/form-factory'
 import { LoginBody } from '@Sdk/authentication/authentication.zod'
-import { ControlledTextInput } from '@Common/Input/TextInput/ControlledTextInput'
 import { useLoginAction } from '../../application/useLoginAction'
 
 const signinFormFactory = createFormFactory({ schema: LoginBody })
@@ -45,12 +44,15 @@ export const SigninForm = ({ forgotPasswordHref }: SigninFormProps) => {
       >
         <Field name="email">
           {({ field, fieldState }) => (
-            <ControlledTextInput
-              {...field}
-              fieldState={fieldState}
+            <TextInputField
+              name={field.name}
+              value={field.value}
+              onChange={field.onChange}
+              onBlur={field.onBlur}
               label={intl.formatMessage({ id: 'auth.email' })}
               type="email"
               placeholder="vous@exemple.com"
+              errorMessage={fieldState.error?.message}
               data-testid="signin-email"
             />
           )}

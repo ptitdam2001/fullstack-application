@@ -1,11 +1,10 @@
 import { useIntl, FormattedMessage } from 'react-intl'
-import { Button, PasswordInput, Toast } from '@repo/design-system'
+import { Button, PasswordInput, TextInputField, Toast } from '@repo/design-system'
 import { Loader2 } from 'lucide-react'
 import { z } from 'zod'
 import { createFormFactory } from '@repo/form-factory'
 import { RegisterBody } from '@Sdk/authentication/authentication.zod'
 import type { RegisterInput } from '@Sdk/model'
-import { ControlledTextInput } from '@Common/Input/TextInput/ControlledTextInput'
 import { TeamSelectField } from '@Teams/ui/TeamSelect/TeamSelectField'
 import { useRegisterAction } from '../../application/useRegisterAction'
 
@@ -85,34 +84,43 @@ export const RegisterForm = () => {
     <Form onSubmit={onSubmit} className="flex flex-col">
       <Field name="firstName">
         {({ field, fieldState }) => (
-          <ControlledTextInput
-            {...field}
-            fieldState={fieldState}
+          <TextInputField
+            name={field.name}
+            value={field.value}
+            onChange={field.onChange}
+            onBlur={field.onBlur}
             label={intl.formatMessage({ id: 'register.field.firstName' })}
             placeholder={intl.formatMessage({ id: 'register.field.firstName.placeholder' })}
-            required
+            isRequired
+            errorMessage={fieldState.error?.message}
           />
         )}
       </Field>
       <Field name="lastName">
         {({ field, fieldState }) => (
-          <ControlledTextInput
-            {...field}
-            fieldState={fieldState}
+          <TextInputField
+            name={field.name}
+            value={field.value}
+            onChange={field.onChange}
+            onBlur={field.onBlur}
             label={intl.formatMessage({ id: 'register.field.lastName' })}
             placeholder={intl.formatMessage({ id: 'register.field.lastName.placeholder' })}
+            errorMessage={fieldState.error?.message}
           />
         )}
       </Field>
       <Field name="email">
         {({ field, fieldState }) => (
-          <ControlledTextInput
-            {...field}
-            fieldState={fieldState}
+          <TextInputField
+            name={field.name}
+            value={field.value}
+            onChange={field.onChange}
+            onBlur={field.onBlur}
             label={intl.formatMessage({ id: 'register.field.email' })}
             type="email"
             placeholder={intl.formatMessage({ id: 'register.field.email.placeholder' })}
-            required
+            isRequired
+            errorMessage={fieldState.error?.message}
           />
         )}
       </Field>
