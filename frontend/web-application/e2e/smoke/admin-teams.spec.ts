@@ -34,6 +34,13 @@ test.describe('smoke — admin teams', () => {
     await nameInput.click()
     await nameInput.pressSequentially(teamName)
 
+    const colorTrigger = page.getByRole('button', { name: 'Jersey color' })
+    await colorTrigger.click()
+    await expect(page.locator('[data-slot="color-area"]')).toBeVisible({ timeout: 3_000 })
+    await page.locator('[data-slot="color-area"]').click({ position: { x: 80, y: 40 } })
+    await page.keyboard.press('Escape')
+    await expect(page.locator('[data-slot="color-area"]')).not.toBeVisible({ timeout: 3_000 })
+
     await expect(page.getByRole('button', { name: 'Create' })).toBeEnabled({ timeout: 5_000 })
     await page.getByRole('button', { name: 'Create' }).click()
 
