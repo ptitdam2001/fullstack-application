@@ -161,6 +161,13 @@ export * from './components/Select/SelectSection'
 export * from './components/DatePicker/DatePicker'
 export * from './components/DatePicker/Calendar'
 
+export * from './components/ColorThumb/ColorThumb'
+export * from './components/ColorSwatch/ColorSwatch'
+export * from './components/ColorArea/ColorArea'
+export * from './components/ColorSlider/ColorSlider'
+export * from './components/ColorField/ColorField'
+export * from './components/ColorPickerField/ColorPickerField'
+
 export * from './components/Tooltip/Tooltip'
 
 export * from './components/Typography/Typography'
