@@ -14,8 +14,10 @@ test.describe('smoke — admin teams', () => {
     await expect(page.getByText('Équipe Test')).toBeVisible()
   })
 
-  test('create team dialog opens via URL', async ({ page }) => {
-    await page.goto('/app/admin/teams/create')
+  test('create team sheet opens via New Team button', async ({ page }) => {
+    await page.goto('/app/admin/teams')
+    await expect(page.locator('table')).toBeVisible({ timeout: 15_000 })
+    await page.getByRole('button', { name: 'New Team' }).click()
 
     await expect(page.getByRole('dialog')).toBeVisible({ timeout: 10_000 })
   })
@@ -23,7 +25,9 @@ test.describe('smoke — admin teams', () => {
   test('create team with name and color, verify it appears in table', async ({ page }) => {
     const teamName = `Smoke-Admin-${Date.now()}`
 
-    await page.goto('/app/admin/teams/create')
+    await page.goto('/app/admin/teams')
+    await expect(page.locator('table')).toBeVisible({ timeout: 15_000 })
+    await page.getByRole('button', { name: 'New Team' }).click()
     await expect(page.getByRole('dialog')).toBeVisible({ timeout: 10_000 })
 
     const nameInput = page.getByRole('textbox', { name: 'Name' })
