@@ -1,8 +1,7 @@
 import { cn } from '@repo/design-system'
 import { createFormFactory } from '@repo/form-factory'
 import { CreateTeamBody } from '../../domain/Team'
-import { TextInputField } from '@repo/design-system'
-import { ColorInput } from '@Common/Input/ColorInput/ColorInput'
+import { TextInputField, ColorPickerField } from '@repo/design-system'
 import { Button, Toast } from '@repo/design-system'
 import { Loader2 } from 'lucide-react'
 import type { CreateTeamMutationBody, TeamWithoutId } from '../../domain/Team'
@@ -68,11 +67,13 @@ export const CreateTeamForm = ({ defaultValues, onFinish, className }: Props) =>
 
       <Field name="color">
         {({ field, fieldState }) => (
-          <ColorInput
-            {...field}
+          <ColorPickerField
+            name={field.name}
+            value={field.value}
+            onChange={field.onChange}
+            onBlur={field.onBlur}
             label={formatMessage({ id: 'adminTeams.form.color' })}
-            error={Boolean(fieldState.error)}
-            helperText={fieldState.error?.message}
+            errorMessage={fieldState.error?.message}
           />
         )}
       </Field>
