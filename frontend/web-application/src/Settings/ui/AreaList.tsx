@@ -1,8 +1,7 @@
 import { Address } from '@Common/Address/Address'
 import { ErrorBoundary } from '@Common/ErrorBoundary'
 import { TableLoader } from '@Common/Loading'
-import { Table } from '@Common/Table/Table'
-import { TablePagination } from '@Common/Table/TablePagination'
+import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell, TablePagination } from '@repo/design-system'
 import type { Area } from '../domain/Area'
 import { useAreaList } from '../application/useAreaList'
 import React, { Suspense, use } from 'react'
@@ -18,22 +17,22 @@ const BaseAreaList = ({ actions }: AreaListProps) => {
 
   return (
     <section className="flex h-full w-full flex-col gap-0.5">
-      <Table.TableContainer>
-        <Table.TableHeader>
-          <Table.TableHead>Address</Table.TableHead>
-          {actions && <Table.TableHead size="50px">Actions</Table.TableHead>}
-        </Table.TableHeader>
-        <Table.TableBody>
+      <Table>
+        <TableHeader>
+          <TableHead>Address</TableHead>
+          {actions && <TableHead className="w-[50px]">Actions</TableHead>}
+        </TableHeader>
+        <TableBody>
           {addresses.map(address => (
-            <Table.TableRow key={address.id}>
-              <Table.TableCell>
+            <TableRow key={address.id} id={address.id}>
+              <TableCell>
                 <Address address={address} />
-              </Table.TableCell>
-              {actions && <Table.TableCell className="text-right">{actions(address)}</Table.TableCell>}
-            </Table.TableRow>
+              </TableCell>
+              {actions && <TableCell className="text-right">{actions(address)}</TableCell>}
+            </TableRow>
           ))}
-        </Table.TableBody>
-      </Table.TableContainer>
+        </TableBody>
+      </Table>
       <div className="min-h-10">
         <TablePagination
           count={count ?? 0}

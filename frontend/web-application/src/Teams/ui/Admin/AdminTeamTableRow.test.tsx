@@ -1,13 +1,21 @@
 import { render, screen, fireEvent } from '@testing-library/react'
 import { type ReactNode } from 'react'
 import { describe, expect, it, vi } from 'vitest'
+import { Table, TableHeader, TableHead, TableBody } from '@repo/design-system'
 import { type Area, type TeamWithAgeCategoryLabel } from '../../domain/Team'
 import { AdminTeamTableRow } from './AdminTeamTableRow'
 
 const wrapper = ({ children }: { children: ReactNode }) => (
-  <table>
-    <tbody>{children}</tbody>
-  </table>
+  <Table>
+    <TableHeader>
+      <TableHead />
+      <TableHead />
+      <TableHead />
+      <TableHead />
+      <TableHead />
+    </TableHeader>
+    <TableBody>{children}</TableBody>
+  </Table>
 )
 
 const primaryArea: Area = {
@@ -41,7 +49,7 @@ describe('AdminTeamTableRow', () => {
 
   it('renders — when color is null', () => {
     render(<AdminTeamTableRow team={{ ...team, color: null }} onEdit={vi.fn()} onDelete={vi.fn()} />, { wrapper })
-    const cells = screen.getAllByRole('cell')
+    const cells = screen.getAllByRole('gridcell')
     expect(cells[0]).toHaveTextContent('—')
   })
 
@@ -54,7 +62,7 @@ describe('AdminTeamTableRow', () => {
     render(<AdminTeamTableRow team={{ ...team, ageCategoryLabel: undefined }} onEdit={vi.fn()} onDelete={vi.fn()} />, {
       wrapper,
     })
-    const cells = screen.getAllByRole('cell')
+    const cells = screen.getAllByRole('gridcell')
     expect(cells[2]).toHaveTextContent('—')
   })
 
@@ -65,7 +73,7 @@ describe('AdminTeamTableRow', () => {
 
   it('renders — when areas is empty', () => {
     render(<AdminTeamTableRow team={{ ...team, areas: [] }} onEdit={vi.fn()} onDelete={vi.fn()} />, { wrapper })
-    const cells = screen.getAllByRole('cell')
+    const cells = screen.getAllByRole('gridcell')
     expect(cells[3]).toHaveTextContent('—')
   })
 

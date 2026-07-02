@@ -1,7 +1,6 @@
-import { Button } from '@repo/design-system'
+import { Button, TableRow, TableCell } from '@repo/design-system'
 import { Pencil, Trash2 } from 'lucide-react'
 import { useIntl } from 'react-intl'
-import { Table } from '@Common/Table/Table'
 import type { Team, TeamWithAgeCategoryLabel } from '../../domain/Team'
 
 type AdminTeamTableRowProps = {
@@ -14,18 +13,18 @@ export const AdminTeamTableRow = ({ team, onEdit, onDelete }: AdminTeamTableRowP
   const intl = useIntl()
 
   return (
-    <Table.TableRow>
-      <Table.TableCell>
+    <TableRow id={team.id}>
+      <TableCell>
         {team.color ? (
           <span className="inline-block h-4 w-4 rounded-full" style={{ backgroundColor: team.color }} />
         ) : (
           '—'
         )}
-      </Table.TableCell>
-      <Table.TableCell className="font-medium">{team.name}</Table.TableCell>
-      <Table.TableCell>{team.ageCategoryLabel ?? '—'}</Table.TableCell>
-      <Table.TableCell>{team.areas?.[0]?.name ?? '—'}</Table.TableCell>
-      <Table.TableCell className="text-right">
+      </TableCell>
+      <TableCell className="font-medium">{team.name}</TableCell>
+      <TableCell>{team.ageCategoryLabel ?? '—'}</TableCell>
+      <TableCell>{team.areas?.[0]?.name ?? '—'}</TableCell>
+      <TableCell className="text-right">
         <div className="flex justify-end gap-1">
           <Button
             variant="outline"
@@ -44,7 +43,7 @@ export const AdminTeamTableRow = ({ team, onEdit, onDelete }: AdminTeamTableRowP
             <Trash2 className="h-4 w-4" />
           </Button>
         </div>
-      </Table.TableCell>
-    </Table.TableRow>
+      </TableCell>
+    </TableRow>
   )
 }

@@ -146,6 +146,7 @@ export * from './components/Table/TableRow'
 export * from './components/Table/TableHead'
 export * from './components/Table/TableCell'
 export * from './components/Table/TableCaption'
+export * from './components/Table/TablePagination'
 
 export * from './components/Textarea/Textarea'
 

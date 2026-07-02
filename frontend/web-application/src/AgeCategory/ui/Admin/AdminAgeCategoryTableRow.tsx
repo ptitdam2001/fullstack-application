@@ -1,7 +1,6 @@
-import { Button } from '@repo/design-system'
+import { Button, TableRow, TableCell } from '@repo/design-system'
 import { Pencil, Trash2 } from 'lucide-react'
 import { FormattedMessage, useIntl } from 'react-intl'
-import { Table } from '@Common/Table/Table'
 import type { AgeCategory } from '../../domain/AgeCategory'
 
 type AdminAgeCategoryTableRowProps = {
@@ -14,12 +13,12 @@ export const AdminAgeCategoryTableRow = ({ ageCategory, onEdit, onDelete }: Admi
   const intl = useIntl()
 
   return (
-    <Table.TableRow>
-      <Table.TableCell className="font-medium">{ageCategory.label}</Table.TableCell>
-      <Table.TableCell>
+    <TableRow id={ageCategory.id}>
+      <TableCell className="font-medium">{ageCategory.label}</TableCell>
+      <TableCell>
         <FormattedMessage id={`adminAgeCategories.genre.${ageCategory.genre}`} />
-      </Table.TableCell>
-      <Table.TableCell className="text-right">
+      </TableCell>
+      <TableCell className="text-right">
         <div className="flex justify-end gap-1">
           <Button
             variant="outline"
@@ -38,7 +37,7 @@ export const AdminAgeCategoryTableRow = ({ ageCategory, onEdit, onDelete }: Admi
             <Trash2 className="h-4 w-4" />
           </Button>
         </div>
-      </Table.TableCell>
-    </Table.TableRow>
+      </TableCell>
+    </TableRow>
   )
 }

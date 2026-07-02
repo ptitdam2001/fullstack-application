@@ -1,13 +1,19 @@
 import { render, screen, fireEvent } from '@testing-library/react'
 import { type ReactNode } from 'react'
 import { describe, expect, it, vi } from 'vitest'
+import { Table, TableHeader, TableHead, TableBody } from '@repo/design-system'
 import type { AgeCategory } from '../../domain/AgeCategory'
 import { AdminAgeCategoryTableRow } from './AdminAgeCategoryTableRow'
 
 const wrapper = ({ children }: { children: ReactNode }) => (
-  <table>
-    <tbody>{children}</tbody>
-  </table>
+  <Table>
+    <TableHeader>
+      <TableHead />
+      <TableHead />
+      <TableHead />
+    </TableHeader>
+    <TableBody>{children}</TableBody>
+  </Table>
 )
 
 const ageCategory: AgeCategory = {

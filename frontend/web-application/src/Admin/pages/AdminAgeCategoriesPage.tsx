@@ -4,7 +4,7 @@ import { Button, Layout, Separator, Toast, Typography } from '@repo/design-syste
 import { CirclePlus } from 'lucide-react'
 import { ErrorBoundary } from '@Common/ErrorBoundary'
 import { TableLoader } from '@Common/Loading'
-import { TablePagination } from '@Common/Table/TablePagination'
+import { TablePagination } from '@repo/design-system'
 import { useAgeCategoryList } from '@AgeCategory/application/useAgeCategoryList'
 import { useAgeCategoryDelete } from '@AgeCategory/application/useAgeCategoryDelete'
 import { AdminAgeCategoryTable } from '@AgeCategory/ui/Admin/AdminAgeCategoryTable'

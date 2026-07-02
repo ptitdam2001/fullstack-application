@@ -2,7 +2,7 @@ import { Suspense, use } from 'react'
 import { useGameList } from '../application/useGameList'
 import { GameListRaw } from './GameListRaw'
 import { TableLoader } from '@Common/Loading'
-import { TablePagination } from '@Common/Table/TablePagination'
+import { TablePagination } from '@repo/design-system'
 import { ErrorBoundary } from '@Common/ErrorBoundary'
 
 const GameListInner = () => {
