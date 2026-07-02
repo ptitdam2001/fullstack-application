@@ -14,7 +14,7 @@ test.describe('smoke — teams', () => {
     await page.goto('/app/team/list/create')
     await expect(page.getByRole('dialog')).toBeVisible({ timeout: 10_000 })
 
-    const nameInput = page.getByTestId('team-form.name.input')
+    const nameInput = page.getByRole('textbox', { name: 'Name' })
     await nameInput.click()
     await nameInput.pressSequentially(teamName)
     await expect(page.getByRole('button', { name: 'Create' })).toBeEnabled({ timeout: 5_000 })
