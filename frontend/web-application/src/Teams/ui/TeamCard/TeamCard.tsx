@@ -28,7 +28,7 @@ export const TeamCard = ({ team }: Props) => {
             {team.ageCategoryLabel}
           </Badge>
         )}
-        <TeamCardVenue areas={team.areas} />
+        <TeamCardVenue areas={team.areas ?? []} />
       </Card.Content>
       <Card.Action className="px-3">
         <Button variant="outline" size="sm" onPress={() => navigate(`/app/team/${team.id}`)}>
