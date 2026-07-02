@@ -38,7 +38,7 @@ export const TextInputField = ({
       className={cn('relative grid w-full items-center gap-1.5 pb-6', className)}
       {...props}
     >
-      {label != null && (
+      {label !== null && label !== undefined && (
         <Label>
           {label}
           {isRequired && (

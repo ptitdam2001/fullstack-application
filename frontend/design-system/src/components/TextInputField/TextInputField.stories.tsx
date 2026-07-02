@@ -72,21 +72,23 @@ export const TypeEmail: Story = {
   args: { label: 'Email address', type: 'email', placeholder: 'you@example.com' },
 }
 
+const ControlledRender = () => {
+  const [value, setValue] = useState('')
+  const tooLong = value.length > 10
+  return (
+    <TextInputField
+      label="Short note"
+      value={value}
+      onChange={setValue}
+      placeholder="Max 10 chars"
+      isInvalid={tooLong}
+      errorMessage={tooLong ? 'Maximum 10 characters' : undefined}
+    />
+  )
+}
+
 export const Controlled: Story = {
-  render: () => {
-    const [value, setValue] = useState('')
-    const tooLong = value.length > 10
-    return (
-      <TextInputField
-        label="Short note"
-        value={value}
-        onChange={setValue}
-        placeholder="Max 10 chars"
-        isInvalid={tooLong}
-        errorMessage={tooLong ? 'Maximum 10 characters' : undefined}
-      />
-    )
-  },
+  render: () => <ControlledRender />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const input = canvas.getByRole('textbox', { name: /short note/i })
