@@ -1,6 +1,13 @@
-import { type TabProps } from '@Common/LinkTabs/LinkTab'
 import { MapPinHouse, Tags } from 'lucide-react'
+import { type ReactElement } from 'react'
 import { AuthProvider } from '@Auth/application/AuthProvider'
+
+type TabProps = {
+  tabIndex: string
+  label: string
+  href: string
+  icon?: ReactElement
+}
 
 const areasItem: TabProps = {
   tabIndex: 'areas',
