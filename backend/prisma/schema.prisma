@@ -157,13 +157,14 @@ model User {
 // ─────────────────────────────────────────
 
 model Area {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
   name      String?
   address   String
   city      String
   longitude Float
   latitude  Float
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   @@map("areas")
 }
