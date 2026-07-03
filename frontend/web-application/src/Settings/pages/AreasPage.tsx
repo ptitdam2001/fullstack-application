@@ -1,24 +1,59 @@
 import { AreaList } from '../ui/AreaList'
+import { ConfirmDeleteAreaDialog } from '../ui/ConfirmDeleteAreaDialog'
+import { useAreaDelete } from '../application/useAreaDelete'
+import type { Area } from '../domain/Area'
 import { Link, Outlet } from 'react-router'
-import { Edit, HousePlus } from 'lucide-react'
+import { Edit, HousePlus, Trash2 } from 'lucide-react'
+import { Button } from '@repo/design-system'
+import { useState } from 'react'
 
-export const AreaPages = () => (
-  <article data-testid="AreaAdminPage" className="flex h-full w-full flex-col gap-1 p-2">
-    <div className="px-1">
-      <Link to="create">
-        <HousePlus />
-      </Link>
-    </div>
-    <div className="flex-flex-grow-1">
-      <AreaList
-        actions={address => (
-          <Link to={`${address.id}/edit`}>
-            <Edit />
-          </Link>
-        )}
+export const AreaPages = () => {
+  const [areaToDelete, setAreaToDelete] = useState<Area | null>(null)
+  const { deleteArea, isPending } = useAreaDelete()
+
+  const handleConfirmDelete = async () => {
+    if (!areaToDelete) {
+      return
+    }
+    await deleteArea(areaToDelete.id)
+    setAreaToDelete(null)
+  }
+
+  return (
+    <article data-testid="AreaAdminPage" className="flex h-full w-full flex-col gap-1 p-2">
+      <div className="px-1">
+        <Link to="create">
+          <HousePlus />
+        </Link>
+      </div>
+      <div className="flex-flex-grow-1">
+        <AreaList
+          actions={area => (
+            <>
+              <Link to={`${area.id}/edit`}>
+                <Edit className="h-4 w-4" />
+              </Link>
+              <Button variant="ghost" size="icon" onPress={() => setAreaToDelete(area)}>
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </>
+          )}
+        />
+      </div>
+
+      <ConfirmDeleteAreaDialog
+        name={areaToDelete?.name ?? areaToDelete?.city ?? ''}
+        open={areaToDelete !== null}
+        onOpenChange={open => {
+          if (!open) {
+            setAreaToDelete(null)
+          }
+        }}
+        onConfirm={handleConfirmDelete}
+        isPending={isPending}
       />
-    </div>
 
-    <Outlet />
-  </article>
-)
+      <Outlet />
+    </article>
+  )
+}
