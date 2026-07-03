@@ -17,6 +17,13 @@ export function requireAdmin(ctx: Context): void {
   }
 }
 
+export function requireAdminOrCoach(ctx: Context): void {
+  const payload = getAuthPayload(ctx)
+  if (!payload.isAdmin && !payload.isCoach) {
+    throw new ForbiddenError()
+  }
+}
+
 export function getAuthUserId(ctx: Context): string {
   return getAuthPayload(ctx).userId
 }

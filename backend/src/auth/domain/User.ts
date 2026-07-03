@@ -1,6 +1,7 @@
 export type TokenPayload = {
   userId: string
   isAdmin: boolean
+  isCoach: boolean
   iat?: number
   exp?: number
 }

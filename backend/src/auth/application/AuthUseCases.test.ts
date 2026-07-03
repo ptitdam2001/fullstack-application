@@ -119,10 +119,10 @@ describe('AuthUseCases.login', () => {
     expect(repo.blockUser).toHaveBeenCalledWith('user-1')
   })
 
-  it('calls generateToken with userId and isAdmin', async () => {
+  it('calls generateToken with userId, isAdmin, and isCoach', async () => {
     const authService = makeAuthService()
     await new AuthUseCases(makeRepo(), authService, makeUserTeamRepo(), makeUserMatchRepo()).login('alice@example.com', 'password')
-    expect(authService.generateToken).toHaveBeenCalledWith('user-1', false)
+    expect(authService.generateToken).toHaveBeenCalledWith('user-1', false, false)
   })
 })
 

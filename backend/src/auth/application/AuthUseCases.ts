@@ -42,7 +42,9 @@ export class AuthUseCases {
       throw new InvalidCredentialsError()
     }
 
-    const token = this.authService.generateToken(user.id, user.isAdmin)
+    const coachTeams = await this.userTeamRepo.findByUserAndRole(user.id, TeamRole.COACH)
+    const isCoach = coachTeams.length > 0
+    const token = this.authService.generateToken(user.id, user.isAdmin, isCoach)
     return { userId: user.id, email: user.email, isAdmin: user.isAdmin, token }
   }
 

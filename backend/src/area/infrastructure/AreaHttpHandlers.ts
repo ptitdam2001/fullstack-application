@@ -3,7 +3,7 @@ import type { Context } from 'openapi-backend'
 import { AreaUseCases } from '../application/AreaUseCases.js'
 import { PrismaAreaRepository } from './PrismaAreaRepository.js'
 import { AreaNotFoundError } from '../domain/AreaErrors.js'
-import { requireAdmin } from '../../auth/application/requireRoles.js'
+import { requireAdmin, requireAdminOrCoach } from '../../auth/application/requireRoles.js'
 
 const useCases = new AreaUseCases(new PrismaAreaRepository())
 
@@ -34,7 +34,7 @@ export const createArea = async (ctx: Context, req: Request, res: Response) => {
 }
 
 export const updateArea = async (ctx: Context, req: Request, res: Response) => {
-  requireAdmin(ctx)
+  requireAdminOrCoach(ctx)
   try {
     res.json(await useCases.update(ctx.request.params.id, req.body))
   } catch (err) {
