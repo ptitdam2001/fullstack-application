@@ -1,5 +1,5 @@
 import { Card } from '@repo/design-system'
-import { Address } from '@Common/Address/Address'
+import { AreaDisplay } from '@Area/ui/AreaDisplay'
 import type { Game } from '../domain/Game'
 
 type GameListItemProps = { game: Game }
@@ -24,7 +24,7 @@ export const GameShortDescription = ({ game }: GameListItemProps) => {
             <div className="w-1/3">{awayTeam.name}</div>
           </div>
           <p>{date}</p>
-          {area && <Address address={area} />}
+          {area && <AreaDisplay address={area} />}
         </div>
       </Card.Content>
     </Card.Container>

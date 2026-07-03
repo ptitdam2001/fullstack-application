@@ -1,4 +1,4 @@
-import { Address } from '@Common/Address/Address'
+import { AreaDisplay } from './AreaDisplay'
 import { ErrorBoundary } from '@Common/ErrorBoundary'
 import { TableLoader } from '@Common/Loading'
 import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell, TablePagination } from '@repo/design-system'
@@ -26,7 +26,7 @@ const BaseAreaList = ({ actions }: AreaListProps) => {
           {addresses.map(address => (
             <TableRow key={address.id} id={address.id}>
               <TableCell>
-                <Address address={address} />
+                <AreaDisplay address={address} />
               </TableCell>
               {actions && <TableCell className="text-right">{actions(address)}</TableCell>}
             </TableRow>

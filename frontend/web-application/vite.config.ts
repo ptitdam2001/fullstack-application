@@ -21,6 +21,7 @@ const ALIASES = {
   '@Dashboard': path.resolve(__dirname, './src/Dashboard'),
   '@Admin': path.resolve(__dirname, './src/Admin'),
   '@AgeCategory': path.resolve(__dirname, './src/AgeCategory'),
+  '@Area': path.resolve(__dirname, './src/Area'),
   '@': path.resolve(__dirname, './src'),
   '@Config': path.resolve(__dirname, './config'),
   '@I18n': path.resolve(__dirname, './src/I18n'),

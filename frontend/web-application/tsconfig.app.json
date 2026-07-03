@@ -45,6 +45,8 @@
       "@Admin/*": ["./src/Admin/*", "./src/Admin/"],
       "@AgeCategory": ["./src/AgeCategory/index.ts"],
       "@AgeCategory/*": ["./src/AgeCategory/*", "./src/AgeCategory/"],
+      "@Area": ["./src/Area/index.ts"],
+      "@Area/*": ["./src/Area/*", "./src/Area/"],
       "@Sdk/*": ["./src/sdk/generated/", "./src/sdk/generated/*"],
       "@Config/*": ["./config/*", "./config/"],
       "@I18n/*": ["./src/I18n/*", "./src/I18n"],

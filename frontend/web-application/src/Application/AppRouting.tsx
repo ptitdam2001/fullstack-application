@@ -19,14 +19,15 @@ import { GameDetail, GameList } from '@Game/index'
 import { CalendarPage } from '@Calendar/index'
 import { TeamCreatePage, TeamPage, TeamsPage } from '@Teams/pages'
 import { TeamPlayersPage } from '@Player/pages'
-import { AreaEditPage, AreaPages, MainSettingsPage, SettingsLayout } from '@Settings/index'
+import { MainSettingsPage, SettingsLayout } from '@Settings/index'
+import { AreaEditPage, AreaPages } from '@Area/index'
 import { TeamEditPage } from '@Teams/pages'
 import { TeamLayout } from '@Teams/index'
 import { CheckAuthentication } from '@Auth/ui/CheckAuthentication/CheckAuthentication'
 import { ActivatePage, ForgottenPasswordPage, LoginPage, RegisterPage, ResetPasswordPage } from '@Auth/pages'
 import { OnboardingScreen } from '@Auth/ui/OnboardingScreen/OnboardingScreen'
 import { TeamBreadcrumb } from '@Teams'
-import { AreaBreadcrumb } from '@Settings'
+import { AreaBreadcrumb } from '@Area'
 import {
   AdminUsersPage,
   AdminChampionshipsPage,
