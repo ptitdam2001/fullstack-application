@@ -23,6 +23,7 @@ import * as phaseHandlers from './src/phase/infrastructure/PhaseHttpHandlers'
 import * as groupHandlers from './src/group/infrastructure/GroupHttpHandlers'
 import * as standingsHandlers from './src/standings/infrastructure/StandingsHttpHandlers'
 import * as ageCategoryHandlers from './src/ageCategory/infrastructure/AgeCategoryHttpHandlers'
+import * as areaHandlers from './src/area/infrastructure/AreaHttpHandlers'
 
 import addFormats from 'ajv-formats'
 import { logger } from './config/logger'
@@ -89,6 +90,7 @@ export const createApp = async (): Promise<Application> => {
       ...groupHandlers,
       ...standingsHandlers,
       ...ageCategoryHandlers,
+      ...areaHandlers,
       validationFail: (c, _: Request, res: Response) => res.status(400).json({ err: c.validation.errors }),
       notFound: (c, _: Request, res: Response) =>
         res.status(404).json({
