@@ -19,7 +19,7 @@ import { GameDetail, GameList } from '@Game/index'
 import { CalendarPage } from '@Calendar/index'
 import { TeamCreatePage, TeamPage, TeamsPage } from '@Teams/pages'
 import { TeamPlayersPage } from '@Player/pages'
-import { AreaEditPage, AreaPages, SettingsLayout } from '@Settings/index'
+import { AreaEditPage, AreaPages, MainSettingsPage, SettingsLayout } from '@Settings/index'
 import { TeamEditPage } from '@Teams/pages'
 import { TeamLayout } from '@Teams/index'
 import { CheckAuthentication } from '@Auth/ui/CheckAuthentication/CheckAuthentication'
@@ -114,7 +114,8 @@ const router = createBrowserRouter(
         </Route>
 
         <Route path="settings" element={<SettingsLayout />} handle={{ breadcrumb: 'Paramètres' }}>
-          <Route index element={<Navigate to="areas" />} />
+          <Route index element={<MainSettingsPage />} />
+
           <Route element={<AreaPages />} path="areas" handle={{ breadcrumb: 'Aires' }}>
             <Route
               element={<AreaEditPage />}

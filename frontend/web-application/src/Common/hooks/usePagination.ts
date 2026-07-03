@@ -5,9 +5,10 @@ type PaginationState = {
   rowsPerPage: number
 }
 
-const paginationReducer = (state: PaginationState, action: Partial<PaginationState>): PaginationState => {
-  return { ...state, ...action }
-}
+const paginationReducer = (state: PaginationState, action: Partial<PaginationState>): PaginationState => ({
+  ...state,
+  ...action,
+})
 
 export const usePagination = (defaultValue: PaginationState = { page: 0, rowsPerPage: 10 }) => {
   const [pagination, dispatchPagination] = useReducer(paginationReducer, defaultValue)
