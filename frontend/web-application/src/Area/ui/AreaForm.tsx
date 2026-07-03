@@ -1,12 +1,22 @@
+import { z } from 'zod'
 import { cn } from '@repo/design-system'
-import { CreateAreaBody } from '@Sdk/area/area.zod'
 import { type CreateAreaMutationBody } from '@Sdk/area/area'
 import { createFormFactory } from '@repo/form-factory'
 import { useAreaForm } from '../application/useAreaForm'
 import { Button, TextInputField, Toast } from '@repo/design-system'
 import { Loader2 } from 'lucide-react'
 
-const areaFormFactory = createFormFactory({ schema: CreateAreaBody })
+// z.coerce.number() converts string values from <input type="number"> to number
+// before Zod validates — required because TextInputField always emits strings
+const areaFormSchema = z.object({
+  name: z.string().optional(),
+  address: z.string().min(1),
+  city: z.string().min(1),
+  longitude: z.coerce.number(),
+  latitude: z.coerce.number(),
+})
+
+const areaFormFactory = createFormFactory({ schema: areaFormSchema })
 
 type AreaFormProps = {
   areaId?: string
