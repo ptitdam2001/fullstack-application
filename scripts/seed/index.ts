@@ -15,6 +15,7 @@ const SEED_PASSWORD = "Seed@1234";
 const SALT_ROUNDS = 10;
 const SEED_CHAMPIONSHIP_NAME = "Championnat Test";
 const SEED_TEAM_NAME = "Équipe Test";
+const SEED_AREA_NAME = "Stade Test";
 
 const SEED_USERS = [
   {
@@ -83,6 +84,7 @@ async function cleanup() {
   await prisma.ageCategory.deleteMany({
     where: { label: "Senior", genre: Genre.MALE },
   });
+  await prisma.area.deleteMany({ where: { name: SEED_AREA_NAME } });
 
   console.log("  ✓ Nettoyage terminé");
 }
@@ -120,6 +122,17 @@ async function seedContext() {
   const ageCategory = await prisma.ageCategory.create({
     data: { label: "Senior", genre: Genre.MALE },
   });
+
+  await prisma.area.create({
+    data: {
+      name: SEED_AREA_NAME,
+      address: "1 avenue du Stade",
+      city: "Paris",
+      longitude: 2.3522,
+      latitude: 48.8566,
+    },
+  });
+  console.log(`  ✓ Area "${SEED_AREA_NAME}"`);
 
   const championship = await prisma.championship.create({
     data: {
