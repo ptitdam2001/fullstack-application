@@ -4,6 +4,7 @@ export {
   useGetArea,
   useCreateArea,
   useUpdateArea,
+  useDeleteArea,
   getGetAreaListQueryKey,
   getCountAllAreasQueryKey,
 } from '@Sdk/area/area'

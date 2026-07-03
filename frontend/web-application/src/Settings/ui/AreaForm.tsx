@@ -30,6 +30,9 @@ export const AreaForm = ({ defaultValues, areaId, onFinish, className }: AreaFor
     }
   }
 
+  const isValid = form.formState.isValid
+  const isDirty = form.formState.isDirty
+
   return (
     <Form name="areaForm" onSubmit={onSubmit} className={cn('h-full', className)}>
       <Field name="name">
@@ -61,7 +64,7 @@ export const AreaForm = ({ defaultValues, areaId, onFinish, className }: AreaFor
         <Button
           type="submit"
           variant="outline"
-          isDisabled={!form.formState.isValid || !form.formState.isDirty || isPending}
+          isDisabled={!isValid || !isDirty || isPending}
         >
           {isPending && <Loader2 className="animate-spin" />}
           {areaId ? 'Update' : 'Create'}
