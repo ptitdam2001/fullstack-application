@@ -31,8 +31,8 @@ test.describe('smoke — admin areas', () => {
     await page.getByRole('textbox', { name: /Name/i }).pressSequentially(areaName)
     await page.getByRole('textbox', { name: /Address/i }).pressSequentially('1 rue du Test')
     await page.getByRole('textbox', { name: /City/i }).pressSequentially('Lyon')
-    await page.getByRole('textbox', { name: /Longitude/i }).pressSequentially('4.83')
-    await page.getByRole('textbox', { name: /Latitude/i }).pressSequentially('45.75')
+    await page.locator('input[name="longitude"]').pressSequentially('4.83')
+    await page.locator('input[name="latitude"]').pressSequentially('45.75')
 
     await expect(page.getByRole('button', { name: /Create/i })).toBeEnabled({ timeout: 5_000 })
     await page.getByRole('button', { name: /Create/i }).click()
@@ -65,8 +65,8 @@ test.describe('smoke — admin areas', () => {
     await page.getByRole('textbox', { name: /Name/i }).pressSequentially(areaName)
     await page.getByRole('textbox', { name: /Address/i }).pressSequentially('2 rue du Test')
     await page.getByRole('textbox', { name: /City/i }).pressSequentially('Marseille')
-    await page.getByRole('textbox', { name: /Longitude/i }).pressSequentially('5.37')
-    await page.getByRole('textbox', { name: /Latitude/i }).pressSequentially('43.29')
+    await page.locator('input[name="longitude"]').pressSequentially('5.37')
+    await page.locator('input[name="latitude"]').pressSequentially('43.29')
 
     await page.getByRole('button', { name: /Create/i }).click()
     await expect(page.getByRole('dialog')).not.toBeVisible({ timeout: 5_000 })

@@ -29,8 +29,8 @@ test.describe('admin — areas management', () => {
     await expect(page.getByRole('textbox', { name: /Name/i })).toBeVisible()
     await expect(page.getByRole('textbox', { name: /Address/i })).toBeVisible()
     await expect(page.getByRole('textbox', { name: /City/i })).toBeVisible()
-    await expect(page.getByRole('textbox', { name: /Longitude/i })).toBeVisible()
-    await expect(page.getByRole('textbox', { name: /Latitude/i })).toBeVisible()
+    await expect(page.locator('input[name="longitude"]')).toBeVisible()
+    await expect(page.locator('input[name="latitude"]')).toBeVisible()
   })
 
   test('create — submit enabled after filling required fields', async ({ page }) => {
@@ -39,8 +39,8 @@ test.describe('admin — areas management', () => {
 
     await page.getByRole('textbox', { name: /Address/i }).pressSequentially('1 rue du Stade')
     await page.getByRole('textbox', { name: /City/i }).pressSequentially('Paris')
-    await page.getByRole('textbox', { name: /Longitude/i }).pressSequentially('2.35')
-    await page.getByRole('textbox', { name: /Latitude/i }).pressSequentially('48.85')
+    await page.locator('input[name="longitude"]').pressSequentially('2.35')
+    await page.locator('input[name="latitude"]').pressSequentially('48.85')
 
     const submitButton = page.getByRole('dialog').getByRole('button', { name: /Create/i })
     await expect(submitButton).toBeEnabled({ timeout: 5_000 })
