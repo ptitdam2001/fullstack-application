@@ -40,7 +40,7 @@ Un lieu (Area) est un espace physique — terrain de sport, salle, complexe — 
 | Lister les lieux  |  ✅   | ✅\*  |   ❌   |   ❌   |
 | Voir un lieu      |  ✅   | ✅\*  |   ❌   |   ❌   |
 | Créer un lieu     |  ✅   |  ❌   |   ❌   |   ❌   |
-| Modifier un lieu  |  ✅   |  ❌   |   ❌   |   ❌   |
+| Modifier un lieu  |  ✅   |  ✅   |   ❌   |   ❌   |
 | Supprimer un lieu |  ✅   |  ❌   |   ❌   |   ❌   |
 
 > \* Le rôle Coach pourra lire la liste des lieux pour sélectionner un lieu à lier à son équipe — cette fonctionnalité est **différée** (hors scope de la première itération).
@@ -49,14 +49,14 @@ Un lieu (Area) est un espace physique — terrain de sport, salle, complexe — 
 
 ## Routes API
 
-| Méthode  | Route          | Auth     | Description                      |
-| -------- | -------------- | -------- | -------------------------------- |
-| `GET`    | `/areas`       | Connecté | Liste les lieux actifs (paginée) |
-| `GET`    | `/areas/count` | Connecté | Nombre total de lieux actifs     |
-| `GET`    | `/areas/:id`   | Connecté | Détail d'un lieu                 |
-| `POST`   | `/areas`       | Admin    | Crée un lieu                     |
-| `PATCH`  | `/areas/:id`   | Admin    | Met à jour un lieu               |
-| `DELETE` | `/areas/:id`   | Admin    | Soft-delete un lieu              |
+| Méthode  | Route          | Auth         | Description                      |
+| -------- | -------------- | ------------ | -------------------------------- |
+| `GET`    | `/areas`       | Connecté     | Liste les lieux actifs (paginée) |
+| `GET`    | `/areas/count` | Connecté     | Nombre total de lieux actifs     |
+| `GET`    | `/areas/:id`   | Connecté     | Détail d'un lieu                 |
+| `POST`   | `/areas`       | Admin        | Crée un lieu                     |
+| `PATCH`  | `/areas/:id`   | Admin, Coach | Met à jour un lieu               |
+| `DELETE` | `/areas/:id`   | Admin        | Soft-delete un lieu              |
 
 ### Paramètres de pagination (`GET /areas`)
 
