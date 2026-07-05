@@ -34,15 +34,15 @@ export const AreaEditPage = () => {
           className={cn(
             { dark: currentTheme && ['dark', 'system'].includes(currentTheme) },
             'fixed top-1/2 left-1/2 flex flex-col',
-            'max-h-[85vh] w-[90vw] max-w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-md',
-            'data-[state=open]:animate-contentShow p-[25px] shadow-[var(--shadow-6)] focus:outline-none dark:bg-gray-600'
+            'max-h-[85vh] w-[90vw] max-w-125 -translate-x-1/2 -translate-y-1/2 rounded-md',
+            'data-[state=open]:animate-contentShow p-6.25 shadow-(--shadow-6) focus:outline-none dark:bg-gray-600'
           )}
         >
           <DialogHeader>
             <DialogTitle>{areaId ? 'Edit' : 'Create'}</DialogTitle>
             <DialogDescription></DialogDescription>
           </DialogHeader>
-          <div className="flex flex-grow flex-col">
+          <div className="flex grow flex-col">
             {isError && <NotFound />}
             {isLoading ? (
               <LinearProgress />

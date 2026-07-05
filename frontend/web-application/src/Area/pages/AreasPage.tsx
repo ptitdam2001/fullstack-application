@@ -29,14 +29,14 @@ export const AreaPages = () => {
       <div className="flex-flex-grow-1">
         <AreaList
           actions={area => (
-            <>
+            <div className="flew-row flex gap-1.5 align-middle">
               <Link to={`${area.id}/edit`}>
                 <Edit className="h-4 w-4" />
               </Link>
               <Button variant="ghost" size="icon" onPress={() => setAreaToDelete(area)}>
                 <Trash2 className="h-4 w-4" />
               </Button>
-            </>
+            </div>
           )}
         />
       </div>

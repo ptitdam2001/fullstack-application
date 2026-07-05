@@ -20,7 +20,7 @@ const BaseAreaList = ({ actions }: AreaListProps) => {
       <Table>
         <TableHeader>
           <TableHead>Address</TableHead>
-          {actions && <TableHead className="w-[50px]">Actions</TableHead>}
+          {actions && <TableHead className="w-15">Actions</TableHead>}
         </TableHeader>
         <TableBody>
           {addresses.map(address => (
