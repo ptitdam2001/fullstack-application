@@ -29,7 +29,13 @@ const BaseAreaList = ({ actions }: AreaListProps) => {
             </TableHead>
           )}
         </TableHeader>
-        <TableBody>
+        <TableBody
+          renderEmptyState={() => (
+            <div className="text-muted-foreground py-8 text-center">
+              <FormattedMessage id="adminAreas.table.empty" />
+            </div>
+          )}
+        >
           {addresses.map(address => (
             <TableRow key={address.id} id={address.id}>
               <TableCell>
