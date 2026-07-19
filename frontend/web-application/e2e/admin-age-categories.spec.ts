@@ -2,11 +2,11 @@ import { test, expect } from '@playwright/test'
 
 test.describe('admin — age categories management', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/app/admin/age-categories')
+    await page.goto('/app/settings/age-categories')
   })
 
   test('page loads with table', async ({ page }) => {
-    await expect(page).toHaveURL(/\/app\/admin\/age-categories/)
+    await expect(page).toHaveURL(/\/app\/settings\/age-categories/)
     await expect(page.locator('table')).toBeVisible({ timeout: 10_000 })
   })
 

@@ -2,18 +2,18 @@ import { test, expect } from '@playwright/test'
 
 test.describe('smoke — admin age categories', () => {
   test('page loads with table', async ({ page }) => {
-    await page.goto('/app/admin/age-categories')
+    await page.goto('/app/settings/age-categories')
     await expect(page.locator('table')).toBeVisible({ timeout: 15_000 })
   })
 
   test('table displays seed age category', async ({ page }) => {
-    await page.goto('/app/admin/age-categories')
+    await page.goto('/app/settings/age-categories')
     await expect(page.locator('table')).toBeVisible({ timeout: 15_000 })
     await expect(page.getByText('Senior')).toBeVisible()
   })
 
   test('create sheet opens via New Category button', async ({ page }) => {
-    await page.goto('/app/admin/age-categories')
+    await page.goto('/app/settings/age-categories')
     await expect(page.locator('table')).toBeVisible({ timeout: 15_000 })
     await page.getByRole('button', { name: 'New Category' }).click()
     await expect(page.getByRole('dialog')).toBeVisible({ timeout: 10_000 })
@@ -23,7 +23,7 @@ test.describe('smoke — admin age categories', () => {
   test('create age category, verify it appears in table', async ({ page }) => {
     const label = `Smoke-Cat-${Date.now()}`
 
-    await page.goto('/app/admin/age-categories')
+    await page.goto('/app/settings/age-categories')
     await expect(page.locator('table')).toBeVisible({ timeout: 15_000 })
     await page.getByRole('button', { name: 'New Category' }).click()
     await expect(page.getByRole('dialog')).toBeVisible({ timeout: 10_000 })
@@ -40,12 +40,12 @@ test.describe('smoke — admin age categories', () => {
     await page.getByRole('button', { name: 'New Category' }).click()
 
     await expect(page.getByRole('dialog')).not.toBeVisible({ timeout: 5_000 })
-    await page.goto('/app/admin/age-categories')
+    await page.goto('/app/settings/age-categories')
     await expect(page.getByText(label)).toBeVisible({ timeout: 15_000 })
   })
 
   test('edit seed age category', async ({ page }) => {
-    await page.goto('/app/admin/age-categories')
+    await page.goto('/app/settings/age-categories')
     await expect(page.getByText('Senior')).toBeVisible({ timeout: 15_000 })
 
     const seniorRow = page.locator('tbody tr').filter({ hasText: 'Senior' })
@@ -59,7 +59,7 @@ test.describe('smoke — admin age categories', () => {
   test('delete age category created in test', async ({ page }) => {
     const label = `Smoke-Del-${Date.now()}`
 
-    await page.goto('/app/admin/age-categories')
+    await page.goto('/app/settings/age-categories')
     await expect(page.locator('table')).toBeVisible({ timeout: 15_000 })
     await page.getByRole('button', { name: 'New Category' }).click()
     await expect(page.getByRole('dialog')).toBeVisible({ timeout: 10_000 })
@@ -72,7 +72,7 @@ test.describe('smoke — admin age categories', () => {
     await page.getByRole('button', { name: 'New Category' }).click()
     await expect(page.getByRole('dialog')).not.toBeVisible({ timeout: 5_000 })
 
-    await page.goto('/app/admin/age-categories')
+    await page.goto('/app/settings/age-categories')
     await expect(page.getByText(label)).toBeVisible({ timeout: 15_000 })
 
     const row = page.locator('tbody tr').filter({ hasText: label })
@@ -81,7 +81,7 @@ test.describe('smoke — admin age categories', () => {
     await page.getByRole('button', { name: /^Delete$/i }).click()
     await expect(page.getByRole('dialog')).not.toBeVisible({ timeout: 5_000 })
 
-    await page.goto('/app/admin/age-categories')
+    await page.goto('/app/settings/age-categories')
     await expect(page.getByText(label)).not.toBeVisible({ timeout: 10_000 })
   })
 })
