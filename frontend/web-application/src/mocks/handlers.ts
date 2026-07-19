@@ -1,3 +1,4 @@
+import { getAgeCategoryMock } from '@Sdk/age-category/age-category.msw'
 import { getAreaMock } from '@Sdk/area/area.msw'
 import { getAuthenticationMock } from '@Sdk/authentication/authentication.msw'
 import { getChampionshipMock } from '@Sdk/championship/championship.msw'
@@ -13,6 +14,7 @@ export const handlers = [
   // Overrides first — MSW v2 uses first-match-wins
   getGetTeamsMockHandler([mockCoachTeam, ...getGetTeamsResponseMock()]),
   getGetCoachTeamsMockHandler([mockCoachUserTeam]),
+  ...getAgeCategoryMock(),
   ...getAreaMock(),
   ...getAuthenticationMock(),
   ...getChampionshipMock(),

@@ -40,7 +40,7 @@ test.describe('admin — age categories management', () => {
 
     const genreSelect = page.getByRole('button', { name: /Genre/i })
     await genreSelect.click()
-    await page.getByRole('option', { name: 'Male' }).click()
+    await page.getByRole('option', { name: 'Male', exact: true }).click()
 
     const submitButton = page.getByRole('dialog').getByRole('button', { name: /New Category/i })
     await expect(submitButton).toBeEnabled({ timeout: 5_000 })
@@ -70,8 +70,8 @@ test.describe('admin — age categories management', () => {
     const deleteButton = page.locator('tbody tr').first().getByRole('button').nth(1)
     await deleteButton.click()
     await expect(page.getByRole('dialog')).toBeVisible({ timeout: 5_000 })
-    await expect(page.getByRole('button', { name: /Cancel/i })).toBeVisible()
-    await expect(page.getByRole('button', { name: /Delete/i })).toBeVisible()
+    await expect(page.getByRole('dialog').getByRole('button', { name: /Cancel/i })).toBeVisible()
+    await expect(page.getByRole('dialog').getByRole('button', { name: /Delete/i })).toBeVisible()
   })
 
   test('cancel delete closes dialog', async ({ page }) => {
@@ -88,7 +88,10 @@ test.describe('admin — age categories management', () => {
     const deleteButton = page.locator('tbody tr').first().getByRole('button').nth(1)
     await deleteButton.click()
     await expect(page.getByRole('dialog')).toBeVisible({ timeout: 5_000 })
-    await page.getByRole('button', { name: /^Delete$/i }).click()
+    await page
+      .getByRole('dialog')
+      .getByRole('button', { name: /^Delete$/i })
+      .click()
     await expect(page.getByRole('dialog')).not.toBeVisible({ timeout: 5_000 })
   })
 })

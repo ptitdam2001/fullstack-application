@@ -78,7 +78,10 @@ test.describe('smoke — admin age categories', () => {
     const row = page.locator('tbody tr').filter({ hasText: label })
     await row.getByRole('button').nth(1).click()
     await expect(page.getByRole('dialog')).toBeVisible({ timeout: 5_000 })
-    await page.getByRole('button', { name: /^Delete$/i }).click()
+    await page
+      .getByRole('dialog')
+      .getByRole('button', { name: /^Delete$/i })
+      .click()
     await expect(page.getByRole('dialog')).not.toBeVisible({ timeout: 5_000 })
 
     await page.goto('/app/settings/age-categories')
