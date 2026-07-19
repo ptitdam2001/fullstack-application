@@ -24,6 +24,7 @@ import { AreaEditPage, AreaPages } from '@Area/index'
 import { TeamEditPage } from '@Teams/pages'
 import { TeamLayout } from '@Teams/index'
 import { CheckAuthentication } from '@Auth/ui/CheckAuthentication/CheckAuthentication'
+import { RequireRole } from '@Auth/ui/RequireRole/RequireRole'
 import { ActivatePage, ForgottenPasswordPage, LoginPage, RegisterPage, ResetPasswordPage } from '@Auth/pages'
 import { OnboardingScreen } from '@Auth/ui/OnboardingScreen/OnboardingScreen'
 import { TeamBreadcrumb } from '@Teams'
@@ -100,18 +101,21 @@ const router = createBrowserRouter(
           />
         </Route>
 
-        <Route path="admin" handle={{ breadcrumb: 'Administration' }}>
+        <Route
+          path="admin"
+          element={
+            <RequireRole allowed={user => user.isAdmin}>
+              <Outlet />
+            </RequireRole>
+          }
+          handle={{ breadcrumb: 'Administration' }}
+        >
           <Route index element={<Navigate to="users" />} />
           <Route path="users" element={<AdminUsersPage />} handle={{ breadcrumb: 'Utilisateurs' }} />
           <Route path="championships" element={<AdminChampionshipsPage />} handle={{ breadcrumb: 'Championnats' }} />
           <Route path="teams" element={<AdminTeamsPage />} handle={{ breadcrumb: 'Équipes' }}>
             <Route path=":teamId/delete" element={<AdminTeamDeletePage />} handle={{ breadcrumb: 'Supprimer' }} />
           </Route>
-          <Route
-            path="age-categories"
-            element={<AdminAgeCategoriesPage />}
-            handle={{ breadcrumb: "Catégories d'âge" }}
-          />
         </Route>
 
         <Route path="settings" element={<SettingsLayout />} handle={{ breadcrumb: 'Paramètres' }}>
@@ -129,7 +133,11 @@ const router = createBrowserRouter(
           </Route>
           <Route
             path="age-categories"
-            element={<AdminAgeCategoriesPage />}
+            element={
+              <RequireRole allowed={user => user.isAdmin}>
+                <AdminAgeCategoriesPage />
+              </RequireRole>
+            }
             handle={{ breadcrumb: "Catégories d'âge" }}
           />
         </Route>
