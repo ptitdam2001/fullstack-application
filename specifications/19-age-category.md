@@ -58,7 +58,7 @@ Une catégorie d'âge est une entité admin-gérée qui classe les équipes et l
 
 ## Interface admin
 
-Page `/app/settings/age-categories` — tuile visible uniquement si `user.isAdmin`, mais aucune garde de route côté frontend (voir [[21-settings-admin]] pour le détail des accès et cas limites).
+Page `/app/settings/age-categories` — tuile visible uniquement si `user.isAdmin`, route protégée par `RequireRole` (voir [[21-settings-admin]] pour le détail des accès et cas limites).
 
 - Liste des catégories (label + genre + date création).
 - Bouton « Nouvelle catégorie » → Sheet avec formulaire (label + genre Select).

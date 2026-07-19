@@ -28,9 +28,10 @@ Cliquer une tuile navigue vers la sous-route correspondante (`/app/settings/area
 
 ### Accès aux sections
 
-- L'affichage des tuiles dans le menu est **la seule barrière** appliquée côté frontend (pas de garde de route par rôle sur `/app/settings/age-categories`).
-- La protection réelle contre les écritures non autorisées est assurée par l'API : `POST`/`DELETE /age-categories` et `POST /areas` exigent Admin ; `PATCH /areas/:id` accepte Admin ou Coach (voir [[20-area]]).
-- Un Coach qui accéderait directement à l'URL `/app/settings/age-categories` verrait la page (lecture), mais toute tentative d'écriture serait rejetée par le backend (403).
+- `/app/settings/age-categories` est protégée par `RequireRole` (`frontend/web-application/src/Auth/ui/RequireRole/RequireRole.tsx`) — redirige vers `/app` si `!user.isAdmin`. Même garde appliquée à tout `/app/admin/*`.
+- L'affichage des tuiles dans le menu (`useSettingsMenu`) reste une barrière UX complémentaire (cache le lien avant même la navigation).
+- La protection contre les écritures non autorisées reste aussi assurée par l'API : `POST`/`DELETE /age-categories` et `POST /areas` exigent Admin ; `PATCH /areas/:id` accepte Admin ou Coach (voir [[20-area]]).
+- Un Coach qui accéderait directement à l'URL `/app/settings/age-categories` est redirigé vers `/app` par `RequireRole`.
 
 ### Sections existantes
 
@@ -58,12 +59,11 @@ Cliquer une tuile navigue vers la sous-route correspondante (`/app/settings/area
 
 ## Cas limites et contraintes
 
-- Aucune garde de route (`CheckAuthentication` couvre uniquement l'authentification, pas les rôles) ne protège `/app/settings/age-categories` côté frontend — un Coach connecté peut atteindre la page via URL directe même si la tuile est masquée. Sans conséquence fonctionnelle actuelle car le backend rejette les écritures, mais la page reste consultable en lecture.
-- L'ajout d'une nouvelle section au menu (`useSettingsMenu`) doit être accompagné de la mise à jour de la matrice de permissions ci-dessus et du guide API correspondant.
+- `RequireRole` couvre `/app/settings/age-categories` et tout `/app/admin/*` (route guard générique, redirige vers `/app`) — voir commit `29fbaf4`.
+- L'ajout d'une nouvelle section au menu (`useSettingsMenu`) doit être accompagné de la mise à jour de la matrice de permissions ci-dessus et du guide API correspondant. Si la section est admin-only, envelopper sa route avec `RequireRole`.
 
 ---
 
 ## Questions ouvertes
 
-- Faut-il ajouter une garde de route par rôle sur `/app/settings/age-categories`, ou le filtrage du menu + la protection API suffisent-ils ? Aucun composant `RequireRole`/garde par rôle n'existe dans le code actuel — `/app/admin/*` a le même trou (choix de rendu sidebar dans `AppSidebar.tsx`, pas de garde sur les Routes).
 - Prochaines sections envisagées pour `/app/settings` : aucune à ce jour — périmètre limité à Lieux et Catégories d'âge.
