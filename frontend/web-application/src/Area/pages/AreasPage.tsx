@@ -1,5 +1,5 @@
-import { AreaList } from '../ui/AreaList'
-import { ConfirmDeleteAreaDialog } from '../ui/ConfirmDeleteAreaDialog'
+import { AreaList } from '../ui/Admin/AreaList'
+import { ConfirmDeleteAreaDialog } from '../ui/Admin/ConfirmDeleteAreaDialog'
 import { useAreaDelete } from '../application/useAreaDelete'
 import type { Area } from '../domain/Area'
 import { Link, Outlet } from 'react-router'

@@ -1,10 +1,10 @@
 import { FormattedMessage } from 'react-intl'
-import { AreaDisplay } from './AreaDisplay'
+import { AreaDisplay } from '../AreaDisplay'
 import { ErrorBoundary } from '@Common/ErrorBoundary'
 import { TableLoader } from '@Common/Loading'
 import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell, TablePagination } from '@repo/design-system'
-import type { Area } from '../domain/Area'
-import { useAreaList } from '../application/useAreaList'
+import type { Area } from '../../domain/Area'
+import { useAreaList } from '../../application/useAreaList'
 import React, { Suspense, use } from 'react'
 
 type AreaListProps = {
