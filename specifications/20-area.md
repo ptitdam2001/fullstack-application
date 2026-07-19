@@ -69,11 +69,11 @@ Un lieu (Area) est un espace physique — terrain de sport, salle, complexe — 
 
 ## Interface admin
 
-Page `/app/settings/areas` — accessible aux Admins.
+Page `/app/settings/areas` — accessible aux Admins et Coachs (lecture pour tous, écriture selon la matrice de permissions ci-dessus). Pas de garde de route par rôle (contrairement à `age-categories`) puisque Coach a des droits légitimes sur cette page.
 
 - Liste des lieux actifs (nom, adresse, ville).
-- Bouton « Nouveau lieu » → Dialog modal avec formulaire (name, address, city, longitude, latitude).
-- Icône edit par ligne → Dialog modal pré-remplie.
+- Bouton « Nouveau lieu » → Sheet latéral avec formulaire (name, address, city, longitude, latitude) — état local (`AreasPage`), pas de route dédiée.
+- Icône edit par ligne → Sheet pré-remplie (`AdminAreaFormSheet`).
 - Icône delete par ligne → Dialog de confirmation avant soft-delete.
 
 ---
