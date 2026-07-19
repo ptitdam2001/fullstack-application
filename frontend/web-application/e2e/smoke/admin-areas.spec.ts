@@ -12,12 +12,12 @@ test.describe('smoke — admin areas', () => {
     await expect(page.getByText('Stade Test')).toBeVisible()
   })
 
-  test('create dialog opens via create link', async ({ page }) => {
+  test('create sheet opens via create button', async ({ page }) => {
     await page.goto('/app/settings/areas')
     await expect(page.locator('table')).toBeVisible({ timeout: 15_000 })
-    await page.locator('a[href$="/create"]').click()
+    await page.getByRole('button', { name: /New Area/i }).click()
     await expect(page.getByRole('dialog')).toBeVisible({ timeout: 10_000 })
-    await expect(page.getByRole('dialog').getByText('Create')).toBeVisible()
+    await expect(page.getByRole('dialog').getByText('Create Area')).toBeVisible()
   })
 
   test('create area, verify it appears in table', async ({ page }) => {
@@ -25,7 +25,7 @@ test.describe('smoke — admin areas', () => {
 
     await page.goto('/app/settings/areas')
     await expect(page.locator('table')).toBeVisible({ timeout: 15_000 })
-    await page.locator('a[href$="/create"]').click()
+    await page.getByRole('button', { name: /New Area/i }).click()
     await expect(page.getByRole('dialog')).toBeVisible({ timeout: 10_000 })
 
     await page.getByRole('textbox', { name: /Name/i }).pressSequentially(areaName)
@@ -34,8 +34,9 @@ test.describe('smoke — admin areas', () => {
     await page.locator('input[name="longitude"]').pressSequentially('4.83')
     await page.locator('input[name="latitude"]').pressSequentially('45.75')
 
-    await expect(page.getByRole('button', { name: /Create/i })).toBeEnabled({ timeout: 5_000 })
-    await page.getByRole('button', { name: /Create/i }).click()
+    const submitButton = page.getByRole('dialog').getByRole('button', { name: /New Area/i })
+    await expect(submitButton).toBeEnabled({ timeout: 5_000 })
+    await submitButton.click()
 
     await expect(page.getByRole('dialog')).not.toBeVisible({ timeout: 5_000 })
     await page.goto('/app/settings/areas')
@@ -47,10 +48,10 @@ test.describe('smoke — admin areas', () => {
     await expect(page.getByText('Stade Test')).toBeVisible({ timeout: 15_000 })
 
     const seedRow = page.locator('tbody tr').filter({ hasText: 'Stade Test' })
-    await seedRow.locator('a').click()
+    await seedRow.getByRole('button').first().click()
 
     await expect(page.getByRole('dialog')).toBeVisible({ timeout: 10_000 })
-    await expect(page.getByRole('dialog').getByText('Edit')).toBeVisible()
+    await expect(page.getByRole('dialog').getByText('Edit Area')).toBeVisible()
     await expect(page.getByRole('textbox', { name: /Name/i })).toHaveValue('Stade Test')
   })
 
@@ -59,7 +60,7 @@ test.describe('smoke — admin areas', () => {
 
     await page.goto('/app/settings/areas')
     await expect(page.locator('table')).toBeVisible({ timeout: 15_000 })
-    await page.locator('a[href$="/create"]').click()
+    await page.getByRole('button', { name: /New Area/i }).click()
     await expect(page.getByRole('dialog')).toBeVisible({ timeout: 10_000 })
 
     await page.getByRole('textbox', { name: /Name/i }).pressSequentially(areaName)
@@ -68,16 +69,22 @@ test.describe('smoke — admin areas', () => {
     await page.locator('input[name="longitude"]').pressSequentially('5.37')
     await page.locator('input[name="latitude"]').pressSequentially('43.29')
 
-    await page.getByRole('button', { name: /Create/i }).click()
+    await page
+      .getByRole('dialog')
+      .getByRole('button', { name: /New Area/i })
+      .click()
     await expect(page.getByRole('dialog')).not.toBeVisible({ timeout: 5_000 })
 
     await page.goto('/app/settings/areas')
     await expect(page.getByText(areaName)).toBeVisible({ timeout: 15_000 })
 
     const row = page.locator('tbody tr').filter({ hasText: areaName })
-    await row.getByRole('button').click()
+    await row.getByRole('button').nth(1).click()
     await expect(page.getByRole('dialog')).toBeVisible({ timeout: 5_000 })
-    await page.getByRole('button', { name: /^Delete$/i }).click()
+    await page
+      .getByRole('dialog')
+      .getByRole('button', { name: /^Delete$/i })
+      .click()
     await expect(page.getByRole('dialog')).not.toBeVisible({ timeout: 5_000 })
 
     await page.goto('/app/settings/areas')

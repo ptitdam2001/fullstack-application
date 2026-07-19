@@ -20,7 +20,7 @@ import { CalendarPage } from '@Calendar/index'
 import { TeamCreatePage, TeamPage, TeamsPage } from '@Teams/pages'
 import { TeamPlayersPage } from '@Player/pages'
 import { MainSettingsPage, SettingsLayout } from '@Settings/index'
-import { AreaEditPage, AreaPages } from '@Area/index'
+import { AreasPage } from '@Area/index'
 import { TeamEditPage } from '@Teams/pages'
 import { TeamLayout } from '@Teams/index'
 import { CheckAuthentication } from '@Auth/ui/CheckAuthentication/CheckAuthentication'
@@ -28,7 +28,6 @@ import { RequireRole } from '@Auth/ui/RequireRole/RequireRole'
 import { ActivatePage, ForgottenPasswordPage, LoginPage, RegisterPage, ResetPasswordPage } from '@Auth/pages'
 import { OnboardingScreen } from '@Auth/ui/OnboardingScreen/OnboardingScreen'
 import { TeamBreadcrumb } from '@Teams'
-import { AreaBreadcrumb } from '@Area'
 import {
   AdminUsersPage,
   AdminChampionshipsPage,
@@ -121,16 +120,7 @@ const router = createBrowserRouter(
         <Route path="settings" element={<SettingsLayout />} handle={{ breadcrumb: 'Paramètres' }}>
           <Route index element={<MainSettingsPage />} />
 
-          <Route element={<AreaPages />} path="areas" handle={{ breadcrumb: 'Aires' }}>
-            <Route
-              element={<AreaEditPage />}
-              path=":areaId/edit"
-              handle={{
-                breadcrumb: (params: Record<string, string | undefined>) => <AreaBreadcrumb areaId={params.areaId!} />,
-              }}
-            />
-            <Route element={<AreaEditPage />} path="create" handle={{ breadcrumb: 'Créer' }} />
-          </Route>
+          <Route element={<AreasPage />} path="areas" handle={{ breadcrumb: 'Aires' }} />
           <Route
             path="age-categories"
             element={

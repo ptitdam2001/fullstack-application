@@ -16,15 +16,15 @@ test.describe('admin — areas management', () => {
     await expect(rows.first()).toBeVisible()
   })
 
-  test('create link opens dialog', async ({ page }) => {
+  test('create button opens sheet', async ({ page }) => {
     await expect(page.locator('table')).toBeVisible({ timeout: 10_000 })
-    await page.locator('a[href$="/create"]').click()
+    await page.getByRole('button', { name: /New Area/i }).click()
     await expect(page.getByRole('dialog')).toBeVisible({ timeout: 5_000 })
-    await expect(page.getByRole('dialog').getByText('Create')).toBeVisible()
+    await expect(page.getByRole('dialog').getByText('Create Area')).toBeVisible()
   })
 
-  test('create dialog has all form fields', async ({ page }) => {
-    await page.locator('a[href$="/create"]').click()
+  test('create sheet has all form fields', async ({ page }) => {
+    await page.getByRole('button', { name: /New Area/i }).click()
     await expect(page.getByRole('dialog')).toBeVisible({ timeout: 5_000 })
     await expect(page.getByRole('textbox', { name: /Name/i })).toBeVisible()
     await expect(page.getByRole('textbox', { name: /Address/i })).toBeVisible()
@@ -34,7 +34,7 @@ test.describe('admin — areas management', () => {
   })
 
   test('create — submit enabled after filling required fields', async ({ page }) => {
-    await page.locator('a[href$="/create"]').click()
+    await page.getByRole('button', { name: /New Area/i }).click()
     await expect(page.getByRole('dialog')).toBeVisible({ timeout: 5_000 })
 
     await page.getByRole('textbox', { name: /Address/i }).pressSequentially('1 rue du Stade')
@@ -42,38 +42,42 @@ test.describe('admin — areas management', () => {
     await page.locator('input[name="longitude"]').pressSequentially('2.35')
     await page.locator('input[name="latitude"]').pressSequentially('48.85')
 
-    const submitButton = page.getByRole('dialog').getByRole('button', { name: /Create/i })
+    const submitButton = page.getByRole('dialog').getByRole('button', { name: /New Area/i })
     await expect(submitButton).toBeEnabled({ timeout: 5_000 })
     await submitButton.click()
 
     await expect(page.getByRole('dialog')).not.toBeVisible({ timeout: 5_000 })
   })
 
-  test('edit link opens edit dialog', async ({ page }) => {
+  test('edit button opens edit sheet', async ({ page }) => {
     await expect(page.locator('table')).toBeVisible({ timeout: 10_000 })
-    await page.locator('tbody tr').first().locator('a').click()
+    const editButton = page.locator('tbody tr').first().getByRole('button').first()
+    await editButton.click()
     await expect(page.getByRole('dialog')).toBeVisible({ timeout: 5_000 })
-    await expect(page.getByRole('dialog').getByText('Edit')).toBeVisible()
+    await expect(page.getByRole('dialog').getByText('Edit Area')).toBeVisible()
   })
 
   test('delete button opens confirm dialog', async ({ page }) => {
     await expect(page.locator('table')).toBeVisible({ timeout: 10_000 })
-    await page.locator('tbody tr').first().getByRole('button').click()
+    const deleteButton = page.locator('tbody tr').first().getByRole('button').nth(1)
+    await deleteButton.click()
     await expect(page.getByRole('dialog')).toBeVisible({ timeout: 5_000 })
     await expect(page.getByRole('dialog').getByText('Delete Area')).toBeVisible()
   })
 
   test('delete dialog has confirm and cancel buttons', async ({ page }) => {
     await expect(page.locator('table')).toBeVisible({ timeout: 10_000 })
-    await page.locator('tbody tr').first().getByRole('button').click()
+    const deleteButton = page.locator('tbody tr').first().getByRole('button').nth(1)
+    await deleteButton.click()
     await expect(page.getByRole('dialog')).toBeVisible({ timeout: 5_000 })
-    await expect(page.getByRole('button', { name: /Cancel/i })).toBeVisible()
-    await expect(page.getByRole('button', { name: /Delete/i })).toBeVisible()
+    await expect(page.getByRole('dialog').getByRole('button', { name: /Cancel/i })).toBeVisible()
+    await expect(page.getByRole('dialog').getByRole('button', { name: /Delete/i })).toBeVisible()
   })
 
   test('cancel delete closes dialog', async ({ page }) => {
     await expect(page.locator('table')).toBeVisible({ timeout: 10_000 })
-    await page.locator('tbody tr').first().getByRole('button').click()
+    const deleteButton = page.locator('tbody tr').first().getByRole('button').nth(1)
+    await deleteButton.click()
     await expect(page.getByRole('dialog')).toBeVisible({ timeout: 5_000 })
     await page.getByRole('button', { name: /Cancel/i }).click()
     await expect(page.getByRole('dialog')).not.toBeVisible({ timeout: 3_000 })
@@ -81,9 +85,13 @@ test.describe('admin — areas management', () => {
 
   test('confirm delete closes dialog', async ({ page }) => {
     await expect(page.locator('table')).toBeVisible({ timeout: 10_000 })
-    await page.locator('tbody tr').first().getByRole('button').click()
+    const deleteButton = page.locator('tbody tr').first().getByRole('button').nth(1)
+    await deleteButton.click()
     await expect(page.getByRole('dialog')).toBeVisible({ timeout: 5_000 })
-    await page.getByRole('button', { name: /^Delete$/i }).click()
+    await page
+      .getByRole('dialog')
+      .getByRole('button', { name: /^Delete$/i })
+      .click()
     await expect(page.getByRole('dialog')).not.toBeVisible({ timeout: 5_000 })
   })
 })
