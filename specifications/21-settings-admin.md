@@ -39,7 +39,7 @@ Cliquer une tuile navigue vers la sous-route correspondante (`/app/settings/area
 | Lieux (Area)     | `/app/settings/areas`          | Match (lieu assigné), Team (terrains) — voir [[20-area]] |
 | Catégories d'âge | `/app/settings/age-categories` | Team, Championship — voir [[19-age-category]]            |
 
-> Une route équivalente existe aussi sous `/app/admin/age-categories` (même composant `AdminAgeCategoriesPage`). Doublon de route non résolu — voir Questions ouvertes.
+> Doublon de route résolu (2026-07-19) : `/app/admin/age-categories` supprimé de `AppRouting.tsx` (aucun lien nulle part, seul `/app/settings/age-categories` était utilisé via `useSettingsMenu`).
 
 ---
 
@@ -65,6 +65,5 @@ Cliquer une tuile navigue vers la sous-route correspondante (`/app/settings/area
 
 ## Questions ouvertes
 
-- Faut-il fusionner ou clarifier la duplication entre `/app/admin/age-categories` et `/app/settings/age-categories` (même composant, deux routes) ?
-- Faut-il ajouter une garde de route par rôle sur `/app/settings/age-categories`, ou le filtrage du menu + la protection API suffisent-ils ?
+- Faut-il ajouter une garde de route par rôle sur `/app/settings/age-categories`, ou le filtrage du menu + la protection API suffisent-ils ? Aucun composant `RequireRole`/garde par rôle n'existe dans le code actuel — `/app/admin/*` a le même trou (choix de rendu sidebar dans `AppSidebar.tsx`, pas de garde sur les Routes).
 - Prochaines sections envisagées pour `/app/settings` : aucune à ce jour — périmètre limité à Lieux et Catégories d'âge.

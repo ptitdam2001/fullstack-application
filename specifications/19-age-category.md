@@ -45,18 +45,20 @@ Une catégorie d'âge est une entité admin-gérée qui classe les équipes et l
 
 ## Routes API
 
-| Méthode  | Route                 | Description                         |
-| -------- | --------------------- | ----------------------------------- |
-| `GET`    | `/age-categories`     | Liste toutes les catégories actives |
-| `POST`   | `/age-categories`     | Crée une nouvelle catégorie         |
-| `PUT`    | `/age-categories/:id` | Met à jour une catégorie existante  |
-| `DELETE` | `/age-categories/:id` | Soft-delete une catégorie           |
+| Méthode  | Route                   | Description                                |
+| -------- | ----------------------- | ------------------------------------------ |
+| `GET`    | `/age-categories`       | Liste toutes les catégories actives        |
+| `GET`    | `/age-categories/count` | Compte les catégories actives              |
+| `GET`    | `/age-category/{id}`    | Récupère une catégorie                     |
+| `POST`   | `/age-category`         | Crée une nouvelle catégorie (Admin)        |
+| `PATCH`  | `/age-category/{id}`    | Met à jour une catégorie existante (Admin) |
+| `DELETE` | `/age-category/{id}`    | Soft-delete une catégorie (Admin)          |
 
 ---
 
 ## Interface admin
 
-Page `/app/admin/age-categories` — accessible aux Admins uniquement.
+Page `/app/settings/age-categories` — tuile visible uniquement si `user.isAdmin`, mais aucune garde de route côté frontend (voir [[21-settings-admin]] pour le détail des accès et cas limites).
 
 - Liste des catégories (label + genre + date création).
 - Bouton « Nouvelle catégorie » → Sheet avec formulaire (label + genre Select).
