@@ -298,6 +298,7 @@
     "action.create": "New Area",
     "action.edit": "Edit",
     "action.delete": "Delete",
+    "action.update": "Update",
     "delete.title": "Delete Area",
     "delete.description": "Are you sure you want to delete the area \"{name}\"?",
     "delete.confirm": "Delete",

@@ -1,3 +1,4 @@
+import { FormattedMessage } from 'react-intl'
 import { AreaDisplay } from './AreaDisplay'
 import { ErrorBoundary } from '@Common/ErrorBoundary'
 import { TableLoader } from '@Common/Loading'
@@ -19,8 +20,14 @@ const BaseAreaList = ({ actions }: AreaListProps) => {
     <section className="flex h-full w-full flex-col gap-0.5">
       <Table>
         <TableHeader>
-          <TableHead>Address</TableHead>
-          {actions && <TableHead className="w-15">Actions</TableHead>}
+          <TableHead>
+            <FormattedMessage id="adminAreas.table.address" />
+          </TableHead>
+          {actions && (
+            <TableHead className="w-15">
+              <FormattedMessage id="adminAreas.table.actions" />
+            </TableHead>
+          )}
         </TableHeader>
         <TableBody>
           {addresses.map(address => (

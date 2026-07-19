@@ -298,6 +298,7 @@
     "action.create": "Nouveau lieu",
     "action.edit": "Modifier",
     "action.delete": "Supprimer",
+    "action.update": "Modifier",
     "delete.title": "Supprimer le lieu",
     "delete.description": "Êtes-vous sûr de vouloir supprimer le lieu « {name} » ?",
     "delete.confirm": "Supprimer",
