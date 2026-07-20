@@ -44,6 +44,7 @@ test.describe('smoke — admin teams', () => {
     await expect(page.getByRole('button', { name: 'Create' })).toBeEnabled({ timeout: 5_000 })
     await page.getByRole('button', { name: 'Create' }).click()
 
+    await expect(page.getByRole('dialog')).not.toBeVisible({ timeout: 5_000 })
     await page.goto('/app/admin/teams')
     await expect(page.getByText(teamName)).toBeVisible({ timeout: 15_000 })
   })
