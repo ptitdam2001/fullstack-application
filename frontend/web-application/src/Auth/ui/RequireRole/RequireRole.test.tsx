@@ -34,7 +34,7 @@ describe('RequireRole', () => {
   it('renders children when allowed returns true', () => {
     mockUseAuthValue.mockReturnValue({ user: { isAdmin: true } })
 
-    renderRequireRole(user => user.isAdmin)
+    renderRequireRole(user => Boolean(user.isAdmin))
 
     expect(screen.getByText('Protected content')).toBeInTheDocument()
   })
@@ -42,7 +42,7 @@ describe('RequireRole', () => {
   it('redirects to /app when allowed returns false', () => {
     mockUseAuthValue.mockReturnValue({ user: { isAdmin: false } })
 
-    renderRequireRole(user => user.isAdmin)
+    renderRequireRole(user => Boolean(user.isAdmin))
 
     expect(screen.getByText('Dashboard')).toBeInTheDocument()
     expect(screen.queryByText('Protected content')).not.toBeInTheDocument()
@@ -51,7 +51,7 @@ describe('RequireRole', () => {
   it('redirects to /app when no user is present', () => {
     mockUseAuthValue.mockReturnValue({ user: undefined })
 
-    renderRequireRole(user => user.isAdmin)
+    renderRequireRole(user => Boolean(user.isAdmin))
 
     expect(screen.getByText('Dashboard')).toBeInTheDocument()
   })

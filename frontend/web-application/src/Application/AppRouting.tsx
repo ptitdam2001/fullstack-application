@@ -103,7 +103,7 @@ const router = createBrowserRouter(
         <Route
           path="admin"
           element={
-            <RequireRole allowed={user => user.isAdmin}>
+            <RequireRole allowed={user => Boolean(user.isAdmin)}>
               <Outlet />
             </RequireRole>
           }
@@ -124,7 +124,7 @@ const router = createBrowserRouter(
           <Route
             path="age-categories"
             element={
-              <RequireRole allowed={user => user.isAdmin}>
+              <RequireRole allowed={user => Boolean(user.isAdmin)}>
                 <AdminAgeCategoriesPage />
               </RequireRole>
             }
