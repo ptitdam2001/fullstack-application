@@ -36,8 +36,9 @@ test.describe('smoke — admin age categories', () => {
     await genreSelect.click()
     await page.getByRole('option', { name: 'Female' }).click()
 
-    await expect(page.getByRole('button', { name: 'New Category' })).toBeEnabled({ timeout: 5_000 })
-    await page.getByRole('button', { name: 'New Category' }).click()
+    const submitButton = page.getByRole('dialog').getByRole('button', { name: 'New Category' })
+    await expect(submitButton).toBeEnabled({ timeout: 5_000 })
+    await submitButton.click()
 
     await expect(page.getByRole('dialog')).not.toBeVisible({ timeout: 5_000 })
     await page.goto('/app/settings/age-categories')
@@ -69,7 +70,7 @@ test.describe('smoke — admin age categories', () => {
     await labelInput.pressSequentially(label)
     await page.getByRole('button', { name: /Genre/i }).click()
     await page.getByRole('option', { name: 'Mixed' }).click()
-    await page.getByRole('button', { name: 'New Category' }).click()
+    await page.getByRole('dialog').getByRole('button', { name: 'New Category' }).click()
     await expect(page.getByRole('dialog')).not.toBeVisible({ timeout: 5_000 })
 
     await page.goto('/app/settings/age-categories')
