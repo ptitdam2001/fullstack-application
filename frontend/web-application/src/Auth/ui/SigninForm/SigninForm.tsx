@@ -51,7 +51,7 @@ export const SigninForm = ({ forgotPasswordHref }: SigninFormProps) => {
               onBlur={field.onBlur}
               label={intl.formatMessage({ id: 'auth.email' })}
               type="email"
-              placeholder="vous@exemple.com"
+              placeholder={intl.formatMessage({ id: 'auth.email.placeholder' })}
               errorMessage={fieldState.error?.message}
               data-testid="signin-email"
             />

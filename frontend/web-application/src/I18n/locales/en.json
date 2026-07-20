@@ -22,6 +22,7 @@
     "login": "Login",
     "password": "Password",
     "email": "Email",
+    "email.placeholder": "you@example.com",
     "forgottenPassword": "Forgotten Password",
     "resetPassword": "Reset Password",
     "error.invalidCredentials": "Incorrect email or password.",

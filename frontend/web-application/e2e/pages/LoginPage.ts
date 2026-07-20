@@ -8,7 +8,7 @@ export class LoginPage {
   }
 
   async fillEmail(email: string) {
-    await this.page.getByPlaceholder('vous@exemple.com').fill(email)
+    await this.page.getByPlaceholder('you@example.com').fill(email)
   }
 
   async fillPassword(password: string) {
@@ -16,7 +16,7 @@ export class LoginPage {
   }
 
   async submit() {
-    await this.page.getByRole('button', { name: 'Se connecter' }).click()
+    await this.page.getByRole('button', { name: 'Sign In' }).click()
   }
 
   async login(email: string, password: string) {

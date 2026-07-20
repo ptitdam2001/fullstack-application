@@ -19,9 +19,9 @@ test.describe('auth — login flow', () => {
     const loginPage = new LoginPage(page)
     await loginPage.goto()
 
-    await expect(page.getByPlaceholder('vous@exemple.com')).toBeVisible()
+    await expect(page.getByPlaceholder('you@example.com')).toBeVisible()
     await expect(page.locator('input[type="password"]')).toBeVisible()
-    await expect(page.getByRole('button', { name: 'Se connecter' })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Sign In' })).toBeVisible()
   })
 
   test('successful login redirects to app (MSW intercepts login + me)', async ({ page }) => {
