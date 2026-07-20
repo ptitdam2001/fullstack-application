@@ -22,6 +22,7 @@ export default defineConfig({
     },
     {
       name: 'chromium',
+      testIgnore: /smoke\/.*/,
       use: {
         ...devices['Desktop Chrome'],
         storageState: 'e2e/.auth/user.json',
