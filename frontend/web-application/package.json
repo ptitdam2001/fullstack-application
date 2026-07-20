@@ -14,7 +14,7 @@
     "test:ui": "vitest --ui --coverage",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "check:types": "tsc --noEmit",
+    "check:types": "tsc -b",
     "check:format": "prettier -c .",
     "check:lint": "eslint .",
     "check:dead-code": "knip",
