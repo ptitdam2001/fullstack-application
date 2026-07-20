@@ -16,19 +16,19 @@ test.describe('admin — teams management', () => {
     await expect(rows.first()).toBeVisible()
   })
 
-  test('create button navigates to /create dialog', async ({ page }) => {
+  test('create button opens sheet', async ({ page }) => {
     await expect(page.locator('table')).toBeVisible({ timeout: 10_000 })
-    await page.locator('header button', { hasText: /team|équipe/i }).click()
-    await expect(page).toHaveURL(/\/app\/admin\/teams\/create/)
+    await page.getByRole('button', { name: 'New Team' }).click()
     await expect(page.getByRole('dialog')).toBeVisible({ timeout: 5_000 })
+    await expect(page.getByRole('dialog').getByText('Create Team')).toBeVisible()
   })
 
-  test('edit button opens edit dialog', async ({ page }) => {
+  test('edit button opens edit sheet', async ({ page }) => {
     await expect(page.locator('table')).toBeVisible({ timeout: 10_000 })
-    const editButtons = page.locator('tbody tr').first().locator('button').first()
-    await editButtons.click()
-    await expect(page).toHaveURL(/\/app\/admin\/teams\/.*\/edit/)
+    const editButton = page.locator('tbody tr').first().getByRole('button').first()
+    await editButton.click()
     await expect(page.getByRole('dialog')).toBeVisible({ timeout: 5_000 })
+    await expect(page.getByRole('dialog').getByText('Edit Team')).toBeVisible()
   })
 
   test('delete button opens delete dialog', async ({ page }) => {
@@ -58,40 +58,38 @@ test.describe('admin — teams management', () => {
     await expect(page).toHaveURL(/\/app\/admin\/teams$/)
   })
 
-  test('direct URL /app/admin/teams/create opens create dialog', async ({ page }) => {
-    await page.goto('/app/admin/teams/create')
-    await expect(page.getByRole('dialog')).toBeVisible({ timeout: 5_000 })
-  })
-
   test('create team — fill name and submit', async ({ page }) => {
     const teamName = `E2E-Admin-${Date.now()}`
 
-    await page.goto('/app/admin/teams/create')
+    await expect(page.locator('table')).toBeVisible({ timeout: 10_000 })
+    await page.getByRole('button', { name: 'New Team' }).click()
     await expect(page.getByRole('dialog')).toBeVisible({ timeout: 5_000 })
 
-    const nameInput = page.getByTestId('team-form.name.input')
+    const nameInput = page.getByRole('textbox', { name: 'Name' })
     await nameInput.click()
     await nameInput.pressSequentially(teamName)
 
-    const submitButton = page.getByRole('dialog').locator('button[type="submit"]')
+    const submitButton = page.getByRole('dialog').getByRole('button', { name: 'Create' })
     await expect(submitButton).toBeEnabled({ timeout: 5_000 })
     await submitButton.click()
 
-    await expect(page).toHaveURL(/\/app\/admin\/teams$/, { timeout: 10_000 })
+    await expect(page.getByRole('dialog')).not.toBeVisible({ timeout: 5_000 })
   })
 
   test('create team — pick color via color picker', async ({ page }) => {
-    await page.goto('/app/admin/teams/create')
+    await expect(page.locator('table')).toBeVisible({ timeout: 10_000 })
+    await page.getByRole('button', { name: 'New Team' }).click()
     await expect(page.getByRole('dialog')).toBeVisible({ timeout: 5_000 })
 
-    const nameInput = page.getByTestId('team-form.name.input')
+    const nameInput = page.getByRole('textbox', { name: 'Name' })
     await nameInput.click()
     await nameInput.pressSequentially('ColorTest')
 
-    const colorTrigger = page.locator('.ColorInput button')
+    const colorTrigger = page.getByRole('button', { name: 'Jersey color' })
     await colorTrigger.click()
-    await expect(page.locator('.react-colorful')).toBeVisible({ timeout: 3_000 })
-    await page.locator('.react-colorful__hue').click({ position: { x: 50, y: 7 } })
-    await expect(page.locator('.react-colorful')).toBeVisible()
+    await expect(page.locator('[data-slot="color-area"]')).toBeVisible({ timeout: 3_000 })
+    await page.locator('[data-slot="color-area"]').click({ position: { x: 80, y: 40 } })
+    await page.keyboard.press('Escape')
+    await expect(page.locator('[data-slot="color-area"]')).not.toBeVisible({ timeout: 3_000 })
   })
 })
