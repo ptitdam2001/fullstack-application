@@ -28,8 +28,9 @@ test.describe('teams — list', () => {
   })
 
   test('create team button navigates to create form', async ({ page }) => {
-    // CirclePlus button links to "create"
-    await page.getByRole('link').first().click()
+    // CirclePlus button links to "create" — scoped to MenuBar, since the sidebar's
+    // Home logo link also renders as a <Link> earlier in the DOM.
+    await page.locator('.MenuBar a[href$="/create"]').click()
     await expect(page).toHaveURL(/\/create/)
   })
 })
