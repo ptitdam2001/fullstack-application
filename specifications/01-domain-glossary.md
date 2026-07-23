@@ -7,9 +7,13 @@
 Tranche d'âge réglementaire définissant le niveau de compétition.
 Valeurs possibles : `U9`, `U11`, `U13`, `U15`, `U18`, `Senior`.
 
+### Saison (Season)
+
+Période compétitive admin-gérée (ex. "2025-2026") pouvant regrouper plusieurs championnats de catégories d'âge différentes. Voir `specifications/22-season.md`.
+
 ### Championnat (Championship)
 
-Compétition organisée pour une catégorie d'âge donnée lors d'une saison.
+Compétition organisée pour une catégorie d'âge donnée, rattachée à une **saison**.
 Un championnat est composé d'une ou plusieurs **phases** qui se déroulent séquentiellement.
 
 ### Phase (Phase)
@@ -83,12 +87,12 @@ Relation entre un `User` et un `Match` pour désigner un arbitre. Un match peut 
 ## Relations clés
 
 ```text
-AgeCategory
-    └── Championship
-            └── Phase
-                    ├── Group / Bracket
-                    │       └── Match ←── UserMatch ──→ User (arbitres)
-                    └── PhaseQualification
+Season ──┐
+AgeCategory ──┴── Championship
+                       └── Phase
+                               ├── Group / Bracket
+                               │       └── Match ←── UserMatch ──→ User (arbitres)
+                               └── PhaseQualification
 
 Team ←── UserTeam ──→ User (coaches, joueurs)
 Team ←── Player   ──→ User (profil joueur : maillot, poste)
