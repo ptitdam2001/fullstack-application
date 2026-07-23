@@ -43,21 +43,41 @@ type PointsConfig {
 }
 
 model Championship {
-  id              String      @id @default(auto()) @map("_id") @db.ObjectId
-  name            String
-  ageCategoryId   String      @db.ObjectId
-  season          String
-  startDate    DateTime?
-  endDate      DateTime?
-  pointsConfig PointsConfig
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
-  deletedAt    DateTime?
+  id            String       @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  ageCategoryId String       @db.ObjectId
+  seasonId      String       @db.ObjectId
+  startDate     DateTime?
+  endDate       DateTime?
+  pointsConfig  PointsConfig
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  deletedAt     DateTime?
 
   ageCategory AgeCategory @relation(fields: [ageCategoryId], references: [id])
+  season      Season      @relation(fields: [seasonId], references: [id])
   phases      Phase[]
 
   @@map("championships")
+}
+
+// ─────────────────────────────────────────
+// SEASON
+// ─────────────────────────────────────────
+
+model Season {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  label     String
+  startDate DateTime?
+  endDate   DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  championships Championship[]
+
+  @@unique([label])
+  @@map("seasons")
 }
 
 // ─────────────────────────────────────────
@@ -69,17 +89,29 @@ enum PhaseType {
   KNOCKOUT
 }
 
+/// Règle de qualification vers la phase suivante. `maxRank` = rang max qualifiant
+/// directement dans chaque poule/bracket de la phase (ex. maxRank=1 -> tous les
+/// 1ers qualifiés ; maxRank=2 -> 1ers ET 2èmes qualifiés). Un seul champ pour ce
+/// wizard — les critères combinés ("+ les 2 meilleurs 2èmes") restent documentés
+/// dans "Règles de qualification inter-phases" mais ne sont pas encore exposés
+/// dans la config de phase (extension future, voir Cas limites techniques).
+type PhaseQualification {
+  maxRank Int
+}
+
 model Phase {
-  id             String    @id @default(auto()) @map("_id") @db.ObjectId
-  championshipId String    @db.ObjectId
+  id             String              @id @default(auto()) @map("_id") @db.ObjectId
+  championshipId String              @db.ObjectId
   type           PhaseType
   order          Int
   name           String?
-  updatedAt      DateTime  @updatedAt
+  qualification  PhaseQualification?
+  updatedAt      DateTime            @updatedAt
   deletedAt      DateTime?
 
   championship Championship @relation(fields: [championshipId], references: [id], onDelete: Cascade)
   groups       Group[]
+  brackets     Bracket[]
 
   @@unique([championshipId, order])
   @@map("phases")
@@ -119,6 +151,38 @@ model GroupTeam {
 
   @@unique([groupId, teamId])
   @@map("groupTeams")
+}
+
+// ─────────────────────────────────────────
+// BRACKET (KNOCKOUT) — mirror Group
+// ─────────────────────────────────────────
+
+model Bracket {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  phaseId   String    @db.ObjectId
+  name      String
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  phase        Phase         @relation(fields: [phaseId], references: [id], onDelete: Cascade)
+  matches      Match[]
+  bracketTeams BracketTeam[]
+
+  @@map("brackets")
+}
+
+model BracketTeam {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  bracketId String @db.ObjectId
+  teamId    String @db.ObjectId
+  round     Int
+  seed      Int
+
+  bracket Bracket @relation(fields: [bracketId], references: [id], onDelete: Cascade)
+  team    Team    @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@unique([bracketId, teamId])
+  @@map("bracketTeams")
 }
 
 // ─────────────────────────────────────────
@@ -188,25 +252,26 @@ type EmbeddedArea {
 // ─────────────────────────────────────────
 
 model Team {
-  id              String         @id @default(auto()) @map("_id") @db.ObjectId
-  name            String
-  color           String?
-  areas           EmbeddedArea[]
-  ageCategoryId   String?        @db.ObjectId
+  id            String         @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  color         String?
+  areas         EmbeddedArea[]
+  ageCategoryId String?        @db.ObjectId
 
-  updatedAt    DateTime  @updatedAt
-  deletedAt    DateTime?
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
-  ageCategory  AgeCategory?      @relation(fields: [ageCategoryId], references: [id])
-  players      Player[]
-  userTeams    UserTeam[]
-  joinRequests TeamJoinRequest[]
+  ageCategory      AgeCategory?      @relation(fields: [ageCategoryId], references: [id])
+  players          Player[]
+  userTeams        UserTeam[]
+  joinRequests     TeamJoinRequest[]
   // Match participations (home/away) — named to disambiguate two relations to Match
-  homeMatches      Match[] @relation("HomeTeam")
-  awayMatches      Match[] @relation("AwayTeam")
-  forfeitedMatches Match[] @relation("ForfeitTeam")
+  homeMatches      Match[]           @relation("HomeTeam")
+  awayMatches      Match[]           @relation("AwayTeam")
+  forfeitedMatches Match[]           @relation("ForfeitTeam")
   // Group memberships via junction (replaces embedded teamIds array)
-  groupTeams GroupTeam[]
+  groupTeams       GroupTeam[]
+  bracketTeams     BracketTeam[]
 
   @@map("teams")
 }
@@ -225,9 +290,9 @@ model Team {
 // Cette contrainte est vérifiée dans les use cases, pas en DB.
 
 model Player {
-  id       String  @id @default(auto()) @map("_id") @db.ObjectId
-  userId   String  @db.ObjectId
-  teamId   String  @db.ObjectId
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  teamId    String   @db.ObjectId
   jersey    Int?
   position  String?
   updatedAt DateTime @updatedAt
@@ -275,25 +340,29 @@ enum MatchStatus {
 }
 
 model Match {
-  id          String      @id @default(auto()) @map("_id") @db.ObjectId
-  groupId     String?     @db.ObjectId
-  status      MatchStatus  @default(SCHEDULED)
-  scheduledAt DateTime?
-  area        EmbeddedArea?
-  homeTeamId  String       @db.ObjectId
-  awayTeamId  String      @db.ObjectId
-  homeGoals   Int?
-  awayGoals   Int?
-  forfeitedBy String?      @db.ObjectId
-  updatedAt   DateTime     @updatedAt
-  deletedAt   DateTime?
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  groupId         String?       @db.ObjectId
+  bracketId       String?       @db.ObjectId
+  round           Int?
+  bracketPosition Int?
+  status          MatchStatus   @default(SCHEDULED)
+  scheduledAt     DateTime?
+  area            EmbeddedArea?
+  homeTeamId      String        @db.ObjectId
+  awayTeamId      String        @db.ObjectId
+  homeGoals       Int?
+  awayGoals       Int?
+  forfeitedBy     String?       @db.ObjectId
+  updatedAt       DateTime      @updatedAt
+  deletedAt       DateTime?
 
-  group           Group?  @relation(fields: [groupId], references: [id])
-  userMatches     UserMatch[]
+  group          Group?      @relation(fields: [groupId], references: [id])
+  bracket        Bracket?    @relation(fields: [bracketId], references: [id])
+  userMatches    UserMatch[]
   // Named relations to disambiguate multiple FK to Team
-  homeTeam        Team    @relation("HomeTeam", fields: [homeTeamId], references: [id])
-  awayTeam        Team    @relation("AwayTeam", fields: [awayTeamId], references: [id])
-  forfeitingTeam  Team?   @relation("ForfeitTeam", fields: [forfeitedBy], references: [id])
+  homeTeam       Team        @relation("HomeTeam", fields: [homeTeamId], references: [id])
+  awayTeam       Team        @relation("AwayTeam", fields: [awayTeamId], references: [id])
+  forfeitingTeam Team?       @relation("ForfeitTeam", fields: [forfeitedBy], references: [id])
 
   @@map("matches")
 }
