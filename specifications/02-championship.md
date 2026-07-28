@@ -143,10 +143,11 @@ Les équipes proposées sont filtrées par `ageCategoryId` du championnat (étap
 
 #### Cas `GROUP`
 
-1. Sélection des équipes composant le championnat (au moins 2).
-2. Bouton « Générer les oppositions » → crée automatiquement les matchs de la poule selon le mode `SINGLE` (aller simple) ou `HOME_AND_AWAY` (aller-retour).
-3. Bloc de configuration des points (`PointsConfig`) — voir section dédiée plus haut.
-4. Position maximale qualifiante : rang jusqu'auquel une équipe accède à la phase suivante (définit la `PhaseQualification` par rang, voir section dédiée).
+1. Création d'une ou plusieurs poules : l'admin nomme chaque poule et choisit son mode de rencontre (`SINGLE` ou `HOME_AND_AWAY`). Au moins une poule est requise.
+2. Pour chaque poule : sélection des équipes qui la composent (au moins 2). Une équipe ne peut appartenir qu'à une seule poule de la phase — une fois affectée, elle disparaît du pool disponible pour les autres poules.
+3. Bouton « Générer les oppositions » (par poule) → crée automatiquement les matchs de la poule selon son mode `SINGLE` (aller simple) ou `HOME_AND_AWAY` (aller-retour).
+4. Bloc de configuration des points (`PointsConfig`) — voir section dédiée plus haut. Commun à la phase, pas par poule.
+5. Position maximale qualifiante : rang jusqu'auquel une équipe accède à la phase suivante (définit la `PhaseQualification` par rang, voir section dédiée). Commune à la phase, appliquée à chaque poule.
 
 #### Cas `KNOCKOUT`
 
@@ -172,8 +173,9 @@ Les équipes proposées sont filtrées par `ageCategoryId` du championnat (étap
 - Le nom d'un championnat est obligatoire.
 - Un championnat doit avoir au moins une phase.
 - L'ordre d'une phase est unique au sein d'un championnat — deux phases ne peuvent pas avoir le même `order`.
-- Une phase doit avoir au moins une poule ou un tableau éliminatoire.
+- Une phase doit avoir au moins une poule ou un tableau éliminatoire ; une phase `GROUP` peut en avoir plusieurs (1 à n).
 - Une poule doit avoir au moins 2 équipes.
+- Une équipe ne peut être affectée qu'à une seule poule au sein d'une même phase — vérifié applicativement à la création/modification de poule (pas de contrainte DB croisée entre poules).
 - Une nouvelle phase ne peut pas être **créée** tant que la phase précédente n'est pas terminée (voir « Phases suivantes » ci-dessus) — a fortiori ses matchs ne peuvent pas débuter avant.
 - La qualification inter-phases ne peut être calculée qu'une fois la phase source complète.
 - Les équipes sélectionnables pour la phase 1 sont filtrées par `ageCategoryId` du championnat ; pour les phases suivantes, par qualification de la phase précédente uniquement.
@@ -218,23 +220,26 @@ sequenceDiagram
     UC-->>API: phase
     API-->>FE: 201 {id: phaseId, ...}
 
-    FE->>API: POST /group {phaseId, name, matchMode, teamIds: [t1..tN]}
-    API->>UC: GroupUseCases.create(input)
-    UC->>Repo: create(input)
-    Repo-->>UC: group
-    UC-->>API: group
-    API-->>FE: 201 {id: groupId, ...}
+    loop pour chaque poule créée par l'admin (1 à n)
+        FE->>API: POST /group {phaseId, name, matchMode, teamIds: [t1..tN]}
+        API->>UC: GroupUseCases.create(input)
+        UC->>UC: vérifie teamId non déjà affecté à une autre poule de la phase
+        UC->>Repo: create(input)
+        Repo-->>UC: group
+        UC-->>API: group
+        API-->>FE: 201 {id: groupId, ...}
 
-    FE->>API: POST /group/{groupId}/generate-matches
-    API->>API: requireAdmin(ctx)
-    API->>UC: GroupUseCases.generateMatches(groupId)
-    UC->>UC: roundRobin(teamIds, matchMode) -> pairs
-    loop chaque paire générée
-        UC->>Repo: matchRepo.create({groupId, homeTeamId, awayTeamId, status: SCHEDULED})
-        Repo->>DB: prisma.match.create(...)
+        FE->>API: POST /group/{groupId}/generate-matches
+        API->>API: requireAdmin(ctx)
+        API->>UC: GroupUseCases.generateMatches(groupId)
+        UC->>UC: roundRobin(teamIds, matchMode) -> pairs
+        loop chaque paire générée
+            UC->>Repo: matchRepo.create({groupId, homeTeamId, awayTeamId, status: SCHEDULED})
+            Repo->>DB: prisma.match.create(...)
+        end
+        UC-->>API: Match[]
+        API-->>FE: 201 [matches créés]
     end
-    UC-->>API: Match[]
-    API-->>FE: 201 [matches créés]
 ```
 
 ### Modèle de données (Prisma)
@@ -508,7 +513,7 @@ Consommé par : `GroupUseCases.generateMatches` (regénération), `BracketUseCas
 ### Sécurité
 
 - **Autorisation** : lecture (`GET *`) ouverte à tout JWT valide — cohérent avec la matrice de permissions championnat existante ([[06-user-profiles]], lecture tous rôles). Écriture (`createChampionship`, `createPhase`, `createGroup`, `createBracket`, `generate*Matches`, `remove*`) exclusivement `requireAdmin`.
-- **Validation croisée** : `createGroup`/`createBracket` doivent vérifier que chaque `teamId` appartient bien au pool autorisé — `ageCategoryId` du championnat pour la phase 1, résultat de `getQualifiedTeams(previousPhase)` sinon. Vérification en base dans le use case, pas dans le handler ni côté frontend uniquement.
+- **Validation croisée** : `createGroup`/`createBracket` doivent vérifier que chaque `teamId` appartient bien au pool autorisé — `ageCategoryId` du championnat pour la phase 1, résultat de `getQualifiedTeams(previousPhase)` sinon. Vérification en base dans le use case, pas dans le handler ni côté frontend uniquement. `createGroup` vérifie en plus qu'aucun `teamId` du payload n'est déjà membre d'une autre poule de la même `phaseId` (`409` sinon).
 - **Intégrité** : `bracketId`/`groupId` mutuellement exclusifs sur `Match` — vérifié applicativement à la création (MongoDB n'a pas de contrainte `CHECK`/`XOR`).
 - **Autres** : aucun point additionnel (pas de donnée sensible, pas d'upload, rate limiting standard de l'API).
 
