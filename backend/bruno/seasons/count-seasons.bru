@@ -1,0 +1,15 @@
+meta {
+  name: Count Seasons
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/seasons/count
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

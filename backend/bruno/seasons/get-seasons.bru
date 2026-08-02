@@ -1,0 +1,20 @@
+meta {
+  name: Get Seasons
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/seasons
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:query {
+  page: 1
+  count: 20
+}

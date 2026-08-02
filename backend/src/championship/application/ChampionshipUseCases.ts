@@ -1,9 +1,19 @@
 import type { IChampionshipRepository, PaginationOptions } from '../ports/IChampionshipRepository.js'
 import type { CreateChampionshipInput, UpdateChampionshipInput } from '../domain/Championship.js'
 import { ChampionshipNotFoundError } from '../domain/ChampionshipErrors.js'
+import type { IPhaseRepository } from '../../phase/ports/IPhaseRepository.js'
+import type { IGroupRepository } from '../../group/ports/IGroupRepository.js'
+import type { IMatchRepository } from '../../match/ports/IMatchRepository.js'
+import { PhaseType } from '../../phase/domain/Phase.js'
+import { MatchStatus } from '../../match/domain/Match.js'
 
 export class ChampionshipUseCases {
-  constructor(private readonly repo: IChampionshipRepository) {}
+  constructor(
+    private readonly repo: IChampionshipRepository,
+    private readonly phaseRepo: IPhaseRepository,
+    private readonly groupRepo: IGroupRepository,
+    private readonly matchRepo: IMatchRepository
+  ) {}
 
   count() {
     return this.repo.count()
@@ -35,5 +45,28 @@ export class ChampionshipUseCases {
       return this.repo.softDelete(id)
     }
     return this.repo.delete(id)
+  }
+
+  async isChampionshipFinished(championshipId: string): Promise<boolean> {
+    const phases = await this.phaseRepo.findByChampionshipId(championshipId)
+    if (phases.length === 0) {
+      return false
+    }
+    const lastPhase = phases.reduce((latest, phase) => (phase.order > latest.order ? phase : latest))
+
+    if (lastPhase.type === PhaseType.KNOCKOUT) {
+      // Bracket domain not implemented yet: no final match to check a winner against.
+      return false
+    }
+
+    const groups = await this.groupRepo.findByPhaseId(lastPhase.id)
+    const matchesByGroup = await Promise.all(groups.map((group) => this.matchRepo.findByGroupId(group.id)))
+    return matchesByGroup.flat().every((match) => match.status !== MatchStatus.SCHEDULED)
+  }
+
+  async hasUnfinishedChampionships(seasonId: string): Promise<boolean> {
+    const championships = await this.repo.findBySeasonId(seasonId)
+    const finishedFlags = await Promise.all(championships.map((championship) => this.isChampionshipFinished(championship.id)))
+    return finishedFlags.some((finished) => !finished)
   }
 }

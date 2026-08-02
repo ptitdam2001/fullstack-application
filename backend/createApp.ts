@@ -24,6 +24,7 @@ import * as groupHandlers from './src/group/infrastructure/GroupHttpHandlers'
 import * as standingsHandlers from './src/standings/infrastructure/StandingsHttpHandlers'
 import * as ageCategoryHandlers from './src/ageCategory/infrastructure/AgeCategoryHttpHandlers'
 import * as areaHandlers from './src/area/infrastructure/AreaHttpHandlers'
+import * as seasonHandlers from './src/season/infrastructure/SeasonHttpHandlers'
 
 import addFormats from 'ajv-formats'
 import { logger } from './config/logger'
@@ -91,6 +92,7 @@ export const createApp = async (): Promise<Application> => {
       ...standingsHandlers,
       ...ageCategoryHandlers,
       ...areaHandlers,
+      ...seasonHandlers,
       validationFail: (c, _: Request, res: Response) => res.status(400).json({ err: c.validation.errors }),
       notFound: (c, _: Request, res: Response) =>
         res.status(404).json({

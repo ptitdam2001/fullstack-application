@@ -1,0 +1,29 @@
+meta {
+  name: Create Season
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/season
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "label": "2024-2025",
+    "startDate": "2024-09-01T00:00:00.000Z",
+    "endDate": "2025-06-30T00:00:00.000Z"
+  }
+}
+
+script:post-response {
+  if (res.status === 201 && res.body.id) {
+    bru.setVar("seasonId", res.body.id);
+  }
+}

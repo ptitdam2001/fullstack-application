@@ -1,0 +1,21 @@
+meta {
+  name: Edit Season
+  type: http
+  seq: 5
+}
+
+patch {
+  url: {{baseUrl}}/season/{{seasonId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "label": "2024-2025 (modifiée)"
+  }
+}

@@ -4,8 +4,16 @@ import { ChampionshipUseCases } from '../application/ChampionshipUseCases.js'
 import { PrismaChampionshipRepository } from './PrismaChampionshipRepository.js'
 import { ChampionshipNotFoundError } from '../domain/ChampionshipErrors.js'
 import { requireAdmin } from '../../auth/application/requireRoles.js'
+import { PrismaPhaseRepository } from '../../phase/infrastructure/PrismaPhaseRepository.js'
+import { PrismaGroupRepository } from '../../group/infrastructure/PrismaGroupRepository.js'
+import { PrismaMatchRepository } from '../../match/infrastructure/PrismaMatchRepository.js'
 
-const useCases = new ChampionshipUseCases(new PrismaChampionshipRepository())
+const useCases = new ChampionshipUseCases(
+  new PrismaChampionshipRepository(),
+  new PrismaPhaseRepository(),
+  new PrismaGroupRepository(),
+  new PrismaMatchRepository()
+)
 
 export const countChampionships = async (_: Context, __: Request, res: Response) => {
   res.json(await useCases.count())

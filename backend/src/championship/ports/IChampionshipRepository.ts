@@ -6,6 +6,7 @@ export interface IChampionshipRepository {
   count(): Promise<number>
   findAll(options: PaginationOptions): Promise<Championship[]>
   findById(id: string): Promise<Championship | null>
+  findBySeasonId(seasonId: string): Promise<Championship[]>
   create(input: CreateChampionshipInput): Promise<Championship>
   update(id: string, input: UpdateChampionshipInput): Promise<Championship>
   delete(id: string): Promise<void>

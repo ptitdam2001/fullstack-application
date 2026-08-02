@@ -1,0 +1,15 @@
+meta {
+  name: Remove Season
+  type: http
+  seq: 6
+}
+
+delete {
+  url: {{baseUrl}}/season/{{seasonId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

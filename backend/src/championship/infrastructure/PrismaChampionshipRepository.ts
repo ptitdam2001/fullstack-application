@@ -33,6 +33,10 @@ export class PrismaChampionshipRepository implements IChampionshipRepository {
     return prisma.championship.findFirst({ where: { id, ...notDeleted }, select }) as Promise<Championship | null>
   }
 
+  async findBySeasonId(seasonId: string): Promise<Championship[]> {
+    return prisma.championship.findMany({ where: { seasonId, ...notDeleted }, select }) as Promise<Championship[]>
+  }
+
   async create(input: CreateChampionshipInput): Promise<Championship> {
     return prisma.championship.create({ data: input, select }) as Promise<Championship>
   }
