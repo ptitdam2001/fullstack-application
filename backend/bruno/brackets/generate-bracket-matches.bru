@@ -1,0 +1,15 @@
+meta {
+  name: Generate Bracket Matches
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/bracket/{{bracketId}}/generate-matches
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

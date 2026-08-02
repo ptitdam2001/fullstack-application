@@ -1,4 +1,5 @@
 import { prisma } from '../../../utils/prismaClient.js'
+import { notDeleted } from '../../../utils/softDelete.js'
 import type { IBracketRepository } from '../ports/IBracketRepository.js'
 import type { Bracket, CreateBracketInput } from '../domain/Bracket.js'
 
@@ -23,6 +24,11 @@ function toBracket(raw: RawBracket): Bracket {
 }
 
 export class PrismaBracketRepository implements IBracketRepository {
+  async findById(id: string): Promise<Bracket | null> {
+    const row = await prisma.bracket.findFirst({ where: { id, ...notDeleted }, select })
+    return row ? toBracket(row) : null
+  }
+
   async create(input: CreateBracketInput): Promise<Bracket> {
     const { bracketTeams, ...rest } = input
     const row = await prisma.bracket.create({
@@ -30,5 +36,12 @@ export class PrismaBracketRepository implements IBracketRepository {
       select,
     })
     return toBracket(row)
+  }
+
+  async hasPlayedMatches(id: string): Promise<boolean> {
+    const count = await prisma.match.count({
+      where: { bracketId: id, ...notDeleted, status: { in: ['PLAYED', 'FORFEITED'] } },
+    })
+    return count > 0
   }
 }
