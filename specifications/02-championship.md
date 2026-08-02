@@ -186,7 +186,7 @@ Les équipes proposées sont filtrées par `ageCategoryId` du championnat (étap
 
 ## Spécification technique
 
-État actuel du code (`backend/src/`) : domaines `championship/`, `phase/`, `group/` déjà hexagonaux et fonctionnels pour le cas `GROUP` (routes `POST /championship`, `POST /phase`, `POST /group` existantes). Manquants à ce jour : génération automatique des oppositions/matchs (aucun endpoint `generate-matches`), tout le support `KNOCKOUT` (le type existe en enum mais aucun modèle `Bracket`, `Match` n'a ni `bracketId` ni `round`), persistance de `PhaseQualification`, `Championship.season` encore `String` libre.
+État actuel du code (`backend/src/`) : domaines `championship/` (`seasonId` FK), `phase/`, `group/`, `season/` déjà hexagonaux et fonctionnels pour le cas `GROUP`. `bracket/` hexagonal et fonctionnel : `createBracket`, `generateMatches` (algo N rounds généralisé + byes, `BracketUseCases.generateMatches`), `advanceWinner` câblé sur `MatchUseCases.update`. `Match` a `bracketId`/`round`/`bracketPosition` (nullable) et `homeTeamId`/`awayTeamId` désormais nullable (placeholders bracket). Manquants à ce jour : génération automatique des oppositions `GROUP` (`GroupUseCases.generateMatches` round-robin, aucun endpoint), persistance de `PhaseQualification` + `getQualifiedTeams`, guard `isPhaseFinished`. `ChampionshipUseCases.isChampionshipFinished` traite toute dernière phase `KNOCKOUT` comme non-terminée (stub conservatif, pas de logique de détermination du vainqueur final du bracket).
 
 ### Diagramme de séquence — parcours wizard (étapes 1→4b, cas GROUP)
 
@@ -327,7 +327,7 @@ model BracketTeam {
 }
 ```
 
-`Match` — ajout de `bracketId`/`round`/`bracketPosition`, exclusifs avec `groupId` (contrainte applicative, MongoDB ne supporte pas de `CHECK` constraint) :
+`Match` — ajout de `bracketId`/`round`/`bracketPosition`, exclusifs avec `groupId` (contrainte applicative, MongoDB ne supporte pas de `CHECK` constraint). `homeTeamId`/`awayTeamId` deviennent **nullable** : un match de round 2+ dont le vainqueur du round précédent n'est pas encore connu doit pouvoir exister en tant que placeholder (`SCHEDULED`, équipe(s) `null`), résolu par `advanceWinner` :
 
 ```prisma
 model Match {
@@ -336,12 +336,18 @@ model Match {
   bracketId       String?  @db.ObjectId
   round           Int?     // numéro de tour (bracket uniquement)
   bracketPosition Int?     // position dans le tour, pour résoudre le match suivant
+  homeTeamId      String?  @db.ObjectId  // nullable : placeholder bracket en attente du vainqueur du round précédent
+  awayTeamId      String?  @db.ObjectId
 
-  group   Group?   @relation(fields: [groupId], references: [id])
-  bracket Bracket? @relation(fields: [bracketId], references: [id])
+  group    Group?  @relation(fields: [groupId], references: [id])
+  bracket  Bracket? @relation(fields: [bracketId], references: [id])
+  homeTeam Team?   @relation("HomeTeam", fields: [homeTeamId], references: [id])
+  awayTeam Team?   @relation("AwayTeam", fields: [awayTeamId], references: [id])
   // ... reste inchangé ...
 }
 ```
+
+> Impact propagé : `Match` domain type (`homeTeamId`/`awayTeamId: string | null`), `openapi.yml` `MatchInput` (retiré de `required`, `nullable: true`), `GameSummary.teams[].teamId: string | null` (`team/ports/ITeamRepository.ts` — un match bracket en attente d'adversaire peut apparaître dans le calendrier d'une équipe avec un adversaire encore `null`).
 
 ### Contrat API
 
@@ -404,7 +410,7 @@ model Match {
 
 ### Architecture hexagonale
 
-#### Nouveau domaine `src/bracket/` (mirror `src/group/`)
+#### Domaine `src/bracket/` (mirror `src/group/`) — implémenté
 
 ```typescript
 // domain/Bracket.ts
@@ -413,11 +419,10 @@ export type Bracket = {
   id: string;
   phaseId: string;
   name: string;
+  bracketTeams: BracketTeamEntry[];
   updatedAt: Date;
 };
-export type CreateBracketInput = Omit<Bracket, "id" | "updatedAt"> & {
-  bracketTeams: BracketTeamEntry[];
-};
+export type CreateBracketInput = Omit<Bracket, "id" | "updatedAt">;
 ```
 
 ```typescript
@@ -425,7 +430,7 @@ export type CreateBracketInput = Omit<Bracket, "id" | "updatedAt"> & {
 export interface IBracketRepository {
   findById(id: string): Promise<Bracket | null>;
   create(input: CreateBracketInput): Promise<Bracket>;
-  getBracketTeams(bracketId: string): Promise<BracketTeamEntry[]>;
+  hasPlayedMatches(id: string): Promise<boolean>; // guard verrouillage, mirror Group/Championship
 }
 ```
 
@@ -433,9 +438,10 @@ export interface IBracketRepository {
 
 | Use case                                          | Domaine        | Input                | Output            | Description                                                                                                      |
 | ------------------------------------------------- | -------------- | -------------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------- |
-| `GroupUseCases.generateMatches`                   | `group`        | `groupId`            | `Match[]`         | Round-robin (voir Logique métier) — `409` via `PhaseLockedError` si un match a déjà un score                     |
-| `BracketUseCases.create`                          | `bracket`      | `CreateBracketInput` | `Bracket`         | Valide équipes ∈ qualifiés de la phase précédente (ou `ageCategoryId` si phase 1)                                |
-| `BracketUseCases.generateMatches`                 | `bracket`      | `bracketId`          | `Match[]`         | Crée les matchs round 1 (équipes réelles) + matchs des rounds suivants (équipes `null`, résolues à l'avancement) |
+| `GroupUseCases.generateMatches`                   | `group`        | `groupId`            | `Match[]`         | **Pas implémenté** — round-robin (voir Logique métier), `409` si un match a déjà un score                        |
+| `BracketUseCases.create`                          | `bracket`      | `CreateBracketInput` | `Bracket`         | Implémenté, sans validation croisée pour l'instant (équipes ∈ qualifiés/`ageCategoryId` — déferré, dépend de `getQualifiedTeams`, non implémenté non plus côté `Group`) |
+| `BracketUseCases.generateMatches`                 | `bracket`      | `bracketId`          | `Match[]`         | Implémenté — `buildBracketMatches` (N rounds généralisé), `404`/`409`/`400`, régénère (supprime puis recrée)     |
+| `BracketUseCases.advanceWinner`                   | `bracket`      | `Match`               | `void`            | Implémenté — câblé sur `MatchUseCases.update`, no-op si `match.bracketId` nul, statut non terminal, ou pas de match suivant |
 | `MatchUseCases.updateScore` (existant, étendu)    | `match`        | `matchId`, score     | `Match`           | Si `match.bracketId` non nul et vainqueur déterminé → `BracketUseCases.advanceWinner(matchId)`                   |
 | `PhaseUseCases.create` (étendu)                   | `phase`        | `CreatePhaseInput`   | `Phase`           | `order > 1` → vérifie `isPhaseFinished(previousPhaseId)`, sinon `409` via `PreviousPhaseNotFinishedError`        |
 | `PhaseUseCases.getQualifiedTeams`                 | `phase`        | `phaseId`            | `QualifiedTeam[]` | Applique `qualification.maxRank` sur les classements de ses groupes (voir Logique métier)                        |
@@ -467,23 +473,42 @@ roundRobin(teamIds, matchMode):
   return pairs
 ```
 
-**Génération bracket + bye (`BracketUseCases.generateMatches`)** :
+**Génération bracket + bye, N rounds généralisé (`BracketUseCases.generateMatches`, implémentation `bracket/application/buildBracketMatches.ts`)** — le pseudo-code round1+round2 initial ne couvrait que les tableaux à 4 équipes. Généralisation actée en session d'implémentation (pas de round-cap) :
+
+Modèle : le round `r+1` est composé, dans l'ordre, des **slots vainqueurs** du round `r` (un slot par match du round `r`, dans l'ordre de `bracketPosition`, valeur `null` tant que non résolu) suivis des **byes du round `r+1`** (`bracketTeams` avec `round == r+1`, triés par `seed`). Cet ordre garantit que le slot `p` du round `r+1` est *toujours* alimenté par le vainqueur du match `p` du round `r`, ce qui rend la formule `ceil(bracketPosition / 2)` d'`advanceWinner` valide à tout round (pas seulement round1→round2).
 
 ```text
-generateBracketMatches(bracket):
-  teamsRound1 = bracketTeams.filter(bt => bt.round == 1).sortBy(seed)
-  byeTeams    = bracketTeams.filter(bt => bt.round > 1)  // qualifiés direct round suivant
-  matches = pairConsecutive(teamsRound1)  // seed 1 vs seed 2, seed 3 vs seed 4, ...
-  create Match{bracketId, round: 1, homeTeamId, awayTeamId, status: SCHEDULED} pour chaque paire
-  create Match{bracketId, round: 2, ...} placeholders pour les slots restants (vainqueurs round 1 + byeTeams), homeTeamId/awayTeamId résolus par advanceWinner
+buildBracketMatches(bracketTeams):
+  round1 = bracketTeams.filter(bt => bt.round == 1).sortBy(seed)
+  assert round1.length > 0 and round1.length is even  // sinon 400 BracketInvalidShapeError
+
+  matches = []
+  slots = round1.map(bt => bt.teamId)   // slot p (1-indexed) = équipe connue
+  round = 1
+  while slots.length > 1:
+    assert slots.length is even  // sinon 400 BracketInvalidShapeError
+    matchCount = slots.length / 2
+    for i in 0..matchCount-1:
+      matches.push({ round, bracketPosition: i+1, homeTeamId: slots[2i], awayTeamId: slots[2i+1] })
+    round += 1
+    byeEntrants = bracketTeams.filter(bt => bt.round == round).sortBy(seed)
+    winnerSlots = Array(matchCount).fill(null)  // résolus plus tard par advanceWinner
+    slots = winnerSlots + byeEntrants.map(bt => bt.teamId)
+  return matches  // round1: homeTeamId/awayTeamId toujours connus. round2+: null tant que non résolu (byes exceptés)
 ```
 
-**Avancement vainqueur (`BracketUseCases.advanceWinner`)** — déclenché par `MatchUseCases.updateScore` quand `match.bracketId` non nul et statut `PLAYED`/`FORFEITED` :
+`generateMatches(bracketId)` : 404 si bracket introuvable, 409 `BracketLockedError` si un match du bracket a déjà un score (`hasPlayedMatches`, même pattern que Group/Phase/Championship), sinon supprime les matchs existants du bracket puis crée les matchs du plan (`status: SCHEDULED`). Régénérable tant qu'aucun score n'est saisi.
+
+**Avancement vainqueur (`BracketUseCases.advanceWinner`)** — déclenché par `MatchUseCases.update` quand `match.bracketId` non nul et statut `PLAYED`/`FORFEITED` :
 
 ```text
 advanceWinner(match):
-  winner = match.homeGoals > match.awayGoals ? match.homeTeamId : match.awayTeamId
+  if match.status == FORFEITED:
+    winner = match.forfeitedBy == match.homeTeamId ? match.awayTeamId : match.homeTeamId
+  else:
+    winner = match.homeGoals > match.awayGoals ? match.homeTeamId : match.awayTeamId
   nextMatch = findMatch({bracketId: match.bracketId, round: match.round + 1, bracketPosition: ceil(match.bracketPosition / 2)})
+  if nextMatch == null: return  // match.round était la finale
   slot = match.bracketPosition is odd ? 'homeTeamId' : 'awayTeamId'
   update nextMatch[slot] = winner
 ```
