@@ -1,0 +1,31 @@
+meta {
+  name: Create Bracket
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/bracket
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "phaseId": "{{phaseId}}",
+    "name": "Tableau final",
+    "bracketTeams": [
+      { "teamId": "{{teamId}}", "round": 1, "seed": 1 }
+    ]
+  }
+}
+
+script:post-response {
+  if (res.status === 201 && res.body.id) {
+    bru.setVar("bracketId", res.body.id);
+  }
+}
