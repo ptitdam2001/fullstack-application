@@ -2,9 +2,13 @@ import type { IMatchRepository, PaginationOptions, MatchFilterOptions } from '..
 import type { CreateMatchInput, UpdateMatchInput } from '../domain/Match.js'
 import { MatchStatus } from '../domain/Match.js'
 import { MatchNotFoundError } from '../domain/MatchErrors.js'
+import type { BracketUseCases } from '../../bracket/application/BracketUseCases.js'
 
 export class MatchUseCases {
-  constructor(private readonly repo: IMatchRepository) {}
+  constructor(
+    private readonly repo: IMatchRepository,
+    private readonly bracketUseCases: BracketUseCases
+  ) {}
 
   count() {
     return this.repo.count()
@@ -30,7 +34,11 @@ export class MatchUseCases {
 
   async update(id: string, input: UpdateMatchInput) {
     await this.getById(id)
-    return this.repo.update(id, input)
+    const updated = await this.repo.update(id, input)
+    if (updated.bracketId && (updated.status === MatchStatus.PLAYED || updated.status === MatchStatus.FORFEITED)) {
+      await this.bracketUseCases.advanceWinner(updated)
+    }
+    return updated
   }
 
   async delete(id: string) {

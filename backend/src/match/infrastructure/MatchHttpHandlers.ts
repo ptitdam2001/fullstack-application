@@ -5,8 +5,11 @@ import { MatchUseCases } from '../application/MatchUseCases.js'
 import { PrismaMatchRepository } from './PrismaMatchRepository.js'
 import { MatchNotFoundError } from '../domain/MatchErrors.js'
 import { requireAdmin } from '../../auth/application/requireRoles.js'
+import { BracketUseCases } from '../../bracket/application/BracketUseCases.js'
+import { PrismaBracketRepository } from '../../bracket/infrastructure/PrismaBracketRepository.js'
 
-const useCases = new MatchUseCases(new PrismaMatchRepository())
+const bracketUseCases = new BracketUseCases(new PrismaBracketRepository(), new PrismaMatchRepository())
+const useCases = new MatchUseCases(new PrismaMatchRepository(), bracketUseCases)
 
 export const countMatches = async (_: Context, __: Request, res: Response) => {
   res.json(await useCases.count())
