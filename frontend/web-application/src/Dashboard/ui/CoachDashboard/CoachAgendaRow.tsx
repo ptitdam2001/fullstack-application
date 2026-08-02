@@ -8,8 +8,8 @@ type Props = {
 
 export const CoachAgendaRow = ({ match, teamById }: Props) => {
   const date = match.scheduledAt ? new Date(match.scheduledAt) : null
-  const home = teamById[match.homeTeamId]
-  const away = teamById[match.awayTeamId]
+  const home = teamById[match.homeTeamId ?? '']
+  const away = teamById[match.awayTeamId ?? '']
 
   return (
     <div className="hover:bg-secondary grid cursor-pointer grid-cols-[48px_1fr_auto] items-center gap-3 rounded-lg px-3 py-2.5">

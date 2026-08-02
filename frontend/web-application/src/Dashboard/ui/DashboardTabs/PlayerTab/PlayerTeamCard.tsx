@@ -44,7 +44,7 @@ export const PlayerTeamCard = ({ team, allTeams, upcomingMatches, allMatches }: 
           <ul className="flex flex-col gap-1">
             {teamUpcoming.map(m => {
               const isHome = m.homeTeamId === team.id
-              const opponent = isHome ? (teamById[m.awayTeamId] ?? '?') : (teamById[m.homeTeamId] ?? '?')
+              const opponent = isHome ? (teamById[m.awayTeamId ?? ''] ?? '?') : (teamById[m.homeTeamId ?? ''] ?? '?')
               return (
                 <li key={m.id}>
                   <Link

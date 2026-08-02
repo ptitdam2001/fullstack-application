@@ -22,11 +22,11 @@ export const RefereeUpcomingMatches = ({ matches, teamNames }: Props) => {
           <li key={m.id} className="bg-card flex items-center justify-between rounded-lg border px-4 py-3">
             <div className="flex flex-col gap-0.5">
               <span className="text-sm font-medium">
-                {teamNames[m.homeTeamId] ?? m.homeTeamId}{' '}
+                {teamNames[m.homeTeamId ?? ''] ?? m.homeTeamId}{' '}
                 <span className="text-muted-foreground text-xs">
                   <FormattedMessage id="refereeDashboard.vs" />
                 </span>{' '}
-                {teamNames[m.awayTeamId] ?? m.awayTeamId}
+                {teamNames[m.awayTeamId ?? ''] ?? m.awayTeamId}
               </span>
               <span className="text-muted-foreground text-xs">
                 {m.scheduledAt ? new Date(m.scheduledAt).toLocaleString() : '—'}

@@ -15,7 +15,7 @@ export const useCoachDashboard = (userId: string) => {
   const upcomingMatches = allMatches
     .filter(
       currentMatch =>
-        (teamIds.includes(currentMatch.homeTeamId) || teamIds.includes(currentMatch.awayTeamId)) &&
+        (teamIds.includes(currentMatch.homeTeamId ?? '') || teamIds.includes(currentMatch.awayTeamId ?? '')) &&
         currentMatch.scheduledAt != null &&
         new Date(currentMatch.scheduledAt) >= now
     )

@@ -32,11 +32,11 @@ export const RefereeUrgentMatches = ({ matches, teamNames }: Props) => {
                     <FormattedMessage id="refereeDashboard.urgent.badge" />
                   </span>
                   <span className="text-sm font-medium">
-                    {teamNames[m.homeTeamId] ?? m.homeTeamId}{' '}
+                    {teamNames[m.homeTeamId ?? ''] ?? m.homeTeamId}{' '}
                     <span className="text-muted-foreground text-xs">
                       <FormattedMessage id="refereeDashboard.vs" />
                     </span>{' '}
-                    {teamNames[m.awayTeamId] ?? m.awayTeamId}
+                    {teamNames[m.awayTeamId ?? ''] ?? m.awayTeamId}
                   </span>
                 </div>
                 <span className="text-muted-foreground text-xs">

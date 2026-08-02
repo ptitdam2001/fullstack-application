@@ -37,7 +37,7 @@ export const PlayerRecentResults = ({ matches, teamId, teamById }: Props) => {
         {matches.map(m => {
           const outcome = getOutcome(m, teamId)
           const isHome = m.homeTeamId === teamId
-          const opponent = isHome ? (teamById[m.awayTeamId] ?? '?') : (teamById[m.homeTeamId] ?? '?')
+          const opponent = isHome ? (teamById[m.awayTeamId ?? ''] ?? '?') : (teamById[m.homeTeamId ?? ''] ?? '?')
           const score = `${m.homeGoals ?? '?'}–${m.awayGoals ?? '?'}`
 
           return (
