@@ -6,6 +6,9 @@ import type { Match, CreateMatchInput, UpdateMatchInput } from '../domain/Match.
 const select = {
   id: true,
   groupId: true,
+  bracketId: true,
+  round: true,
+  bracketPosition: true,
   status: true,
   scheduledAt: true,
   area: true,
@@ -37,6 +40,10 @@ export class PrismaMatchRepository implements IMatchRepository {
 
   async findByGroupId(groupId: string): Promise<Match[]> {
     return prisma.match.findMany({ where: { groupId, ...notDeleted }, select }) as Promise<Match[]>
+  }
+
+  async findByBracketId(bracketId: string): Promise<Match[]> {
+    return prisma.match.findMany({ where: { bracketId, ...notDeleted }, select }) as Promise<Match[]>
   }
 
   async create(input: CreateMatchInput): Promise<Match> {

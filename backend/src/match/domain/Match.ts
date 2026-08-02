@@ -17,11 +17,14 @@ export type MatchArea = {
 export type Match = {
   id: string
   groupId: string | null
+  bracketId: string | null
+  round: number | null
+  bracketPosition: number | null
   status: MatchStatus
   scheduledAt: Date | null
   area: MatchArea | null
-  homeTeamId: string
-  awayTeamId: string
+  homeTeamId: string | null
+  awayTeamId: string | null
   homeGoals: number | null
   awayGoals: number | null
   forfeitedBy: string | null

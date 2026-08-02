@@ -8,6 +8,7 @@ export interface IMatchRepository {
   findAll(options: PaginationOptions, filters?: MatchFilterOptions): Promise<Match[]>
   findById(id: string): Promise<Match | null>
   findByGroupId(groupId: string): Promise<Match[]>
+  findByBracketId(bracketId: string): Promise<Match[]>
   create(input: CreateMatchInput): Promise<Match>
   update(id: string, input: UpdateMatchInput): Promise<Match>
   delete(id: string): Promise<void>

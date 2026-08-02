@@ -348,8 +348,8 @@ model Match {
   status          MatchStatus   @default(SCHEDULED)
   scheduledAt     DateTime?
   area            EmbeddedArea?
-  homeTeamId      String        @db.ObjectId
-  awayTeamId      String        @db.ObjectId
+  homeTeamId      String?       @db.ObjectId
+  awayTeamId      String?       @db.ObjectId
   homeGoals       Int?
   awayGoals       Int?
   forfeitedBy     String?       @db.ObjectId
@@ -360,8 +360,8 @@ model Match {
   bracket        Bracket?    @relation(fields: [bracketId], references: [id])
   userMatches    UserMatch[]
   // Named relations to disambiguate multiple FK to Team
-  homeTeam       Team        @relation("HomeTeam", fields: [homeTeamId], references: [id])
-  awayTeam       Team        @relation("AwayTeam", fields: [awayTeamId], references: [id])
+  homeTeam       Team?       @relation("HomeTeam", fields: [homeTeamId], references: [id])
+  awayTeam       Team?       @relation("AwayTeam", fields: [awayTeamId], references: [id])
   forfeitingTeam Team?       @relation("ForfeitTeam", fields: [forfeitedBy], references: [id])
 
   @@map("matches")

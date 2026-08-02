@@ -1571,6 +1571,12 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Match'
+        400:
+          description: 'Invalid bracket shape (round 1 empty/odd, or an intermediate round has an odd slot count)'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorOutput'
         404:
           description: 'Not found'
           content:
@@ -2882,8 +2888,6 @@ components:
     MatchInput:
       type: object
       required:
-        - homeTeamId
-        - awayTeamId
         - area
       properties:
         groupId:
@@ -2908,8 +2912,10 @@ components:
           $ref: '#/components/schemas/MatchArea'
         homeTeamId:
           type: string
+          nullable: true
         awayTeamId:
           type: string
+          nullable: true
         homeGoals:
           type: integer
           nullable: true

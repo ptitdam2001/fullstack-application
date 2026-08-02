@@ -8,7 +8,7 @@ export type TeamCalendarOptions = { page: number; count: number; startDate?: Dat
 export type GameSummary = {
   id: string
   date: Date | null
-  teams: { teamId: string; score: number }[]
+  teams: { teamId: string | null; score: number }[]
 }
 
 export interface ITeamRepository {
