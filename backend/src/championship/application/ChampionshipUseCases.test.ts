@@ -7,7 +7,7 @@ const mockChampionship = {
   id: 'championship-1',
   name: 'Championnat U13 2024',
   ageCategoryId: '507f1f77bcf86cd799439013',
-  season: '2024-2025',
+  seasonId: '507f1f77bcf86cd799439099',
   startDate: new Date('2024-09-01'),
   endDate: new Date('2025-05-31'),
   pointsConfig: { win: 3, draw: 1, loss: 0, forfeit: 0 },
@@ -55,7 +55,7 @@ describe('ChampionshipUseCases.create', () => {
     const input = {
       name: 'Championnat U13 2024',
       ageCategoryId: '507f1f77bcf86cd799439013',
-      season: '2024-2025',
+      seasonId: '507f1f77bcf86cd799439099',
       startDate: new Date('2024-09-01'),
       endDate: new Date('2025-05-31'),
       pointsConfig: { win: 3, draw: 1, loss: 0, forfeit: 0 },

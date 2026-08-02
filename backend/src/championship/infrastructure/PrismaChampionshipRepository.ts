@@ -7,7 +7,7 @@ const select = {
   id: true,
   name: true,
   ageCategoryId: true,
-  season: true,
+  seasonId: true,
   startDate: true,
   endDate: true,
   pointsConfig: true,

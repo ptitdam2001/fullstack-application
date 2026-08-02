@@ -9,7 +9,7 @@ export type Championship = {
   id: string
   name: string
   ageCategoryId: string
-  season: string
+  seasonId: string
   startDate: Date | null
   endDate: Date | null
   pointsConfig: PointsConfig
