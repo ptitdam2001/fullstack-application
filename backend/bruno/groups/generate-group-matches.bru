@@ -1,0 +1,15 @@
+meta {
+  name: Generate Group Matches
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/group/{{groupId}}/generate-matches
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
