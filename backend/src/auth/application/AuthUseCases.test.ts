@@ -47,6 +47,7 @@ const makeUserTeamRepo = (overrides: Partial<IUserTeamRepository> = {}): IUserTe
   remove: vi.fn(),
   findByTeamAndRole: vi.fn().mockResolvedValue([]),
   findByUserAndRole: vi.fn().mockResolvedValue([]),
+  findByUser: vi.fn().mockResolvedValue([]),
   hasRole: vi.fn().mockResolvedValue(false),
   ...overrides,
 })
@@ -106,7 +107,7 @@ describe('AuthUseCases.login', () => {
   })
 
   it('throws InvalidCredentialsError and increments attempts on wrong password', async () => {
-    const repo = makeRepo({ comparePassword: vi.fn() })
+    const repo = makeRepo()
     const uc = makeUseCases(repo, { comparePassword: vi.fn().mockResolvedValue(false) })
     await expect(uc.login('alice@example.com', 'wrong')).rejects.toThrow(InvalidCredentialsError)
     expect(repo.incrementLoginAttempts).toHaveBeenCalledWith('user-1')

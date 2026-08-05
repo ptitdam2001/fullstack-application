@@ -1,6 +1,6 @@
 import type { IUserRepository } from '../../user/ports/IUserRepository.js'
 import type { IAuthService } from '../ports/IAuthService.js'
-import type { UserProfile } from '../../user/domain/User.js'
+import type { UserProfile, UserRole } from '../../user/domain/User.js'
 import type { LoginResult } from '../domain/User.js'
 import type { IUserTeamRepository } from '../../userTeam/ports/IUserTeamRepository.js'
 import type { IUserMatchRepository } from '../../userMatch/ports/IUserMatchRepository.js'
@@ -10,7 +10,7 @@ import { UserNotFoundError } from '../../user/domain/UserErrors.js'
 
 const getMaxLoginAttempts = (): number => parseInt(process.env.MAX_LOGIN_ATTEMPTS ?? '5')
 
-export type UserProfileWithRoles = UserProfile & { roles: string[] }
+export type UserProfileWithRoles = UserProfile
 
 export class AuthUseCases {
   constructor(
@@ -54,7 +54,7 @@ export class AuthUseCases {
       throw new UserNotFoundError()
     }
 
-    const roles: string[] = []
+    const roles: UserRole[] = []
     if (user.isAdmin) {
       roles.push('ADMIN')
     }
