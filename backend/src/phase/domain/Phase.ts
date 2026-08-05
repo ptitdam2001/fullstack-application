@@ -3,12 +3,17 @@ export enum PhaseType {
   KNOCKOUT = 'KNOCKOUT',
 }
 
+export type PhaseQualification = {
+  maxRank: number
+}
+
 export type Phase = {
   id: string
   championshipId: string
   type: PhaseType
   order: number
   name: string | null
+  qualification: PhaseQualification | null
   updatedAt: Date
 }
 

@@ -3,7 +3,15 @@ import { notDeleted } from '../../../utils/softDelete.js'
 import type { IPhaseRepository } from '../ports/IPhaseRepository.js'
 import type { Phase, CreatePhaseInput, UpdatePhaseInput } from '../domain/Phase.js'
 
-const select = { id: true, championshipId: true, type: true, order: true, name: true, updatedAt: true } as const
+const select = {
+  id: true,
+  championshipId: true,
+  type: true,
+  order: true,
+  name: true,
+  qualification: true,
+  updatedAt: true,
+} as const
 
 export class PrismaPhaseRepository implements IPhaseRepository {
   async findByChampionshipId(championshipId: string): Promise<Phase[]> {
@@ -32,7 +40,11 @@ export class PrismaPhaseRepository implements IPhaseRepository {
 
   async hasPlayedMatches(id: string): Promise<boolean> {
     const count = await prisma.match.count({
-      where: { ...notDeleted, status: { in: ['PLAYED', 'FORFEITED'] }, group: { phaseId: id } },
+      where: {
+        ...notDeleted,
+        status: { in: ['PLAYED', 'FORFEITED'] },
+        OR: [{ group: { phaseId: id } }, { bracket: { phaseId: id } }],
+      },
     })
     return count > 0
   }

@@ -160,7 +160,7 @@ describe('ChampionshipUseCases.isChampionshipFinished', () => {
       phaseRepo: {
         findByChampionshipId: vi
           .fn()
-          .mockResolvedValue([{ id: 'phase-1', championshipId: 'championship-1', type: PhaseType.KNOCKOUT, order: 1, name: null, updatedAt: new Date() }]),
+          .mockResolvedValue([{ id: 'phase-1', championshipId: 'championship-1', type: PhaseType.KNOCKOUT, order: 1, name: null, qualification: null, updatedAt: new Date() }]),
       },
     })
     expect(await useCases.isChampionshipFinished('championship-1')).toBe(false)
@@ -171,7 +171,7 @@ describe('ChampionshipUseCases.isChampionshipFinished', () => {
       phaseRepo: {
         findByChampionshipId: vi
           .fn()
-          .mockResolvedValue([{ id: 'phase-1', championshipId: 'championship-1', type: PhaseType.GROUP, order: 1, name: null, updatedAt: new Date() }]),
+          .mockResolvedValue([{ id: 'phase-1', championshipId: 'championship-1', type: PhaseType.GROUP, order: 1, name: null, qualification: null, updatedAt: new Date() }]),
       },
       groupRepo: {
         findByPhaseId: vi
@@ -192,7 +192,7 @@ describe('ChampionshipUseCases.isChampionshipFinished', () => {
       phaseRepo: {
         findByChampionshipId: vi
           .fn()
-          .mockResolvedValue([{ id: 'phase-1', championshipId: 'championship-1', type: PhaseType.GROUP, order: 1, name: null, updatedAt: new Date() }]),
+          .mockResolvedValue([{ id: 'phase-1', championshipId: 'championship-1', type: PhaseType.GROUP, order: 1, name: null, qualification: null, updatedAt: new Date() }]),
       },
       groupRepo: {
         findByPhaseId: vi
@@ -226,8 +226,8 @@ describe('ChampionshipUseCases.isChampionshipFinished', () => {
     const useCases = makeUseCases({
       phaseRepo: {
         findByChampionshipId: vi.fn().mockResolvedValue([
-          { id: 'phase-1', championshipId: 'championship-1', type: PhaseType.GROUP, order: 1, name: null, updatedAt: new Date() },
-          { id: 'phase-2', championshipId: 'championship-1', type: PhaseType.GROUP, order: 2, name: null, updatedAt: new Date() },
+          { id: 'phase-1', championshipId: 'championship-1', type: PhaseType.GROUP, order: 1, name: null, qualification: null, updatedAt: new Date() },
+          { id: 'phase-2', championshipId: 'championship-1', type: PhaseType.GROUP, order: 2, name: null, qualification: null, updatedAt: new Date() },
         ]),
       },
       groupRepo: { findByPhaseId },
@@ -258,7 +258,7 @@ describe('ChampionshipUseCases.hasUnfinishedChampionships', () => {
       phaseRepo: {
         findByChampionshipId: vi
           .fn()
-          .mockResolvedValue([{ id: 'phase-1', championshipId: 'championship-1', type: PhaseType.GROUP, order: 1, name: null, updatedAt: new Date() }]),
+          .mockResolvedValue([{ id: 'phase-1', championshipId: 'championship-1', type: PhaseType.GROUP, order: 1, name: null, qualification: null, updatedAt: new Date() }]),
       },
       groupRepo: { findByPhaseId: vi.fn().mockResolvedValue([]) },
     })

@@ -10,6 +10,7 @@ const mockPhase = {
   type: PhaseType.GROUP,
   order: 1,
   name: 'Phase de poules',
+  qualification: null,
 }
 
 const makeRepo = (overrides: Partial<IPhaseRepository> = {}): IPhaseRepository => ({
@@ -45,21 +46,21 @@ describe('PhaseUseCases.getById', () => {
 describe('PhaseUseCases.create', () => {
   it('creates a phase', async () => {
     const repo = makeRepo()
-    const input = { championshipId: 'champ-1', type: PhaseType.GROUP, order: 2, name: 'Phase éliminatoire' }
+    const input = { championshipId: 'champ-1', type: PhaseType.GROUP, order: 2, name: 'Phase éliminatoire', qualification: null }
     await new PhaseUseCases(repo).create(input)
     expect(repo.create).toHaveBeenCalledWith(input)
   })
 
   it('throws PhaseDuplicateOrderError when order already exists in championship', async () => {
     const repo = makeRepo()
-    const input = { championshipId: 'champ-1', type: PhaseType.KNOCKOUT, order: 1, name: 'Phase éliminatoire' }
+    const input = { championshipId: 'champ-1', type: PhaseType.KNOCKOUT, order: 1, name: 'Phase éliminatoire', qualification: null }
     await expect(new PhaseUseCases(repo).create(input)).rejects.toThrow(PhaseDuplicateOrderError)
     expect(repo.create).not.toHaveBeenCalled()
   })
 
   it('allows same order in different championships', async () => {
     const repo = makeRepo({ findByChampionshipId: vi.fn().mockResolvedValue([]) })
-    const input = { championshipId: 'champ-2', type: PhaseType.GROUP, order: 1, name: 'Phase de poules' }
+    const input = { championshipId: 'champ-2', type: PhaseType.GROUP, order: 1, name: 'Phase de poules', qualification: null }
     await new PhaseUseCases(repo).create(input)
     expect(repo.create).toHaveBeenCalledWith(input)
   })
