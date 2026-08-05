@@ -15,18 +15,21 @@ const select = {
 
 export class PrismaTeamJoinRequestRepository implements ITeamJoinRequestRepository {
   async findById(id: string): Promise<TeamJoinRequest | null> {
-    return prisma.teamJoinRequest.findUnique({ where: { id }, select })
+    return prisma.teamJoinRequest.findUnique({ where: { id }, select }) as unknown as Promise<TeamJoinRequest | null>
   }
 
   async findByUserAndTeam(userId: string, teamId: string): Promise<TeamJoinRequest | null> {
-    return prisma.teamJoinRequest.findUnique({ where: { userId_teamId: { userId, teamId } }, select })
+    return prisma.teamJoinRequest.findUnique({
+      where: { userId_teamId: { userId, teamId } },
+      select,
+    }) as unknown as Promise<TeamJoinRequest | null>
   }
 
   async findByTeam(teamId: string, status?: JoinRequestStatus): Promise<TeamJoinRequest[]> {
     return prisma.teamJoinRequest.findMany({
       where: { teamId, ...(status ? { status } : {}) },
       select,
-    })
+    }) as unknown as Promise<TeamJoinRequest[]>
   }
 
   async upsert(userId: string, teamId: string, requestedRole: TeamRole): Promise<TeamJoinRequest> {
@@ -35,7 +38,7 @@ export class PrismaTeamJoinRequestRepository implements ITeamJoinRequestReposito
       create: { userId, teamId, requestedRole, status: 'PENDING' },
       update: { requestedRole, status: 'PENDING', updatedAt: new Date() },
       select,
-    })
+    }) as unknown as Promise<TeamJoinRequest>
   }
 
   async approve(requestId: string, userId: string, teamId: string, requestedRole: TeamRole): Promise<TeamJoinRequest> {
@@ -44,7 +47,7 @@ export class PrismaTeamJoinRequestRepository implements ITeamJoinRequestReposito
       prisma.userTeam.create({ data: { userId, teamId, role: requestedRole } }),
       ...(requestedRole === TeamRole.PLAYER ? [prisma.player.create({ data: { userId, teamId } })] : []),
     ])
-    return updated as TeamJoinRequest
+    return updated as unknown as TeamJoinRequest
   }
 
   async refuse(requestId: string): Promise<TeamJoinRequest> {
@@ -52,6 +55,6 @@ export class PrismaTeamJoinRequestRepository implements ITeamJoinRequestReposito
       where: { id: requestId },
       data: { status: 'REFUSED' },
       select,
-    })
+    }) as unknown as Promise<TeamJoinRequest>
   }
 }
