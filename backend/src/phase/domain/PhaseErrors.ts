@@ -11,3 +11,10 @@ export class PhaseDuplicateOrderError extends Error {
     this.name = 'PhaseDuplicateOrderError'
   }
 }
+
+export class PreviousPhaseNotFinishedError extends Error {
+  constructor(championshipId: string, order: number) {
+    super(`Previous phase (order ${order - 1}) of championship ${championshipId} is not finished yet`)
+    this.name = 'PreviousPhaseNotFinishedError'
+  }
+}

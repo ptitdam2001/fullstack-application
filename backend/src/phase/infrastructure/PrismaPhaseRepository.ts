@@ -48,4 +48,13 @@ export class PrismaPhaseRepository implements IPhaseRepository {
     })
     return count > 0
   }
+
+  async isFinished(id: string): Promise<boolean> {
+    const phaseWhere = { OR: [{ group: { phaseId: id } }, { bracket: { phaseId: id } }] }
+    const [total, scheduled] = await Promise.all([
+      prisma.match.count({ where: { ...notDeleted, ...phaseWhere } }),
+      prisma.match.count({ where: { ...notDeleted, ...phaseWhere, status: 'SCHEDULED' } }),
+    ])
+    return total > 0 && scheduled === 0
+  }
 }

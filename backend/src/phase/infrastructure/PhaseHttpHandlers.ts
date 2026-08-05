@@ -2,7 +2,7 @@ import type { Request, Response } from 'express'
 import type { Context } from 'openapi-backend'
 import { PhaseUseCases } from '../application/PhaseUseCases.js'
 import { PrismaPhaseRepository } from './PrismaPhaseRepository.js'
-import { PhaseDuplicateOrderError, PhaseNotFoundError } from '../domain/PhaseErrors.js'
+import { PhaseDuplicateOrderError, PhaseNotFoundError, PreviousPhaseNotFinishedError } from '../domain/PhaseErrors.js'
 import { requireAdmin } from '../../auth/application/requireRoles.js'
 
 const useCases = new PhaseUseCases(new PrismaPhaseRepository())
@@ -27,7 +27,7 @@ export const createPhase = async (ctx: Context, req: Request, res: Response) => 
   try {
     res.status(201).json(await useCases.create(req.body))
   } catch (err) {
-    if (err instanceof PhaseDuplicateOrderError) {
+    if (err instanceof PhaseDuplicateOrderError || err instanceof PreviousPhaseNotFinishedError) {
       return res.status(409).json({ status: 409, message: err.message })
     }
     throw err

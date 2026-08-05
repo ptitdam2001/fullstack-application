@@ -8,4 +8,5 @@ export interface IPhaseRepository {
   delete(id: string): Promise<void>
   softDelete(id: string): Promise<void>
   hasPlayedMatches(id: string): Promise<boolean>
+  isFinished(id: string): Promise<boolean>
 }

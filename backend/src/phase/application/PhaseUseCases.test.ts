@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { PhaseUseCases } from './PhaseUseCases.js'
 import type { IPhaseRepository } from '../ports/IPhaseRepository.js'
-import { PhaseNotFoundError, PhaseDuplicateOrderError } from '../domain/PhaseErrors.js'
+import { PhaseNotFoundError, PhaseDuplicateOrderError, PreviousPhaseNotFinishedError } from '../domain/PhaseErrors.js'
 import { PhaseType } from '../domain/Phase.js'
 
 const mockPhase = {
@@ -21,6 +21,7 @@ const makeRepo = (overrides: Partial<IPhaseRepository> = {}): IPhaseRepository =
   delete: vi.fn().mockResolvedValue(undefined),
   softDelete: vi.fn().mockResolvedValue(undefined),
   hasPlayedMatches: vi.fn().mockResolvedValue(false),
+  isFinished: vi.fn().mockResolvedValue(true),
   ...overrides,
 })
 
@@ -63,6 +64,28 @@ describe('PhaseUseCases.create', () => {
     const input = { championshipId: 'champ-2', type: PhaseType.GROUP, order: 1, name: 'Phase de poules', qualification: null }
     await new PhaseUseCases(repo).create(input)
     expect(repo.create).toHaveBeenCalledWith(input)
+  })
+
+  it('creates order > 1 when previous phase is finished', async () => {
+    const repo = makeRepo({ isFinished: vi.fn().mockResolvedValue(true) })
+    const input = { championshipId: 'champ-1', type: PhaseType.KNOCKOUT, order: 2, name: 'Phase finale', qualification: null }
+    await new PhaseUseCases(repo).create(input)
+    expect(repo.isFinished).toHaveBeenCalledWith('phase-1')
+    expect(repo.create).toHaveBeenCalledWith(input)
+  })
+
+  it('throws PreviousPhaseNotFinishedError when previous phase is not finished', async () => {
+    const repo = makeRepo({ isFinished: vi.fn().mockResolvedValue(false) })
+    const input = { championshipId: 'champ-1', type: PhaseType.KNOCKOUT, order: 2, name: 'Phase finale', qualification: null }
+    await expect(new PhaseUseCases(repo).create(input)).rejects.toThrow(PreviousPhaseNotFinishedError)
+    expect(repo.create).not.toHaveBeenCalled()
+  })
+
+  it('throws PreviousPhaseNotFinishedError when previous phase does not exist', async () => {
+    const repo = makeRepo({ findByChampionshipId: vi.fn().mockResolvedValue([]) })
+    const input = { championshipId: 'champ-1', type: PhaseType.KNOCKOUT, order: 3, name: 'Phase finale', qualification: null }
+    await expect(new PhaseUseCases(repo).create(input)).rejects.toThrow(PreviousPhaseNotFinishedError)
+    expect(repo.create).not.toHaveBeenCalled()
   })
 })
 

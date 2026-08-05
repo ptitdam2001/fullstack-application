@@ -40,6 +40,7 @@ const makePhaseRepo = (overrides: Partial<IPhaseRepository> = {}): IPhaseReposit
   delete: vi.fn(),
   softDelete: vi.fn(),
   hasPlayedMatches: vi.fn().mockResolvedValue(false),
+  isFinished: vi.fn().mockResolvedValue(false),
   ...overrides,
 })
 
