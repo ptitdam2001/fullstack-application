@@ -20,6 +20,7 @@ const mockBracket = {
 }
 
 const makeRepo = (overrides: Partial<IBracketRepository> = {}): IBracketRepository => ({
+  findByPhaseId: vi.fn().mockResolvedValue([mockBracket]),
   findById: vi.fn().mockResolvedValue(mockBracket),
   create: vi.fn().mockResolvedValue(mockBracket),
   hasPlayedMatches: vi.fn().mockResolvedValue(false),

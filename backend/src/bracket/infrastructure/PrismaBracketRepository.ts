@@ -24,6 +24,11 @@ function toBracket(raw: RawBracket): Bracket {
 }
 
 export class PrismaBracketRepository implements IBracketRepository {
+  async findByPhaseId(phaseId: string): Promise<Bracket[]> {
+    const rows = await prisma.bracket.findMany({ where: { phaseId, ...notDeleted }, select })
+    return rows.map(toBracket)
+  }
+
   async findById(id: string): Promise<Bracket | null> {
     const row = await prisma.bracket.findFirst({ where: { id, ...notDeleted }, select })
     return row ? toBracket(row) : null

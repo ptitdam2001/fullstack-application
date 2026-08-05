@@ -4,6 +4,7 @@ import { ChampionshipNotFoundError } from '../domain/ChampionshipErrors.js'
 import type { IPhaseRepository } from '../../phase/ports/IPhaseRepository.js'
 import type { IGroupRepository } from '../../group/ports/IGroupRepository.js'
 import type { IMatchRepository } from '../../match/ports/IMatchRepository.js'
+import type { IBracketRepository } from '../../bracket/ports/IBracketRepository.js'
 import { PhaseType } from '../../phase/domain/Phase.js'
 import { MatchStatus } from '../../match/domain/Match.js'
 
@@ -12,7 +13,8 @@ export class ChampionshipUseCases {
     private readonly repo: IChampionshipRepository,
     private readonly phaseRepo: IPhaseRepository,
     private readonly groupRepo: IGroupRepository,
-    private readonly matchRepo: IMatchRepository
+    private readonly matchRepo: IMatchRepository,
+    private readonly bracketRepo: IBracketRepository
   ) {}
 
   count() {
@@ -55,13 +57,16 @@ export class ChampionshipUseCases {
     const lastPhase = phases.reduce((latest, phase) => (phase.order > latest.order ? phase : latest))
 
     if (lastPhase.type === PhaseType.KNOCKOUT) {
-      // Bracket domain not implemented yet: no final match to check a winner against.
-      return false
+      const brackets = await this.bracketRepo.findByPhaseId(lastPhase.id)
+      const matchesByBracket = await Promise.all(brackets.map((bracket) => this.matchRepo.findByBracketId(bracket.id)))
+      const matches = matchesByBracket.flat()
+      return matches.length > 0 && matches.every((match) => match.status !== MatchStatus.SCHEDULED)
     }
 
     const groups = await this.groupRepo.findByPhaseId(lastPhase.id)
     const matchesByGroup = await Promise.all(groups.map((group) => this.matchRepo.findByGroupId(group.id)))
-    return matchesByGroup.flat().every((match) => match.status !== MatchStatus.SCHEDULED)
+    const groupMatches = matchesByGroup.flat()
+    return groupMatches.length > 0 && groupMatches.every((match) => match.status !== MatchStatus.SCHEDULED)
   }
 
   async hasUnfinishedChampionships(seasonId: string): Promise<boolean> {

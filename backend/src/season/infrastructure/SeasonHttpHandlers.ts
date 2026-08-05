@@ -9,12 +9,14 @@ import { PrismaChampionshipRepository } from '../../championship/infrastructure/
 import { PrismaPhaseRepository } from '../../phase/infrastructure/PrismaPhaseRepository.js'
 import { PrismaGroupRepository } from '../../group/infrastructure/PrismaGroupRepository.js'
 import { PrismaMatchRepository } from '../../match/infrastructure/PrismaMatchRepository.js'
+import { PrismaBracketRepository } from '../../bracket/infrastructure/PrismaBracketRepository.js'
 
 const championshipUseCases = new ChampionshipUseCases(
   new PrismaChampionshipRepository(),
   new PrismaPhaseRepository(),
   new PrismaGroupRepository(),
-  new PrismaMatchRepository()
+  new PrismaMatchRepository(),
+  new PrismaBracketRepository()
 )
 const useCases = new SeasonUseCases(new PrismaSeasonRepository(), championshipUseCases)
 
