@@ -54,8 +54,8 @@ describe('TeamUseCases.create', () => {
   it('creates a team', async () => {
     const repo = makeRepo()
     const useCases = new TeamUseCases(repo)
-    await useCases.create({ name: 'Les Bleus', color: '#0000FF' })
-    expect(repo.create).toHaveBeenCalledWith({ name: 'Les Bleus', color: '#0000FF' })
+    await useCases.create({ name: 'Les Bleus', color: '#0000FF', ageCategoryId: 'age-1' })
+    expect(repo.create).toHaveBeenCalledWith({ name: 'Les Bleus', color: '#0000FF', ageCategoryId: 'age-1' })
   })
 })
 

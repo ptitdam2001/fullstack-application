@@ -60,6 +60,7 @@ const makeMatchRepo = (overrides: Partial<IMatchRepository> = {}): IMatchReposit
   findAll: vi.fn().mockResolvedValue([]),
   findById: vi.fn().mockResolvedValue(null),
   findByGroupId: vi.fn().mockResolvedValue([]),
+  findByBracketId: vi.fn().mockResolvedValue([]),
   create: vi.fn(),
   update: vi.fn(),
   delete: vi.fn(),
