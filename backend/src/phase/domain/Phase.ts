@@ -19,3 +19,9 @@ export type Phase = {
 
 export type CreatePhaseInput = Omit<Phase, 'id' | 'updatedAt'>
 export type UpdatePhaseInput = Partial<CreatePhaseInput>
+
+export type QualifiedTeam = {
+  teamId: string
+  groupId: string
+  rank: number
+}

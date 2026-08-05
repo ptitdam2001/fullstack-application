@@ -2,10 +2,24 @@ import type { Request, Response } from 'express'
 import type { Context } from 'openapi-backend'
 import { PhaseUseCases } from '../application/PhaseUseCases.js'
 import { PrismaPhaseRepository } from './PrismaPhaseRepository.js'
-import { PhaseDuplicateOrderError, PhaseNotFoundError, PreviousPhaseNotFinishedError } from '../domain/PhaseErrors.js'
+import {
+  PhaseDuplicateOrderError,
+  PhaseNotFoundError,
+  PreviousPhaseNotFinishedError,
+  PhaseNotFinishedError,
+} from '../domain/PhaseErrors.js'
 import { requireAdmin } from '../../auth/application/requireRoles.js'
+import { PrismaGroupRepository } from '../../group/infrastructure/PrismaGroupRepository.js'
+import { PrismaMatchRepository } from '../../match/infrastructure/PrismaMatchRepository.js'
+import { PrismaChampionshipRepository } from '../../championship/infrastructure/PrismaChampionshipRepository.js'
+import { ChampionshipNotFoundError } from '../../championship/domain/ChampionshipErrors.js'
 
-const useCases = new PhaseUseCases(new PrismaPhaseRepository())
+const useCases = new PhaseUseCases(
+  new PrismaPhaseRepository(),
+  new PrismaGroupRepository(),
+  new PrismaMatchRepository(),
+  new PrismaChampionshipRepository()
+)
 
 export const getChampionshipPhases = async (ctx: Context, _: Request, res: Response) => {
   res.json(await useCases.getByChampionshipId(ctx.request.params.championshipId))
@@ -41,6 +55,21 @@ export const updatePhase = async (ctx: Context, req: Request, res: Response) => 
   } catch (err) {
     if (err instanceof PhaseNotFoundError) {
       return res.status(404).json({ status: 404, message: err.message })
+    }
+    throw err
+  }
+}
+
+export const getPhaseQualifiedTeams = async (ctx: Context, _: Request, res: Response) => {
+  try {
+    const phaseId = ctx.request.params.id
+    res.json({ phaseId, teams: await useCases.getQualifiedTeams(phaseId) })
+  } catch (err) {
+    if (err instanceof PhaseNotFoundError || err instanceof ChampionshipNotFoundError) {
+      return res.status(404).json({ status: 404, message: err.message })
+    }
+    if (err instanceof PhaseNotFinishedError) {
+      return res.status(409).json({ status: 409, message: err.message })
     }
     throw err
   }

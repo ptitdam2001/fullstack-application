@@ -18,3 +18,10 @@ export class PreviousPhaseNotFinishedError extends Error {
     this.name = 'PreviousPhaseNotFinishedError'
   }
 }
+
+export class PhaseNotFinishedError extends Error {
+  constructor(id: string) {
+    super(`Phase ${id} is not finished yet`)
+    this.name = 'PhaseNotFinishedError'
+  }
+}
