@@ -19,6 +19,9 @@ function match(
   return {
     id,
     groupId: 'g1',
+    bracketId: null,
+    round: null,
+    bracketPosition: null,
     status,
     scheduledAt: null,
     area,
@@ -27,6 +30,7 @@ function match(
     homeGoals,
     awayGoals,
     forfeitedBy,
+    updatedAt: new Date('2024-01-01'),
   }
 }
 

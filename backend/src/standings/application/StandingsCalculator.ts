@@ -35,6 +35,9 @@ function buildStatsMap(teamIds: string[], matches: Match[], pointsConfig: Points
     if (match.status === MatchStatus.CANCELLED || match.status === MatchStatus.SCHEDULED) {
       continue
     }
+    if (match.homeTeamId === null || match.awayTeamId === null) {
+      continue
+    }
 
     const home = map.get(match.homeTeamId)
     const away = map.get(match.awayTeamId)
@@ -91,7 +94,9 @@ function buildStatsMap(teamIds: string[], matches: Match[], pointsConfig: Points
 }
 
 function headToHeadStats(teamIds: string[], matches: Match[], pointsConfig: PointsConfig): Map<string, TeamStats> {
-  const relevantMatches = matches.filter(m => teamIds.includes(m.homeTeamId) && teamIds.includes(m.awayTeamId))
+  const relevantMatches = matches.filter(
+    m => m.homeTeamId !== null && m.awayTeamId !== null && teamIds.includes(m.homeTeamId) && teamIds.includes(m.awayTeamId)
+  )
   return buildStatsMap(teamIds, relevantMatches, pointsConfig)
 }
 
