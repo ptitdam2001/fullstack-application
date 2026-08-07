@@ -1,4 +1,4 @@
-import { MapPinHouse, Tags } from 'lucide-react'
+import { CalendarRange, MapPinHouse, Tags } from 'lucide-react'
 import { type ReactElement } from 'react'
 import { AuthProvider } from '@Auth/application/AuthProvider'
 
@@ -23,11 +23,18 @@ const ageCategoryItem: TabProps = {
   icon: <Tags />,
 }
 
+const seasonItem: TabProps = {
+  tabIndex: 'seasons',
+  label: 'Saisons',
+  href: 'seasons',
+  icon: <CalendarRange />,
+}
+
 type Output = {
   list: TabProps[]
 }
 
 export const useSettingsMenu = (): Output => {
   const { user } = AuthProvider.useAuthValue()
-  return { list: user?.isAdmin ? [areasItem, ageCategoryItem] : [areasItem] }
+  return { list: user?.isAdmin ? [areasItem, ageCategoryItem, seasonItem] : [areasItem] }
 }

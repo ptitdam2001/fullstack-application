@@ -34,6 +34,7 @@ import {
   AdminTeamsPage,
   AdminTeamDeletePage,
   AdminAgeCategoriesPage,
+  AdminSeasonsPage,
 } from '@Admin'
 
 const AppLayout = () => {
@@ -129,6 +130,15 @@ const router = createBrowserRouter(
               </RequireRole>
             }
             handle={{ breadcrumb: "Catégories d'âge" }}
+          />
+          <Route
+            path="seasons"
+            element={
+              <RequireRole allowed={user => Boolean(user.isAdmin)}>
+                <AdminSeasonsPage />
+              </RequireRole>
+            }
+            handle={{ breadcrumb: 'Saisons' }}
           />
         </Route>
       </Route>

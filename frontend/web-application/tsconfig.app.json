@@ -45,6 +45,8 @@
       "@Admin/*": ["./src/Admin/*", "./src/Admin/"],
       "@AgeCategory": ["./src/AgeCategory/index.ts"],
       "@AgeCategory/*": ["./src/AgeCategory/*", "./src/AgeCategory/"],
+      "@Season": ["./src/Season/index.ts"],
+      "@Season/*": ["./src/Season/*", "./src/Season/"],
       "@Area": ["./src/Area/index.ts"],
       "@Area/*": ["./src/Area/*", "./src/Area/"],
       "@Sdk/*": ["./src/sdk/generated/", "./src/sdk/generated/*"],

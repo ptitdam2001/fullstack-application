@@ -343,5 +343,31 @@
     "genre.MALE": "Male",
     "genre.FEMALE": "Female",
     "genre.MIXED": "Mixed"
+  },
+  "adminSeasons": {
+    "title": "Seasons",
+    "table.label": "Label",
+    "table.startDate": "Start Date",
+    "table.endDate": "End Date",
+    "table.actions": "Actions",
+    "table.empty": "No seasons found",
+    "action.create": "New Season",
+    "action.edit": "Edit",
+    "action.delete": "Delete",
+    "action.update": "Update",
+    "delete.title": "Delete Season",
+    "delete.description": "Are you sure you want to delete the season \"{label}\"?",
+    "delete.confirm": "Delete",
+    "delete.cancel": "Cancel",
+    "toast.created": "Season created successfully",
+    "toast.updated": "Season updated successfully",
+    "toast.deleted": "Season deleted successfully",
+    "toast.deleteError": "Failed to delete season",
+    "toast.error": "Failed to save season",
+    "dialog.create.title": "Create Season",
+    "dialog.edit.title": "Edit Season",
+    "form.label": "Label",
+    "form.startDate": "Start Date",
+    "form.endDate": "End Date"
   }
 }

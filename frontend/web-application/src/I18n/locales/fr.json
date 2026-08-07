@@ -343,5 +343,31 @@
     "genre.MALE": "Masculin",
     "genre.FEMALE": "Féminin",
     "genre.MIXED": "Mixte"
+  },
+  "adminSeasons": {
+    "title": "Saisons",
+    "table.label": "Libellé",
+    "table.startDate": "Date de début",
+    "table.endDate": "Date de fin",
+    "table.actions": "Actions",
+    "table.empty": "Aucune saison trouvée",
+    "action.create": "Nouvelle saison",
+    "action.edit": "Modifier",
+    "action.delete": "Supprimer",
+    "action.update": "Mettre à jour",
+    "delete.title": "Supprimer la saison",
+    "delete.description": "Êtes-vous sûr de vouloir supprimer la saison « {label} » ?",
+    "delete.confirm": "Supprimer",
+    "delete.cancel": "Annuler",
+    "toast.created": "Saison créée avec succès",
+    "toast.updated": "Saison modifiée avec succès",
+    "toast.deleted": "Saison supprimée avec succès",
+    "toast.deleteError": "Erreur lors de la suppression",
+    "toast.error": "Erreur lors de l'enregistrement",
+    "dialog.create.title": "Créer une saison",
+    "dialog.edit.title": "Modifier la saison",
+    "form.label": "Libellé",
+    "form.startDate": "Date de début",
+    "form.endDate": "Date de fin"
   }
 }
