@@ -14,11 +14,11 @@ export const Calendar = ({ className, classNames, showOutsideDays = true, ...pro
     className={cn('p-3', className)}
     classNames={{
       root: 'w-fit',
-      months: 'flex flex-col gap-4 sm:flex-row',
+      months: 'relative flex flex-col gap-4 sm:flex-row',
       month: 'flex flex-col gap-4',
       month_caption: 'flex items-center justify-center pt-1 relative',
       caption_label: 'text-sm font-medium',
-      nav: 'flex items-center gap-1',
+      nav: 'absolute inset-x-0 top-0 z-10 flex items-center justify-between',
       button_previous: cn(
         ButtonVariants({ variant: 'outline', size: 'icon' }),
         'absolute left-1 top-0 size-7 p-0 opacity-50 hover:opacity-100'

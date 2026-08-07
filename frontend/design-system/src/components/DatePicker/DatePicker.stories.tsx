@@ -37,8 +37,19 @@ export const Default: Story = {
     const canvas = within(canvasElement)
     const trigger = canvas.getByRole('button')
     await userEvent.click(trigger)
-    const calendar = within(document.body).getByRole('grid')
+    const body = within(document.body)
+    const calendar = await body.findByRole('grid')
     expect(calendar).toBeVisible()
+
+    const status = body.getByRole('status')
+    const initialCaption = status.textContent
+
+    await userEvent.click(body.getByRole('button', { name: /next/i }))
+    expect(status.textContent).not.toBe(initialCaption)
+
+    await userEvent.click(body.getByRole('button', { name: /previous/i }))
+    expect(status.textContent).toBe(initialCaption)
+
     await userEvent.keyboard('{Escape}')
   },
 }
