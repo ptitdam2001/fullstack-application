@@ -369,5 +369,29 @@
     "form.label": "Label",
     "form.startDate": "Start Date",
     "form.endDate": "End Date"
+  },
+  "championshipWizard": {
+    "title": "New Championship",
+    "step.season": "Season",
+    "step.category": "Category",
+    "step.name": "Name",
+    "step.phase": "Phase 1",
+    "step.teams": "Teams",
+    "step.config": "Configuration",
+    "summary.title": "Summary",
+    "summary.season": "Season",
+    "summary.category": "Category",
+    "summary.name": "Name",
+    "summary.phase": "Phase 1",
+    "summary.teams": "Teams",
+    "summary.config": "Configuration",
+    "summary.teamsGroupValue": "{groupCount} pools · {teamCount} teams",
+    "summary.teamsKnockoutValue": "{teamCount} teams selected",
+    "summary.configGroupValue": "{generatedCount}/{groupCount} pools generated",
+    "phaseType.GROUP": "Pools (GROUP)",
+    "phaseType.KNOCKOUT": "Knockout (KNOCKOUT)",
+    "action.previous": "Previous",
+    "action.next": "Next",
+    "action.create": "Create championship"
   }
 }

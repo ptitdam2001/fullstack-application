@@ -369,5 +369,29 @@
     "form.label": "Libellé",
     "form.startDate": "Date de début",
     "form.endDate": "Date de fin"
+  },
+  "championshipWizard": {
+    "title": "Nouveau championnat",
+    "step.season": "Saison",
+    "step.category": "Catégorie",
+    "step.name": "Nom",
+    "step.phase": "Phase 1",
+    "step.teams": "Équipes",
+    "step.config": "Configuration",
+    "summary.title": "Résumé",
+    "summary.season": "Saison",
+    "summary.category": "Catégorie",
+    "summary.name": "Nom",
+    "summary.phase": "Phase 1",
+    "summary.teams": "Équipes",
+    "summary.config": "Configuration",
+    "summary.teamsGroupValue": "{groupCount} poules · {teamCount} équipes",
+    "summary.teamsKnockoutValue": "{teamCount} équipes sélectionnées",
+    "summary.configGroupValue": "{generatedCount}/{groupCount} poules générées",
+    "phaseType.GROUP": "Poules (GROUP)",
+    "phaseType.KNOCKOUT": "Éliminatoires (KNOCKOUT)",
+    "action.previous": "Précédent",
+    "action.next": "Suivant",
+    "action.create": "Créer le championnat"
   }
 }
