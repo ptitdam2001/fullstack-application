@@ -373,8 +373,18 @@
   "championshipWizard": {
     "title": "Nouveau championnat",
     "step.season": "Saison",
+    "step.season.hint": "Liste des saisons actives (non archivées).",
+    "step.season.dateRange": "{start} → {end}",
+    "step.season.dateRangeUnknown": "Dates non renseignées",
+    "step.season.empty": "Aucune saison disponible. Créez-en une avant de continuer.",
     "step.category": "Catégorie",
+    "step.category.hint": "Catégories actives — filtre ensuite les équipes sélectionnables à l'étape suivante.",
+    "step.category.empty": "Aucune catégorie d'âge disponible. Créez-en une avant de continuer.",
     "step.name": "Nom",
+    "step.name.hint": "Champ obligatoire.",
+    "step.name.label": "Nom",
+    "step.name.placeholder": "Ex. Championnat {categoryLabel} {genreLabel} {seasonYear}",
+    "step.name.placeholderDefault": "Ex. Championnat U13 2026",
     "step.phase": "Phase 1",
     "step.teams": "Équipes",
     "step.config": "Configuration",
@@ -392,6 +402,7 @@
     "phaseType.KNOCKOUT": "Éliminatoires (KNOCKOUT)",
     "action.previous": "Précédent",
     "action.next": "Suivant",
-    "action.create": "Créer le championnat"
+    "action.create": "Créer le championnat",
+    "error.createFailed": "Erreur lors de la création du championnat. Réessayez."
   }
 }

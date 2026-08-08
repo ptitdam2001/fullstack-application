@@ -373,8 +373,18 @@
   "championshipWizard": {
     "title": "New Championship",
     "step.season": "Season",
+    "step.season.hint": "List of active (non-archived) seasons.",
+    "step.season.dateRange": "{start} → {end}",
+    "step.season.dateRangeUnknown": "Dates not set",
+    "step.season.empty": "No season available. Create one before continuing.",
     "step.category": "Category",
+    "step.category.hint": "Active categories — filters the teams selectable in the next step.",
+    "step.category.empty": "No age category available. Create one before continuing.",
     "step.name": "Name",
+    "step.name.hint": "Required field.",
+    "step.name.label": "Name",
+    "step.name.placeholder": "E.g. Championship {categoryLabel} {genreLabel} {seasonYear}",
+    "step.name.placeholderDefault": "E.g. Championship U13 2026",
     "step.phase": "Phase 1",
     "step.teams": "Teams",
     "step.config": "Configuration",
@@ -392,6 +402,7 @@
     "phaseType.KNOCKOUT": "Knockout (KNOCKOUT)",
     "action.previous": "Previous",
     "action.next": "Next",
-    "action.create": "Create championship"
+    "action.create": "Create championship",
+    "error.createFailed": "Error creating the championship. Please try again."
   }
 }

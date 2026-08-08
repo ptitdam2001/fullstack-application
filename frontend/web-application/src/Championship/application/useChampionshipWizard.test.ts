@@ -219,6 +219,16 @@ describe('useChampionshipWizard', () => {
     })
   })
 
+  describe('championshipId', () => {
+    it('starts null and can be set once the championship is created', () => {
+      const { result } = renderHook(() => useChampionshipWizard())
+      expect(result.current.championshipId).toBeNull()
+
+      act(() => result.current.setChampionshipId('champ-1'))
+      expect(result.current.championshipId).toBe('champ-1')
+    })
+  })
+
   it('exposes all 6 wizard steps', () => {
     expect(WIZARD_STEPS).toHaveLength(6)
     expect(WIZARD_STEPS.map(s => s.key)).toEqual(['season', 'category', 'name', 'phase', 'teams', 'config'])

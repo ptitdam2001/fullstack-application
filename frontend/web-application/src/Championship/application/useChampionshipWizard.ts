@@ -25,6 +25,7 @@ type WizardState = {
   seasonId: string | null
   categoryId: string | null
   name: string
+  championshipId: string | null
   phaseType: PhaseType | null
   teamIds: string[]
   groups: ChampionshipWizardGroup[]
@@ -37,6 +38,7 @@ type WizardAction =
   | { type: 'SET_SEASON'; seasonId: string }
   | { type: 'SET_CATEGORY'; categoryId: string }
   | { type: 'SET_NAME'; name: string }
+  | { type: 'SET_CHAMPIONSHIP_ID'; championshipId: string }
   | { type: 'SET_PHASE_TYPE'; phaseType: PhaseType }
   | { type: 'TOGGLE_TEAM'; teamId: string }
   | { type: 'ADD_GROUP' }
@@ -64,6 +66,7 @@ const initialState: WizardState = {
   seasonId: null,
   categoryId: null,
   name: '',
+  championshipId: null,
   phaseType: null,
   teamIds: [],
   groups: [defaultGroup(1)],
@@ -99,6 +102,8 @@ const wizardReducer = (state: WizardState, action: WizardAction): WizardState =>
       return { ...state, categoryId: action.categoryId }
     case 'SET_NAME':
       return { ...state, name: action.name }
+    case 'SET_CHAMPIONSHIP_ID':
+      return { ...state, championshipId: action.championshipId }
     case 'SET_PHASE_TYPE':
       return { ...state, phaseType: action.phaseType }
     case 'TOGGLE_TEAM':
@@ -179,6 +184,7 @@ export const useChampionshipWizard = () => {
     setSeasonId: (seasonId: string) => dispatch({ type: 'SET_SEASON', seasonId }),
     setCategoryId: (categoryId: string) => dispatch({ type: 'SET_CATEGORY', categoryId }),
     setName: (name: string) => dispatch({ type: 'SET_NAME', name }),
+    setChampionshipId: (championshipId: string) => dispatch({ type: 'SET_CHAMPIONSHIP_ID', championshipId }),
     setPhaseType: (phaseType: PhaseType) => dispatch({ type: 'SET_PHASE_TYPE', phaseType }),
     toggleTeam: (teamId: string) => dispatch({ type: 'TOGGLE_TEAM', teamId }),
     addGroup: () => dispatch({ type: 'ADD_GROUP' }),
