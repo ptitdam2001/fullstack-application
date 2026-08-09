@@ -28,6 +28,7 @@ import { RequireRole } from '@Auth/ui/RequireRole/RequireRole'
 import { ActivatePage, ForgottenPasswordPage, LoginPage, RegisterPage, ResetPasswordPage } from '@Auth/pages'
 import { OnboardingScreen } from '@Auth/ui/OnboardingScreen/OnboardingScreen'
 import { TeamBreadcrumb } from '@Teams'
+import { ChampionshipWizardPage } from '@Championship/pages/ChampionshipWizardPage'
 import {
   AdminUsersPage,
   AdminChampionshipsPage,
@@ -112,7 +113,10 @@ const router = createBrowserRouter(
         >
           <Route index element={<Navigate to="users" />} />
           <Route path="users" element={<AdminUsersPage />} handle={{ breadcrumb: 'Utilisateurs' }} />
-          <Route path="championships" element={<AdminChampionshipsPage />} handle={{ breadcrumb: 'Championnats' }} />
+          <Route path="championships" handle={{ breadcrumb: 'Championnats' }}>
+            <Route index element={<AdminChampionshipsPage />} />
+            <Route path="new" element={<ChampionshipWizardPage />} handle={{ breadcrumb: 'Nouveau championnat' }} />
+          </Route>
           <Route path="teams" element={<AdminTeamsPage />} handle={{ breadcrumb: 'Équipes' }}>
             <Route path=":teamId/delete" element={<AdminTeamDeletePage />} handle={{ breadcrumb: 'Supprimer' }} />
           </Route>

@@ -344,6 +344,14 @@
     "genre.FEMALE": "Féminin",
     "genre.MIXED": "Mixte"
   },
+  "adminChampionships": {
+    "title": "Championnats",
+    "action.create": "Nouveau championnat",
+    "table.name": "Nom",
+    "table.season": "Saison",
+    "table.category": "Catégorie",
+    "table.empty": "Aucun championnat trouvé"
+  },
   "adminSeasons": {
     "title": "Saisons",
     "table.label": "Libellé",

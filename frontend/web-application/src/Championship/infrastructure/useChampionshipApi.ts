@@ -1,4 +1,6 @@
 export {
+  useGetChampionships,
+  useCountChampionships,
   useCreateChampionship,
   useUpdateChampionship,
   getGetChampionshipsQueryKey,
