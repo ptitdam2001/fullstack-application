@@ -4,7 +4,7 @@ import { useSeasonList } from '@Season/application/useSeasonList'
 import { useAgeCategoryList } from '@AgeCategory/application/useAgeCategoryList'
 import { useTeamOptions } from '@Teams/application/useTeamOptions'
 import { useChampionshipWizard, WIZARD_STEPS, type ChampionshipWizardGroup } from '../application/useChampionshipWizard'
-import { useCreateChampionship } from '../infrastructure/useChampionshipApi'
+import { useCreateChampionship, useUpdateChampionship } from '../infrastructure/useChampionshipApi'
 import { useCreatePhase } from '../infrastructure/usePhaseApi'
 import { PhaseType } from '../domain/Phase'
 import { WizardProgress } from '../ui/WizardProgress/WizardProgress'
@@ -15,6 +15,7 @@ import { StepName } from '../ui/StepName/StepName'
 import { StepPhase } from '../ui/StepPhase/StepPhase'
 import { StepTeamsGroups } from '../ui/StepTeamsGroups/StepTeamsGroups'
 import { StepTeamsKnockout } from '../ui/StepTeamsKnockout/StepTeamsKnockout'
+import { StepConfigGroup } from '../ui/StepConfigGroup/StepConfigGroup'
 
 const formatTeamsValue = (
   intl: IntlShape,
@@ -45,6 +46,7 @@ export const ChampionshipWizardPage = () => {
   const categoryList = useAgeCategoryList()
   const createChampionship = useCreateChampionship()
   const createPhase = useCreatePhase()
+  const updateChampionship = useUpdateChampionship()
 
   const teamOptions = useTeamOptions()
 
@@ -83,11 +85,29 @@ export const ChampionshipWizardPage = () => {
       return
     }
 
+    if (wizard.step === 5 && wizard.phaseType === PhaseType.GROUP && wizard.championshipId && wizard.categoryId && wizard.seasonId) {
+      updateChampionship.mutate(
+        {
+          id: wizard.championshipId,
+          data: {
+            name: wizard.name.trim(),
+            ageCategoryId: wizard.categoryId,
+            seasonId: wizard.seasonId,
+            pointsConfig: wizard.points,
+          },
+        },
+        { onSuccess: () => wizard.next() }
+      )
+      return
+    }
+
     wizard.next()
   }
 
   const isNextPending =
-    (wizard.step === 2 && createChampionship.isPending) || (wizard.step === 3 && createPhase.isPending)
+    (wizard.step === 2 && createChampionship.isPending) ||
+    (wizard.step === 3 && createPhase.isPending) ||
+    (wizard.step === 5 && updateChampionship.isPending)
 
   const teamsValue = formatTeamsValue(intl, wizard.phaseType, wizard.groups, wizard.teamIds)
 
@@ -161,7 +181,19 @@ export const ChampionshipWizardPage = () => {
               {wizard.step === 4 && wizard.phaseType === PhaseType.KNOCKOUT && (
                 <StepTeamsKnockout teams={categoryTeams} teamIds={wizard.teamIds} onToggleTeam={wizard.toggleTeam} />
               )}
-              {wizard.step >= 5 && (
+              {wizard.step === 5 && wizard.phaseType === PhaseType.GROUP && (
+                <StepConfigGroup
+                  teams={categoryTeams}
+                  groups={wizard.groups}
+                  onSetMatchMode={wizard.setGroupMatchMode}
+                  onGenerate={groupId => wizard.setGroupGenerated(groupId, true)}
+                  points={wizard.points}
+                  onStepPoints={wizard.stepper}
+                  maxRank={wizard.maxRank}
+                  onMaxRankChange={wizard.setMaxRank}
+                />
+              )}
+              {((wizard.step === 5 && wizard.phaseType !== PhaseType.GROUP) || wizard.step >= 6) && (
                 <Typography.Title2>
                   <FormattedMessage id={WIZARD_STEPS[wizard.step].labelId} />
                 </Typography.Title2>
@@ -175,6 +207,11 @@ export const ChampionshipWizardPage = () => {
               {createPhase.isError && (
                 <Typography.Body className="text-destructive">
                   <FormattedMessage id="championshipWizard.error.createPhaseFailed" />
+                </Typography.Body>
+              )}
+              {updateChampionship.isError && (
+                <Typography.Body className="text-destructive">
+                  <FormattedMessage id="championshipWizard.error.updateFailed" />
                 </Typography.Body>
               )}
 

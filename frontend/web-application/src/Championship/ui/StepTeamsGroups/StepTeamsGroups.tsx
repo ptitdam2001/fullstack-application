@@ -77,7 +77,7 @@ export const StepTeamsGroups = ({
       </Typography.Body>
 
       <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[220px_1fr]">
-        <div className="border-border bg-secondary flex min-h-[280px] flex-col rounded-lg border">
+        <div className="border-border bg-secondary flex min-h-70 flex-col rounded-lg border">
           <div className="border-border flex items-center justify-between border-b px-3 py-2">
             <span className="text-sm font-semibold">
               <FormattedMessage id="championshipWizard.step.teamsGroups.availableTitle" />
@@ -127,7 +127,7 @@ export const StepTeamsGroups = ({
                     }
                   />
                   {menuFor === team.id && (
-                    <div className="border-border bg-card absolute top-full right-0 z-10 mt-1 min-w-[140px] overflow-hidden rounded-md border shadow-lg">
+                    <div className="border-border bg-card absolute top-full right-0 z-10 mt-1 min-w-35 overflow-hidden rounded-md border shadow-lg">
                       {groups.map(g => (
                         <button
                           key={g.id}
@@ -154,7 +154,7 @@ export const StepTeamsGroups = ({
             const groupTeams = group.teamIds.map(id => teams.find(t => t.id === id)).filter((t): t is Team => !!t)
             const warn = groupTeams.length < 2
             return (
-              <div key={group.id} className="border-border bg-secondary flex w-[220px] flex-col rounded-lg border">
+              <div key={group.id} className="border-border bg-secondary flex w-55 flex-col rounded-lg border">
                 <div className="border-border flex items-center gap-1.5 border-b p-2">
                   <input
                     aria-label={intl.formatMessage({ id: 'championshipWizard.step.teamsGroups.groupNameLabel' })}
@@ -175,7 +175,7 @@ export const StepTeamsGroups = ({
                 <div
                   data-testid={`group-body-${group.id}`}
                   className={cn(
-                    'flex min-h-[120px] flex-1 flex-col gap-1.5 p-2 transition-colors',
+                    'flex min-h-30 flex-1 flex-col gap-1.5 p-2 transition-colors',
                     overZone === group.id && 'bg-primary/10'
                   )}
                   onDragOver={e => {
@@ -236,7 +236,7 @@ export const StepTeamsGroups = ({
           <button
             type="button"
             onClick={onAddGroup}
-            className="border-border text-muted-foreground hover:border-primary hover:text-primary hover:bg-primary/5 flex min-h-[280px] w-[220px] items-center justify-center rounded-lg border border-dashed text-sm font-medium"
+            className="border-border text-muted-foreground hover:border-primary hover:text-primary hover:bg-primary/5 flex min-h-70 w-55 items-center justify-center rounded-lg border border-dashed text-sm font-medium"
           >
             <FormattedMessage id="championshipWizard.step.teamsGroups.addGroup" />
           </button>

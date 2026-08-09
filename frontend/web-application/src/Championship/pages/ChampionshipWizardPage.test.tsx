@@ -2,12 +2,17 @@ import { screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { Season } from '@Season/domain/Season'
 import type { AgeCategory } from '@AgeCategory/domain/AgeCategory'
+import type { Team } from '@Teams/domain/Team'
 import { ChampionshipWizardPagePage } from './ChampionshipWizardPage.page'
 
 const seasons: Season[] = [
   { id: 's1', label: '2025-2026', startDate: null, endDate: null, createdAt: '', updatedAt: '' },
 ]
 const categories: AgeCategory[] = [{ id: 'c1', label: 'U13', genre: 'FEMALE' as const, createdAt: '', updatedAt: '' }]
+const teams: Team[] = [
+  { id: 't1', name: 'HB Villeurbanne', color: '#e36b3a', ageCategoryId: 'c1' },
+  { id: 't2', name: 'Lyon HB Club', color: '#2f6fed', ageCategoryId: 'c1' },
+]
 
 vi.mock('@Season/application/useSeasonList', () => ({
   useSeasonList: () => ({
@@ -28,21 +33,24 @@ vi.mock('@AgeCategory/application/useAgeCategoryList', () => ({
   }),
 }))
 vi.mock('@Teams/application/useTeamOptions', () => ({
-  useTeamOptions: () => [],
+  useTeamOptions: () => teams,
 }))
 vi.mock('../infrastructure/useChampionshipApi', () => ({
   useCreateChampionship: vi.fn(),
+  useUpdateChampionship: vi.fn(),
 }))
 vi.mock('../infrastructure/usePhaseApi', () => ({
   useCreatePhase: vi.fn(),
 }))
 
-import { useCreateChampionship } from '../infrastructure/useChampionshipApi'
+import { useCreateChampionship, useUpdateChampionship } from '../infrastructure/useChampionshipApi'
 import { useCreatePhase } from '../infrastructure/usePhaseApi'
 const mockedUseCreateChampionship = vi.mocked(useCreateChampionship)
 const mockedUseCreatePhase = vi.mocked(useCreatePhase)
+const mockedUseUpdateChampionship = vi.mocked(useUpdateChampionship)
 const mutate = vi.fn()
 const mutatePhase = vi.fn()
+const mutateUpdate = vi.fn()
 
 const advanceToPhaseStep = (page: ChampionshipWizardPagePage) => {
   page.selectSeason(/2025-2026/).clickNext()
@@ -51,13 +59,25 @@ const advanceToPhaseStep = (page: ChampionshipWizardPagePage) => {
   return page
 }
 
+const advanceToConfigGroupStep = (page: ChampionshipWizardPagePage) => {
+  advanceToPhaseStep(page)
+  page.selectPhase(/championshipWizard\.phaseType\.GROUP/).clickNext()
+  page.assignFirstAvailableTeamToGroup(/Poule A/)
+  page.assignFirstAvailableTeamToGroup(/Poule A/)
+  page.clickNext()
+  return page
+}
+
 describe('ChampionshipWizardPage', () => {
   beforeEach(() => {
     mutate.mockReset()
     mutatePhase.mockReset()
+    mutateUpdate.mockReset()
     mockedUseCreateChampionship.mockReturnValue({ mutate, isPending: false, isError: false } as never)
     mockedUseCreatePhase.mockReturnValue({ mutate: mutatePhase, isPending: false, isError: false } as never)
+    mockedUseUpdateChampionship.mockReturnValue({ mutate: mutateUpdate, isPending: false, isError: false } as never)
     mutate.mockImplementation((_vars, { onSuccess }) => onSuccess({ id: 'champ-1' }))
+    mutatePhase.mockImplementation((_vars, { onSuccess }) => onSuccess({ id: 'phase-1' }))
   })
 
   it('renders the page title', () => {
@@ -172,6 +192,42 @@ describe('ChampionshipWizardPage', () => {
     const page = advanceToPhaseStep(new ChampionshipWizardPagePage().render())
 
     page.selectPhase(/championshipWizard\.phaseType\.GROUP/)
+
+    expect(page.nextButton()).toBeDisabled()
+  })
+
+  it('updates the championship pointsConfig on leaving the config step (GROUP)', () => {
+    mutateUpdate.mockImplementation((_vars, { onSuccess }) => onSuccess({ id: 'champ-1' }))
+    const page = advanceToConfigGroupStep(new ChampionshipWizardPagePage().render())
+
+    expect(page.heading('championshipWizard.step.configGroup')).toBeInTheDocument()
+
+    page.clickNext()
+
+    expect(mutateUpdate).toHaveBeenCalledWith(
+      {
+        id: 'champ-1',
+        data: {
+          name: 'Championnat U13',
+          ageCategoryId: 'c1',
+          seasonId: 's1',
+          pointsConfig: { win: 3, draw: 2, loss: 1, forfeit: 0 },
+        },
+      },
+      expect.anything()
+    )
+  })
+
+  it('shows an error message when the update mutation fails', () => {
+    mockedUseUpdateChampionship.mockReturnValue({ mutate: mutateUpdate, isPending: false, isError: true } as never)
+    const page = advanceToConfigGroupStep(new ChampionshipWizardPagePage().render())
+
+    expect(page.updateErrorMessage()).toBeInTheDocument()
+  })
+
+  it('disables "next" on the config step while the update mutation is pending', () => {
+    mockedUseUpdateChampionship.mockReturnValue({ mutate: mutateUpdate, isPending: true, isError: false } as never)
+    const page = advanceToConfigGroupStep(new ChampionshipWizardPagePage().render())
 
     expect(page.nextButton()).toBeDisabled()
   })

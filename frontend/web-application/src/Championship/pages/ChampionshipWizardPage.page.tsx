@@ -49,11 +49,22 @@ export class ChampionshipWizardPagePage {
     return this
   }
 
+  assignFirstAvailableTeamToGroup(groupName: RegExp | string) {
+    const buttons = screen.getAllByLabelText('championshipWizard.step.teamsGroups.assignTo')
+    fireEvent.click(buttons[0])
+    fireEvent.click(screen.getByText(groupName))
+    return this
+  }
+
   errorMessage() {
     return screen.queryByText('championshipWizard.error.createFailed')
   }
 
   phaseErrorMessage() {
     return screen.queryByText('championshipWizard.error.createPhaseFailed')
+  }
+
+  updateErrorMessage() {
+    return screen.queryByText('championshipWizard.error.updateFailed')
   }
 }
