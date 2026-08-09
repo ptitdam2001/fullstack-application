@@ -386,6 +386,9 @@
     "step.name.placeholder": "E.g. Championship {categoryLabel} {genreLabel} {seasonYear}",
     "step.name.placeholderDefault": "E.g. Championship U13 2026",
     "step.phase": "Phase 1",
+    "step.phase.hint": "A championship must have at least one phase. The chosen type structures the next step.",
+    "step.phase.groupDesc": "Teams are split into one or more pools. Each team plays the other teams in its pool (single or home-and-away). Standings computed per pool at the end of the phase.",
+    "step.phase.knockoutDesc": "Single-elimination bracket. Automatic bye if the number of teams is not a power of 2.",
     "step.teams": "Teams",
     "step.config": "Configuration",
     "summary.title": "Summary",
@@ -403,6 +406,7 @@
     "action.previous": "Previous",
     "action.next": "Next",
     "action.create": "Create championship",
-    "error.createFailed": "Error creating the championship. Please try again."
+    "error.createFailed": "Error creating the championship. Please try again.",
+    "error.createPhaseFailed": "Error creating the phase. Please try again."
   }
 }

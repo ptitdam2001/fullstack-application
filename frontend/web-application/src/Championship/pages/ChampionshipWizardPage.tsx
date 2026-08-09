@@ -4,12 +4,14 @@ import { useSeasonList } from '@Season/application/useSeasonList'
 import { useAgeCategoryList } from '@AgeCategory/application/useAgeCategoryList'
 import { useChampionshipWizard, WIZARD_STEPS, type ChampionshipWizardGroup } from '../application/useChampionshipWizard'
 import { useCreateChampionship } from '../infrastructure/useChampionshipApi'
+import { useCreatePhase } from '../infrastructure/usePhaseApi'
 import { PhaseType } from '../domain/Phase'
 import { WizardProgress } from '../ui/WizardProgress/WizardProgress'
 import { WizardSummary } from '../ui/WizardSummary/WizardSummary'
 import { StepSeason } from '../ui/StepSeason/StepSeason'
 import { StepCategory } from '../ui/StepCategory/StepCategory'
 import { StepName } from '../ui/StepName/StepName'
+import { StepPhase } from '../ui/StepPhase/StepPhase'
 
 const formatTeamsValue = (
   intl: IntlShape,
@@ -39,6 +41,7 @@ export const ChampionshipWizardPage = () => {
   const seasonList = useSeasonList()
   const categoryList = useAgeCategoryList()
   const createChampionship = useCreateChampionship()
+  const createPhase = useCreatePhase()
 
   const seasons = seasonList.query.data ?? []
   const categories = categoryList.query.data ?? []
@@ -46,28 +49,39 @@ export const ChampionshipWizardPage = () => {
   const selectedCategory = categories.find(c => c.id === wizard.categoryId) ?? null
 
   const handleNext = () => {
-    if (wizard.step !== 2 || wizard.championshipId || !wizard.categoryId || !wizard.seasonId) {
-      wizard.next()
+    if (wizard.step === 2 && !wizard.championshipId && wizard.categoryId && wizard.seasonId) {
+      createChampionship.mutate(
+        {
+          data: {
+            name: wizard.name.trim(),
+            ageCategoryId: wizard.categoryId,
+            seasonId: wizard.seasonId,
+            pointsConfig: { win: 3, draw: 2, loss: 1, forfeit: 0 },
+          },
+        },
+        {
+          onSuccess: championship => {
+            wizard.setChampionshipId(championship.id)
+            wizard.next()
+          },
+        }
+      )
       return
     }
 
-    createChampionship.mutate(
-      {
-        data: {
-          name: wizard.name.trim(),
-          ageCategoryId: wizard.categoryId,
-          seasonId: wizard.seasonId,
-          pointsConfig: { win: 3, draw: 2, loss: 1, forfeit: 0 },
-        },
-      },
-      {
-        onSuccess: championship => {
-          wizard.setChampionshipId(championship.id)
-          wizard.next()
-        },
-      }
-    )
+    if (wizard.step === 3 && wizard.championshipId && wizard.phaseType) {
+      createPhase.mutate(
+        { data: { championshipId: wizard.championshipId, type: wizard.phaseType, order: 1 } },
+        { onSuccess: () => wizard.next() }
+      )
+      return
+    }
+
+    wizard.next()
   }
+
+  const isNextPending =
+    (wizard.step === 2 && createChampionship.isPending) || (wizard.step === 3 && createPhase.isPending)
 
   const teamsValue = formatTeamsValue(intl, wizard.phaseType, wizard.groups, wizard.teamIds)
 
@@ -127,7 +141,8 @@ export const ChampionshipWizardPage = () => {
                   seasonYear={selectedSeason?.label.slice(-4)}
                 />
               )}
-              {wizard.step >= 3 && (
+              {wizard.step === 3 && <StepPhase phaseType={wizard.phaseType} onSelect={wizard.setPhaseType} />}
+              {wizard.step >= 4 && (
                 <Typography.Title2>
                   <FormattedMessage id={WIZARD_STEPS[wizard.step].labelId} />
                 </Typography.Title2>
@@ -138,16 +153,17 @@ export const ChampionshipWizardPage = () => {
                   <FormattedMessage id="championshipWizard.error.createFailed" />
                 </Typography.Body>
               )}
+              {createPhase.isError && (
+                <Typography.Body className="text-destructive">
+                  <FormattedMessage id="championshipWizard.error.createPhaseFailed" />
+                </Typography.Body>
+              )}
 
               <div className="flex justify-between pt-2">
                 <Button variant="outline" onPress={wizard.back} isDisabled={wizard.step === 0}>
                   <FormattedMessage id="championshipWizard.action.previous" />
                 </Button>
-                <Button
-                  variant="outline"
-                  onPress={handleNext}
-                  isDisabled={!wizard.canNext || (wizard.step === 2 && createChampionship.isPending)}
-                >
+                <Button variant="outline" onPress={handleNext} isDisabled={!wizard.canNext || isNextPending}>
                   <FormattedMessage id="championshipWizard.action.next" />
                 </Button>
               </div>

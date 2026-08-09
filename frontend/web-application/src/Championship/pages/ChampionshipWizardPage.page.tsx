@@ -44,7 +44,16 @@ export class ChampionshipWizardPagePage {
     return this
   }
 
+  selectPhase(name: RegExp | string) {
+    fireEvent.click(screen.getByRole('button', { name }))
+    return this
+  }
+
   errorMessage() {
     return screen.queryByText('championshipWizard.error.createFailed')
+  }
+
+  phaseErrorMessage() {
+    return screen.queryByText('championshipWizard.error.createPhaseFailed')
   }
 }

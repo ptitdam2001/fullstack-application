@@ -386,6 +386,9 @@
     "step.name.placeholder": "Ex. Championnat {categoryLabel} {genreLabel} {seasonYear}",
     "step.name.placeholderDefault": "Ex. Championnat U13 2026",
     "step.phase": "Phase 1",
+    "step.phase.hint": "Un championnat doit avoir au moins une phase. Le type choisi structure l'étape suivante.",
+    "step.phase.groupDesc": "Les équipes sont réparties dans une ou plusieurs poules. Chaque équipe rencontre les autres équipes de sa poule (aller simple ou aller-retour). Classement par poule en fin de phase.",
+    "step.phase.knockoutDesc": "Tableau à élimination directe. Bye automatique si le nombre d'équipes n'est pas une puissance de 2.",
     "step.teams": "Équipes",
     "step.config": "Configuration",
     "summary.title": "Résumé",
@@ -403,6 +406,7 @@
     "action.previous": "Précédent",
     "action.next": "Suivant",
     "action.create": "Créer le championnat",
-    "error.createFailed": "Erreur lors de la création du championnat. Réessayez."
+    "error.createFailed": "Erreur lors de la création du championnat. Réessayez.",
+    "error.createPhaseFailed": "Erreur lors de la création de la phase. Réessayez."
   }
 }

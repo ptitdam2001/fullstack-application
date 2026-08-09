@@ -30,15 +30,31 @@ vi.mock('@AgeCategory/application/useAgeCategoryList', () => ({
 vi.mock('../infrastructure/useChampionshipApi', () => ({
   useCreateChampionship: vi.fn(),
 }))
+vi.mock('../infrastructure/usePhaseApi', () => ({
+  useCreatePhase: vi.fn(),
+}))
 
 import { useCreateChampionship } from '../infrastructure/useChampionshipApi'
+import { useCreatePhase } from '../infrastructure/usePhaseApi'
 const mockedUseCreateChampionship = vi.mocked(useCreateChampionship)
+const mockedUseCreatePhase = vi.mocked(useCreatePhase)
 const mutate = vi.fn()
+const mutatePhase = vi.fn()
+
+const advanceToPhaseStep = (page: ChampionshipWizardPagePage) => {
+  page.selectSeason(/2025-2026/).clickNext()
+  page.selectCategory(/U13/).clickNext()
+  page.typeName('Championnat U13').clickNext()
+  return page
+}
 
 describe('ChampionshipWizardPage', () => {
   beforeEach(() => {
     mutate.mockReset()
+    mutatePhase.mockReset()
     mockedUseCreateChampionship.mockReturnValue({ mutate, isPending: false, isError: false } as never)
+    mockedUseCreatePhase.mockReturnValue({ mutate: mutatePhase, isPending: false, isError: false } as never)
+    mutate.mockImplementation((_vars, { onSuccess }) => onSuccess({ id: 'champ-1' }))
   })
 
   it('renders the page title', () => {
@@ -122,6 +138,37 @@ describe('ChampionshipWizardPage', () => {
     page.selectSeason(/2025-2026/).clickNext()
     page.selectCategory(/U13/).clickNext()
     page.typeName('Championnat U13')
+
+    expect(page.nextButton()).toBeDisabled()
+  })
+
+  it('creates the phase with the championship id and default order on leaving the phase step', () => {
+    mutatePhase.mockImplementation((_vars, { onSuccess }) => onSuccess({ id: 'phase-1' }))
+    const page = advanceToPhaseStep(new ChampionshipWizardPagePage().render())
+
+    page.selectPhase(/championshipWizard\.phaseType\.KNOCKOUT/).clickNext()
+
+    expect(mutatePhase).toHaveBeenCalledWith(
+      { data: { championshipId: 'champ-1', type: 'KNOCKOUT', order: 1 } },
+      expect.anything()
+    )
+    expect(page.heading('championshipWizard.step.teams')).toBeInTheDocument()
+  })
+
+  it('shows an error message when the phase creation mutation fails', () => {
+    mockedUseCreatePhase.mockReturnValue({ mutate: mutatePhase, isPending: false, isError: true } as never)
+    const page = advanceToPhaseStep(new ChampionshipWizardPagePage().render())
+
+    page.selectPhase(/championshipWizard\.phaseType\.GROUP/)
+
+    expect(page.phaseErrorMessage()).toBeInTheDocument()
+  })
+
+  it('disables "next" on the phase step while the phase creation mutation is pending', () => {
+    mockedUseCreatePhase.mockReturnValue({ mutate: mutatePhase, isPending: true, isError: false } as never)
+    const page = advanceToPhaseStep(new ChampionshipWizardPagePage().render())
+
+    page.selectPhase(/championshipWizard\.phaseType\.GROUP/)
 
     expect(page.nextButton()).toBeDisabled()
   })
