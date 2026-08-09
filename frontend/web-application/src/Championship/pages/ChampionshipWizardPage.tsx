@@ -14,6 +14,7 @@ import { StepCategory } from '../ui/StepCategory/StepCategory'
 import { StepName } from '../ui/StepName/StepName'
 import { StepPhase } from '../ui/StepPhase/StepPhase'
 import { StepTeamsGroups } from '../ui/StepTeamsGroups/StepTeamsGroups'
+import { StepTeamsKnockout } from '../ui/StepTeamsKnockout/StepTeamsKnockout'
 
 const formatTeamsValue = (
   intl: IntlShape,
@@ -157,7 +158,10 @@ export const ChampionshipWizardPage = () => {
                   onAssignTeam={wizard.assignTeam}
                 />
               )}
-              {((wizard.step === 4 && wizard.phaseType !== PhaseType.GROUP) || wizard.step >= 5) && (
+              {wizard.step === 4 && wizard.phaseType === PhaseType.KNOCKOUT && (
+                <StepTeamsKnockout teams={categoryTeams} teamIds={wizard.teamIds} onToggleTeam={wizard.toggleTeam} />
+              )}
+              {wizard.step >= 5 && (
                 <Typography.Title2>
                   <FormattedMessage id={WIZARD_STEPS[wizard.step].labelId} />
                 </Typography.Title2>

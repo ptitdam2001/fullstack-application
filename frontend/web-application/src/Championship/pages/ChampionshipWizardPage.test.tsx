@@ -155,7 +155,7 @@ describe('ChampionshipWizardPage', () => {
       { data: { championshipId: 'champ-1', type: 'KNOCKOUT', order: 1 } },
       expect.anything()
     )
-    expect(page.heading('championshipWizard.step.teams')).toBeInTheDocument()
+    expect(page.heading('championshipWizard.step.teamsKnockout')).toBeInTheDocument()
   })
 
   it('shows an error message when the phase creation mutation fails', () => {
