@@ -2,6 +2,7 @@ import { FormattedMessage, useIntl, type IntlShape } from 'react-intl'
 import { Button, Card, Layout, Separator, Typography } from '@repo/design-system'
 import { useSeasonList } from '@Season/application/useSeasonList'
 import { useAgeCategoryList } from '@AgeCategory/application/useAgeCategoryList'
+import { useTeamOptions } from '@Teams/application/useTeamOptions'
 import { useChampionshipWizard, WIZARD_STEPS, type ChampionshipWizardGroup } from '../application/useChampionshipWizard'
 import { useCreateChampionship } from '../infrastructure/useChampionshipApi'
 import { useCreatePhase } from '../infrastructure/usePhaseApi'
@@ -12,6 +13,7 @@ import { StepSeason } from '../ui/StepSeason/StepSeason'
 import { StepCategory } from '../ui/StepCategory/StepCategory'
 import { StepName } from '../ui/StepName/StepName'
 import { StepPhase } from '../ui/StepPhase/StepPhase'
+import { StepTeamsGroups } from '../ui/StepTeamsGroups/StepTeamsGroups'
 
 const formatTeamsValue = (
   intl: IntlShape,
@@ -43,10 +45,13 @@ export const ChampionshipWizardPage = () => {
   const createChampionship = useCreateChampionship()
   const createPhase = useCreatePhase()
 
+  const teamOptions = useTeamOptions()
+
   const seasons = seasonList.query.data ?? []
   const categories = categoryList.query.data ?? []
   const selectedSeason = seasons.find(s => s.id === wizard.seasonId) ?? null
   const selectedCategory = categories.find(c => c.id === wizard.categoryId) ?? null
+  const categoryTeams = teamOptions.filter(t => t.ageCategoryId === wizard.categoryId)
 
   const handleNext = () => {
     if (wizard.step === 2 && !wizard.championshipId && wizard.categoryId && wizard.seasonId) {
@@ -142,7 +147,17 @@ export const ChampionshipWizardPage = () => {
                 />
               )}
               {wizard.step === 3 && <StepPhase phaseType={wizard.phaseType} onSelect={wizard.setPhaseType} />}
-              {wizard.step >= 4 && (
+              {wizard.step === 4 && wizard.phaseType === PhaseType.GROUP && (
+                <StepTeamsGroups
+                  teams={categoryTeams}
+                  groups={wizard.groups}
+                  onAddGroup={wizard.addGroup}
+                  onRemoveGroup={wizard.removeGroup}
+                  onRenameGroup={wizard.renameGroup}
+                  onAssignTeam={wizard.assignTeam}
+                />
+              )}
+              {((wizard.step === 4 && wizard.phaseType !== PhaseType.GROUP) || wizard.step >= 5) && (
                 <Typography.Title2>
                   <FormattedMessage id={WIZARD_STEPS[wizard.step].labelId} />
                 </Typography.Title2>

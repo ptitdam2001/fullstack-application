@@ -27,6 +27,9 @@ vi.mock('@AgeCategory/application/useAgeCategoryList', () => ({
     totalPages: 1,
   }),
 }))
+vi.mock('@Teams/application/useTeamOptions', () => ({
+  useTeamOptions: () => [],
+}))
 vi.mock('../infrastructure/useChampionshipApi', () => ({
   useCreateChampionship: vi.fn(),
 }))
