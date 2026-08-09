@@ -158,7 +158,9 @@ export const StepConfigGroup = ({
                       className="border-border grid grid-cols-[1fr_auto_1fr] items-center gap-2.5 border-b px-3 py-2 text-sm last:border-b-0"
                     >
                       <span className="text-right font-medium">{teams.find(t => t.id === match.homeTeamId)?.name}</span>
-                      <span className="text-muted-foreground text-xs">vs</span>
+                      <span className="text-muted-foreground text-xs">
+                        <FormattedMessage id="championshipWizard.step.configGroup.vs" />
+                      </span>
                       <span className="font-medium">{teams.find(t => t.id === match.awayTeamId)?.name}</span>
                     </div>
                   ))

@@ -438,6 +438,7 @@
     "step.configGroup.matchMode.homeAndAway": "Home and away",
     "step.configGroup.generate": "Generate matches",
     "step.configGroup.previewTitle": "Match preview",
+    "step.configGroup.vs": "vs",
     "step.configGroup.previewCount": "{count} matches",
     "step.configGroup.previewEmptyNoTeams": "Add at least 2 teams to this pool.",
     "step.configGroup.previewEmptyNotGenerated": "Click \"Generate matches\" to preview.",

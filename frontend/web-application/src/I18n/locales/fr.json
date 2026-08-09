@@ -438,6 +438,7 @@
     "step.configGroup.matchMode.homeAndAway": "Aller-retour",
     "step.configGroup.generate": "Générer les oppositions",
     "step.configGroup.previewTitle": "Aperçu des matchs",
+    "step.configGroup.vs": "vs",
     "step.configGroup.previewCount": "{count} matchs",
     "step.configGroup.previewEmptyNoTeams": "Ajoutez au moins 2 équipes à cette poule.",
     "step.configGroup.previewEmptyNotGenerated": "Cliquez « Générer les oppositions » pour prévisualiser.",
