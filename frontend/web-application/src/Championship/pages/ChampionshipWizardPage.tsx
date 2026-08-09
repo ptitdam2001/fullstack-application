@@ -3,7 +3,7 @@ import { Button, Card, Layout, Separator, Typography } from '@repo/design-system
 import { useSeasonList } from '@Season/application/useSeasonList'
 import { useAgeCategoryList } from '@AgeCategory/application/useAgeCategoryList'
 import { useTeamOptions } from '@Teams/application/useTeamOptions'
-import { useChampionshipWizard, WIZARD_STEPS, type ChampionshipWizardGroup } from '../application/useChampionshipWizard'
+import { useChampionshipWizard, type ChampionshipWizardGroup } from '../application/useChampionshipWizard'
 import { useCreateChampionship, useUpdateChampionship } from '../infrastructure/useChampionshipApi'
 import { useCreatePhase } from '../infrastructure/usePhaseApi'
 import { PhaseType } from '../domain/Phase'
@@ -16,6 +16,7 @@ import { StepPhase } from '../ui/StepPhase/StepPhase'
 import { StepTeamsGroups } from '../ui/StepTeamsGroups/StepTeamsGroups'
 import { StepTeamsKnockout } from '../ui/StepTeamsKnockout/StepTeamsKnockout'
 import { StepConfigGroup } from '../ui/StepConfigGroup/StepConfigGroup'
+import { StepConfigKnockout } from '../ui/StepConfigKnockout/StepConfigKnockout'
 
 const formatTeamsValue = (
   intl: IntlShape,
@@ -193,10 +194,8 @@ export const ChampionshipWizardPage = () => {
                   onMaxRankChange={wizard.setMaxRank}
                 />
               )}
-              {((wizard.step === 5 && wizard.phaseType !== PhaseType.GROUP) || wizard.step >= 6) && (
-                <Typography.Title2>
-                  <FormattedMessage id={WIZARD_STEPS[wizard.step].labelId} />
-                </Typography.Title2>
+              {wizard.step === 5 && wizard.phaseType === PhaseType.KNOCKOUT && (
+                <StepConfigKnockout teams={categoryTeams} teamIds={wizard.teamIds} />
               )}
 
               {createChampionship.isError && (
