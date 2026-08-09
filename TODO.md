@@ -21,3 +21,4 @@
 - Icone de notification
 - Importer une équipe
 - Exporter une équipe
+- Wizard championnat KNOCKOUT : placement des byes configurable (tirage au sort ou drag-and-drop manuel du tableau), au lieu du placement séquentiel actuel (byes sur les dernières rencontres)
