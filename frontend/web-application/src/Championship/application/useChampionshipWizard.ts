@@ -27,6 +27,7 @@ type WizardState = {
   name: string
   championshipId: string | null
   phaseType: PhaseType | null
+  phaseId: string | null
   teamIds: string[]
   groups: ChampionshipWizardGroup[]
   points: PointsConfig
@@ -40,6 +41,7 @@ type WizardAction =
   | { type: 'SET_NAME'; name: string }
   | { type: 'SET_CHAMPIONSHIP_ID'; championshipId: string }
   | { type: 'SET_PHASE_TYPE'; phaseType: PhaseType }
+  | { type: 'SET_PHASE_ID'; phaseId: string }
   | { type: 'TOGGLE_TEAM'; teamId: string }
   | { type: 'ADD_GROUP' }
   | { type: 'REMOVE_GROUP'; groupId: string }
@@ -68,6 +70,7 @@ const initialState: WizardState = {
   name: '',
   championshipId: null,
   phaseType: null,
+  phaseId: null,
   teamIds: [],
   groups: [defaultGroup(1)],
   points: { win: 3, draw: 2, loss: 1, forfeit: 0 },
@@ -86,6 +89,7 @@ const canNextForStep = (state: WizardState, step: number): boolean => {
     case 3:
       return Boolean(state.phaseType)
     case 4:
+    case 5:
       return state.phaseType === PhaseType.GROUP
         ? state.groups.length >= 1 && state.groups.every(g => g.teamIds.length >= 2)
         : state.teamIds.length >= 2
@@ -106,6 +110,8 @@ const wizardReducer = (state: WizardState, action: WizardAction): WizardState =>
       return { ...state, championshipId: action.championshipId }
     case 'SET_PHASE_TYPE':
       return { ...state, phaseType: action.phaseType }
+    case 'SET_PHASE_ID':
+      return { ...state, phaseId: action.phaseId }
     case 'TOGGLE_TEAM':
       return {
         ...state,
@@ -186,6 +192,7 @@ export const useChampionshipWizard = () => {
     setName: (name: string) => dispatch({ type: 'SET_NAME', name }),
     setChampionshipId: (championshipId: string) => dispatch({ type: 'SET_CHAMPIONSHIP_ID', championshipId }),
     setPhaseType: (phaseType: PhaseType) => dispatch({ type: 'SET_PHASE_TYPE', phaseType }),
+    setPhaseId: (phaseId: string) => dispatch({ type: 'SET_PHASE_ID', phaseId }),
     toggleTeam: (teamId: string) => dispatch({ type: 'TOGGLE_TEAM', teamId }),
     addGroup: () => dispatch({ type: 'ADD_GROUP' }),
     removeGroup: (groupId: string) => dispatch({ type: 'REMOVE_GROUP', groupId }),

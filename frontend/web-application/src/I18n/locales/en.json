@@ -466,6 +466,6 @@
     "action.create": "Create championship",
     "error.createFailed": "Error creating the championship. Please try again.",
     "error.createPhaseFailed": "Error creating the phase. Please try again.",
-    "error.updateFailed": "Error updating the championship. Please try again."
+    "error.submitFailed": "Error creating the championship. Please try again."
   }
 }

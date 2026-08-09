@@ -466,6 +466,6 @@
     "action.create": "Créer le championnat",
     "error.createFailed": "Erreur lors de la création du championnat. Réessayez.",
     "error.createPhaseFailed": "Erreur lors de la création de la phase. Réessayez.",
-    "error.updateFailed": "Erreur lors de la mise à jour du championnat. Réessayez."
+    "error.submitFailed": "Erreur lors de la création du championnat. Réessayez."
   }
 }

@@ -91,6 +91,15 @@ describe('useChampionshipWizard', () => {
     })
   })
 
+  describe('setPhaseId', () => {
+    it('stores the phase id once the phase has been created', () => {
+      const { result } = renderHook(() => useChampionshipWizard())
+      expect(result.current.phaseId).toBeNull()
+      act(() => result.current.setPhaseId('phase-1'))
+      expect(result.current.phaseId).toBe('phase-1')
+    })
+  })
+
   describe('KNOCKOUT team selection', () => {
     it('toggleTeam adds and removes ids, canNext requires >= 2 teams', () => {
       const { result } = renderHook(() => useChampionshipWizard())

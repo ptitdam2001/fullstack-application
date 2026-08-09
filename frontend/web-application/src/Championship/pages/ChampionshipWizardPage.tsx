@@ -1,11 +1,16 @@
+import { useState } from 'react'
+import { useNavigate } from 'react-router'
 import { FormattedMessage, useIntl, type IntlShape } from 'react-intl'
 import { Button, Card, Layout, Separator, Typography } from '@repo/design-system'
 import { useSeasonList } from '@Season/application/useSeasonList'
 import { useAgeCategoryList } from '@AgeCategory/application/useAgeCategoryList'
 import { useTeamOptions } from '@Teams/application/useTeamOptions'
 import { useChampionshipWizard, type ChampionshipWizardGroup } from '../application/useChampionshipWizard'
+import { buildBracketTeamEntries } from '../application/buildBracketTeamEntries'
 import { useCreateChampionship, useUpdateChampionship } from '../infrastructure/useChampionshipApi'
 import { useCreatePhase } from '../infrastructure/usePhaseApi'
+import { useCreateGroup, useGenerateGroupMatches } from '../infrastructure/useGroupApi'
+import { useCreateBracket, useGenerateBracketMatches } from '../infrastructure/useBracketApi'
 import { PhaseType } from '../domain/Phase'
 import { WizardProgress } from '../ui/WizardProgress/WizardProgress'
 import { WizardSummary } from '../ui/WizardSummary/WizardSummary'
@@ -17,6 +22,8 @@ import { StepTeamsGroups } from '../ui/StepTeamsGroups/StepTeamsGroups'
 import { StepTeamsKnockout } from '../ui/StepTeamsKnockout/StepTeamsKnockout'
 import { StepConfigGroup } from '../ui/StepConfigGroup/StepConfigGroup'
 import { StepConfigKnockout } from '../ui/StepConfigKnockout/StepConfigKnockout'
+
+const LAST_STEP = 5
 
 const formatTeamsValue = (
   intl: IntlShape,
@@ -41,6 +48,7 @@ const formatTeamsValue = (
 
 export const ChampionshipWizardPage = () => {
   const intl = useIntl()
+  const navigate = useNavigate()
   const wizard = useChampionshipWizard()
 
   const seasonList = useSeasonList()
@@ -48,6 +56,12 @@ export const ChampionshipWizardPage = () => {
   const createChampionship = useCreateChampionship()
   const createPhase = useCreatePhase()
   const updateChampionship = useUpdateChampionship()
+  const createGroup = useCreateGroup()
+  const generateGroupMatches = useGenerateGroupMatches()
+  const createBracket = useCreateBracket()
+  const generateBracketMatches = useGenerateBracketMatches()
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState(false)
 
   const teamOptions = useTeamOptions()
 
@@ -81,23 +95,12 @@ export const ChampionshipWizardPage = () => {
     if (wizard.step === 3 && wizard.championshipId && wizard.phaseType) {
       createPhase.mutate(
         { data: { championshipId: wizard.championshipId, type: wizard.phaseType, order: 1 } },
-        { onSuccess: () => wizard.next() }
-      )
-      return
-    }
-
-    if (wizard.step === 5 && wizard.phaseType === PhaseType.GROUP && wizard.championshipId && wizard.categoryId && wizard.seasonId) {
-      updateChampionship.mutate(
         {
-          id: wizard.championshipId,
-          data: {
-            name: wizard.name.trim(),
-            ageCategoryId: wizard.categoryId,
-            seasonId: wizard.seasonId,
-            pointsConfig: wizard.points,
+          onSuccess: phase => {
+            wizard.setPhaseId(phase.id)
+            wizard.next()
           },
-        },
-        { onSuccess: () => wizard.next() }
+        }
       )
       return
     }
@@ -105,10 +108,53 @@ export const ChampionshipWizardPage = () => {
     wizard.next()
   }
 
+  const handleSubmit = async () => {
+    if (!wizard.championshipId || !wizard.phaseId) {
+      return
+    }
+
+    setSubmitError(false)
+    setIsSubmitting(true)
+    try {
+      if (wizard.phaseType === PhaseType.GROUP) {
+        if (wizard.categoryId && wizard.seasonId) {
+          await updateChampionship.mutateAsync({
+            id: wizard.championshipId,
+            data: {
+              name: wizard.name.trim(),
+              ageCategoryId: wizard.categoryId,
+              seasonId: wizard.seasonId,
+              pointsConfig: wizard.points,
+            },
+          })
+        }
+        await Promise.all(
+          wizard.groups.map(async group => {
+            const created = await createGroup.mutateAsync({
+              data: { phaseId: wizard.phaseId!, name: group.name, matchMode: group.matchMode, teamIds: group.teamIds },
+            })
+            await generateGroupMatches.mutateAsync({ id: created.id })
+          })
+        )
+      } else if (wizard.phaseType === PhaseType.KNOCKOUT) {
+        const bracketTeams = buildBracketTeamEntries(wizard.teamIds)
+        const bracket = await createBracket.mutateAsync({
+          data: { phaseId: wizard.phaseId, name: wizard.name.trim(), bracketTeams },
+        })
+        await generateBracketMatches.mutateAsync({ id: bracket.id })
+      }
+      navigate('/admin/championships')
+    } catch {
+      setSubmitError(true)
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const isLastStep = wizard.step === LAST_STEP
+
   const isNextPending =
-    (wizard.step === 2 && createChampionship.isPending) ||
-    (wizard.step === 3 && createPhase.isPending) ||
-    (wizard.step === 5 && updateChampionship.isPending)
+    (wizard.step === 2 && createChampionship.isPending) || (wizard.step === 3 && createPhase.isPending)
 
   const teamsValue = formatTeamsValue(intl, wizard.phaseType, wizard.groups, wizard.teamIds)
 
@@ -208,9 +254,9 @@ export const ChampionshipWizardPage = () => {
                   <FormattedMessage id="championshipWizard.error.createPhaseFailed" />
                 </Typography.Body>
               )}
-              {updateChampionship.isError && (
+              {submitError && (
                 <Typography.Body className="text-destructive">
-                  <FormattedMessage id="championshipWizard.error.updateFailed" />
+                  <FormattedMessage id="championshipWizard.error.submitFailed" />
                 </Typography.Body>
               )}
 
@@ -218,9 +264,15 @@ export const ChampionshipWizardPage = () => {
                 <Button variant="outline" onPress={wizard.back} isDisabled={wizard.step === 0}>
                   <FormattedMessage id="championshipWizard.action.previous" />
                 </Button>
-                <Button variant="outline" onPress={handleNext} isDisabled={!wizard.canNext || isNextPending}>
-                  <FormattedMessage id="championshipWizard.action.next" />
-                </Button>
+                {isLastStep ? (
+                  <Button variant="default" onPress={handleSubmit} isDisabled={!wizard.canNext || isSubmitting}>
+                    <FormattedMessage id="championshipWizard.action.create" />
+                  </Button>
+                ) : (
+                  <Button variant="outline" onPress={handleNext} isDisabled={!wizard.canNext || isNextPending}>
+                    <FormattedMessage id="championshipWizard.action.next" />
+                  </Button>
+                )}
               </div>
             </Card.Content>
           </Card.Container>

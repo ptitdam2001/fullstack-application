@@ -56,6 +56,21 @@ export class ChampionshipWizardPagePage {
     return this
   }
 
+  addFirstAvailableKnockoutTeam() {
+    const buttons = screen.getAllByLabelText('championshipWizard.step.teamsKnockout.add')
+    fireEvent.click(buttons[0])
+    return this
+  }
+
+  createButton() {
+    return screen.getByText('championshipWizard.action.create').closest('button') as HTMLButtonElement
+  }
+
+  clickCreate() {
+    fireEvent.click(this.createButton())
+    return this
+  }
+
   errorMessage() {
     return screen.queryByText('championshipWizard.error.createFailed')
   }
@@ -64,7 +79,7 @@ export class ChampionshipWizardPagePage {
     return screen.queryByText('championshipWizard.error.createPhaseFailed')
   }
 
-  updateErrorMessage() {
-    return screen.queryByText('championshipWizard.error.updateFailed')
+  submitErrorMessage() {
+    return screen.queryByText('championshipWizard.error.submitFailed')
   }
 }
