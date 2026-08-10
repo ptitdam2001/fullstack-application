@@ -2,6 +2,7 @@ import { FormattedMessage } from 'react-intl'
 import { Typography } from '@repo/design-system'
 import type { Team } from '@Teams/domain/Team'
 import { buildBracket } from '../../application/buildBracket'
+import { BracketConnectors } from './components/BracketConnectors'
 
 type StepConfigKnockoutProps = {
   teams: Team[]
@@ -59,24 +60,14 @@ export const StepConfigKnockout = ({ teams, teamIds }: StepConfigKnockoutProps) 
       ) : (
         <div className="overflow-x-auto pb-3">
           <div className="relative" style={{ width, height: height + LABEL_H + 8, marginTop: LABEL_H + 8 }}>
-            <svg width={width} height={height} className="absolute top-0 left-0 overflow-visible">
-              {connectors.map((c, i) => {
-                const x1 = xLeft(c.fromRound) + COL_W
-                const y1 = centerY(c.fromRound, c.fromMatch)
-                const x2 = xLeft(c.toRound)
-                const y2 = centerY(c.toRound, c.toMatch)
-                const xMid = (x1 + x2) / 2
-                return (
-                  <path
-                    key={i}
-                    d={`M${x1} ${y1} H${xMid} V${y2} H${x2}`}
-                    fill="none"
-                    className="stroke-border"
-                    strokeWidth={1.5}
-                  />
-                )
-              })}
-            </svg>
+            <BracketConnectors
+              connectors={connectors}
+              width={width}
+              height={height}
+              colW={COL_W}
+              xLeft={xLeft}
+              centerY={centerY}
+            />
             {rounds.map((round, roundIndex) => (
               <div key={roundIndex}>
                 <div
