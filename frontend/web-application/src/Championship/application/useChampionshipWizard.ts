@@ -177,6 +177,8 @@ const wizardReducer = (state: WizardState, action: WizardAction): WizardState =>
   }
 }
 
+export type ChampionshipWizard = ReturnType<typeof useChampionshipWizard>
+
 export const useChampionshipWizard = () => {
   const [state, dispatch] = useReducer(wizardReducer, initialState)
   const canNext = canNextForStep(state, state.step)

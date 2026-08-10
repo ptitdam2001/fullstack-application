@@ -17,19 +17,15 @@ type StepConfigGroupProps = {
   onMaxRankChange: (maxRank: number) => void
 }
 
-const Stepper = ({
-  value,
-  onDecrement,
-  onIncrement,
-  decrementLabel,
-  incrementLabel,
-}: {
+type StepperProps = {
   value: number
   onDecrement: () => void
   onIncrement: () => void
   decrementLabel: string
   incrementLabel: string
-}) => (
+}
+
+const Stepper = ({ value, onDecrement, onIncrement, decrementLabel, incrementLabel }: StepperProps) => (
   <div className="flex items-center gap-2.5">
     <button
       type="button"
@@ -52,9 +48,21 @@ const Stepper = ({
 )
 
 const POINT_ROWS: { key: keyof PointsConfig; labelId: string; subId: string }[] = [
-  { key: 'win', labelId: 'championshipWizard.step.configGroup.points.win', subId: 'championshipWizard.step.configGroup.points.win.sub' },
-  { key: 'draw', labelId: 'championshipWizard.step.configGroup.points.draw', subId: 'championshipWizard.step.configGroup.points.draw.sub' },
-  { key: 'loss', labelId: 'championshipWizard.step.configGroup.points.loss', subId: 'championshipWizard.step.configGroup.points.loss.sub' },
+  {
+    key: 'win',
+    labelId: 'championshipWizard.step.configGroup.points.win',
+    subId: 'championshipWizard.step.configGroup.points.win.sub',
+  },
+  {
+    key: 'draw',
+    labelId: 'championshipWizard.step.configGroup.points.draw',
+    subId: 'championshipWizard.step.configGroup.points.draw.sub',
+  },
+  {
+    key: 'loss',
+    labelId: 'championshipWizard.step.configGroup.points.loss',
+    subId: 'championshipWizard.step.configGroup.points.loss.sub',
+  },
   {
     key: 'forfeit',
     labelId: 'championshipWizard.step.configGroup.points.forfeit',
@@ -95,7 +103,10 @@ export const StepConfigGroup = ({
               <div className="bg-secondary flex flex-wrap items-center gap-3 p-3">
                 <span className="mr-auto text-sm font-semibold">{group.name}</span>
                 <span className="text-muted-foreground text-xs">
-                  <FormattedMessage id="championshipWizard.step.teamsGroups.teamCount" values={{ count: group.teamIds.length }} />
+                  <FormattedMessage
+                    id="championshipWizard.step.teamsGroups.teamCount"
+                    values={{ count: group.teamIds.length }}
+                  />
                 </span>
                 <div className="border-border inline-flex overflow-hidden rounded-md border">
                   <button
@@ -219,8 +230,12 @@ export const StepConfigGroup = ({
           value={maxRank}
           onDecrement={() => onMaxRankChange(Math.max(1, maxRank - 1))}
           onIncrement={() => onMaxRankChange(maxRank + 1)}
-          decrementLabel={intl.formatMessage({ id: 'championshipWizard.step.configGroup.qualification.stepper.decrement' })}
-          incrementLabel={intl.formatMessage({ id: 'championshipWizard.step.configGroup.qualification.stepper.increment' })}
+          decrementLabel={intl.formatMessage({
+            id: 'championshipWizard.step.configGroup.qualification.stepper.decrement',
+          })}
+          incrementLabel={intl.formatMessage({
+            id: 'championshipWizard.step.configGroup.qualification.stepper.increment',
+          })}
         />
       </div>
     </div>

@@ -27,9 +27,7 @@ export const WizardSummary = ({ lines, onJump }: WizardSummaryProps) => (
         <span className="text-muted-foreground">
           <FormattedMessage id={line.labelId} />
         </span>
-        <span
-          className={cn('max-w-[140px] truncate font-semibold', !line.value && 'text-muted-foreground font-normal')}
-        >
+        <span className={cn('max-w-35 truncate font-semibold', !line.value && 'text-muted-foreground font-normal')}>
           {line.value ?? '—'}
         </span>
       </button>

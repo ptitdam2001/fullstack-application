@@ -33,21 +33,22 @@ export const StepTeamsKnockout = ({ teams, teamIds, onToggleTeam }: StepTeamsKno
   }
 
   const renderColumn = (column: Column, items: Team[], isSelected: boolean) => (
-    <div className="border-border bg-secondary flex min-h-[280px] flex-col rounded-lg border">
+    <div className="border-border bg-secondary flex min-h-70 flex-col rounded-lg border">
       <div className="border-border flex items-center justify-between border-b px-3 py-2">
         <span className="text-sm font-semibold">
           <FormattedMessage
-            id={isSelected ? 'championshipWizard.step.teamsKnockout.selectedTitle' : 'championshipWizard.step.teamsKnockout.availableTitle'}
+            id={
+              isSelected
+                ? 'championshipWizard.step.teamsKnockout.selectedTitle'
+                : 'championshipWizard.step.teamsKnockout.availableTitle'
+            }
           />
         </span>
         <span className="text-muted-foreground text-xs">{items.length}</span>
       </div>
       <div
         data-testid={`knockout-${column}-body`}
-        className={cn(
-          'flex flex-1 flex-col gap-1.5 p-2 transition-colors',
-          overCol === column && 'bg-primary/10'
-        )}
+        className={cn('flex flex-1 flex-col gap-1.5 p-2 transition-colors', overCol === column && 'bg-primary/10')}
         onDragOver={e => {
           e.preventDefault()
           setOverCol(column)
@@ -88,7 +89,9 @@ export const StepTeamsKnockout = ({ teams, teamIds, onToggleTeam }: StepTeamsKno
               <button
                 type="button"
                 aria-label={intl.formatMessage({
-                  id: isSelected ? 'championshipWizard.step.teamsKnockout.remove' : 'championshipWizard.step.teamsKnockout.add',
+                  id: isSelected
+                    ? 'championshipWizard.step.teamsKnockout.remove'
+                    : 'championshipWizard.step.teamsKnockout.add',
                 })}
                 onClick={() => onToggleTeam(team.id)}
                 className="border-border hover:bg-secondary h-6 w-6 shrink-0 rounded border text-xs"

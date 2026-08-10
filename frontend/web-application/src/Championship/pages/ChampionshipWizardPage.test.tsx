@@ -255,7 +255,7 @@ describe('ChampionshipWizardPage', () => {
 
     page.clickCreate()
 
-    await waitFor(() => expect(navigate).toHaveBeenCalledWith('/admin/championships'))
+    await waitFor(() => expect(navigate).toHaveBeenCalledWith('/app/admin/championships'))
     expect(mutateAsyncUpdate).toHaveBeenCalledWith({
       id: 'champ-1',
       data: {
@@ -276,7 +276,7 @@ describe('ChampionshipWizardPage', () => {
 
     page.clickCreate()
 
-    await waitFor(() => expect(navigate).toHaveBeenCalledWith('/admin/championships'))
+    await waitFor(() => expect(navigate).toHaveBeenCalledWith('/app/admin/championships'))
     expect(mutateAsyncUpdate).not.toHaveBeenCalled()
     expect(mutateAsyncCreateBracket).toHaveBeenCalledWith({
       data: {

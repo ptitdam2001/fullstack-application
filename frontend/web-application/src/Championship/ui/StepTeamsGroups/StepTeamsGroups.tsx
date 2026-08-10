@@ -15,19 +15,15 @@ type StepTeamsGroupsProps = {
 
 type DropZone = 'available' | string
 
-const TeamItem = ({
-  team,
-  draggable,
-  onDragStart,
-  onDragEnd,
-  action,
-}: {
+type TeamItempProps = {
   team: Team
   draggable: boolean
   onDragStart: () => void
   onDragEnd: () => void
   action: React.ReactNode
-}) => (
+}
+
+const TeamItem = ({ team, draggable, onDragStart, onDragEnd, action }: TeamItempProps) => (
   <div
     draggable={draggable}
     onDragStart={onDragStart}
