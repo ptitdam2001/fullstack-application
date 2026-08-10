@@ -238,6 +238,57 @@ describe('useChampionshipWizard', () => {
     })
   })
 
+  describe('hydrate', () => {
+    it('sets championship + phase fields and jumps straight to the given step', () => {
+      const { result } = renderHook(() => useChampionshipWizard())
+
+      act(() =>
+        result.current.hydrate({
+          seasonId: 's1',
+          categoryId: 'c1',
+          name: 'Championnat U13',
+          championshipId: 'champ-1',
+          phaseType: PhaseType.GROUP,
+          phaseId: 'phase-1',
+          maxRank: 3,
+          step: 4,
+        })
+      )
+
+      expect(result.current.step).toBe(4)
+      expect(result.current.seasonId).toBe('s1')
+      expect(result.current.categoryId).toBe('c1')
+      expect(result.current.name).toBe('Championnat U13')
+      expect(result.current.championshipId).toBe('champ-1')
+      expect(result.current.phaseType).toBe(PhaseType.GROUP)
+      expect(result.current.phaseId).toBe('phase-1')
+      expect(result.current.maxRank).toBe(3)
+    })
+
+    it('keeps the default maxRank when the resumed championship has no phase yet', () => {
+      const { result } = renderHook(() => useChampionshipWizard())
+      const defaultMaxRank = result.current.maxRank
+
+      act(() =>
+        result.current.hydrate({
+          seasonId: 's1',
+          categoryId: 'c1',
+          name: 'Championnat U13',
+          championshipId: 'champ-1',
+          phaseType: null,
+          phaseId: null,
+          maxRank: null,
+          step: 3,
+        })
+      )
+
+      expect(result.current.step).toBe(3)
+      expect(result.current.phaseType).toBeNull()
+      expect(result.current.phaseId).toBeNull()
+      expect(result.current.maxRank).toBe(defaultMaxRank)
+    })
+  })
+
   it('exposes all 6 wizard steps', () => {
     expect(WIZARD_STEPS).toHaveLength(6)
     expect(WIZARD_STEPS.map(s => s.key)).toEqual(['season', 'category', 'name', 'phase', 'teams', 'config'])

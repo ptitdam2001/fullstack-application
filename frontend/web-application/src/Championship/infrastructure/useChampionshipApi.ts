@@ -1,5 +1,6 @@
 export {
   useGetChampionships,
+  useGetChampionship,
   useCountChampionships,
   useCreateChampionship,
   useUpdateChampionship,

@@ -1,5 +1,6 @@
 import { FormattedMessage, useIntl } from 'react-intl'
 import { Button, Card, Layout, Separator, Typography } from '@repo/design-system'
+import { PageLoader } from '@Common/Loading'
 import { useSeasonList } from '@Season/application/useSeasonList'
 import { useAgeCategoryList } from '@AgeCategory/application/useAgeCategoryList'
 import { useTeamOptions } from '@Teams/application/useTeamOptions'
@@ -8,6 +9,7 @@ import { useChampionshipWizardStepSubmit } from '../application/useChampionshipW
 import { useChampionshipWizardFinalSubmit } from '../application/useChampionshipWizardFinalSubmit'
 import { useChampionshipWizardSummary } from '../application/useChampionshipWizardSummary'
 import { useChampionshipWizardCancel } from '../application/useChampionshipWizardCancel'
+import { useChampionshipWizardResume } from '../application/useChampionshipWizardResume'
 import { PhaseType } from '../domain/Phase'
 import { WizardProgress } from '../ui/WizardProgress/WizardProgress'
 import { WizardSummary } from '../ui/WizardSummary/WizardSummary'
@@ -43,6 +45,7 @@ export const ChampionshipWizardPage = () => {
     isDeleting,
     deleteError,
   } = useChampionshipWizardCancel(wizard)
+  const { isLoading: isResuming } = useChampionshipWizardResume(wizard)
 
   const seasons = seasonList.query.data ?? []
   const categories = categoryList.query.data ?? []
@@ -53,6 +56,10 @@ export const ChampionshipWizardPage = () => {
   const summaryLines = useChampionshipWizardSummary(wizard, intl, selectedSeason, selectedCategory)
 
   const isLastStep = wizard.step === LAST_STEP
+
+  if (isResuming) {
+    return <PageLoader />
+  }
 
   return (
     <Layout.Root>

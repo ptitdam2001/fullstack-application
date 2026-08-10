@@ -15,9 +15,11 @@ const teams: Team[] = [
 ]
 
 const navigate = vi.fn()
+let routeChampionshipId: string | undefined
 
 vi.mock('react-router', () => ({
   useNavigate: () => navigate,
+  useParams: () => ({ championshipId: routeChampionshipId }),
 }))
 vi.mock('@Season/application/useSeasonList', () => ({
   useSeasonList: () => ({
@@ -44,9 +46,11 @@ vi.mock('../infrastructure/useChampionshipApi', () => ({
   useCreateChampionship: vi.fn(),
   useUpdateChampionship: vi.fn(),
   useRemoveChampionship: vi.fn(),
+  useGetChampionship: vi.fn(),
 }))
 vi.mock('../infrastructure/usePhaseApi', () => ({
   useCreatePhase: vi.fn(),
+  useGetChampionshipPhases: vi.fn(),
 }))
 vi.mock('../infrastructure/useGroupApi', () => ({
   useCreateGroup: vi.fn(),
@@ -61,8 +65,9 @@ import {
   useCreateChampionship,
   useUpdateChampionship,
   useRemoveChampionship,
+  useGetChampionship,
 } from '../infrastructure/useChampionshipApi'
-import { useCreatePhase } from '../infrastructure/usePhaseApi'
+import { useCreatePhase, useGetChampionshipPhases } from '../infrastructure/usePhaseApi'
 import { useCreateGroup, useGenerateGroupMatches } from '../infrastructure/useGroupApi'
 import { useCreateBracket, useGenerateBracketMatches } from '../infrastructure/useBracketApi'
 
@@ -70,6 +75,8 @@ const mockedUseCreateChampionship = vi.mocked(useCreateChampionship)
 const mockedUseCreatePhase = vi.mocked(useCreatePhase)
 const mockedUseUpdateChampionship = vi.mocked(useUpdateChampionship)
 const mockedUseRemoveChampionship = vi.mocked(useRemoveChampionship)
+const mockedUseGetChampionship = vi.mocked(useGetChampionship)
+const mockedUseGetChampionshipPhases = vi.mocked(useGetChampionshipPhases)
 const mockedUseCreateGroup = vi.mocked(useCreateGroup)
 const mockedUseGenerateGroupMatches = vi.mocked(useGenerateGroupMatches)
 const mockedUseCreateBracket = vi.mocked(useCreateBracket)
@@ -111,6 +118,7 @@ const advanceToConfigKnockoutStep = (page: ChampionshipWizardPagePage) => {
 
 describe('ChampionshipWizardPage', () => {
   beforeEach(() => {
+    routeChampionshipId = undefined
     navigate.mockReset()
     mutate.mockReset()
     mutatePhase.mockReset()
@@ -129,6 +137,8 @@ describe('ChampionshipWizardPage', () => {
     mockedUseGenerateGroupMatches.mockReturnValue({ mutateAsync: mutateAsyncGenerateGroupMatches } as never)
     mockedUseCreateBracket.mockReturnValue({ mutateAsync: mutateAsyncCreateBracket } as never)
     mockedUseGenerateBracketMatches.mockReturnValue({ mutateAsync: mutateAsyncGenerateBracketMatches } as never)
+    mockedUseGetChampionship.mockReturnValue({ data: undefined } as never)
+    mockedUseGetChampionshipPhases.mockReturnValue({ data: undefined } as never)
 
     mutate.mockImplementation((_vars, { onSuccess }) => onSuccess({ id: 'champ-1' }))
     mutatePhase.mockImplementation((_vars, { onSuccess }) => onSuccess({ id: 'phase-1' }))
@@ -355,6 +365,39 @@ describe('ChampionshipWizardPage', () => {
 
     expect(mutateRemove).toHaveBeenCalledWith({ id: 'champ-1' }, expect.anything())
     expect(navigate).toHaveBeenCalledWith('/app/admin/championships')
+  })
+
+  it('shows a loader while resuming a draft championship, before the data has arrived', () => {
+    routeChampionshipId = 'champ-1'
+    const page = new ChampionshipWizardPagePage().render()
+
+    expect(screen.queryByText('championshipWizard.title')).not.toBeInTheDocument()
+    expect(() => page.heading('championshipWizard.step.phase')).toThrow()
+  })
+
+  it('resumes at the phase step, prefilled from the draft championship, when it has no phase yet', () => {
+    routeChampionshipId = 'champ-1'
+    mockedUseGetChampionship.mockReturnValue({
+      data: { id: 'champ-1', name: 'Championnat U13', ageCategoryId: 'c1', seasonId: 's1' },
+    } as never)
+    mockedUseGetChampionshipPhases.mockReturnValue({ data: [] } as never)
+    const page = new ChampionshipWizardPagePage().render()
+
+    expect(page.heading('championshipWizard.step.phase')).toBeInTheDocument()
+    expect(page.previousButton()).not.toBeDisabled()
+  })
+
+  it('resumes at the teams step, prefilled with the phase type, when the phase already exists', () => {
+    routeChampionshipId = 'champ-1'
+    mockedUseGetChampionship.mockReturnValue({
+      data: { id: 'champ-1', name: 'Championnat U13', ageCategoryId: 'c1', seasonId: 's1' },
+    } as never)
+    mockedUseGetChampionshipPhases.mockReturnValue({
+      data: [{ id: 'phase-1', championshipId: 'champ-1', type: 'GROUP', order: 1 }],
+    } as never)
+    const page = new ChampionshipWizardPagePage().render()
+
+    expect(page.heading('championshipWizard.step.teamsGroups')).toBeInTheDocument()
   })
 
   it('shows an error message when the delete mutation fails', () => {

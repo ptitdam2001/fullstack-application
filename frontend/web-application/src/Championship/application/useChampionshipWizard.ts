@@ -54,6 +54,19 @@ type WizardAction =
   | { type: 'GO_TO'; step: number }
   | { type: 'NEXT' }
   | { type: 'BACK' }
+  | {
+      type: 'HYDRATE'
+      seasonId: string
+      categoryId: string
+      name: string
+      championshipId: string
+      phaseType: PhaseType | null
+      phaseId: string | null
+      maxRank: number | null
+      step: number
+    }
+
+export type WizardHydratePayload = Omit<Extract<WizardAction, { type: 'HYDRATE' }>, 'type'>
 
 const defaultGroup = (index: number): ChampionshipWizardGroup => ({
   id: `g${index}`,
@@ -172,6 +185,18 @@ const wizardReducer = (state: WizardState, action: WizardAction): WizardState =>
         : state
     case 'BACK':
       return state.step > 0 ? { ...state, step: state.step - 1 } : state
+    case 'HYDRATE':
+      return {
+        ...state,
+        seasonId: action.seasonId,
+        categoryId: action.categoryId,
+        name: action.name,
+        championshipId: action.championshipId,
+        phaseType: action.phaseType,
+        phaseId: action.phaseId,
+        maxRank: action.maxRank ?? state.maxRank,
+        step: action.step,
+      }
     default:
       return state
   }
@@ -206,5 +231,6 @@ export const useChampionshipWizard = () => {
     assignTeam: (teamId: string, groupId: string | null) => dispatch({ type: 'ASSIGN_TEAM', teamId, groupId }),
     stepper: (key: keyof PointsConfig, delta: number) => dispatch({ type: 'STEP_POINTS', key, delta }),
     setMaxRank: (maxRank: number) => dispatch({ type: 'SET_MAX_RANK', maxRank }),
+    hydrate: (payload: WizardHydratePayload) => dispatch({ type: 'HYDRATE', ...payload }),
   }
 }

@@ -116,6 +116,11 @@ const router = createBrowserRouter(
           <Route path="championships" handle={{ breadcrumb: 'Championnats' }}>
             <Route index element={<AdminChampionshipsPage />} />
             <Route path="new" element={<ChampionshipWizardPage />} handle={{ breadcrumb: 'Nouveau championnat' }} />
+            <Route
+              path="new/:championshipId"
+              element={<ChampionshipWizardPage />}
+              handle={{ breadcrumb: 'Reprendre' }}
+            />
           </Route>
           <Route path="teams" element={<AdminTeamsPage />} handle={{ breadcrumb: 'Équipes' }}>
             <Route path=":teamId/delete" element={<AdminTeamDeletePage />} handle={{ breadcrumb: 'Supprimer' }} />
