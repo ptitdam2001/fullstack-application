@@ -17,5 +17,9 @@ export type Championship = {
   updatedAt: Date
 }
 
+// A championship is a draft until its phase has at least one group or bracket —
+// those are only created in one shot, at the wizard's final submit step.
+export type ChampionshipWithDraftStatus = Championship & { isDraft: boolean }
+
 export type CreateChampionshipInput = Omit<Championship, 'id' | 'createdAt' | 'updatedAt'>
 export type UpdateChampionshipInput = Partial<CreateChampionshipInput>

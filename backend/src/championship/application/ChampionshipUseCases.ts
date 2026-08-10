@@ -21,14 +21,31 @@ export class ChampionshipUseCases {
     return this.repo.count()
   }
 
-  getAll(options: PaginationOptions) {
-    return this.repo.findAll(options)
+  async getAll(options: PaginationOptions) {
+    const championships = await this.repo.findAll(options)
+    return Promise.all(
+      championships.map(async (championship) => ({ ...championship, isDraft: await this.computeIsDraft(championship.id) }))
+    )
   }
 
   async getById(id: string) {
     const championship = await this.repo.findById(id)
-    if (!championship) throw new ChampionshipNotFoundError(id)
-    return championship
+    if (!championship) {
+      throw new ChampionshipNotFoundError(id)
+    }
+    return { ...championship, isDraft: await this.computeIsDraft(id) }
+  }
+
+  private async computeIsDraft(championshipId: string): Promise<boolean> {
+    const phases = await this.phaseRepo.findByChampionshipId(championshipId)
+    if (phases.length === 0) {
+      return true
+    }
+    const [groups, brackets] = await Promise.all([
+      this.groupRepo.findByPhaseId(phases[0].id),
+      this.bracketRepo.findByPhaseId(phases[0].id),
+    ])
+    return groups.length === 0 && brackets.length === 0
   }
 
   create(input: CreateChampionshipInput) {

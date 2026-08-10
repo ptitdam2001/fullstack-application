@@ -3266,7 +3266,13 @@ components:
         - type: object
           required:
             - id
+            - isDraft
           properties:
             id:
               type: string
               format: uuid
+            isDraft:
+              type: boolean
+              description: >-
+                True until the championship's phase has at least one group or
+                bracket — those are only created at the wizard's final submit step.
