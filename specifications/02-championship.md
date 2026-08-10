@@ -166,6 +166,40 @@ Les équipes proposées sont filtrées par `ageCategoryId` du championnat (étap
 - Dès qu'un score est saisi sur un match de la phase, sa configuration est **verrouillée** : plus de régénération ni de modification de `PointsConfig`/qualification/appariement.
 - Un championnat ou une phase reste supprimable tant qu'aucun score n'est saisi sur un match de la phase courante. Passé ce point, la suppression est bloquée (protection de l'historique).
 
+### Annulation en cours de création (bouton Annuler)
+
+Le parcours de création crée des enregistrements réels en base **avant** la
+dernière étape : le `Championship` est créé en quittant l'étape 3 (Nom), la `Phase`
+en quittant l'étape 4 (Type de phase). Les poules/brackets et leurs matchs, eux, ne
+sont créés qu'en une seule fois, à la toute dernière étape (validation finale du
+wizard). Un championnat interrompu avant cette dernière étape reste donc en base
+sans poule ni bracket.
+
+- Un bouton **Annuler** est visible à toutes les étapes du wizard (1 à 4c).
+- Si aucun `Championship` n'existe encore en base (annulation avant la fin de
+  l'étape 3), Annuler quitte directement le wizard sans confirmation — rien n'a
+  encore été persisté.
+- Dès qu'un `Championship` existe, Annuler ouvre une modale de confirmation à 3
+  choix :
+  1. **Continuer l'édition** — ferme la modale, reste sur le wizard.
+  2. **Supprimer définitivement** — supprime le championnat (`DELETE
+     /championship/{id}`). Pour un brouillon, la suppression est toujours un
+     hard-delete propre : sans poule/bracket, il ne peut y avoir aucun match ni
+     score saisi (voir « Modification et suppression » ci-dessus).
+  3. **Garder et reprendre plus tard** — ferme le wizard sans rien supprimer ; le
+     championnat reste en base à l'état brouillon.
+- Un championnat est **brouillon** (`isDraft`) tant que sa phase n'a ni poule ni
+  bracket — c'est-à-dire tant que la dernière étape du wizard n'a pas été validée.
+  Ce champ `isDraft` est exposé par l'API championnat (`GET /championship`, `GET
+  /championship/{id}`).
+- La liste admin des championnats affiche une action **Reprendre** uniquement sur
+  les lignes `isDraft`. Elle rouvre le wizard préempli (saison, catégorie, nom, et
+  type de phase si déjà choisi) à la première étape non complétée : étape "Type de
+  phase" si aucune phase n'existe encore, étape "Sélection des équipes" si la
+  phase existe déjà. La sélection d'équipes et la configuration (étapes 4b/4c)
+  n'étant jamais persistées avant la validation finale, elles sont toujours
+  ressaisies à la reprise.
+
 ---
 
 ## Contraintes métier
@@ -362,6 +396,8 @@ model Match {
 | `PATCH`  | `/match/{id}`                           | `editMatch` (existant)             | Admin/Arbitre | Saisie score → déclenche `advanceWinner` si le match appartient à un bracket                                                                     |
 | `GET`    | `/phase/{id}/qualified-teams`           | `getPhaseQualifiedTeams`           | JWT           | **Nouveau** — équipes qualifiées (rang + groupe d'origine), calculées depuis `qualification.maxRank` + classements ; `409` si phase non terminée |
 | `GET`    | `/championship/{championshipId}/phases` | `getChampionshipPhases` (existant) | JWT           | Inchangé                                                                                                                                         |
+| `GET`    | `/championship`                         | `getChampionships` (existant)      | JWT           | **Champ ajouté** `isDraft` (voir « Annulation en cours de création »)                                                                             |
+| `GET`    | `/championship/{id}`                    | `getChampionship` (existant)       | JWT           | **Champ ajouté** `isDraft`                                                                                                                        |
 | `DELETE` | `/championship/{id}`                    | `removeChampionship` (existant)    | Admin         | Étend le guard existant `hasPlayedMatches` (déjà implémenté dans `PrismaChampionshipRepository`)                                                 |
 | `DELETE` | `/phase/{id}`                           | `removePhase` (existant)           | Admin         | **Nouveau guard** — `409` si un match de la phase a un score saisi                                                                               |
 
