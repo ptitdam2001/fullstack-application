@@ -1,5 +1,5 @@
 import { FormattedMessage } from 'react-intl'
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@repo/design-system'
+import { SheetContent, SheetHeader, SheetTitle } from '@repo/design-system'
 import { LinearProgress } from '@Common/Loading/LinearProgress'
 import { NotFound } from '@Common/NotFound'
 import { useGetSeason } from '../../infrastructure/useSeasonApi'
@@ -27,25 +27,23 @@ export const AdminSeasonFormSheet = ({ open, onOpenChange, seasonId }: AdminSeas
   const handleFinish = () => onOpenChange(false)
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="flex flex-col gap-0 sm:max-w-md">
-        <SheetHeader className="border-b px-6 py-4">
-          <SheetTitle>
-            {seasonId ? (
-              <FormattedMessage id="adminSeasons.dialog.edit.title" />
-            ) : (
-              <FormattedMessage id="adminSeasons.dialog.create.title" />
-            )}
-          </SheetTitle>
-        </SheetHeader>
-        <div className="flex grow flex-col overflow-y-auto px-6 py-4">
+    <SheetContent open={open} onOpenChange={onOpenChange} side="right" className="flex flex-col gap-0 sm:max-w-md">
+      <SheetHeader className="border-b px-6 py-4">
+        <SheetTitle>
           {seasonId ? (
-            <EditSheetContent seasonId={seasonId} onFinish={handleFinish} />
+            <FormattedMessage id="adminSeasons.dialog.edit.title" />
           ) : (
-            <SeasonForm onFinish={handleFinish} />
+            <FormattedMessage id="adminSeasons.dialog.create.title" />
           )}
-        </div>
-      </SheetContent>
-    </Sheet>
+        </SheetTitle>
+      </SheetHeader>
+      <div className="flex grow flex-col overflow-y-auto px-6 py-4">
+        {seasonId ? (
+          <EditSheetContent seasonId={seasonId} onFinish={handleFinish} />
+        ) : (
+          <SeasonForm onFinish={handleFinish} />
+        )}
+      </div>
+    </SheetContent>
   )
 }

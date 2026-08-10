@@ -1,5 +1,5 @@
 import { FormattedMessage } from 'react-intl'
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@repo/design-system'
+import { SheetContent, SheetHeader, SheetTitle } from '@repo/design-system'
 import { LinearProgress } from '@Common/Loading/LinearProgress'
 import { NotFound } from '@Common/NotFound'
 import { useGetAgeCategory } from '../../infrastructure/useAgeCategoryApi'
@@ -27,25 +27,23 @@ export const AdminAgeCategoryFormSheet = ({ open, onOpenChange, ageCategoryId }:
   const handleFinish = () => onOpenChange(false)
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="flex flex-col gap-0 sm:max-w-md">
-        <SheetHeader className="border-b px-6 py-4">
-          <SheetTitle>
-            {ageCategoryId ? (
-              <FormattedMessage id="adminAgeCategories.dialog.edit.title" />
-            ) : (
-              <FormattedMessage id="adminAgeCategories.dialog.create.title" />
-            )}
-          </SheetTitle>
-        </SheetHeader>
-        <div className="flex grow flex-col overflow-y-auto px-6 py-4">
+    <SheetContent open={open} onOpenChange={onOpenChange} side="right" className="flex flex-col gap-0 sm:max-w-md">
+      <SheetHeader className="border-b px-6 py-4">
+        <SheetTitle>
           {ageCategoryId ? (
-            <EditSheetContent ageCategoryId={ageCategoryId} onFinish={handleFinish} />
+            <FormattedMessage id="adminAgeCategories.dialog.edit.title" />
           ) : (
-            <AgeCategoryForm onFinish={handleFinish} />
+            <FormattedMessage id="adminAgeCategories.dialog.create.title" />
           )}
-        </div>
-      </SheetContent>
-    </Sheet>
+        </SheetTitle>
+      </SheetHeader>
+      <div className="flex grow flex-col overflow-y-auto px-6 py-4">
+        {ageCategoryId ? (
+          <EditSheetContent ageCategoryId={ageCategoryId} onFinish={handleFinish} />
+        ) : (
+          <AgeCategoryForm onFinish={handleFinish} />
+        )}
+      </div>
+    </SheetContent>
   )
 }

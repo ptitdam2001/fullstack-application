@@ -1,5 +1,5 @@
 import { FormattedMessage } from 'react-intl'
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@repo/design-system'
+import { SheetContent, SheetHeader, SheetTitle } from '@repo/design-system'
 import { NotFound } from '@Common/NotFound'
 import { LinearProgress } from '@Common/Loading/LinearProgress'
 import { useTeamDetail } from '@Teams/application/useTeamDetail'
@@ -33,25 +33,19 @@ export const AdminTeamFormSheet = ({ open, onOpenChange, teamId }: AdminTeamForm
   const handleFinish = () => onOpenChange(false)
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="flex flex-col gap-0 sm:max-w-md">
-        <SheetHeader className="border-b px-6 py-4">
-          <SheetTitle>
-            {teamId ? (
-              <FormattedMessage id="adminTeams.dialog.edit.title" />
-            ) : (
-              <FormattedMessage id="adminTeams.dialog.create.title" />
-            )}
-          </SheetTitle>
-        </SheetHeader>
-        <div className="flex grow flex-col overflow-y-auto px-6 py-4">
+    <SheetContent open={open} onOpenChange={onOpenChange} side="right" className="flex flex-col gap-0 sm:max-w-md">
+      <SheetHeader className="border-b px-6 py-4">
+        <SheetTitle>
           {teamId ? (
-            <EditSheetContent teamId={teamId} onFinish={handleFinish} />
+            <FormattedMessage id="adminTeams.dialog.edit.title" />
           ) : (
-            <TeamForm onFinish={handleFinish} />
+            <FormattedMessage id="adminTeams.dialog.create.title" />
           )}
-        </div>
-      </SheetContent>
-    </Sheet>
+        </SheetTitle>
+      </SheetHeader>
+      <div className="flex grow flex-col overflow-y-auto px-6 py-4">
+        {teamId ? <EditSheetContent teamId={teamId} onFinish={handleFinish} /> : <TeamForm onFinish={handleFinish} />}
+      </div>
+    </SheetContent>
   )
 }
