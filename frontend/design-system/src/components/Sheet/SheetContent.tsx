@@ -15,12 +15,29 @@ const sideClasses: Record<SheetSide, string> = {
 
 type SheetContentProps = React.ComponentProps<typeof AriaDialog> & {
   side?: SheetSide
+  open?: boolean
+  defaultOpen?: boolean
+  onOpenChange?: (open: boolean) => void
 }
 
-function SheetContent({ className, children, side = 'right', ...props }: SheetContentProps) {
+function SheetContent({
+  className,
+  children,
+  side = 'right',
+  open,
+  defaultOpen,
+  onOpenChange,
+  ...props
+}: SheetContentProps) {
+  const controlledProps =
+    open !== undefined || defaultOpen !== undefined || onOpenChange !== undefined
+      ? { isOpen: open, defaultOpen, onOpenChange }
+      : {}
+
   return (
     <ModalOverlay
       data-slot="sheet-portal"
+      {...controlledProps}
       className="entering:animate-in entering:fade-in-0 exiting:animate-out exiting:fade-out-0 fixed inset-0 z-50 bg-black/50"
     >
       <Modal
