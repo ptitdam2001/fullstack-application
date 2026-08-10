@@ -347,9 +347,11 @@
   "adminChampionships": {
     "title": "Championnats",
     "action.create": "Nouveau championnat",
+    "action.resume": "Reprendre",
     "table.name": "Nom",
     "table.season": "Saison",
     "table.category": "Catégorie",
+    "table.actions": "Actions",
     "table.empty": "Aucun championnat trouvé"
   },
   "adminSeasons": {

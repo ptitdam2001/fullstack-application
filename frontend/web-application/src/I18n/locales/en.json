@@ -347,9 +347,11 @@
   "adminChampionships": {
     "title": "Championships",
     "action.create": "New championship",
+    "action.resume": "Resume",
     "table.name": "Name",
     "table.season": "Season",
     "table.category": "Category",
+    "table.actions": "Actions",
     "table.empty": "No championships found"
   },
   "adminSeasons": {

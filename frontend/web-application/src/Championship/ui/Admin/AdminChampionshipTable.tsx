@@ -7,13 +7,15 @@ export type ChampionshipRow = {
   name: string
   seasonLabel: string | null
   categoryLabel: string | null
+  isDraft: boolean
 }
 
 type AdminChampionshipTableProps = {
   championships: ChampionshipRow[]
+  onResume: (id: string) => void
 }
 
-export const AdminChampionshipTable = ({ championships }: AdminChampionshipTableProps) => (
+export const AdminChampionshipTable = ({ championships, onResume }: AdminChampionshipTableProps) => (
   <Table>
     <TableHeader>
       <TableHead>
@@ -25,6 +27,9 @@ export const AdminChampionshipTable = ({ championships }: AdminChampionshipTable
       <TableHead>
         <FormattedMessage id="adminChampionships.table.category" />
       </TableHead>
+      <TableHead className="w-[120px]">
+        <FormattedMessage id="adminChampionships.table.actions" />
+      </TableHead>
     </TableHeader>
     <TableBody
       renderEmptyState={() => (
@@ -34,7 +39,7 @@ export const AdminChampionshipTable = ({ championships }: AdminChampionshipTable
       )}
     >
       {championships.map(championship => (
-        <AdminChampionshipTableRow key={championship.id} championship={championship} />
+        <AdminChampionshipTableRow key={championship.id} championship={championship} onResume={onResume} />
       ))}
     </TableBody>
   </Table>

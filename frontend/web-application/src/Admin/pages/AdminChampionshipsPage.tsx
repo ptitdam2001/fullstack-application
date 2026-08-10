@@ -21,16 +21,19 @@ const AdminChampionshipListContent = () => {
   const seasons = seasonList.query.data ?? []
   const categories = categoryList.query.data ?? []
 
+  const navigate = useNavigate()
+
   const rows: ChampionshipRow[] = (championships as Championship[]).map(championship => ({
     id: championship.id,
     name: championship.name ?? '',
     seasonLabel: seasons.find(s => s.id === championship.seasonId)?.label ?? null,
     categoryLabel: categories.find(c => c.id === championship.ageCategoryId)?.label ?? null,
+    isDraft: championship.isDraft,
   }))
 
   return (
     <section className="flex h-full w-full flex-col gap-0.5">
-      <AdminChampionshipTable championships={rows} />
+      <AdminChampionshipTable championships={rows} onResume={id => navigate(`new/${id}`)} />
       <div className="min-h-10">
         <TablePagination
           count={(count ?? 0) as number}
