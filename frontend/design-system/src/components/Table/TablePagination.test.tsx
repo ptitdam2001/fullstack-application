@@ -54,4 +54,21 @@ describe('TablePagination', () => {
     expect(screen.getByRole('option', { name: '5' })).toBeInTheDocument()
     expect(screen.getByRole('option', { name: '20' })).toBeInTheDocument()
   })
+
+  it('disables the rows-per-page select when onRowsPerPageChange is not provided', () => {
+    render(<TablePagination {...defaultProps} />)
+    expect(screen.getByRole('combobox')).toBeDisabled()
+  })
+
+  it('enables the rows-per-page select when onRowsPerPageChange is provided', () => {
+    render(<TablePagination {...defaultProps} onRowsPerPageChange={vi.fn()} />)
+    expect(screen.getByRole('combobox')).toBeEnabled()
+  })
+
+  it('calls onRowsPerPageChange when a new option is selected', () => {
+    const onRowsPerPageChange = vi.fn()
+    render(<TablePagination {...defaultProps} onRowsPerPageChange={onRowsPerPageChange} />)
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: '25' } })
+    expect(onRowsPerPageChange).toHaveBeenCalled()
+  })
 })

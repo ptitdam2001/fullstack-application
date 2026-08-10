@@ -26,7 +26,12 @@ export const TablePagination = ({
     <Button variant="outline" size="icon" onPress={() => onPageChange(page - 1)} isDisabled={page === 0}>
       <ChevronLeft />
     </Button>
-    <select onChange={onRowsPerPageChange} value={rowsPerPage} className="rounded border p-2 text-sm">
+    <select
+      onChange={onRowsPerPageChange}
+      value={rowsPerPage}
+      disabled={!onRowsPerPageChange}
+      className="rounded border p-2 text-sm"
+    >
       {rowsPerPageOptions.map((option, index) => (
         <option key={index} value={option}>
           {option}

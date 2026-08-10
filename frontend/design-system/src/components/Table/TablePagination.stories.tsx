@@ -62,3 +62,21 @@ export const PrevPage: Story = {
 export const CustomOptions: Story = {
   args: { rowsPerPageOptions: [5, 20, 50], rowsPerPage: 5 },
 }
+
+export const WithoutRowsPerPageChangeHandler: Story = {
+  args: { onRowsPerPageChange: undefined },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await expect(canvas.getByRole('combobox')).toBeDisabled()
+  },
+}
+
+export const WithRowsPerPageChangeHandler: Story = {
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement)
+    const select = canvas.getByRole('combobox')
+    await expect(select).toBeEnabled()
+    await userEvent.selectOptions(select, '50')
+    expect(args.onRowsPerPageChange).toHaveBeenCalled()
+  },
+}
