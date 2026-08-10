@@ -475,8 +475,15 @@
     "action.previous": "Previous",
     "action.next": "Next",
     "action.create": "Create championship",
+    "cancel.button": "Cancel",
+    "cancel.dialog.title": "Cancel championship creation",
+    "cancel.dialog.description": "What would you like to do with this championship being created?",
+    "cancel.dialog.continueEditing": "Continue editing",
+    "cancel.dialog.keepForLater": "Keep it and resume later",
+    "cancel.dialog.deletePermanently": "Delete permanently",
     "error.createFailed": "Error creating the championship. Please try again.",
     "error.createPhaseFailed": "Error creating the phase. Please try again.",
-    "error.submitFailed": "Error creating the championship. Please try again."
+    "error.submitFailed": "Error creating the championship. Please try again.",
+    "error.deleteFailed": "Error deleting the championship. Please try again."
   }
 }

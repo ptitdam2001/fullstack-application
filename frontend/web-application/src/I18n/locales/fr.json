@@ -475,8 +475,15 @@
     "action.previous": "Précédent",
     "action.next": "Suivant",
     "action.create": "Créer le championnat",
+    "cancel.button": "Annuler",
+    "cancel.dialog.title": "Annuler la création du championnat",
+    "cancel.dialog.description": "Que voulez-vous faire de ce championnat en cours de création ?",
+    "cancel.dialog.continueEditing": "Continuer l'édition",
+    "cancel.dialog.keepForLater": "Garder et reprendre plus tard",
+    "cancel.dialog.deletePermanently": "Supprimer définitivement",
     "error.createFailed": "Erreur lors de la création du championnat. Réessayez.",
     "error.createPhaseFailed": "Erreur lors de la création de la phase. Réessayez.",
-    "error.submitFailed": "Erreur lors de la création du championnat. Réessayez."
+    "error.submitFailed": "Erreur lors de la création du championnat. Réessayez.",
+    "error.deleteFailed": "Erreur lors de la suppression du championnat. Réessayez."
   }
 }

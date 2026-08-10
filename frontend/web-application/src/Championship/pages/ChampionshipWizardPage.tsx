@@ -7,9 +7,11 @@ import { useChampionshipWizard } from '../application/useChampionshipWizard'
 import { useChampionshipWizardStepSubmit } from '../application/useChampionshipWizardStepSubmit'
 import { useChampionshipWizardFinalSubmit } from '../application/useChampionshipWizardFinalSubmit'
 import { useChampionshipWizardSummary } from '../application/useChampionshipWizardSummary'
+import { useChampionshipWizardCancel } from '../application/useChampionshipWizardCancel'
 import { PhaseType } from '../domain/Phase'
 import { WizardProgress } from '../ui/WizardProgress/WizardProgress'
 import { WizardSummary } from '../ui/WizardSummary/WizardSummary'
+import { ConfirmCancelWizardDialog } from '../ui/ChampionshipWizardCancel/ConfirmCancelWizardDialog'
 import { StepSeason } from '../ui/StepSeason/StepSeason'
 import { StepCategory } from '../ui/StepCategory/StepCategory'
 import { StepName } from '../ui/StepName/StepName'
@@ -32,6 +34,15 @@ export const ChampionshipWizardPage = () => {
   const { handleNext, isNextPending, createChampionshipError, createPhaseError } =
     useChampionshipWizardStepSubmit(wizard)
   const { handleSubmit, isSubmitting, submitError } = useChampionshipWizardFinalSubmit(wizard)
+  const {
+    isDialogOpen,
+    setIsDialogOpen,
+    handleCancelPress,
+    handleKeepForLater,
+    handleDeletePermanently,
+    isDeleting,
+    deleteError,
+  } = useChampionshipWizardCancel(wizard)
 
   const seasons = seasonList.query.data ?? []
   const categories = categoryList.query.data ?? []
@@ -50,9 +61,19 @@ export const ChampionshipWizardPage = () => {
           <Typography.Title1>
             <FormattedMessage id="championshipWizard.title" />
           </Typography.Title1>
+          <Button variant="outline" onPress={handleCancelPress}>
+            <FormattedMessage id="championshipWizard.cancel.button" />
+          </Button>
         </div>
         <Separator orientation="horizontal" />
       </Layout.Header>
+      <ConfirmCancelWizardDialog
+        open={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+        onDeletePermanently={handleDeletePermanently}
+        onKeepForLater={handleKeepForLater}
+        isDeleting={isDeleting}
+      />
       <Layout.Content className="flex flex-col gap-6 p-6">
         <WizardProgress currentStep={wizard.step} canGoNext={wizard.canNext} onStepClick={wizard.goTo} />
 
@@ -121,6 +142,11 @@ export const ChampionshipWizardPage = () => {
               {submitError && (
                 <Typography.Body className="text-destructive">
                   <FormattedMessage id="championshipWizard.error.submitFailed" />
+                </Typography.Body>
+              )}
+              {deleteError && (
+                <Typography.Body className="text-destructive">
+                  <FormattedMessage id="championshipWizard.error.deleteFailed" />
                 </Typography.Body>
               )}
 

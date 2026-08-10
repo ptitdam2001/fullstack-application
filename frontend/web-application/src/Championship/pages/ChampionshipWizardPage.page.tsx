@@ -82,4 +82,36 @@ export class ChampionshipWizardPagePage {
   submitErrorMessage() {
     return screen.queryByText('championshipWizard.error.submitFailed')
   }
+
+  deleteErrorMessage() {
+    return screen.queryByText('championshipWizard.error.deleteFailed')
+  }
+
+  cancelButton() {
+    return screen.getByText('championshipWizard.cancel.button').closest('button') as HTMLButtonElement
+  }
+
+  clickCancel() {
+    fireEvent.click(this.cancelButton())
+    return this
+  }
+
+  cancelDialog() {
+    return screen.queryByText('championshipWizard.cancel.dialog.title')
+  }
+
+  clickContinueEditing() {
+    fireEvent.click(screen.getByText('championshipWizard.cancel.dialog.continueEditing'))
+    return this
+  }
+
+  clickKeepForLater() {
+    fireEvent.click(screen.getByText('championshipWizard.cancel.dialog.keepForLater'))
+    return this
+  }
+
+  clickDeletePermanently() {
+    fireEvent.click(screen.getByText('championshipWizard.cancel.dialog.deletePermanently'))
+    return this
+  }
 }

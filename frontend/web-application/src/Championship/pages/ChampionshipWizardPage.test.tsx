@@ -43,6 +43,7 @@ vi.mock('@Teams/application/useTeamOptions', () => ({
 vi.mock('../infrastructure/useChampionshipApi', () => ({
   useCreateChampionship: vi.fn(),
   useUpdateChampionship: vi.fn(),
+  useRemoveChampionship: vi.fn(),
 }))
 vi.mock('../infrastructure/usePhaseApi', () => ({
   useCreatePhase: vi.fn(),
@@ -56,7 +57,11 @@ vi.mock('../infrastructure/useBracketApi', () => ({
   useGenerateBracketMatches: vi.fn(),
 }))
 
-import { useCreateChampionship, useUpdateChampionship } from '../infrastructure/useChampionshipApi'
+import {
+  useCreateChampionship,
+  useUpdateChampionship,
+  useRemoveChampionship,
+} from '../infrastructure/useChampionshipApi'
 import { useCreatePhase } from '../infrastructure/usePhaseApi'
 import { useCreateGroup, useGenerateGroupMatches } from '../infrastructure/useGroupApi'
 import { useCreateBracket, useGenerateBracketMatches } from '../infrastructure/useBracketApi'
@@ -64,6 +69,7 @@ import { useCreateBracket, useGenerateBracketMatches } from '../infrastructure/u
 const mockedUseCreateChampionship = vi.mocked(useCreateChampionship)
 const mockedUseCreatePhase = vi.mocked(useCreatePhase)
 const mockedUseUpdateChampionship = vi.mocked(useUpdateChampionship)
+const mockedUseRemoveChampionship = vi.mocked(useRemoveChampionship)
 const mockedUseCreateGroup = vi.mocked(useCreateGroup)
 const mockedUseGenerateGroupMatches = vi.mocked(useGenerateGroupMatches)
 const mockedUseCreateBracket = vi.mocked(useCreateBracket)
@@ -71,6 +77,7 @@ const mockedUseGenerateBracketMatches = vi.mocked(useGenerateBracketMatches)
 
 const mutate = vi.fn()
 const mutatePhase = vi.fn()
+const mutateRemove = vi.fn()
 const mutateAsyncUpdate = vi.fn()
 const mutateAsyncCreateGroup = vi.fn()
 const mutateAsyncGenerateGroupMatches = vi.fn()
@@ -107,6 +114,7 @@ describe('ChampionshipWizardPage', () => {
     navigate.mockReset()
     mutate.mockReset()
     mutatePhase.mockReset()
+    mutateRemove.mockReset()
     mutateAsyncUpdate.mockReset()
     mutateAsyncCreateGroup.mockReset()
     mutateAsyncGenerateGroupMatches.mockReset()
@@ -115,6 +123,7 @@ describe('ChampionshipWizardPage', () => {
 
     mockedUseCreateChampionship.mockReturnValue({ mutate, isPending: false, isError: false } as never)
     mockedUseCreatePhase.mockReturnValue({ mutate: mutatePhase, isPending: false, isError: false } as never)
+    mockedUseRemoveChampionship.mockReturnValue({ mutate: mutateRemove, isPending: false, isError: false } as never)
     mockedUseUpdateChampionship.mockReturnValue({ mutateAsync: mutateAsyncUpdate } as never)
     mockedUseCreateGroup.mockReturnValue({ mutateAsync: mutateAsyncCreateGroup } as never)
     mockedUseGenerateGroupMatches.mockReturnValue({ mutateAsync: mutateAsyncGenerateGroupMatches } as never)
@@ -123,6 +132,7 @@ describe('ChampionshipWizardPage', () => {
 
     mutate.mockImplementation((_vars, { onSuccess }) => onSuccess({ id: 'champ-1' }))
     mutatePhase.mockImplementation((_vars, { onSuccess }) => onSuccess({ id: 'phase-1' }))
+    mutateRemove.mockImplementation((_vars, { onSuccess }) => onSuccess())
     mutateAsyncUpdate.mockResolvedValue({ id: 'champ-1' })
     mutateAsyncCreateGroup.mockResolvedValue({ id: 'group-1' })
     mutateAsyncGenerateGroupMatches.mockResolvedValue([])
@@ -308,5 +318,51 @@ describe('ChampionshipWizardPage', () => {
     page.clickCreate()
 
     expect(page.createButton()).toBeDisabled()
+  })
+
+  it('cancels directly without a confirmation dialog when no championship was created yet', () => {
+    const page = new ChampionshipWizardPagePage().render()
+
+    page.clickCancel()
+
+    expect(page.cancelDialog()).not.toBeInTheDocument()
+    expect(navigate).toHaveBeenCalledWith('/app/admin/championships')
+    expect(mutateRemove).not.toHaveBeenCalled()
+  })
+
+  it('opens a confirmation dialog when cancelling after the championship was created', () => {
+    const page = advanceToPhaseStep(new ChampionshipWizardPagePage().render())
+
+    page.clickCancel()
+
+    expect(page.cancelDialog()).toBeInTheDocument()
+    expect(navigate).not.toHaveBeenCalled()
+  })
+
+  it('keeps the championship and navigates away on "keep for later"', () => {
+    const page = advanceToPhaseStep(new ChampionshipWizardPagePage().render())
+
+    page.clickCancel().clickKeepForLater()
+
+    expect(mutateRemove).not.toHaveBeenCalled()
+    expect(navigate).toHaveBeenCalledWith('/app/admin/championships')
+  })
+
+  it('deletes the championship and navigates away on "delete permanently"', () => {
+    const page = advanceToPhaseStep(new ChampionshipWizardPagePage().render())
+
+    page.clickCancel().clickDeletePermanently()
+
+    expect(mutateRemove).toHaveBeenCalledWith({ id: 'champ-1' }, expect.anything())
+    expect(navigate).toHaveBeenCalledWith('/app/admin/championships')
+  })
+
+  it('shows an error message when the delete mutation fails', () => {
+    mockedUseRemoveChampionship.mockReturnValue({ mutate: mutateRemove, isPending: false, isError: true } as never)
+    const page = advanceToPhaseStep(new ChampionshipWizardPagePage().render())
+
+    page.clickCancel()
+
+    expect(page.deleteErrorMessage()).toBeInTheDocument()
   })
 })
