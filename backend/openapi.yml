@@ -3287,8 +3287,10 @@ components:
                 True once every match of the current (last by order) phase has a
                 status other than SCHEDULED.
             currentPhaseType:
-              allOf:
-                - $ref: '#/components/schemas/PhaseType'
+              type: string
+              enum:
+                - GROUP
+                - KNOCKOUT
               nullable: true
               description: Type of the last phase by order, null if no phase exists yet (draft).
             teamsCount:
