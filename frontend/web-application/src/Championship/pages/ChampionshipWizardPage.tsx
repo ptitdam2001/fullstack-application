@@ -81,100 +81,106 @@ export const ChampionshipWizardPage = () => {
         onKeepForLater={handleKeepForLater}
         isDeleting={isDeleting}
       />
-      <Layout.Content className="flex flex-col gap-6 p-6">
-        <WizardProgress currentStep={wizard.step} canGoNext={wizard.canNext} onStepClick={wizard.goTo} />
+      <Layout.Content>
+        <div className="flex flex-col gap-6 p-6">
+          <WizardProgress currentStep={wizard.step} canGoNext={wizard.canNext} onStepClick={wizard.goTo} />
 
-        <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-[1fr_260px]">
-          <Card.Container>
-            <Card.Content className="flex flex-col gap-4">
-              {wizard.step === 0 && (
-                <StepSeason seasons={seasons} selectedId={wizard.seasonId} onSelect={wizard.setSeasonId} />
-              )}
-              {wizard.step === 1 && (
-                <StepCategory categories={categories} selectedId={wizard.categoryId} onSelect={wizard.setCategoryId} />
-              )}
-              {wizard.step === 2 && (
-                <StepName
-                  name={wizard.name}
-                  onChange={wizard.setName}
-                  categoryLabel={selectedCategory?.label}
-                  categoryGenreLabel={
-                    selectedCategory
-                      ? intl.formatMessage({ id: `adminAgeCategories.genre.${selectedCategory.genre}` })
-                      : undefined
-                  }
-                  seasonYear={selectedSeason?.label.slice(-4)}
-                />
-              )}
-              {wizard.step === 3 && <StepPhase phaseType={wizard.phaseType} onSelect={wizard.setPhaseType} />}
-              {wizard.step === 4 && wizard.phaseType === PhaseType.GROUP && (
-                <StepTeamsGroups
-                  teams={categoryTeams}
-                  groups={wizard.groups}
-                  onAddGroup={wizard.addGroup}
-                  onRemoveGroup={wizard.removeGroup}
-                  onRenameGroup={wizard.renameGroup}
-                  onAssignTeam={wizard.assignTeam}
-                />
-              )}
-              {wizard.step === 4 && wizard.phaseType === PhaseType.KNOCKOUT && (
-                <StepTeamsKnockout teams={categoryTeams} teamIds={wizard.teamIds} onToggleTeam={wizard.toggleTeam} />
-              )}
-              {wizard.step === 5 && wizard.phaseType === PhaseType.GROUP && (
-                <StepConfigGroup
-                  teams={categoryTeams}
-                  groups={wizard.groups}
-                  onSetMatchMode={wizard.setGroupMatchMode}
-                  onGenerate={groupId => wizard.setGroupGenerated(groupId, true)}
-                  points={wizard.points}
-                  onStepPoints={wizard.stepper}
-                  maxRank={wizard.maxRank}
-                  onMaxRankChange={wizard.setMaxRank}
-                />
-              )}
-              {wizard.step === 5 && wizard.phaseType === PhaseType.KNOCKOUT && (
-                <StepConfigKnockout teams={categoryTeams} teamIds={wizard.teamIds} />
-              )}
-
-              {createChampionshipError && (
-                <Typography.Body className="text-destructive">
-                  <FormattedMessage id="championshipWizard.error.createFailed" />
-                </Typography.Body>
-              )}
-              {createPhaseError && (
-                <Typography.Body className="text-destructive">
-                  <FormattedMessage id="championshipWizard.error.createPhaseFailed" />
-                </Typography.Body>
-              )}
-              {submitError && (
-                <Typography.Body className="text-destructive">
-                  <FormattedMessage id="championshipWizard.error.submitFailed" />
-                </Typography.Body>
-              )}
-              {deleteError && (
-                <Typography.Body className="text-destructive">
-                  <FormattedMessage id="championshipWizard.error.deleteFailed" />
-                </Typography.Body>
-              )}
-
-              <div className="flex justify-between pt-2">
-                <Button variant="outline" onPress={wizard.back} isDisabled={wizard.step === 0}>
-                  <FormattedMessage id="championshipWizard.action.previous" />
-                </Button>
-                {isLastStep ? (
-                  <Button variant="default" onPress={handleSubmit} isDisabled={!wizard.canNext || isSubmitting}>
-                    <FormattedMessage id="championshipWizard.action.create" />
-                  </Button>
-                ) : (
-                  <Button variant="outline" onPress={handleNext} isDisabled={!wizard.canNext || isNextPending}>
-                    <FormattedMessage id="championshipWizard.action.next" />
-                  </Button>
+          <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-[1fr_260px]">
+            <Card.Container>
+              <Card.Content className="flex flex-col gap-4">
+                {wizard.step === 0 && (
+                  <StepSeason seasons={seasons} selectedId={wizard.seasonId} onSelect={wizard.setSeasonId} />
                 )}
-              </div>
-            </Card.Content>
-          </Card.Container>
+                {wizard.step === 1 && (
+                  <StepCategory
+                    categories={categories}
+                    selectedId={wizard.categoryId}
+                    onSelect={wizard.setCategoryId}
+                  />
+                )}
+                {wizard.step === 2 && (
+                  <StepName
+                    name={wizard.name}
+                    onChange={wizard.setName}
+                    categoryLabel={selectedCategory?.label}
+                    categoryGenreLabel={
+                      selectedCategory
+                        ? intl.formatMessage({ id: `adminAgeCategories.genre.${selectedCategory.genre}` })
+                        : undefined
+                    }
+                    seasonYear={selectedSeason?.label.slice(-4)}
+                  />
+                )}
+                {wizard.step === 3 && <StepPhase phaseType={wizard.phaseType} onSelect={wizard.setPhaseType} />}
+                {wizard.step === 4 && wizard.phaseType === PhaseType.GROUP && (
+                  <StepTeamsGroups
+                    teams={categoryTeams}
+                    groups={wizard.groups}
+                    onAddGroup={wizard.addGroup}
+                    onRemoveGroup={wizard.removeGroup}
+                    onRenameGroup={wizard.renameGroup}
+                    onAssignTeam={wizard.assignTeam}
+                  />
+                )}
+                {wizard.step === 4 && wizard.phaseType === PhaseType.KNOCKOUT && (
+                  <StepTeamsKnockout teams={categoryTeams} teamIds={wizard.teamIds} onToggleTeam={wizard.toggleTeam} />
+                )}
+                {wizard.step === 5 && wizard.phaseType === PhaseType.GROUP && (
+                  <StepConfigGroup
+                    teams={categoryTeams}
+                    groups={wizard.groups}
+                    onSetMatchMode={wizard.setGroupMatchMode}
+                    onGenerate={groupId => wizard.setGroupGenerated(groupId, true)}
+                    points={wizard.points}
+                    onStepPoints={wizard.stepper}
+                    maxRank={wizard.maxRank}
+                    onMaxRankChange={wizard.setMaxRank}
+                  />
+                )}
+                {wizard.step === 5 && wizard.phaseType === PhaseType.KNOCKOUT && (
+                  <StepConfigKnockout teams={categoryTeams} teamIds={wizard.teamIds} />
+                )}
 
-          <WizardSummary lines={summaryLines} onJump={wizard.goTo} />
+                {createChampionshipError && (
+                  <Typography.Body className="text-destructive">
+                    <FormattedMessage id="championshipWizard.error.createFailed" />
+                  </Typography.Body>
+                )}
+                {createPhaseError && (
+                  <Typography.Body className="text-destructive">
+                    <FormattedMessage id="championshipWizard.error.createPhaseFailed" />
+                  </Typography.Body>
+                )}
+                {submitError && (
+                  <Typography.Body className="text-destructive">
+                    <FormattedMessage id="championshipWizard.error.submitFailed" />
+                  </Typography.Body>
+                )}
+                {deleteError && (
+                  <Typography.Body className="text-destructive">
+                    <FormattedMessage id="championshipWizard.error.deleteFailed" />
+                  </Typography.Body>
+                )}
+
+                <div className="flex justify-between pt-2">
+                  <Button variant="outline" onPress={wizard.back} isDisabled={wizard.step === 0}>
+                    <FormattedMessage id="championshipWizard.action.previous" />
+                  </Button>
+                  {isLastStep ? (
+                    <Button variant="default" onPress={handleSubmit} isDisabled={!wizard.canNext || isSubmitting}>
+                      <FormattedMessage id="championshipWizard.action.create" />
+                    </Button>
+                  ) : (
+                    <Button variant="outline" onPress={handleNext} isDisabled={!wizard.canNext || isNextPending}>
+                      <FormattedMessage id="championshipWizard.action.next" />
+                    </Button>
+                  )}
+                </div>
+              </Card.Content>
+            </Card.Container>
+
+            <WizardSummary lines={summaryLines} onJump={wizard.goTo} />
+          </div>
         </div>
       </Layout.Content>
     </Layout.Root>
