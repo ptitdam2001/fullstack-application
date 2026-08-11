@@ -348,11 +348,22 @@
     "title": "Championnats",
     "action.create": "Nouveau championnat",
     "action.resume": "Reprendre",
+    "action.resumeTooltip": "Terminer la création",
     "table.name": "Nom",
     "table.season": "Saison",
     "table.category": "Catégorie",
+    "table.status": "État",
+    "table.dates": "Dates",
+    "table.phase": "Phase",
+    "table.teams": "Équipes",
+    "table.progress": "Progression",
     "table.actions": "Actions",
-    "table.empty": "Aucun championnat trouvé"
+    "table.empty": "Aucun championnat trouvé",
+    "status.draft": "Brouillon",
+    "status.inProgress": "En cours",
+    "status.finished": "Terminé",
+    "phaseType.GROUP": "Poules",
+    "phaseType.KNOCKOUT": "Élimination directe"
   },
   "adminSeasons": {
     "title": "Saisons",

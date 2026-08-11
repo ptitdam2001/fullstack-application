@@ -29,6 +29,13 @@ const AdminChampionshipListContent = () => {
     seasonLabel: seasons.find(s => s.id === championship.seasonId)?.label ?? null,
     categoryLabel: categories.find(c => c.id === championship.ageCategoryId)?.label ?? null,
     isDraft: championship.isDraft,
+    isFinished: championship.isFinished,
+    startDate: championship.startDate ?? null,
+    endDate: championship.endDate ?? null,
+    currentPhaseType: championship.currentPhaseType,
+    teamsCount: championship.teamsCount,
+    matchesPlayed: championship.matchesPlayed,
+    matchesTotal: championship.matchesTotal,
   }))
 
   return (

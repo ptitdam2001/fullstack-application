@@ -348,11 +348,22 @@
     "title": "Championships",
     "action.create": "New championship",
     "action.resume": "Resume",
+    "action.resumeTooltip": "Finish creation",
     "table.name": "Name",
     "table.season": "Season",
     "table.category": "Category",
+    "table.status": "Status",
+    "table.dates": "Dates",
+    "table.phase": "Phase",
+    "table.teams": "Teams",
+    "table.progress": "Progress",
     "table.actions": "Actions",
-    "table.empty": "No championships found"
+    "table.empty": "No championships found",
+    "status.draft": "Draft",
+    "status.inProgress": "In progress",
+    "status.finished": "Finished",
+    "phaseType.GROUP": "Groups",
+    "phaseType.KNOCKOUT": "Knockout"
   },
   "adminSeasons": {
     "title": "Seasons",
