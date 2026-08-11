@@ -13,7 +13,7 @@ type WizardSummaryProps = {
 }
 
 export const WizardSummary = ({ lines, onJump }: WizardSummaryProps) => (
-  <aside className="border-border bg-card sticky top-20 flex flex-col gap-0.5 rounded-lg border p-4">
+  <aside className="border-border bg-card sticky top-6 flex flex-col gap-0.5 rounded-lg border p-4">
     <h5 className="text-muted-foreground mb-2 text-xs font-semibold tracking-wide uppercase">
       <FormattedMessage id="championshipWizard.summary.title" />
     </h5>
