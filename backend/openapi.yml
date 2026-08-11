@@ -3267,6 +3267,11 @@ components:
           required:
             - id
             - isDraft
+            - isFinished
+            - currentPhaseType
+            - teamsCount
+            - matchesPlayed
+            - matchesTotal
           properties:
             id:
               type: string
@@ -3276,3 +3281,22 @@ components:
               description: >-
                 True until the championship's phase has at least one group or
                 bracket — those are only created at the wizard's final submit step.
+            isFinished:
+              type: boolean
+              description: >-
+                True once every match of the current (last by order) phase has a
+                status other than SCHEDULED.
+            currentPhaseType:
+              allOf:
+                - $ref: '#/components/schemas/PhaseType'
+              nullable: true
+              description: Type of the last phase by order, null if no phase exists yet (draft).
+            teamsCount:
+              type: integer
+              description: Number of unique teams assigned to the current phase's groups or bracket.
+            matchesPlayed:
+              type: integer
+              description: Matches of the current phase with a status other than SCHEDULED.
+            matchesTotal:
+              type: integer
+              description: Total matches generated for the current phase.
