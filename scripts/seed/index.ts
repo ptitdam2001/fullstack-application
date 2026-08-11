@@ -16,6 +16,7 @@ const SALT_ROUNDS = 10;
 const SEED_CHAMPIONSHIP_NAME = "Championnat Test";
 const SEED_TEAM_NAME = "Équipe Test";
 const SEED_AREA_NAME = "Stade Test";
+const SEED_SEASON_LABEL = "2025-2026";
 
 const SEED_USERS = [
   {
@@ -84,6 +85,7 @@ async function cleanup() {
   await prisma.ageCategory.deleteMany({
     where: { label: "Senior", genre: Genre.MALE },
   });
+  await prisma.season.deleteMany({ where: { label: SEED_SEASON_LABEL } });
   await prisma.area.deleteMany({ where: { name: SEED_AREA_NAME } });
 
   console.log("  ✓ Nettoyage terminé");
@@ -123,6 +125,10 @@ async function seedContext() {
     data: { label: "Senior", genre: Genre.MALE },
   });
 
+  const season = await prisma.season.create({
+    data: { label: SEED_SEASON_LABEL },
+  });
+
   await prisma.area.create({
     data: {
       name: SEED_AREA_NAME,
@@ -137,17 +143,18 @@ async function seedContext() {
   const championship = await prisma.championship.create({
     data: {
       name: SEED_CHAMPIONSHIP_NAME,
-      ageCategoryId: ageCategory.id,
-      season: "2025-2026",
+      ageCategory: { connect: { id: ageCategory.id } },
+      season: { connect: { id: season.id } },
       pointsConfig: { win: 3, draw: 1, loss: 0, forfeit: -1 },
     },
   });
-  console.log(
-    `  ✓ Championship "${championship.name}" (${championship.season})`,
-  );
+  console.log(`  ✓ Championship "${championship.name}" (${season.label})`);
 
   const team = await prisma.team.create({
-    data: { name: SEED_TEAM_NAME, ageCategoryId: ageCategory.id },
+    data: {
+      name: SEED_TEAM_NAME,
+      ageCategory: { connect: { id: ageCategory.id } },
+    },
   });
   console.log(`  ✓ Team "${team.name}"`);
 
