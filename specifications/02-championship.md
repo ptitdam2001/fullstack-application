@@ -183,7 +183,7 @@ sans poule ni bracket.
   choix :
   1. **Continuer l'édition** — ferme la modale, reste sur le wizard.
   2. **Supprimer définitivement** — supprime le championnat (`DELETE
-     /championship/{id}`). Pour un brouillon, la suppression est toujours un
+/championship/{id}`). Pour un brouillon, la suppression est toujours un
      hard-delete propre : sans poule/bracket, il ne peut y avoir aucun match ni
      score saisi (voir « Modification et suppression » ci-dessus).
   3. **Garder et reprendre plus tard** — ferme le wizard sans rien supprimer ; le
@@ -191,7 +191,7 @@ sans poule ni bracket.
 - Un championnat est **brouillon** (`isDraft`) tant que sa phase n'a ni poule ni
   bracket — c'est-à-dire tant que la dernière étape du wizard n'a pas été validée.
   Ce champ `isDraft` est exposé par l'API championnat (`GET /championship`, `GET
-  /championship/{id}`).
+/championship/{id}`).
 - La liste admin des championnats affiche une action **Reprendre** uniquement sur
   les lignes `isDraft`. Elle rouvre le wizard préempli (saison, catégorie, nom, et
   type de phase si déjà choisi) à la première étape non complétée : étape "Type de
@@ -199,6 +199,26 @@ sans poule ni bracket.
   phase existe déjà. La sélection d'équipes et la configuration (étapes 4b/4c)
   n'étant jamais persistées avant la validation finale, elles sont toujours
   ressaisies à la reprise.
+
+---
+
+## Liste des championnats (Admin)
+
+La liste admin (`GET /championship`) affiche un tableau avec les colonnes suivantes :
+
+| Colonne                | Source                           | Description                                                                                                                                                                           |
+| ---------------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Nom                    | `name`                           | —                                                                                                                                                                                     |
+| Saison                 | `seasonId` (résolu)              | —                                                                                                                                                                                     |
+| Catégorie              | `ageCategoryId` (résolu)         | —                                                                                                                                                                                     |
+| État                   | `isDraft` / `isFinished`         | Puce colorée + tooltip au survol donnant le libellé. 3 valeurs : **brouillon** (gris, `isDraft`), **en cours** (bleu, ni `isDraft` ni `isFinished`), **terminé** (vert, `isFinished`) |
+| Dates                  | `startDate` / `endDate`          | `startDate` – `endDate`, tiret si absentes                                                                                                                                            |
+| Type de phase courante | `currentPhaseType`               | Dernière phase par `order` : « Poules » (`GROUP`) ou « Élimination directe » (`KNOCKOUT`) ; tiret si aucune phase (brouillon avant étape 4)                                           |
+| Équipes engagées       | `teamsCount`                     | Nombre d'équipes uniques affectées à la phase courante (poules ou bracket) ; `0` tant qu'aucune affectation                                                                           |
+| Progression matchs     | `matchesPlayed` / `matchesTotal` | « X/Y » — matchs au statut différent de `SCHEDULED` sur le total généré pour la phase courante ; tiret si aucun match généré                                                          |
+| Actions                | —                                | **Reprendre** — visible uniquement si `isDraft` (voir « Annulation en cours de création »)                                                                                            |
+
+`isFinished`, `currentPhaseType`, `teamsCount`, `matchesPlayed` et `matchesTotal` sont calculés côté backend (même approche que `isDraft` : dérivés à la volée depuis phase/poule/bracket/match courants, non stockés) et exposés par `GET /championship` et `GET /championship/{id}`.
 
 ---
 
@@ -396,8 +416,8 @@ model Match {
 | `PATCH`  | `/match/{id}`                           | `editMatch` (existant)             | Admin/Arbitre | Saisie score → déclenche `advanceWinner` si le match appartient à un bracket                                                                     |
 | `GET`    | `/phase/{id}/qualified-teams`           | `getPhaseQualifiedTeams`           | JWT           | **Nouveau** — équipes qualifiées (rang + groupe d'origine), calculées depuis `qualification.maxRank` + classements ; `409` si phase non terminée |
 | `GET`    | `/championship/{championshipId}/phases` | `getChampionshipPhases` (existant) | JWT           | Inchangé                                                                                                                                         |
-| `GET`    | `/championship`                         | `getChampionships` (existant)      | JWT           | **Champ ajouté** `isDraft` (voir « Annulation en cours de création »)                                                                             |
-| `GET`    | `/championship/{id}`                    | `getChampionship` (existant)       | JWT           | **Champ ajouté** `isDraft`                                                                                                                        |
+| `GET`    | `/championship`                         | `getChampionships` (existant)      | JWT           | **Champs ajoutés** `isDraft`, `isFinished`, `currentPhaseType`, `teamsCount`, `matchesPlayed`, `matchesTotal` (voir « Liste des championnats »)  |
+| `GET`    | `/championship/{id}`                    | `getChampionship` (existant)       | JWT           | **Champs ajoutés** `isDraft`, `isFinished`, `currentPhaseType`, `teamsCount`, `matchesPlayed`, `matchesTotal`                                    |
 | `DELETE` | `/championship/{id}`                    | `removeChampionship` (existant)    | Admin         | Étend le guard existant `hasPlayedMatches` (déjà implémenté dans `PrismaChampionshipRepository`)                                                 |
 | `DELETE` | `/phase/{id}`                           | `removePhase` (existant)           | Admin         | **Nouveau guard** — `409` si un match de la phase a un score saisi                                                                               |
 
@@ -472,16 +492,16 @@ export interface IBracketRepository {
 
 #### Use cases modifiés/ajoutés
 
-| Use case                                          | Domaine        | Input                | Output            | Description                                                                                                      |
-| ------------------------------------------------- | -------------- | -------------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------- |
-| `GroupUseCases.generateMatches`                   | `group`        | `groupId`            | `Match[]`         | **Pas implémenté** — round-robin (voir Logique métier), `409` si un match a déjà un score                        |
+| Use case                                          | Domaine        | Input                | Output            | Description                                                                                                                                                             |
+| ------------------------------------------------- | -------------- | -------------------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GroupUseCases.generateMatches`                   | `group`        | `groupId`            | `Match[]`         | **Pas implémenté** — round-robin (voir Logique métier), `409` si un match a déjà un score                                                                               |
 | `BracketUseCases.create`                          | `bracket`      | `CreateBracketInput` | `Bracket`         | Implémenté, sans validation croisée pour l'instant (équipes ∈ qualifiés/`ageCategoryId` — déferré, dépend de `getQualifiedTeams`, non implémenté non plus côté `Group`) |
-| `BracketUseCases.generateMatches`                 | `bracket`      | `bracketId`          | `Match[]`         | Implémenté — `buildBracketMatches` (N rounds généralisé), `404`/`409`/`400`, régénère (supprime puis recrée)     |
-| `BracketUseCases.advanceWinner`                   | `bracket`      | `Match`               | `void`            | Implémenté — câblé sur `MatchUseCases.update`, no-op si `match.bracketId` nul, statut non terminal, ou pas de match suivant |
-| `MatchUseCases.updateScore` (existant, étendu)    | `match`        | `matchId`, score     | `Match`           | Si `match.bracketId` non nul et vainqueur déterminé → `BracketUseCases.advanceWinner(matchId)`                   |
-| `PhaseUseCases.create` (étendu)                   | `phase`        | `CreatePhaseInput`   | `Phase`           | `order > 1` → vérifie `isPhaseFinished(previousPhaseId)`, sinon `409` via `PreviousPhaseNotFinishedError`        |
-| `PhaseUseCases.getQualifiedTeams`                 | `phase`        | `phaseId`            | `QualifiedTeam[]` | Applique `qualification.maxRank` sur les classements de ses groupes (voir Logique métier)                        |
-| `ChampionshipUseCases.hasUnfinishedChampionships` | `championship` | `seasonId`           | `boolean`         | Consommé par `SeasonUseCases.archive` (voir [[22-season]])                                                       |
+| `BracketUseCases.generateMatches`                 | `bracket`      | `bracketId`          | `Match[]`         | Implémenté — `buildBracketMatches` (N rounds généralisé), `404`/`409`/`400`, régénère (supprime puis recrée)                                                            |
+| `BracketUseCases.advanceWinner`                   | `bracket`      | `Match`              | `void`            | Implémenté — câblé sur `MatchUseCases.update`, no-op si `match.bracketId` nul, statut non terminal, ou pas de match suivant                                             |
+| `MatchUseCases.updateScore` (existant, étendu)    | `match`        | `matchId`, score     | `Match`           | Si `match.bracketId` non nul et vainqueur déterminé → `BracketUseCases.advanceWinner(matchId)`                                                                          |
+| `PhaseUseCases.create` (étendu)                   | `phase`        | `CreatePhaseInput`   | `Phase`           | `order > 1` → vérifie `isPhaseFinished(previousPhaseId)`, sinon `409` via `PreviousPhaseNotFinishedError`                                                               |
+| `PhaseUseCases.getQualifiedTeams`                 | `phase`        | `phaseId`            | `QualifiedTeam[]` | Applique `qualification.maxRank` sur les classements de ses groupes (voir Logique métier)                                                                               |
+| `ChampionshipUseCases.hasUnfinishedChampionships` | `championship` | `seasonId`           | `boolean`         | Consommé par `SeasonUseCases.archive` (voir [[22-season]])                                                                                                              |
 
 #### Handler HTTP
 
@@ -511,7 +531,7 @@ roundRobin(teamIds, matchMode):
 
 **Génération bracket + bye, N rounds généralisé (`BracketUseCases.generateMatches`, implémentation `bracket/application/buildBracketMatches.ts`)** — le pseudo-code round1+round2 initial ne couvrait que les tableaux à 4 équipes. Généralisation actée en session d'implémentation (pas de round-cap) :
 
-Modèle : le round `r+1` est composé, dans l'ordre, des **slots vainqueurs** du round `r` (un slot par match du round `r`, dans l'ordre de `bracketPosition`, valeur `null` tant que non résolu) suivis des **byes du round `r+1`** (`bracketTeams` avec `round == r+1`, triés par `seed`). Cet ordre garantit que le slot `p` du round `r+1` est *toujours* alimenté par le vainqueur du match `p` du round `r`, ce qui rend la formule `ceil(bracketPosition / 2)` d'`advanceWinner` valide à tout round (pas seulement round1→round2).
+Modèle : le round `r+1` est composé, dans l'ordre, des **slots vainqueurs** du round `r` (un slot par match du round `r`, dans l'ordre de `bracketPosition`, valeur `null` tant que non résolu) suivis des **byes du round `r+1`** (`bracketTeams` avec `round == r+1`, triés par `seed`). Cet ordre garantit que le slot `p` du round `r+1` est _toujours_ alimenté par le vainqueur du match `p` du round `r`, ce qui rend la formule `ceil(bracketPosition / 2)` d'`advanceWinner` valide à tout round (pas seulement round1→round2).
 
 ```text
 buildBracketMatches(bracketTeams):
