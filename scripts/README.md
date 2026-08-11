@@ -17,10 +17,10 @@ Chaque script est accessible via `make <target>` depuis la racine du monorepo.
 
 ## Commandes disponibles
 
-| Commande    | Description                                    |
-|-------------|------------------------------------------------|
-| `make seed` | Crée le jeu de données de test en base         |
-| `make help` | Affiche toutes les commandes disponibles       |
+| Commande    | Description                              |
+| ----------- | ---------------------------------------- |
+| `make seed` | Crée le jeu de données de test en base   |
+| `make help` | Affiche toutes les commandes disponibles |
 
 ---
 
@@ -35,17 +35,18 @@ Crée un jeu de données minimal pour tester l'application avec un utilisateur p
 
 **Ce que le script crée** :
 
-| Email                 | Rôle              | Détails                              |
-|-----------------------|-------------------|--------------------------------------|
-| `admin@seed.local`    | Admin plateforme  | `isAdmin: true`                      |
-| `coach@seed.local`    | Coach             | Rattaché à "Équipe Test" (COACH)     |
-| `player@seed.local`   | Joueur            | Rattaché à "Équipe Test" (jersey #10)|
-| `referee@seed.local`  | Arbitre           | `isReferee: true`                    |
-| `user@seed.local`     | Sans affiliation  | Compte activé, aucune équipe         |
+| Email                | Rôle             | Détails                               |
+| -------------------- | ---------------- | ------------------------------------- |
+| `admin@seed.local`   | Admin plateforme | `isAdmin: true`                       |
+| `coach@seed.local`   | Coach            | Rattaché à "Équipe Test" (COACH)      |
+| `player@seed.local`  | Joueur           | Rattaché à "Équipe Test" (jersey #10) |
+| `referee@seed.local` | Arbitre          | `isReferee: true`                     |
+| `user@seed.local`    | Sans affiliation | Compte activé, aucune équipe          |
 
 Mot de passe commun : **`Seed@1234`**
 
 Et en contexte métier :
+
 - 1 **Championship** "Championnat Test" (Senior, saison 2025-2026)
 - 1 **Team** "Équipe Test" inscrite au championship via Phase > Groupe A
 
@@ -71,17 +72,18 @@ seedRelations() → UserTeam (COACH, PLAYER) + Player (jersey)
 4. Documenter ici dans la section **Scripts**
 
 Exemple pour un script shell Docker :
+
 ```makefile
 ## Configure la stack Docker pour la première installation
 install:
-	./scripts/install/setup.sh
+ ./scripts/install/setup.sh
 ```
 
 ---
 
 ## Structure
 
-```
+```text
 scripts/
   seed/
     index.ts    ← seed TypeScript (users + team + championship)
