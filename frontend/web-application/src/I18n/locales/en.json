@@ -474,6 +474,7 @@
     "summary.title": "Summary",
     "summary.season": "Season",
     "summary.category": "Category",
+    "summary.categoryValue": "{categoryLabel} ({genreLabel})",
     "summary.name": "Name",
     "summary.phase": "Phase 1",
     "summary.teams": "Teams",

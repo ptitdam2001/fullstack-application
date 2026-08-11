@@ -33,6 +33,16 @@ export const useChampionshipWizardSummary = (
 ) => {
   const teamsValue = formatTeamsValue(intl, wizard.phaseType, wizard.groups, wizard.teamIds)
 
+  const categoryValue = selectedCategory
+    ? intl.formatMessage(
+        { id: 'championshipWizard.summary.categoryValue' },
+        {
+          categoryLabel: selectedCategory.label,
+          genreLabel: intl.formatMessage({ id: `adminAgeCategories.genre.${selectedCategory.genre}` }),
+        }
+      )
+    : null
+
   const configValue =
     wizard.phaseType === PhaseType.GROUP && wizard.groups.some(g => g.generated)
       ? intl.formatMessage(
@@ -43,7 +53,7 @@ export const useChampionshipWizardSummary = (
 
   return [
     { key: 'season', labelId: 'championshipWizard.summary.season', value: selectedSeason?.label ?? null },
-    { key: 'category', labelId: 'championshipWizard.summary.category', value: selectedCategory?.label ?? null },
+    { key: 'category', labelId: 'championshipWizard.summary.category', value: categoryValue },
     { key: 'name', labelId: 'championshipWizard.summary.name', value: wizard.name.trim() || null },
     {
       key: 'phase',

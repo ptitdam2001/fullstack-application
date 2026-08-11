@@ -33,7 +33,14 @@ describe('useChampionshipWizardSummary', () => {
     const { result } = renderHook(() => useChampionshipWizardSummary(baseWizard as never, intl, season, category))
     const byKey = Object.fromEntries(result.current.map(l => [l.key, l.value]))
     expect(byKey.season).toBe('2025-2026')
-    expect(byKey.category).toBe('U13')
+    expect(byKey.category).toBe(
+      'championshipWizard.summary.categoryValue:{"categoryLabel":"U13","genreLabel":"adminAgeCategories.genre.FEMALE"}'
+    )
+  })
+
+  it('returns null category value when no category is selected', () => {
+    const { result } = renderHook(() => useChampionshipWizardSummary(baseWizard as never, intl, season, null))
+    expect(result.current.find(l => l.key === 'category')?.value).toBeNull()
   })
 
   it('GROUP: teams value stays null until a group has at least one team', () => {
