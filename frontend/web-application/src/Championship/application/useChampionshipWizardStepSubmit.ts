@@ -1,13 +1,23 @@
 import { useCreateChampionship } from '../infrastructure/useChampionshipApi'
 import { useCreatePhase } from '../infrastructure/usePhaseApi'
 import type { ChampionshipWizard } from './useChampionshipWizard'
+import type { PhaseType } from '../domain/Phase'
+
+type WizardReadyForChampionship = ChampionshipWizard & { categoryId: string; seasonId: string }
+type WizardReadyForPhase = ChampionshipWizard & { championshipId: string; phaseType: PhaseType }
+
+const shouldCreateChampionship = (wizard: ChampionshipWizard): wizard is WizardReadyForChampionship =>
+  wizard.step === 2 && !wizard.championshipId && Boolean(wizard.categoryId) && Boolean(wizard.seasonId)
+
+const shouldCreatePhase = (wizard: ChampionshipWizard): wizard is WizardReadyForPhase =>
+  wizard.step === 3 && !wizard.phaseId && Boolean(wizard.championshipId) && Boolean(wizard.phaseType)
 
 export const useChampionshipWizardStepSubmit = (wizard: ChampionshipWizard) => {
   const createChampionship = useCreateChampionship()
   const createPhase = useCreatePhase()
 
   const handleNext = () => {
-    if (wizard.step === 2 && !wizard.championshipId && wizard.categoryId && wizard.seasonId) {
+    if (shouldCreateChampionship(wizard)) {
       createChampionship.mutate(
         {
           data: {
@@ -27,7 +37,7 @@ export const useChampionshipWizardStepSubmit = (wizard: ChampionshipWizard) => {
       return
     }
 
-    if (wizard.step === 3 && wizard.championshipId && wizard.phaseType) {
+    if (shouldCreatePhase(wizard)) {
       createPhase.mutate(
         { data: { championshipId: wizard.championshipId, type: wizard.phaseType, order: 1 } },
         {

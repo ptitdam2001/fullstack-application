@@ -22,6 +22,7 @@ const baseWizard = {
   seasonId: 's1',
   name: 'Championnat U13',
   phaseType: null as PhaseType | null,
+  phaseId: null as string | null,
   setChampionshipId: vi.fn(),
   setPhaseId: vi.fn(),
   next: vi.fn(),
@@ -71,6 +72,22 @@ describe('useChampionshipWizardStepSubmit', () => {
       expect.anything()
     )
     expect((wizard as never as typeof baseWizard).setPhaseId).toHaveBeenCalledWith('phase-1')
+    expect((wizard as never as typeof baseWizard).next).toHaveBeenCalled()
+  })
+
+  it('does not re-create the phase on step 3 when phaseId is already set (resumed draft, back then next)', () => {
+    const wizard = {
+      ...baseWizard,
+      step: 3,
+      championshipId: 'champ-1',
+      phaseType: PhaseType.KNOCKOUT,
+      phaseId: 'phase-1',
+    } as never
+    const { result } = renderHook(() => useChampionshipWizardStepSubmit(wizard))
+
+    act(() => result.current.handleNext())
+
+    expect(mutatePhase).not.toHaveBeenCalled()
     expect((wizard as never as typeof baseWizard).next).toHaveBeenCalled()
   })
 
