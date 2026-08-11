@@ -37,7 +37,7 @@ export const ConfirmCancelWizardDialog = ({
             <FormattedMessage id="championshipWizard.cancel.dialog.description" />
           </DialogDescription>
         </DialogHeader>
-        <DialogFooter>
+        <DialogFooter className="flex-wrap">
           <Button variant="outline" onPress={() => onOpenChange(false)} isDisabled={isDeleting}>
             <FormattedMessage id="championshipWizard.cancel.dialog.continueEditing" />
           </Button>
