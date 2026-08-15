@@ -95,8 +95,44 @@ const makeUseCases = (
   )
 
 describe('ChampionshipUseCases.count', () => {
-  it('returns the count', async () => {
+  it('returns the total count when isDraft is not provided', async () => {
     expect(await makeUseCases().count()).toBe(1)
+  })
+
+  it('counts only draft championships when isDraft=true', async () => {
+    const draftChampionship = { ...mockChampionship, id: 'championship-draft' }
+    const activeChampionship = { ...mockChampionship, id: 'championship-active' }
+    const useCases = makeUseCases({
+      repo: {
+        count: vi.fn().mockResolvedValue(2),
+        findAll: vi.fn().mockResolvedValue([draftChampionship, activeChampionship]),
+      },
+      phaseRepo: {
+        findByChampionshipId: vi.fn().mockImplementation(async (championshipId: string) =>
+          championshipId === activeChampionship.id
+            ? [
+                {
+                  id: 'phase-1',
+                  championshipId,
+                  type: PhaseType.GROUP,
+                  order: 1,
+                  name: null,
+                  qualification: null,
+                  updatedAt: new Date(),
+                },
+              ]
+            : []
+        ),
+      },
+      groupRepo: {
+        findByPhaseId: vi
+          .fn()
+          .mockResolvedValue([{ id: 'group-1', phaseId: 'phase-1', name: 'A', matchMode: MatchMode.SINGLE, teamIds: [], updatedAt: new Date() }]),
+      },
+    })
+
+    expect(await useCases.count(true)).toBe(1)
+    expect(await useCases.count(false)).toBe(1)
   })
 })
 

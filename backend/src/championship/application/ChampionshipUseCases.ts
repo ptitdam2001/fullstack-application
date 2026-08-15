@@ -25,8 +25,14 @@ export class ChampionshipUseCases {
     private readonly bracketRepo: IBracketRepository
   ) {}
 
-  count() {
-    return this.repo.count()
+  async count(isDraft?: boolean) {
+    if (isDraft === undefined) {
+      return this.repo.count()
+    }
+    const total = await this.repo.count()
+    const championships = await this.repo.findAll({ page: 1, count: total })
+    const draftFlags = await Promise.all(championships.map(championship => this.computeIsDraft(championship.id)))
+    return draftFlags.filter(flag => flag === isDraft).length
   }
 
   async getAll(options: PaginationOptions) {

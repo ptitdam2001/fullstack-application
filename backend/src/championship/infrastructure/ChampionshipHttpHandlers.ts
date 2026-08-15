@@ -17,8 +17,9 @@ const useCases = new ChampionshipUseCases(
   new PrismaBracketRepository()
 )
 
-export const countChampionships = async (_: Context, __: Request, res: Response) => {
-  res.json(await useCases.count())
+export const countChampionships = async (ctx: Context, _: Request, res: Response) => {
+  const { isDraft } = ctx.request.query
+  res.json(await useCases.count(isDraft === undefined ? undefined : isDraft === 'true'))
 }
 
 export const getChampionships = async (ctx: Context, _: Request, res: Response) => {

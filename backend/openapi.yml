@@ -1125,6 +1125,12 @@ paths:
       tags:
         - Championship
       security: []
+      parameters:
+        - in: query
+          name: isDraft
+          description: 'Filter by draft status (a championship is a draft when it has no phase, or its current phase has no group/bracket yet)'
+          schema:
+            type: boolean
       responses:
         200:
           description: ''
