@@ -54,7 +54,7 @@ export const CreateFillName: Story = {
   args: {},
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    const nameInput = canvas.getByTestId('team-form.name.input')
+    const nameInput = canvas.getByTestId('team-form.name')
     const button = canvas.getByRole('button', { name: /create/i })
 
     expect(button).toBeDisabled()
@@ -74,8 +74,8 @@ export const CreateSelectAgeCategory: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
 
-    await userEvent.clear(canvas.getByTestId('team-form.name.input'))
-    await userEvent.type(canvas.getByTestId('team-form.name.input'), 'Les Rouges')
+    await userEvent.clear(canvas.getByTestId('team-form.name'))
+    await userEvent.type(canvas.getByTestId('team-form.name'), 'Les Rouges')
 
     await userEvent.click(await canvas.findByRole('button', { name: /catégorie d'âge|age category/i }))
     const listbox = await within(document.body).findByRole('listbox')
@@ -92,7 +92,7 @@ export const CreateSubmit: Story = {
   args: {},
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
-    const nameInput = canvas.getByTestId('team-form.name.input')
+    const nameInput = canvas.getByTestId('team-form.name')
 
     await userEvent.clear(nameInput)
     await userEvent.type(nameInput, 'Les Rouges')
@@ -145,7 +145,7 @@ export const EditModifyName: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    const nameInput = canvas.getByTestId('team-form.name.input')
+    const nameInput = canvas.getByTestId('team-form.name')
     const button = canvas.getByRole('button', { name: /update/i })
 
     expect(button).toBeDisabled()
@@ -167,7 +167,7 @@ export const EditSubmit: Story = {
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
-    const nameInput = canvas.getByTestId('team-form.name.input')
+    const nameInput = canvas.getByTestId('team-form.name')
 
     await userEvent.clear(nameInput)
     await userEvent.type(nameInput, 'Les Rouges Modifiés')

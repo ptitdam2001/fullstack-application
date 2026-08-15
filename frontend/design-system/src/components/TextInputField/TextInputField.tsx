@@ -12,6 +12,7 @@ type TextInputFieldProps = Omit<React.ComponentProps<typeof AriaTextField>, 'chi
   value?: string | number | null
   placeholder?: string
   disabled?: boolean
+  'data-testid'?: string
 }
 
 export const TextInputField = ({
@@ -24,6 +25,7 @@ export const TextInputField = ({
   className,
   value,
   placeholder,
+  'data-testid': dataTestId,
   ...props
 }: TextInputFieldProps) => {
   const hasError = isInvalid || !!errorMessage
@@ -48,7 +50,7 @@ export const TextInputField = ({
           )}
         </Label>
       )}
-      <Input placeholder={placeholder} />
+      <Input placeholder={placeholder} data-testid={dataTestId} />
       <FieldError className="absolute bottom-1">{errorMessage}</FieldError>
     </AriaTextField>
   )
