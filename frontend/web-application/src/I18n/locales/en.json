@@ -192,6 +192,7 @@
     "kpi.pendingScore": "Matches without score",
     "kpi.pendingActivation": "Pending activations",
     "kpi.championships": "Active championships",
+    "kpi.draftChampionships": "Championships in draft",
     "kpi.teams": "Total teams",
     "actions.teams": "Manage teams",
     "actions.users": "Manage users",

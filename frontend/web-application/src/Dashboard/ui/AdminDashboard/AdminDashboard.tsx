@@ -5,15 +5,23 @@ import { AdminLiveFeed } from './AdminLiveFeed'
 import { AdminUserPieChart } from './AdminUserPieChart'
 
 export const AdminDashboard = () => {
-  const { pendingScoreCount, pendingActivationCount, championshipCount, teamCount, feedEvents, roleDistribution } =
-    useAdminDashboard()
+  const {
+    pendingScoreCount,
+    pendingActivationCount,
+    activeChampionshipCount,
+    draftChampionshipCount,
+    teamCount,
+    feedEvents,
+    roleDistribution,
+  } = useAdminDashboard()
 
   return (
     <section className="flex flex-1 flex-col gap-4 p-4">
       <AdminKpiCards
         pendingScoreCount={pendingScoreCount}
         pendingActivationCount={pendingActivationCount}
-        championshipCount={championshipCount}
+        activeChampionshipCount={activeChampionshipCount}
+        draftChampionshipCount={draftChampionshipCount}
         teamCount={teamCount}
       />
       <AdminQuickActions />

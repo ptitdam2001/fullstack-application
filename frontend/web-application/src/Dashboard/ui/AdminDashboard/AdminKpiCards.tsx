@@ -1,4 +1,4 @@
-import { AlertCircle, Clock, Trophy, Users } from 'lucide-react'
+import { AlertCircle, Clock, FileClock, Trophy, Users } from 'lucide-react'
 import { Link } from 'react-router'
 import { useIntl } from 'react-intl'
 import { cn } from '@repo/design-system'
@@ -31,15 +31,22 @@ const KpiCard = ({ icon, label, value, href, highlight }: KpiCardProps) => (
 type Props = {
   pendingScoreCount: number
   pendingActivationCount: number
-  championshipCount: number
+  activeChampionshipCount: number
+  draftChampionshipCount: number
   teamCount: number
 }
 
-export const AdminKpiCards = ({ pendingScoreCount, pendingActivationCount, championshipCount, teamCount }: Props) => {
+export const AdminKpiCards = ({
+  pendingScoreCount,
+  pendingActivationCount,
+  activeChampionshipCount,
+  draftChampionshipCount,
+  teamCount,
+}: Props) => {
   const { formatMessage } = useIntl()
 
   return (
-    <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+    <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-5">
       <KpiCard
         icon={<Clock className="h-4 w-4" />}
         label={formatMessage({ id: 'adminDashboard.kpi.pendingScore' })}
@@ -57,7 +64,13 @@ export const AdminKpiCards = ({ pendingScoreCount, pendingActivationCount, champ
       <KpiCard
         icon={<Trophy className="h-4 w-4" />}
         label={formatMessage({ id: 'adminDashboard.kpi.championships' })}
-        value={championshipCount}
+        value={activeChampionshipCount}
+        href="/app/admin/championships"
+      />
+      <KpiCard
+        icon={<FileClock className="h-4 w-4" />}
+        label={formatMessage({ id: 'adminDashboard.kpi.draftChampionships' })}
+        value={draftChampionshipCount}
         href="/app/admin/championships"
       />
       <KpiCard

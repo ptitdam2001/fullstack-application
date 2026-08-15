@@ -1,6 +1,25 @@
+import { renderHook } from '@testing-library/react'
 import type { User } from '@Sdk/model'
 import type { Match } from '@Sdk/model/match'
-import { buildRoleDistribution, buildFeedEvents } from './useAdminDashboard'
+import type { CountChampionshipsParams } from '@Sdk/model/countChampionshipsParams'
+
+const mockUseGetMatches = vi.fn()
+const mockUseGetUsers = vi.fn()
+const mockUseGetTeams = vi.fn()
+const mockUseCountTeams = vi.fn()
+const mockUseCountChampionships = vi.fn()
+
+vi.mock('@Sdk/match/match', () => ({ useGetMatches: () => mockUseGetMatches() }))
+vi.mock('@Sdk/users/users', () => ({ useGetUsers: () => mockUseGetUsers() }))
+vi.mock('@Sdk/teams/teams', () => ({
+  useGetTeams: () => mockUseGetTeams(),
+  useCountTeams: () => mockUseCountTeams(),
+}))
+vi.mock('@Sdk/championship/championship', () => ({
+  useCountChampionships: (params?: CountChampionshipsParams) => mockUseCountChampionships(params),
+}))
+
+import { buildRoleDistribution, buildFeedEvents, useAdminDashboard } from './useAdminDashboard'
 
 const makeMatch = (overrides: Partial<Match> & { id: string }): Match => ({
   area: {
@@ -116,5 +135,34 @@ describe('buildRoleDistribution', () => {
     expect(buildRoleDistribution([{ ...user, roles: [] }])).toEqual([
       { role: 'noRole', color: 'var(--chart-color-other)', count: 1 },
     ])
+  })
+})
+
+describe('useAdminDashboard', () => {
+  beforeEach(() => {
+    mockUseGetMatches.mockReturnValue({ data: undefined })
+    mockUseGetUsers.mockReturnValue({ data: undefined })
+    mockUseGetTeams.mockReturnValue({ data: undefined })
+    mockUseCountTeams.mockReturnValue({ data: undefined })
+    mockUseCountChampionships.mockImplementation((params?: CountChampionshipsParams) =>
+      params?.isDraft ? { data: 2 } : { data: 3 }
+    )
+  })
+
+  it('splits championshipCount between active and draft counts', () => {
+    const { result } = renderHook(() => useAdminDashboard())
+
+    expect(result.current.activeChampionshipCount).toBe(3)
+    expect(result.current.draftChampionshipCount).toBe(2)
+    expect(mockUseCountChampionships).toHaveBeenCalledWith({ isDraft: false })
+    expect(mockUseCountChampionships).toHaveBeenCalledWith({ isDraft: true })
+  })
+
+  it('defaults counts to 0 while data has not arrived yet', () => {
+    mockUseCountChampionships.mockReturnValue({ data: undefined })
+    const { result } = renderHook(() => useAdminDashboard())
+
+    expect(result.current.activeChampionshipCount).toBe(0)
+    expect(result.current.draftChampionshipCount).toBe(0)
   })
 })

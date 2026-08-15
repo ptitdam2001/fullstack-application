@@ -110,14 +110,16 @@ export const useAdminDashboard = () => {
   const { data: forfeitedMatches } = useGetMatches({ status: MatchStatus.FORFEITED }, { query: { refetchInterval } })
   const { data: playedMatches } = useGetMatches({ status: MatchStatus.PLAYED }, { query: { refetchInterval } })
   const { data: allUsers } = useGetUsers()
-  const { data: championshipCount } = useCountChampionships()
+  const { data: activeChampionshipCount } = useCountChampionships({ isDraft: false })
+  const { data: draftChampionshipCount } = useCountChampionships({ isDraft: true })
   const { data: teamCount } = useCountTeams()
   useGetTeams(undefined, { query: { refetchInterval } })
 
   return {
     pendingScoreCount: overdueMatches?.length ?? 0,
     pendingActivationCount: inactiveUsers?.length ?? 0,
-    championshipCount: championshipCount ?? 0,
+    activeChampionshipCount: activeChampionshipCount ?? 0,
+    draftChampionshipCount: draftChampionshipCount ?? 0,
     teamCount: teamCount ?? 0,
     feedEvents: buildFeedEvents({ inactiveUsers, forfeitedMatches, playedMatches }),
     roleDistribution: buildRoleDistribution(allUsers),
