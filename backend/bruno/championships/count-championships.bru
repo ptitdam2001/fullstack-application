@@ -7,7 +7,11 @@ meta {
 get {
   url: {{baseUrl}}/championships/count
   body: none
-  auth: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
 }
 
 params:query {

@@ -67,15 +67,40 @@ describe('championship domain — functional API', () => {
   })
 
   describe('countChampionships — GET /championships/count', () => {
+    it('401 — unauthenticated request', async () => {
+      const res = await agent.get('/championships/count')
+
+      expect(res.status).toBe(401)
+    })
+
+    it('403 — non-admin user', async () => {
+      const user = await createUser()
+
+      const res = await agent.get('/championships/count').set(authHeaderFor(user.id))
+
+      expect(res.status).toBe(403)
+    })
+
     it('nominal: counts non-deleted championships', async () => {
+      const admin = await createAdmin()
       await createChampionship()
       await createChampionship()
       await prisma.championship.create({ data: { ...championshipInput(), deletedAt: new Date() } as never })
 
-      const res = await agent.get('/championships/count')
+      const res = await agent.get('/championships/count').set(authHeaderFor(admin.id, true))
 
       expect(res.status).toBe(200)
       expect(res.body).toBe(2)
+    })
+
+    it('filters by draft status when isDraft is provided', async () => {
+      const admin = await createAdmin()
+      await createChampionship()
+
+      const res = await agent.get('/championships/count').query({ isDraft: true }).set(authHeaderFor(admin.id, true))
+
+      expect(res.status).toBe(200)
+      expect(res.body).toBe(1)
     })
   })
 

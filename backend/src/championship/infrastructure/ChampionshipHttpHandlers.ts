@@ -18,6 +18,7 @@ const useCases = new ChampionshipUseCases(
 )
 
 export const countChampionships = async (ctx: Context, _: Request, res: Response) => {
+  requireAdmin(ctx)
   const { isDraft } = ctx.request.query
   res.json(await useCases.count(isDraft === undefined ? undefined : isDraft === 'true'))
 }

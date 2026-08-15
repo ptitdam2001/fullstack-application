@@ -1121,10 +1121,9 @@ paths:
   /championships/count:
     get:
       operationId: countChampionships
-      description: 'Count championships'
+      description: 'Count championships (admin only — the isDraft filter is O(n) over all championships)'
       tags:
         - Championship
-      security: []
       parameters:
         - in: query
           name: isDraft
