@@ -11,11 +11,13 @@ import { PrismaBracketRepository } from '../../bracket/infrastructure/PrismaBrac
 const bracketUseCases = new BracketUseCases(new PrismaBracketRepository(), new PrismaMatchRepository())
 const useCases = new MatchUseCases(new PrismaMatchRepository(), bracketUseCases)
 
-export const countMatches = async (_: Context, __: Request, res: Response) => {
+export const countMatches = async (ctx: Context, __: Request, res: Response) => {
+  requireAdmin(ctx)
   res.json(await useCases.count())
 }
 
 export const getMatches = async (ctx: Context, _: Request, res: Response) => {
+  requireAdmin(ctx)
   const page = Number(ctx.request.query.page) || 1
   const count = Number(ctx.request.query.count) || 20
   const status = ctx.request.query.status as string | undefined
@@ -29,6 +31,7 @@ export const getMatches = async (ctx: Context, _: Request, res: Response) => {
 }
 
 export const getMatch = async (ctx: Context, _: Request, res: Response) => {
+  requireAdmin(ctx)
   try {
     res.json(await useCases.getById(ctx.request.params.id))
   } catch (err) {

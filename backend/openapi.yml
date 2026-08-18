@@ -1630,7 +1630,7 @@ paths:
   /matches:
     get:
       operationId: getMatches
-      description: 'Get list of matches'
+      description: 'Get list of matches (admin only)'
       tags:
         - Match
       parameters:
@@ -1665,7 +1665,7 @@ paths:
   /matches/count:
     get:
       operationId: countMatches
-      description: 'Count matches'
+      description: 'Count matches (admin only)'
       tags:
         - Match
       responses:
@@ -1698,7 +1698,7 @@ paths:
   /match/{id}:
     get:
       operationId: getMatch
-      description: 'Get a match'
+      description: 'Get a match (admin only)'
       tags:
         - Match
       parameters:

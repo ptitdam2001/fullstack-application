@@ -65,8 +65,8 @@ describe('match domain — functional API (CRUD)', () => {
   // ─── countMatches ─────────────────────────────────────────────────────────
   describe('countMatches — GET /matches/count', () => {
     it('nominal: returns 0 when DB is empty', async () => {
-      const user = await createUser()
-      const res = await agent.get('/matches/count').set(authHeaderFor(user.id))
+      const admin = await createAdmin()
+      const res = await agent.get('/matches/count').set(authHeaderFor(admin.id, true))
 
       expect(res.status).toBe(200)
       expect(res.body).toBe(0)
@@ -80,8 +80,8 @@ describe('match domain — functional API (CRUD)', () => {
       const deleted = await seedMatch(home.id, away.id)
       await prisma.match.update({ where: { id: deleted.id }, data: { deletedAt: new Date() } })
 
-      const user = await createUser()
-      const res = await agent.get('/matches/count').set(authHeaderFor(user.id))
+      const admin = await createAdmin()
+      const res = await agent.get('/matches/count').set(authHeaderFor(admin.id, true))
 
       expect(res.status).toBe(200)
       expect(res.body).toBe(2)
@@ -91,13 +91,20 @@ describe('match domain — functional API (CRUD)', () => {
       const res = await agent.get('/matches/count')
       expect(res.status).toBe(401)
     })
+
+    it('403 — non-admin user', async () => {
+      const user = await createUser()
+      const res = await agent.get('/matches/count').set(authHeaderFor(user.id))
+
+      expect(res.status).toBe(403)
+    })
   })
 
   // ─── getMatches ───────────────────────────────────────────────────────────
   describe('getMatches — GET /matches', () => {
     it('nominal: returns empty array when no matches', async () => {
-      const user = await createUser()
-      const res = await agent.get('/matches').set(authHeaderFor(user.id))
+      const admin = await createAdmin()
+      const res = await agent.get('/matches').set(authHeaderFor(admin.id, true))
 
       expect(res.status).toBe(200)
       expect(res.body).toEqual([])
@@ -110,8 +117,8 @@ describe('match domain — functional API (CRUD)', () => {
       const softDeleted = await seedMatch(home.id, away.id)
       await prisma.match.update({ where: { id: softDeleted.id }, data: { deletedAt: new Date() } })
 
-      const user = await createUser()
-      const res = await agent.get('/matches').set(authHeaderFor(user.id))
+      const admin = await createAdmin()
+      const res = await agent.get('/matches').set(authHeaderFor(admin.id, true))
 
       expect(res.status).toBe(200)
       expect(res.body).toHaveLength(1)
@@ -125,8 +132,8 @@ describe('match domain — functional API (CRUD)', () => {
         await seedMatch(home.id, away.id)
       }
 
-      const user = await createUser()
-      const res = await agent.get('/matches?page=1&count=3').set(authHeaderFor(user.id))
+      const admin = await createAdmin()
+      const res = await agent.get('/matches?page=1&count=3').set(authHeaderFor(admin.id, true))
 
       expect(res.status).toBe(200)
       expect(res.body).toHaveLength(3)
@@ -138,8 +145,8 @@ describe('match domain — functional API (CRUD)', () => {
       await seedMatch(home.id, away.id, { status: 'SCHEDULED' })
       await seedMatch(home.id, away.id, { status: 'PLAYED', homeGoals: 2, awayGoals: 1 })
 
-      const user = await createUser()
-      const res = await agent.get('/matches?status=PLAYED').set(authHeaderFor(user.id))
+      const admin = await createAdmin()
+      const res = await agent.get('/matches?status=PLAYED').set(authHeaderFor(admin.id, true))
 
       expect(res.status).toBe(200)
       // NOTE: this will fail if the handler ignores the status filter (known bug: getMatches
@@ -151,6 +158,13 @@ describe('match domain — functional API (CRUD)', () => {
       const res = await agent.get('/matches')
       expect(res.status).toBe(401)
     })
+
+    it('403 — non-admin user', async () => {
+      const user = await createUser()
+      const res = await agent.get('/matches').set(authHeaderFor(user.id))
+
+      expect(res.status).toBe(403)
+    })
   })
 
   // ─── getMatch ─────────────────────────────────────────────────────────────
@@ -160,8 +174,8 @@ describe('match domain — functional API (CRUD)', () => {
       const away = await createTeam()
       const match = await seedMatch(home.id, away.id)
 
-      const user = await createUser()
-      const res = await agent.get(`/match/${match.id}`).set(authHeaderFor(user.id))
+      const admin = await createAdmin()
+      const res = await agent.get(`/match/${match.id}`).set(authHeaderFor(admin.id, true))
 
       expect(res.status).toBe(200)
       expect(res.body).toMatchObject({
@@ -181,9 +195,20 @@ describe('match domain — functional API (CRUD)', () => {
       expect(res.status).toBe(401)
     })
 
-    it('404 — unknown match id', async () => {
+    it('403 — non-admin user', async () => {
+      const home = await createTeam()
+      const away = await createTeam()
+      const match = await seedMatch(home.id, away.id)
+
       const user = await createUser()
-      const res = await agent.get(`/match/${unknownObjectId()}`).set(authHeaderFor(user.id))
+      const res = await agent.get(`/match/${match.id}`).set(authHeaderFor(user.id))
+
+      expect(res.status).toBe(403)
+    })
+
+    it('404 — unknown match id', async () => {
+      const admin = await createAdmin()
+      const res = await agent.get(`/match/${unknownObjectId()}`).set(authHeaderFor(admin.id, true))
 
       expect(res.status).toBe(404)
       expect(res.body).toMatchObject({ status: 404 })
@@ -195,8 +220,8 @@ describe('match domain — functional API (CRUD)', () => {
       const match = await seedMatch(home.id, away.id)
       await prisma.match.update({ where: { id: match.id }, data: { deletedAt: new Date() } })
 
-      const user = await createUser()
-      const res = await agent.get(`/match/${match.id}`).set(authHeaderFor(user.id))
+      const admin = await createAdmin()
+      const res = await agent.get(`/match/${match.id}`).set(authHeaderFor(admin.id, true))
 
       expect(res.status).toBe(404)
     })
@@ -456,8 +481,7 @@ describe('match domain — functional API (CRUD)', () => {
       expect(persisted).not.toBeNull()
       expect(persisted?.deletedAt).not.toBeNull()
       // And must no longer appear in GET /matches
-      const user = await createUser()
-      const listRes = await agent.get('/matches').set(authHeaderFor(user.id))
+      const listRes = await agent.get('/matches').set(authHeaderFor(admin.id, true))
       expect(listRes.body.find((m: { id: string }) => m.id === match.id)).toBeUndefined()
     })
 
