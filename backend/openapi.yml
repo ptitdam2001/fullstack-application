@@ -1652,6 +1652,16 @@ paths:
           schema:
             type: boolean
           description: If true, only return matches where scheduledAt is in the past
+        - in: query
+          name: championshipId
+          schema:
+            type: string
+          description: Filter by championship id (resolved via the match's group/bracket → phase)
+        - in: query
+          name: ageCategoryId
+          schema:
+            type: string
+          description: Filter by age category id (resolved via the match's group/bracket → phase → championship)
       responses:
         200:
           description: ''
@@ -1666,6 +1676,22 @@ paths:
     get:
       operationId: countMatches
       description: 'Count matches (admin only)'
+      parameters:
+        - in: query
+          name: status
+          schema:
+            $ref: '#/components/schemas/MatchStatus'
+          description: Filter by match status
+        - in: query
+          name: championshipId
+          schema:
+            type: string
+          description: Filter by championship id (resolved via the match's group/bracket → phase)
+        - in: query
+          name: ageCategoryId
+          schema:
+            type: string
+          description: Filter by age category id (resolved via the match's group/bracket → phase → championship)
       tags:
         - Match
       responses:

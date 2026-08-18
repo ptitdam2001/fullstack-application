@@ -10,8 +10,8 @@ export class MatchUseCases {
     private readonly bracketUseCases: BracketUseCases
   ) {}
 
-  count() {
-    return this.repo.count()
+  count(filters?: MatchFilterOptions) {
+    return this.repo.count(filters)
   }
 
   getAll(options: PaginationOptions, filters?: MatchFilterOptions) {
@@ -20,7 +20,9 @@ export class MatchUseCases {
 
   async getById(id: string) {
     const match = await this.repo.findById(id)
-    if (!match) throw new MatchNotFoundError(id)
+    if (!match) {
+      throw new MatchNotFoundError(id)
+    }
     return match
   }
 

@@ -13,3 +13,9 @@ get {
 auth:bearer {
   token: {{token}}
 }
+
+params:query {
+  ~status: SCHEDULED
+  ~championshipId: championship-id-here
+  ~ageCategoryId: age-category-id-here
+}

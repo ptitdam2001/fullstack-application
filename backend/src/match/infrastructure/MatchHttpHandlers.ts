@@ -13,7 +13,10 @@ const useCases = new MatchUseCases(new PrismaMatchRepository(), bracketUseCases)
 
 export const countMatches = async (ctx: Context, __: Request, res: Response) => {
   requireAdmin(ctx)
-  res.json(await useCases.count())
+  const status = ctx.request.query.status as string | undefined
+  const championshipId = ctx.request.query.championshipId as string | undefined
+  const ageCategoryId = ctx.request.query.ageCategoryId as string | undefined
+  res.json(await useCases.count({ status: status as MatchStatus | undefined, championshipId, ageCategoryId }))
 }
 
 export const getMatches = async (ctx: Context, _: Request, res: Response) => {
@@ -22,10 +25,12 @@ export const getMatches = async (ctx: Context, _: Request, res: Response) => {
   const count = Number(ctx.request.query.count) || 20
   const status = ctx.request.query.status as string | undefined
   const pastDue = ctx.request.query.pastDue === 'true'
+  const championshipId = ctx.request.query.championshipId as string | undefined
+  const ageCategoryId = ctx.request.query.ageCategoryId as string | undefined
   res.json(
     await useCases.getAll(
       { page, count },
-      { status: status as MatchStatus | undefined, pastDue: pastDue || undefined }
+      { status: status as MatchStatus | undefined, pastDue: pastDue || undefined, championshipId, ageCategoryId }
     )
   )
 }

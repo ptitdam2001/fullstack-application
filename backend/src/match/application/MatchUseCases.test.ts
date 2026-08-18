@@ -50,6 +50,21 @@ describe('MatchUseCases.count', () => {
   it('returns the count', async () => {
     expect(await new MatchUseCases(makeRepo(), makeBracketUseCases()).count()).toBe(1)
   })
+
+  it('passes undefined filters to repo when none provided', async () => {
+    const repo = makeRepo()
+    await new MatchUseCases(repo, makeBracketUseCases()).count()
+    expect(repo.count).toHaveBeenCalledWith(undefined)
+  })
+
+  it('passes championshipId/ageCategoryId filters to repo', async () => {
+    const repo = makeRepo()
+    await new MatchUseCases(repo, makeBracketUseCases()).count({
+      championshipId: 'champ-1',
+      ageCategoryId: 'cat-1',
+    })
+    expect(repo.count).toHaveBeenCalledWith({ championshipId: 'champ-1', ageCategoryId: 'cat-1' })
+  })
 })
 
 describe('MatchUseCases.getAll', () => {
@@ -85,10 +100,19 @@ describe('MatchUseCases.getAll', () => {
       { page: 1, count: 20 },
       { status: MatchStatus.SCHEDULED, pastDue: true }
     )
-    expect(repo.findAll).toHaveBeenCalledWith(
-      { page: 1, count: 20 },
-      { status: MatchStatus.SCHEDULED, pastDue: true }
-    )
+    expect(repo.findAll).toHaveBeenCalledWith({ page: 1, count: 20 }, { status: MatchStatus.SCHEDULED, pastDue: true })
+  })
+
+  it('passes championshipId filter to repo', async () => {
+    const repo = makeRepo()
+    await new MatchUseCases(repo, makeBracketUseCases()).getAll({ page: 1, count: 20 }, { championshipId: 'champ-1' })
+    expect(repo.findAll).toHaveBeenCalledWith({ page: 1, count: 20 }, { championshipId: 'champ-1' })
+  })
+
+  it('passes ageCategoryId filter to repo', async () => {
+    const repo = makeRepo()
+    await new MatchUseCases(repo, makeBracketUseCases()).getAll({ page: 1, count: 20 }, { ageCategoryId: 'cat-1' })
+    expect(repo.findAll).toHaveBeenCalledWith({ page: 1, count: 20 }, { ageCategoryId: 'cat-1' })
   })
 })
 
@@ -99,9 +123,7 @@ describe('MatchUseCases.getById', () => {
   })
   it('throws MatchNotFoundError when not found', async () => {
     const repo = makeRepo({ findById: vi.fn().mockResolvedValue(null) })
-    await expect(new MatchUseCases(repo, makeBracketUseCases()).getById('unknown')).rejects.toThrow(
-      MatchNotFoundError
-    )
+    await expect(new MatchUseCases(repo, makeBracketUseCases()).getById('unknown')).rejects.toThrow(MatchNotFoundError)
   })
 })
 
@@ -245,8 +267,6 @@ describe('MatchUseCases.delete', () => {
   })
   it('throws MatchNotFoundError when not found', async () => {
     const repo = makeRepo({ findById: vi.fn().mockResolvedValue(null) })
-    await expect(new MatchUseCases(repo, makeBracketUseCases()).delete('unknown')).rejects.toThrow(
-      MatchNotFoundError
-    )
+    await expect(new MatchUseCases(repo, makeBracketUseCases()).delete('unknown')).rejects.toThrow(MatchNotFoundError)
   })
 })

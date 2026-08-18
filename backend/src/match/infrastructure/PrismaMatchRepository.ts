@@ -20,17 +20,30 @@ const select = {
   updatedAt: true,
 } as const
 
+const stageWhere = (filters?: MatchFilterOptions) => {
+  if (!filters?.championshipId && !filters?.ageCategoryId) {
+    return {}
+  }
+  const phaseWhere = filters.championshipId
+    ? { championshipId: filters.championshipId }
+    : { championship: { ageCategoryId: filters.ageCategoryId } }
+  return { OR: [{ group: { phase: phaseWhere } }, { bracket: { phase: phaseWhere } }] }
+}
+
+const buildWhere = (filters?: MatchFilterOptions) => ({
+  ...notDeleted,
+  ...(filters?.status ? { status: filters.status } : {}),
+  ...(filters?.pastDue ? { scheduledAt: { lt: new Date() }, status: 'SCHEDULED' as const } : {}),
+  ...stageWhere(filters),
+})
+
 export class PrismaMatchRepository implements IMatchRepository {
-  count(): Promise<number> {
-    return prisma.match.count({ where: { ...notDeleted } })
+  count(filters?: MatchFilterOptions): Promise<number> {
+    return prisma.match.count({ where: buildWhere(filters) })
   }
 
   async findAll({ page, count }: PaginationOptions, filters?: MatchFilterOptions): Promise<Match[]> {
-    const where = {
-      ...notDeleted,
-      ...(filters?.status ? { status: filters.status } : {}),
-      ...(filters?.pastDue ? { scheduledAt: { lt: new Date() }, status: 'SCHEDULED' as const } : {}),
-    }
+    const where = buildWhere(filters)
     return prisma.match.findMany({ where, skip: (page - 1) * count, take: count, select }) as Promise<Match[]>
   }
 

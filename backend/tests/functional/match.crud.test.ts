@@ -4,7 +4,14 @@ import { prisma } from '../../utils/prismaClient.js'
 import { authHeaderFor } from '../support/authenticate.js'
 import { createTestAgent } from '../support/client.js'
 import { resetDatabase } from '../support/database.js'
-import { createAdmin, createTeam, createUser } from '../support/fixtures.js'
+import {
+  createAdmin,
+  createAgeCategory,
+  createGroup,
+  createPhase,
+  createTeam,
+  createUser,
+} from '../support/fixtures.js'
 
 /** MongoDB rejects non-ObjectId strings on @db.ObjectId fields with a 500.
  *  Use a well-formed but absent ObjectId for "unknown id" cases. */
@@ -50,6 +57,27 @@ const seedMatch = (homeTeamId: string, awayTeamId: string, overrides: Record<str
     data: { homeTeamId, awayTeamId, area: makeArea(), status: 'SCHEDULED', ...overrides },
     select: seedMatchSelect,
   })
+
+/**
+ * The shared `createChampionship` fixture (tests/support/fixtures.ts) predates the
+ * Season model migration — it still writes a `season` string field that no longer
+ * exists on the schema (seasonId is required instead), so it fails on every call.
+ * Pre-existing, unrelated to this test file (see commit 65a572f). Bypassed here with
+ * a local, schema-correct helper rather than fixed — fixing the shared fixture affects
+ * 4 other test files outside this change's scope.
+ */
+const seedChampionship = async (ageCategoryId: string) => {
+  const suffix = randomBytes(4).toString('hex')
+  const season = await prisma.season.create({ data: { label: `Saison-${suffix}` } })
+  return prisma.championship.create({
+    data: {
+      name: `Championnat-${suffix}`,
+      ageCategoryId,
+      seasonId: season.id,
+      pointsConfig: { win: 3, draw: 2, loss: 1, forfeit: 0 },
+    },
+  })
+}
 
 describe('match domain — functional API (CRUD)', () => {
   let agent: Awaited<ReturnType<typeof createTestAgent>>
@@ -164,6 +192,92 @@ describe('match domain — functional API (CRUD)', () => {
       const res = await agent.get('/matches').set(authHeaderFor(user.id))
 
       expect(res.status).toBe(403)
+    })
+  })
+
+  // ─── getMatches / countMatches — championshipId / ageCategoryId filters ───
+  describe('getMatches, countMatches — filter by championshipId / ageCategoryId', () => {
+    it('règle métier: championshipId filters matches via group→phase (2-hop relation filter)', async () => {
+      const catA = await createAgeCategory({ label: 'U13' })
+      const catB = await createAgeCategory({ label: 'U15' })
+      const champA = await seedChampionship(catA.id)
+      const champB = await seedChampionship(catB.id)
+      const phaseA = await createPhase(champA.id)
+      const phaseB = await createPhase(champB.id)
+      const [homeA, awayA] = [await createTeam(), await createTeam()]
+      const [homeB, awayB] = [await createTeam(), await createTeam()]
+      const groupA = await createGroup(phaseA.id, { teamIds: [homeA.id, awayA.id] })
+      const groupB = await createGroup(phaseB.id, { teamIds: [homeB.id, awayB.id] })
+      const matchA = await seedMatch(homeA.id, awayA.id, { groupId: groupA.id })
+      await seedMatch(homeB.id, awayB.id, { groupId: groupB.id })
+
+      const admin = await createAdmin()
+      const listRes = await agent.get(`/matches?championshipId=${champA.id}`).set(authHeaderFor(admin.id, true))
+      const countRes = await agent.get(`/matches/count?championshipId=${champA.id}`).set(authHeaderFor(admin.id, true))
+
+      expect(listRes.status).toBe(200)
+      expect(listRes.body).toHaveLength(1)
+      expect(listRes.body[0].id).toBe(matchA.id)
+      expect(countRes.body).toBe(1)
+    })
+
+    it('règle métier: ageCategoryId filters matches via group→phase→championship (3-hop relation filter)', async () => {
+      const catA = await createAgeCategory({ label: 'U13' })
+      const catB = await createAgeCategory({ label: 'U15' })
+      const champA = await seedChampionship(catA.id)
+      const champB = await seedChampionship(catB.id)
+      const phaseA = await createPhase(champA.id)
+      const phaseB = await createPhase(champB.id)
+      const [homeA, awayA] = [await createTeam(), await createTeam()]
+      const [homeB, awayB] = [await createTeam(), await createTeam()]
+      const groupA = await createGroup(phaseA.id, { teamIds: [homeA.id, awayA.id] })
+      const groupB = await createGroup(phaseB.id, { teamIds: [homeB.id, awayB.id] })
+      const matchA = await seedMatch(homeA.id, awayA.id, { groupId: groupA.id })
+      await seedMatch(homeB.id, awayB.id, { groupId: groupB.id })
+
+      const admin = await createAdmin()
+      const listRes = await agent.get(`/matches?ageCategoryId=${catA.id}`).set(authHeaderFor(admin.id, true))
+      const countRes = await agent.get(`/matches/count?ageCategoryId=${catA.id}`).set(authHeaderFor(admin.id, true))
+
+      expect(listRes.status).toBe(200)
+      expect(listRes.body).toHaveLength(1)
+      expect(listRes.body[0].id).toBe(matchA.id)
+      expect(countRes.body).toBe(1)
+    })
+
+    it('règle métier: championshipId also matches bracket-based (knockout) matches', async () => {
+      const cat = await createAgeCategory({ label: 'U11' })
+      const champ = await seedChampionship(cat.id)
+      const otherChamp = await seedChampionship((await createAgeCategory({ label: 'U9' })).id)
+      const phase = await createPhase(champ.id, { type: 'KNOCKOUT' })
+      const otherPhase = await createPhase(otherChamp.id, { type: 'KNOCKOUT' })
+      const bracket = await prisma.bracket.create({ data: { phaseId: phase.id, name: 'Éliminatoires' } })
+      const otherBracket = await prisma.bracket.create({ data: { phaseId: otherPhase.id, name: 'Éliminatoires' } })
+      const [home, away] = [await createTeam(), await createTeam()]
+      const match = await seedMatch(home.id, away.id, { bracketId: bracket.id, groupId: undefined })
+      await seedMatch(home.id, away.id, { bracketId: otherBracket.id, groupId: undefined })
+
+      const admin = await createAdmin()
+      const res = await agent.get(`/matches?championshipId=${champ.id}`).set(authHeaderFor(admin.id, true))
+
+      expect(res.status).toBe(200)
+      expect(res.body).toHaveLength(1)
+      expect(res.body[0].id).toBe(match.id)
+    })
+
+    it('règle métier: championship with no phases yet returns an empty result, not everything', async () => {
+      const cat = await createAgeCategory({ label: 'U17' })
+      const emptyChamp = await seedChampionship(cat.id)
+      const home = await createTeam()
+      const away = await createTeam()
+      // an unrelated match exists in the DB, with no championship link
+      await seedMatch(home.id, away.id)
+
+      const admin = await createAdmin()
+      const res = await agent.get(`/matches?championshipId=${emptyChamp.id}`).set(authHeaderFor(admin.id, true))
+
+      expect(res.status).toBe(200)
+      expect(res.body).toEqual([])
     })
   })
 
