@@ -7,9 +7,21 @@ import { MatchNotFoundError } from '../domain/MatchErrors.js'
 import { requireAdmin } from '../../auth/application/requireRoles.js'
 import { BracketUseCases } from '../../bracket/application/BracketUseCases.js'
 import { PrismaBracketRepository } from '../../bracket/infrastructure/PrismaBracketRepository.js'
+import { PrismaGroupRepository } from '../../group/infrastructure/PrismaGroupRepository.js'
+import { PrismaPhaseRepository } from '../../phase/infrastructure/PrismaPhaseRepository.js'
+import { PrismaChampionshipRepository } from '../../championship/infrastructure/PrismaChampionshipRepository.js'
+import { PrismaTeamRepository } from '../../team/infrastructure/PrismaTeamRepository.js'
 
 const bracketUseCases = new BracketUseCases(new PrismaBracketRepository(), new PrismaMatchRepository())
-const useCases = new MatchUseCases(new PrismaMatchRepository(), bracketUseCases)
+const useCases = new MatchUseCases(
+  new PrismaMatchRepository(),
+  bracketUseCases,
+  new PrismaGroupRepository(),
+  new PrismaBracketRepository(),
+  new PrismaPhaseRepository(),
+  new PrismaChampionshipRepository(),
+  new PrismaTeamRepository()
+)
 
 export const countMatches = async (ctx: Context, __: Request, res: Response) => {
   requireAdmin(ctx)

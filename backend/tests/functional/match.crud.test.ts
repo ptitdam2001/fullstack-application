@@ -281,6 +281,64 @@ describe('match domain — functional API (CRUD)', () => {
     })
   })
 
+  // ─── getMatches / getMatch — display data enrichment ───────────────────────
+  describe('getMatches, getMatch — championshipName/stageName/homeTeam/awayTeam enrichment', () => {
+    it('règle métier: group match resolves championshipName, stageName and team summaries', async () => {
+      const cat = await createAgeCategory({ label: 'U13' })
+      const champ = await seedChampionship(cat.id)
+      const phase = await createPhase(champ.id)
+      const home = await createTeam()
+      const away = await createTeam()
+      const group = await createGroup(phase.id, { name: 'Poule A', teamIds: [home.id, away.id] })
+      const match = await seedMatch(home.id, away.id, { groupId: group.id })
+
+      const admin = await createAdmin()
+      const listRes = await agent.get('/matches').set(authHeaderFor(admin.id, true))
+      const detailRes = await agent.get(`/match/${match.id}`).set(authHeaderFor(admin.id, true))
+
+      const expected = {
+        championshipName: champ.name,
+        stageName: 'Poule A',
+        homeTeam: { id: home.id, name: home.name, color: home.color },
+        awayTeam: { id: away.id, name: away.name, color: away.color },
+      }
+      expect(listRes.body[0]).toMatchObject(expected)
+      expect(detailRes.body).toMatchObject(expected)
+    })
+
+    it('règle métier: bracket match resolves championshipName and stageName from the bracket', async () => {
+      const cat = await createAgeCategory({ label: 'U11' })
+      const champ = await seedChampionship(cat.id)
+      const phase = await createPhase(champ.id, { type: 'KNOCKOUT' })
+      const bracket = await prisma.bracket.create({ data: { phaseId: phase.id, name: 'Demi-finale' } })
+      const home = await createTeam()
+      const away = await createTeam()
+      const match = await seedMatch(home.id, away.id, { bracketId: bracket.id, groupId: undefined })
+
+      const admin = await createAdmin()
+      const res = await agent.get(`/match/${match.id}`).set(authHeaderFor(admin.id, true))
+
+      expect(res.body).toMatchObject({ championshipName: champ.name, stageName: 'Demi-finale' })
+    })
+
+    it('règle métier: match without group/bracket/teams returns null display fields', async () => {
+      const match = await prisma.match.create({
+        data: { area: makeArea(), status: 'SCHEDULED' },
+        select: seedMatchSelect,
+      })
+
+      const admin = await createAdmin()
+      const res = await agent.get(`/match/${match.id}`).set(authHeaderFor(admin.id, true))
+
+      expect(res.body).toMatchObject({
+        championshipName: null,
+        stageName: null,
+        homeTeam: null,
+        awayTeam: null,
+      })
+    })
+  })
+
   // ─── getMatch ─────────────────────────────────────────────────────────────
   describe('getMatch — GET /match/{id}', () => {
     it('nominal: returns match by id', async () => {

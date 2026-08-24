@@ -2957,6 +2957,22 @@ components:
           type: string
           nullable: true
 
+    MatchTeamSummary:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        color:
+          nullable: true
+          type: string
+          example: '#222abb'
+          format: color
+
     Match:
       allOf:
         - $ref: '#/components/schemas/MatchInput'
@@ -2967,6 +2983,22 @@ components:
             id:
               type: string
               format: uuid
+            championshipName:
+              type: string
+              nullable: true
+            stageName:
+              type: string
+              nullable: true
+            homeTeam:
+              type: object
+              nullable: true
+              allOf:
+                - $ref: '#/components/schemas/MatchTeamSummary'
+            awayTeam:
+              type: object
+              nullable: true
+              allOf:
+                - $ref: '#/components/schemas/MatchTeamSummary'
 
     PhaseType:
       type: string

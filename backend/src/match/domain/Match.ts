@@ -33,3 +33,16 @@ export type Match = {
 
 export type CreateMatchInput = Omit<Match, 'id' | 'status' | 'updatedAt'> & { status?: MatchStatus }
 export type UpdateMatchInput = Partial<CreateMatchInput>
+
+export type MatchTeamSummary = {
+  id: string
+  name: string
+  color: string | null
+}
+
+export type MatchWithDisplayData = Match & {
+  championshipName: string | null
+  stageName: string | null
+  homeTeam: MatchTeamSummary | null
+  awayTeam: MatchTeamSummary | null
+}
