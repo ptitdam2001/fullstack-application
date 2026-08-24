@@ -2920,6 +2920,8 @@ components:
       type: object
       required:
         - area
+        - homeTeamId
+        - awayTeamId
       properties:
         groupId:
           type: string
