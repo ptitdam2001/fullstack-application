@@ -49,6 +49,7 @@
       "@Season/*": ["./src/Season/*", "./src/Season/"],
       "@Championship": ["./src/Championship/index.ts"],
       "@Championship/*": ["./src/Championship/*", "./src/Championship/"],
+      "@Match/*": ["./src/Match/*", "./src/Match/"],
       "@Area": ["./src/Area/index.ts"],
       "@Area/*": ["./src/Area/*", "./src/Area/"],
       "@Sdk/*": ["./src/sdk/generated/", "./src/sdk/generated/*"],

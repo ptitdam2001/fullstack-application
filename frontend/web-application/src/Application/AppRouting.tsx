@@ -36,6 +36,7 @@ import {
   AdminTeamDeletePage,
   AdminAgeCategoriesPage,
   AdminSeasonsPage,
+  AdminMatchesPage,
 } from '@Admin'
 
 const AppLayout = () => {
@@ -124,6 +125,9 @@ const router = createBrowserRouter(
           </Route>
           <Route path="teams" element={<AdminTeamsPage />} handle={{ breadcrumb: 'Équipes' }}>
             <Route path=":teamId/delete" element={<AdminTeamDeletePage />} handle={{ breadcrumb: 'Supprimer' }} />
+          </Route>
+          <Route path="matches" handle={{ breadcrumb: 'Matchs' }}>
+            <Route index element={<AdminMatchesPage />} />
           </Route>
         </Route>
 

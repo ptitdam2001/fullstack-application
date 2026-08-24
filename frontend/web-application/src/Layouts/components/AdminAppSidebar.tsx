@@ -65,11 +65,11 @@ export const AdminAppSidebar = () => {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton
-                  tooltip={formatMessage({ id: 'adminSidebar.gamesNeedsScore' })}
-                  onClick={() => navigate('/app/games')}
+                  tooltip={formatMessage({ id: 'adminSidebar.matches' })}
+                  onClick={() => navigate('/app/admin/matches')}
                 >
                   <CalendarDays />
-                  <span>{formatMessage({ id: 'adminSidebar.gamesNeedsScore' })}</span>
+                  <span>{formatMessage({ id: 'adminSidebar.matches' })}</span>
                 </SidebarMenuButton>
                 {pendingScoreCount > 0 && <SidebarMenuBadge>{pendingScoreCount}</SidebarMenuBadge>}
               </SidebarMenuItem>

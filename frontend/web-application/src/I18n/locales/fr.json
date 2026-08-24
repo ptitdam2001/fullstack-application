@@ -227,7 +227,7 @@
     "management": "Gestion",
     "championships": "Championnats",
     "teams": "Équipes",
-    "gamesNeedsScore": "Matchs sans score",
+    "matches": "Matchs",
     "users": "Utilisateurs",
     "usersInactive": "Activations en attente",
     "config": "Configuration",
@@ -365,6 +365,19 @@
     "status.finished": "Terminé",
     "phaseType.GROUP": "Poules",
     "phaseType.KNOCKOUT": "Élimination directe"
+  },
+  "adminMatches": {
+    "title": "Matchs",
+    "filters.championship": "Championnat",
+    "filters.championship.all": "Tous les championnats",
+    "filters.ageCategory": "Catégorie",
+    "filters.ageCategory.all": "Toutes les catégories",
+    "filters.reset": "Réinitialiser",
+    "filters.count": "{count} matchs",
+    "tabs.all": "Tous",
+    "tabs.scheduled": "À venir",
+    "tabs.played": "Joué",
+    "tabs.forfeited": "Forfait"
   },
   "adminSeasons": {
     "title": "Saisons",

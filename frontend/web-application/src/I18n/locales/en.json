@@ -227,7 +227,7 @@
     "management": "Management",
     "championships": "Championships",
     "teams": "Teams",
-    "gamesNeedsScore": "Matches without score",
+    "matches": "Matches",
     "users": "Users",
     "usersInactive": "Pending activations",
     "config": "Configuration",
@@ -365,6 +365,19 @@
     "status.finished": "Finished",
     "phaseType.GROUP": "Groups",
     "phaseType.KNOCKOUT": "Knockout"
+  },
+  "adminMatches": {
+    "title": "Matches",
+    "filters.championship": "Championship",
+    "filters.championship.all": "All championships",
+    "filters.ageCategory": "Category",
+    "filters.ageCategory.all": "All categories",
+    "filters.reset": "Reset",
+    "filters.count": "{count} matches",
+    "tabs.all": "All",
+    "tabs.scheduled": "Upcoming",
+    "tabs.played": "Played",
+    "tabs.forfeited": "Forfeited"
   },
   "adminSeasons": {
     "title": "Seasons",
