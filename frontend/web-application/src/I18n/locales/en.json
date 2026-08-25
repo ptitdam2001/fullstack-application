@@ -384,7 +384,11 @@
     "card.delete": "Delete",
     "card.teamTbd": "TBD",
     "card.empty": "No matches found",
-    "card.status.cancelled": "Cancelled"
+    "card.status.cancelled": "Cancelled",
+    "scoreDialog.homeGoals": "Home goals",
+    "scoreDialog.awayGoals": "Away goals",
+    "scoreDialog.cancel": "Cancel",
+    "scoreDialog.submit": "Submit"
   },
   "adminSeasons": {
     "title": "Seasons",

@@ -384,7 +384,11 @@
     "card.delete": "Supprimer",
     "card.teamTbd": "À déterminer",
     "card.empty": "Aucun match trouvé",
-    "card.status.cancelled": "Annulé"
+    "card.status.cancelled": "Annulé",
+    "scoreDialog.homeGoals": "Buts domicile",
+    "scoreDialog.awayGoals": "Buts extérieur",
+    "scoreDialog.cancel": "Annuler",
+    "scoreDialog.submit": "Valider"
   },
   "adminSeasons": {
     "title": "Saisons",

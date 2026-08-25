@@ -1,4 +1,4 @@
-import { Suspense, use } from 'react'
+import { Suspense, use, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 import { Layout, Separator, TablePagination, Typography } from '@repo/design-system'
 import { ErrorBoundary } from '@Common/ErrorBoundary'
@@ -6,20 +6,21 @@ import { TableLoader } from '@Common/Loading'
 import { useMatchList } from '@Match/application/useMatchList'
 import { MatchFilters } from '@Match/ui/Admin/MatchFilters'
 import { MatchCardGrid } from '@Match/ui/Admin/MatchCardGrid'
+import { ScoreEntryDialog } from '@Match/ui/Admin/ScoreEntryDialog'
 import type { Match } from '@Match/domain/Match'
 
-const handleScoreClick = (_match: Match) => {}
 const handleDeleteClick = (_match: Match) => {}
 
 const AdminMatchesContent = () => {
   const { query, countQuery, filters, changeFilters, pagination, changePage } = useMatchList()
   const matches = use(query.promise)
   const resultCount = (countQuery.data ?? 0) as number
+  const [matchForScore, setMatchForScore] = useState<Match | null>(null)
 
   return (
     <section className="flex h-full w-full flex-col gap-0.5">
       <MatchFilters filters={filters} onChange={changeFilters} resultCount={resultCount} />
-      <MatchCardGrid matches={matches as Match[]} onScoreClick={handleScoreClick} onDeleteClick={handleDeleteClick} />
+      <MatchCardGrid matches={matches as Match[]} onScoreClick={setMatchForScore} onDeleteClick={handleDeleteClick} />
       <div className="min-h-10">
         <TablePagination
           count={resultCount}
@@ -29,6 +30,18 @@ const AdminMatchesContent = () => {
           className="w-full"
         />
       </div>
+      {matchForScore && (
+        <ScoreEntryDialog
+          match={matchForScore}
+          open
+          onOpenChange={open => {
+            if (!open) {
+              setMatchForScore(null)
+            }
+          }}
+          onFinish={() => setMatchForScore(null)}
+        />
+      )}
     </section>
   )
 }
