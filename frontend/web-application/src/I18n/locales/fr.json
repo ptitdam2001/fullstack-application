@@ -377,7 +377,14 @@
     "tabs.all": "Tous",
     "tabs.scheduled": "À venir",
     "tabs.played": "Joué",
-    "tabs.forfeited": "Forfait"
+    "tabs.forfeited": "Forfait",
+    "card.menu": "Actions du match",
+    "card.enterScore": "Saisir le score",
+    "card.editScore": "Modifier le score",
+    "card.delete": "Supprimer",
+    "card.teamTbd": "À déterminer",
+    "card.empty": "Aucun match trouvé",
+    "card.status.cancelled": "Annulé"
   },
   "adminSeasons": {
     "title": "Saisons",

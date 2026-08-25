@@ -377,7 +377,14 @@
     "tabs.all": "All",
     "tabs.scheduled": "Upcoming",
     "tabs.played": "Played",
-    "tabs.forfeited": "Forfeited"
+    "tabs.forfeited": "Forfeited",
+    "card.menu": "Match actions",
+    "card.enterScore": "Enter score",
+    "card.editScore": "Edit score",
+    "card.delete": "Delete",
+    "card.teamTbd": "TBD",
+    "card.empty": "No matches found",
+    "card.status.cancelled": "Cancelled"
   },
   "adminSeasons": {
     "title": "Seasons",

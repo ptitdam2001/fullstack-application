@@ -1,16 +1,36 @@
-import { Suspense } from 'react'
+import { Suspense, use } from 'react'
 import { FormattedMessage } from 'react-intl'
-import { Layout, Separator, Typography } from '@repo/design-system'
+import { Layout, Separator, TablePagination, Typography } from '@repo/design-system'
 import { ErrorBoundary } from '@Common/ErrorBoundary'
 import { TableLoader } from '@Common/Loading'
 import { useMatchList } from '@Match/application/useMatchList'
 import { MatchFilters } from '@Match/ui/Admin/MatchFilters'
+import { MatchCardGrid } from '@Match/ui/Admin/MatchCardGrid'
+import type { Match } from '@Match/domain/Match'
+
+const handleScoreClick = (_match: Match) => {}
+const handleDeleteClick = (_match: Match) => {}
 
 const AdminMatchesContent = () => {
-  const { countQuery, filters, changeFilters } = useMatchList()
+  const { query, countQuery, filters, changeFilters, pagination, changePage } = useMatchList()
+  const matches = use(query.promise)
   const resultCount = (countQuery.data ?? 0) as number
 
-  return <MatchFilters filters={filters} onChange={changeFilters} resultCount={resultCount} />
+  return (
+    <section className="flex h-full w-full flex-col gap-0.5">
+      <MatchFilters filters={filters} onChange={changeFilters} resultCount={resultCount} />
+      <MatchCardGrid matches={matches as Match[]} onScoreClick={handleScoreClick} onDeleteClick={handleDeleteClick} />
+      <div className="min-h-10">
+        <TablePagination
+          count={resultCount}
+          page={pagination.page}
+          onPageChange={changePage}
+          rowsPerPage={pagination.rowsPerPage}
+          className="w-full"
+        />
+      </div>
+    </section>
+  )
 }
 
 export const AdminMatchesPage = () => (
