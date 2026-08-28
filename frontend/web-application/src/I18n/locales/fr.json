@@ -388,7 +388,11 @@
     "scoreDialog.homeGoals": "Buts domicile",
     "scoreDialog.awayGoals": "Buts extérieur",
     "scoreDialog.cancel": "Annuler",
-    "scoreDialog.submit": "Valider"
+    "scoreDialog.submit": "Valider",
+    "deleteDialog.title": "Supprimer ce match ?",
+    "deleteDialog.description": "Le match {homeTeam} - {awayTeam} du {date} sera supprimé définitivement. Cette action est irréversible.",
+    "deleteDialog.cancel": "Annuler",
+    "deleteDialog.confirm": "Supprimer"
   },
   "adminSeasons": {
     "title": "Saisons",

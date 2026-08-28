@@ -388,7 +388,11 @@
     "scoreDialog.homeGoals": "Home goals",
     "scoreDialog.awayGoals": "Away goals",
     "scoreDialog.cancel": "Cancel",
-    "scoreDialog.submit": "Submit"
+    "scoreDialog.submit": "Submit",
+    "deleteDialog.title": "Delete this match?",
+    "deleteDialog.description": "The match {homeTeam} vs {awayTeam} on {date} will be permanently deleted. This action cannot be undone.",
+    "deleteDialog.cancel": "Cancel",
+    "deleteDialog.confirm": "Delete"
   },
   "adminSeasons": {
     "title": "Seasons",
