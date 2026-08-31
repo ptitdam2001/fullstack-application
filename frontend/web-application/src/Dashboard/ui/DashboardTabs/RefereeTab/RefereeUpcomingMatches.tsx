@@ -31,7 +31,7 @@ export const RefereeUpcomingMatches = ({ matches, teamNames }: Props) => {
               <span className="text-muted-foreground text-xs">
                 {m.scheduledAt ? new Date(m.scheduledAt).toLocaleString() : '—'}
               </span>
-              {m.area.name && <span className="text-muted-foreground text-xs">{m.area.name}</span>}
+              {m.area?.name && <span className="text-muted-foreground text-xs">{m.area.name}</span>}
             </div>
             <Link to={`/app/games/${m.id}`} className="text-primary text-xs font-medium hover:underline">
               →
