@@ -2942,7 +2942,9 @@ components:
           format: date-time
           nullable: true
         area:
-          $ref: '#/components/schemas/MatchArea'
+          oneOf:
+            - $ref: '#/components/schemas/MatchArea'
+            - type: 'null'
         homeTeamId:
           type: string
           nullable: true

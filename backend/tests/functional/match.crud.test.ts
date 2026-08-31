@@ -533,6 +533,21 @@ describe('match domain — functional API (CRUD)', () => {
       expect(persisted?.awayGoals).toBe(1)
     })
 
+    it('règle métier: admin records score of a match with no area assigned (area: null)', async () => {
+      const admin = await createAdmin()
+      const home = await createTeam()
+      const away = await createTeam()
+      const match = await seedMatch(home.id, away.id, { area: null })
+
+      const res = await agent
+        .patch(`/match/${match.id}`)
+        .set(authHeaderFor(admin.id, true))
+        .send(matchBody(home.id, away.id, { area: null, status: 'PLAYED', homeGoals: 2, awayGoals: 1 }))
+
+      expect(res.status).toBe(200)
+      expect(res.body).toMatchObject({ id: match.id, status: 'PLAYED', homeGoals: 2, awayGoals: 1 })
+    })
+
     it('nominal: admin corrects score of already-PLAYED match', async () => {
       const admin = await createAdmin()
       const home = await createTeam()
