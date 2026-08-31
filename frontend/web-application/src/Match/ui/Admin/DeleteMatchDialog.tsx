@@ -39,7 +39,10 @@ export const DeleteMatchDialog = ({ match, open, onOpenChange, onConfirm, isPend
               <FormattedMessage id="adminMatches.deleteDialog.title" />
             </DialogTitle>
             <DialogDescription className="pt-3 pb-5">
-              <FormattedMessage id="adminMatches.deleteDialog.description" values={{ homeTeam, awayTeam, date }} />
+              <FormattedMessage
+                id={date ? 'adminMatches.deleteDialog.description' : 'adminMatches.deleteDialog.descriptionNoDate'}
+                values={{ homeTeam, awayTeam, date }}
+              />
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

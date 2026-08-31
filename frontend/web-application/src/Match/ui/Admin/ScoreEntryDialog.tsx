@@ -42,6 +42,7 @@ export const ScoreEntryDialog = ({ match, open, onOpenChange, onFinish }: Props)
     mode: 'all',
   })
   const { submitScore, isPending } = useMatchScoreForm(match)
+  const scheduledDate = formatDate(match.scheduledAt, intl.locale)
 
   const onSubmit = async (data: ScoreEntryValues) => {
     await submitScore(data)
@@ -59,7 +60,8 @@ export const ScoreEntryDialog = ({ match, open, onOpenChange, onFinish }: Props)
               <FormattedMessage id={hasScore ? 'adminMatches.card.editScore' : 'adminMatches.card.enterScore'} />
             </DialogTitle>
             <DialogDescription className="pt-1">
-              {match.stageName} · {formatDate(match.scheduledAt, intl.locale)}
+              {match.stageName}
+              {scheduledDate && ` · ${scheduledDate}`}
             </DialogDescription>
           </DialogHeader>
           <Form name="scoreEntryForm" onSubmit={onSubmit} className="flex flex-col gap-4 pt-2">

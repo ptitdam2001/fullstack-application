@@ -391,6 +391,7 @@
     "scoreDialog.submit": "Valider",
     "deleteDialog.title": "Supprimer ce match ?",
     "deleteDialog.description": "Le match {homeTeam} - {awayTeam} du {date} sera supprimé définitivement. Cette action est irréversible.",
+    "deleteDialog.descriptionNoDate": "Le match {homeTeam} - {awayTeam} sera supprimé définitivement. Cette action est irréversible.",
     "deleteDialog.cancel": "Annuler",
     "deleteDialog.confirm": "Supprimer"
   },
