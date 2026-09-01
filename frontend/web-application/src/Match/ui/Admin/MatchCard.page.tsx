@@ -51,12 +51,18 @@ export class MatchCardPage {
     return screen.getByText(messageId)
   }
 
+  private scoreMatches(expected: { home: string; away: string }) {
+    const home = screen.queryByTestId('home-score')
+    const away = screen.queryByTestId('away-score')
+    return home?.textContent === expected.home && away?.textContent === expected.away ? home : null
+  }
+
   score() {
-    return screen.queryByText(`${this.match.homeGoals} - ${this.match.awayGoals}`)
+    return this.scoreMatches({ home: String(this.match.homeGoals), away: String(this.match.awayGoals) })
   }
 
   scorePlaceholder() {
-    return screen.queryByText('–')
+    return this.scoreMatches({ home: '-', away: '-' })
   }
 
   enterScoreButton() {

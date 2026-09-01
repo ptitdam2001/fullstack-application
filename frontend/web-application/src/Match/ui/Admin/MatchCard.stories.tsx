@@ -59,7 +59,7 @@ export const ClickEnterScoreButton: Story = {
   name: 'Bouton "Saisir le score" appelle onScoreClick',
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
-    await userEvent.click(canvas.getByRole('button', { name: /saisir le score|enter score/i }))
+    await userEvent.click(await canvas.findByRole('button', { name: /saisir le score|enter score/i }))
     expect(args.onScoreClick).toHaveBeenCalledWith(baseMatch)
   },
 }
@@ -68,7 +68,7 @@ export const OpenMenu: Story = {
   name: "Le menu ⋯ s'ouvre au clic",
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    await userEvent.click(canvas.getByRole('button', { name: /actions du match|match actions/i }))
+    await userEvent.click(await canvas.findByRole('button', { name: /actions du match|match actions/i }))
     await expect(within(document.body).getByRole('menu')).toBeVisible()
   },
 }
@@ -77,7 +77,7 @@ export const MenuEnterScoreCallsOnScoreClick: Story = {
   name: 'Menu "Saisir le score" appelle onScoreClick',
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
-    await userEvent.click(canvas.getByRole('button', { name: /actions du match|match actions/i }))
+    await userEvent.click(await canvas.findByRole('button', { name: /actions du match|match actions/i }))
     const menu = within(document.body)
     await userEvent.click(await menu.findByRole('menuitem', { name: /saisir le score|enter score/i }))
     await waitFor(() => expect(args.onScoreClick).toHaveBeenCalledWith(baseMatch))
@@ -88,7 +88,7 @@ export const MenuDeleteEnabledWhenScheduled: Story = {
   name: 'Menu "Supprimer" actif quand le match est à venir',
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
-    await userEvent.click(canvas.getByRole('button', { name: /actions du match|match actions/i }))
+    await userEvent.click(await canvas.findByRole('button', { name: /actions du match|match actions/i }))
     const menu = within(document.body)
     const deleteItem = await menu.findByRole('menuitem', { name: /supprimer|delete/i })
     await userEvent.click(deleteItem)
@@ -103,7 +103,7 @@ export const MenuDeleteDisabledWhenPlayed: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    await userEvent.click(canvas.getByRole('button', { name: /actions du match|match actions/i }))
+    await userEvent.click(await canvas.findByRole('button', { name: /actions du match|match actions/i }))
     const menu = within(document.body)
     const deleteItem = await menu.findByRole('menuitem', { name: /supprimer|delete/i })
     await expect(deleteItem).toHaveAttribute('aria-disabled', 'true')

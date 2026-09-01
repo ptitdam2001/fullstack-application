@@ -19,7 +19,10 @@ const isWinner = (match: Match, side: TeamSide): boolean => {
   if (match.homeGoals === match.awayGoals) {
     return false
   }
-  return side === 'home' ? match.homeGoals > match.awayGoals : match.awayGoals > match.homeGoals
+  if (side === 'home') {
+    return match.homeGoals > match.awayGoals
+  }
+  return match.awayGoals > match.homeGoals
 }
 
 const STATUS_BADGE_VARIANT: Record<MatchStatus, 'secondary' | 'default' | 'destructive' | 'outline'> = {
@@ -46,6 +49,15 @@ const TeamRow = ({ team, bold }: { team: MatchTeamSummary | null | undefined; bo
       {team?.name ?? <FormattedMessage id="adminMatches.card.teamTbd" />}
     </span>
   </div>
+)
+
+// TODO - Implement Forfeit
+type ScoreRowProps = Pick<Match, 'awayGoals' | 'homeGoals'> & { hasScore: boolean }
+const ScoreRow = ({ hasScore, homeGoals, awayGoals }: ScoreRowProps) => (
+  <>
+    <div data-testid="home-score">{hasScore ? homeGoals : '-'}</div>
+    <div data-testid="away-score">{hasScore ? awayGoals : '-'}</div>
+  </>
 )
 
 export const MatchCard = ({ match, onScoreClick, onDeleteClick }: Props) => {
@@ -75,12 +87,14 @@ export const MatchCard = ({ match, onScoreClick, onDeleteClick }: Props) => {
           </DropdownMenu>
         </Card.Action>
       </Card.Header>
-      <Card.Content className="flex flex-col gap-2">
-        <TeamRow team={match.homeTeam} bold={isWinner(match, 'home')} />
-        <div className="text-muted-foreground text-sm">
-          {hasScore ? `${match.homeGoals} - ${match.awayGoals}` : '–'}
+      <Card.Content className="flex flex-row gap-2">
+        <div className="flex flex-10/12 flex-col gap-2">
+          <TeamRow team={match.homeTeam} bold={isWinner(match, 'home')} />
+          <TeamRow team={match.awayTeam} bold={isWinner(match, 'away')} />
         </div>
-        <TeamRow team={match.awayTeam} bold={isWinner(match, 'away')} />
+        <div className="text-muted-foreground text-lg">
+          <ScoreRow hasScore={hasScore} awayGoals={match.awayGoals} homeGoals={match.homeGoals} />
+        </div>
       </Card.Content>
       <Card.Footer className="flex items-center justify-between">
         <div className="flex items-center gap-2">
