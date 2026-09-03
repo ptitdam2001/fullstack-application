@@ -10,7 +10,7 @@ type TopBarProps = {
 }
 
 export const TopBar: FC<TopBarProps> = ({ title, children, isAnonymous }) => (
-  <section className="flex shrink-0 items-center gap-2 transition-[width] ease-linear">
+  <section className="bg-sidebar text-sidebar-foreground flex shrink-0 items-center gap-2 transition-[width] ease-linear">
     {!isAnonymous && <SidebarTrigger />}
 
     <div className="grow">{children}</div>
