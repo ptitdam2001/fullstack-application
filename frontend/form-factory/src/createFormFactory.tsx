@@ -73,7 +73,7 @@ export function createFormFactory<TSchema extends ZodType<FieldValues, FieldValu
   function useForm(options?: Omit<UseFormProps<TValues>, 'resolver'>): FormFactoryReturn<TValues> {
     const rhfForm = useRHFForm<TValues>({
       ...options,
-      resolver: zodResolver(config.schema) as Resolver<TValues>,
+      resolver: zodResolver(config.schema) as unknown as Resolver<TValues>,
     })
 
     // Refs hold stable component references across re-renders.
