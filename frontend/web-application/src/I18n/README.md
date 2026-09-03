@@ -12,7 +12,7 @@ pnpm add react-intl
 
 ## Structure
 
-```
+```text
 src/I18n/
 ├── components
 |   └── LanguageSwitcher.tsx  # Component to switch languages
