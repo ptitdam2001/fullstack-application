@@ -384,6 +384,7 @@
     "card.delete": "Supprimer",
     "card.teamTbd": "À déterminer",
     "card.empty": "Aucun match trouvé",
+    "card.toSchedule": "A planifier",
     "card.status.cancelled": "Annulé",
     "scoreDialog.homeGoals": "Buts domicile",
     "scoreDialog.awayGoals": "Buts extérieur",

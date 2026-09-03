@@ -72,10 +72,10 @@ const AdminMatchesContent = () => {
 export const AdminMatchesPage = () => (
   <Layout.Root>
     <Layout.Header>
-      <div className="flex items-center justify-between px-2 py-2">
-        <Typography.Title2>
+      <div className="flex items-center justify-between px-4 py-2">
+        <Typography.Title1>
           <FormattedMessage id="adminMatches.title" />
-        </Typography.Title2>
+        </Typography.Title1>
       </div>
       <Separator orientation="horizontal" />
     </Layout.Header>

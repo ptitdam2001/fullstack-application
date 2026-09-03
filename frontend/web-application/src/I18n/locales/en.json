@@ -384,6 +384,7 @@
     "card.delete": "Delete",
     "card.teamTbd": "TBD",
     "card.empty": "No matches found",
+    "card.toSchedule": "To schedule",
     "card.status.cancelled": "Cancelled",
     "scoreDialog.homeGoals": "Home goals",
     "scoreDialog.awayGoals": "Away goals",
