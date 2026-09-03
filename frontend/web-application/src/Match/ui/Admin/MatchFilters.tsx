@@ -1,4 +1,4 @@
-import { Button, Select, SelectItem, Separator, Tabs, TabsList, TabsTrigger } from '@repo/design-system'
+import { Button, Card, Select, SelectItem, Tabs, TabsList, TabsTrigger } from '@repo/design-system'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { useChampionshipList } from '@Championship/application/useChampionshipList'
 import { useAgeCategoryList } from '@AgeCategory/application/useAgeCategoryList'
@@ -23,8 +23,8 @@ export const MatchFilters = ({ filters, onChange, resultCount }: Props) => {
   const hasActiveFilter = Boolean(filters.championshipId || filters.ageCategoryId || filters.status)
 
   return (
-    <>
-      <div className="bg-accent flex flex-wrap items-center gap-4 p-2">
+    <Card.Container className="bg-accent mx-4 mt-2 p-2">
+      <Card.Content className="flex flex-wrap items-center gap-4 px-2">
         <Select
           aria-label={intl.formatMessage({ id: 'adminMatches.filters.championship' })}
           selectedKey={filters.championshipId ?? ''}
@@ -56,7 +56,6 @@ export const MatchFilters = ({ filters, onChange, resultCount }: Props) => {
           onValueChange={value =>
             onChange({ ...filters, status: value === STATUS_TAB_ALL ? undefined : (value as MatchStatus) })
           }
-          className="border border-gray-400"
         >
           <TabsList>
             <TabsTrigger value={STATUS_TAB_ALL}>
@@ -83,8 +82,7 @@ export const MatchFilters = ({ filters, onChange, resultCount }: Props) => {
         <span className="text-muted-foreground ml-auto text-sm">
           <FormattedMessage id="adminMatches.filters.count" values={{ count: resultCount }} />
         </span>
-      </div>
-      <Separator />
-    </>
+      </Card.Content>
+    </Card.Container>
   )
 }
