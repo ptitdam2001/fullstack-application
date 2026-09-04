@@ -1,5 +1,5 @@
 import { useCreateTeam, useUpdateTeam, getGetTeamsQueryKey, getCountTeamsQueryKey } from '../infrastructure/useTeamApi'
-import type { CreateTeamMutationBody, UpdateTeamMutationBody } from '../domain/Team'
+import type { CreateTeamMutationBody, UpdateTeamMutationBody, Team } from '../domain/Team'
 
 export const useTeamForm = () => {
   const createMutation = useCreateTeam({
@@ -16,7 +16,7 @@ export const useTeamForm = () => {
   return {
     submit: (data: CreateTeamMutationBody | UpdateTeamMutationBody, teamId?: string) =>
       teamId
-        ? updateMutation.mutateAsync({ id: teamId, data: { ...(data as UpdateTeamMutationBody), id: teamId } })
+        ? updateMutation.mutateAsync({ id: teamId, data: { ...(data as Team), id: teamId } })
         : createMutation.mutateAsync({ data: data as CreateTeamMutationBody }),
     isPending: createMutation.isPending || updateMutation.isPending,
     isSuccess: createMutation.isSuccess || updateMutation.isSuccess,
