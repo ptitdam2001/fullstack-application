@@ -1,5 +1,4 @@
 export {
-  useGetMatches,
   useGetMatchesSuspense,
   useGetMatch,
   useCountMatches,

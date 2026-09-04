@@ -1,7 +1,5 @@
 export {
-  useGetAreaList,
   useGetAreaListSuspense,
-  useCountAllAreas,
   useCountAllAreasSuspense,
   useGetArea,
   useCreateArea,
