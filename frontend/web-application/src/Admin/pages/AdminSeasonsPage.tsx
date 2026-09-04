@@ -1,11 +1,11 @@
-import { Suspense, use, useState } from 'react'
+import { Suspense, useState } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { Button, Layout, Separator, Toast, Typography } from '@repo/design-system'
 import { CirclePlus } from 'lucide-react'
 import { ErrorBoundary } from '@Common/ErrorBoundary'
 import { TableLoader } from '@Common/Loading'
 import { TablePagination } from '@repo/design-system'
-import { useSeasonList } from '@Season/application/useSeasonList'
+import { useSeasonListSuspense } from '@Season/application/useSeasonList'
 import { useSeasonDelete } from '@Season/application/useSeasonDelete'
 import { AdminSeasonTable } from '@Season/ui/Admin/AdminSeasonTable'
 import { AdminSeasonFormSheet } from '@Season/ui/Admin/AdminSeasonFormSheet'
@@ -21,13 +21,13 @@ type AdminSeasonListContentProps = {
 }
 
 const AdminSeasonListContent = ({ onEdit, onDelete }: AdminSeasonListContentProps) => {
-  const { query, countQuery, pagination, changePage } = useSeasonList(25)
-  const seasons = use(query.promise)
-  const count = use(countQuery.promise)
+  const { query, countQuery, pagination, changePage } = useSeasonListSuspense(25)
+  const seasons = query.data
+  const count = countQuery.data
 
   return (
     <section className="flex h-full w-full flex-col gap-0.5">
-      <AdminSeasonTable seasons={seasons as Season[]} onEdit={onEdit} onDelete={onDelete} />
+      <AdminSeasonTable seasons={seasons} onEdit={onEdit} onDelete={onDelete} />
       <div className="min-h-10">
         <TablePagination
           count={(count ?? 0) as number}

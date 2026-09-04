@@ -1,20 +1,19 @@
-import { Suspense, use } from 'react'
+import { Suspense } from 'react'
 import { useNavigate } from 'react-router'
 import { FormattedMessage } from 'react-intl'
 import { Button, Layout, Separator, TablePagination, Typography } from '@repo/design-system'
 import { CirclePlus } from 'lucide-react'
 import { ErrorBoundary } from '@Common/ErrorBoundary'
 import { TableLoader } from '@Common/Loading'
-import { useChampionshipList } from '@Championship/application/useChampionshipList'
+import { useChampionshipListSuspense } from '@Championship/application/useChampionshipList'
 import { useSeasonList } from '@Season/application/useSeasonList'
 import { useAgeCategoryList } from '@AgeCategory/application/useAgeCategoryList'
 import { AdminChampionshipTable, type ChampionshipRow } from '@Championship/ui/Admin/AdminChampionshipTable'
-import type { Championship } from '@Championship/domain/Championship'
 
 const AdminChampionshipListContent = () => {
-  const { query, countQuery, pagination, changePage } = useChampionshipList(25)
-  const championships = use(query.promise)
-  const count = use(countQuery.promise)
+  const { query, countQuery, pagination, changePage } = useChampionshipListSuspense(25)
+  const championships = query.data
+  const count = countQuery.data
 
   const seasonList = useSeasonList()
   const categoryList = useAgeCategoryList()
@@ -23,7 +22,7 @@ const AdminChampionshipListContent = () => {
 
   const navigate = useNavigate()
 
-  const rows: ChampionshipRow[] = (championships as Championship[]).map(championship => ({
+  const rows: ChampionshipRow[] = championships.map(championship => ({
     id: championship.id,
     name: championship.name ?? '',
     seasonLabel: seasons.find(s => s.id === championship.seasonId)?.label ?? null,

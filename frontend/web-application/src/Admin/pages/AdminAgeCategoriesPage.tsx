@@ -1,11 +1,11 @@
-import { Suspense, use, useState } from 'react'
+import { Suspense, useState } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { Button, Layout, Separator, Toast, Typography } from '@repo/design-system'
 import { CirclePlus } from 'lucide-react'
 import { ErrorBoundary } from '@Common/ErrorBoundary'
 import { TableLoader } from '@Common/Loading'
 import { TablePagination } from '@repo/design-system'
-import { useAgeCategoryList } from '@AgeCategory/application/useAgeCategoryList'
+import { useAgeCategoryListSuspense } from '@AgeCategory/application/useAgeCategoryList'
 import { useAgeCategoryDelete } from '@AgeCategory/application/useAgeCategoryDelete'
 import { AdminAgeCategoryTable } from '@AgeCategory/ui/Admin/AdminAgeCategoryTable'
 import { AdminAgeCategoryFormSheet } from '@AgeCategory/ui/Admin/AdminAgeCategoryFormSheet'
@@ -21,13 +21,13 @@ type AdminAgeCategoryListContentProps = {
 }
 
 const AdminAgeCategoryListContent = ({ onEdit, onDelete }: AdminAgeCategoryListContentProps) => {
-  const { query, countQuery, pagination, changePage } = useAgeCategoryList(25)
-  const ageCategories = use(query.promise)
-  const count = use(countQuery.promise)
+  const { query, countQuery, pagination, changePage } = useAgeCategoryListSuspense(25)
+  const ageCategories = query.data
+  const count = countQuery.data
 
   return (
     <section className="flex h-full w-full flex-col gap-0.5">
-      <AdminAgeCategoryTable ageCategories={ageCategories as AgeCategory[]} onEdit={onEdit} onDelete={onDelete} />
+      <AdminAgeCategoryTable ageCategories={ageCategories} onEdit={onEdit} onDelete={onDelete} />
       <div className="min-h-10">
         <TablePagination
           count={(count ?? 0) as number}

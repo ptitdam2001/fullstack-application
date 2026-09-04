@@ -1,6 +1,8 @@
 export {
   useGetAgeCategories,
+  useGetAgeCategoriesSuspense,
   useCountAgeCategories,
+  useCountAgeCategoriesSuspense,
   useGetAgeCategory,
   useCreateAgeCategory,
   useUpdateAgeCategory,

@@ -1,13 +1,13 @@
 import { ErrorBoundary } from '@Common/ErrorBoundary'
-import { Suspense, use } from 'react'
-import { useTeamDetail } from '../../application/useTeamDetail'
+import { Suspense } from 'react'
+import { useTeamDetailSuspense } from '../../application/useTeamDetail'
 import { TeamCard } from '../TeamCard/TeamCard'
 import { TeamCardSkeleton } from '../TeamCardSkeleton/TeamCardSkeleton'
 
 type Props = { teamId: string }
 
 const TeamDetailCardInner = ({ teamId }: Props) => {
-  const team = use(useTeamDetail(teamId).promise)
+  const team = useTeamDetailSuspense(teamId).data
   return <TeamCard team={team} />
 }
 

@@ -1,6 +1,8 @@
 export {
   useGetSeasons,
+  useGetSeasonsSuspense,
   useCountSeasons,
+  useCountSeasonsSuspense,
   useGetSeason,
   useCreateSeason,
   useUpdateSeason,

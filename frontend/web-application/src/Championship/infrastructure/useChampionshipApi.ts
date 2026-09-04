@@ -1,7 +1,9 @@
 export {
   useGetChampionships,
+  useGetChampionshipsSuspense,
   useGetChampionship,
   useCountChampionships,
+  useCountChampionshipsSuspense,
   useCreateChampionship,
   useUpdateChampionship,
   useRemoveChampionship,
