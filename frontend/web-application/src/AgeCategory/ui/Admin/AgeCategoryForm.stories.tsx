@@ -88,8 +88,8 @@ export const CreateSubmit: Story = {
     await userEvent.type(labelInput, 'U13')
 
     await userEvent.click(canvas.getByRole('button', { name: /genre/i }))
-    await within(document.body).findByRole('listbox')
-    await userEvent.keyboard('{Enter}')
+    const listbox = await within(document.body).findByRole('listbox')
+    await userEvent.click(within(listbox).getAllByRole('option')[0])
 
     const submitButton = canvas.getByRole('button', { name: /new category|nouvelle catégorie/i })
     await waitFor(() => expect(submitButton).not.toBeDisabled())
