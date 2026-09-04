@@ -15,6 +15,9 @@ export default {
           path: './config/axios-instance.ts',
           name: 'customAxiosInstance',
         },
+        query: {
+          useSuspenseQuery: true,
+        },
         operations: {
           countTeams: {
             mock: {
