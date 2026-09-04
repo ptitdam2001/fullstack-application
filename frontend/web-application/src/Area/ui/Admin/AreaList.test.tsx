@@ -2,14 +2,6 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import type { Area } from '../../domain/Area'
 import { AreaList } from './AreaList'
 
-// React 19 use() checks .status synchronously — plain Promise.resolve() suspends on first render
-function fulfilledPromise<T>(value: T): Promise<T> {
-  const p = Promise.resolve(value) as Promise<T> & { status: string; value: T }
-  p.status = 'fulfilled'
-  p.value = value
-  return p
-}
-
 vi.mock('../../application/useAreaList', () => ({
   useAreaList: vi.fn(),
 }))
@@ -25,8 +17,8 @@ const areas: Area[] = [
 
 const mockUseAreaList = (data: Area[], count: number) => {
   mockedUseAreaList.mockReturnValue({
-    query: { promise: fulfilledPromise(data) },
-    countQuery: { promise: fulfilledPromise(count) },
+    query: { data },
+    countQuery: { data: count },
     pagination: { page: 0, rowsPerPage: 25 },
     changePage: vi.fn(),
     changeRowsPerPage: vi.fn(),

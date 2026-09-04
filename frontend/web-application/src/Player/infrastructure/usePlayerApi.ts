@@ -1,1 +1,1 @@
-export { useGetTeamPlayers } from '@Sdk/teams/teams'
+export { useGetTeamPlayers, useGetTeamPlayersSuspense } from '@Sdk/teams/teams'

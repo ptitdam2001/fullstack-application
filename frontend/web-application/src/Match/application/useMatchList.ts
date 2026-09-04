@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
 import { usePagination } from '@Common/hooks/usePagination'
-import { useGetMatches, useCountMatches } from '../infrastructure/useMatchApi'
+import { useGetMatchesSuspense, useCountMatches } from '../infrastructure/useMatchApi'
 import type { MatchStatus } from '../domain/Match'
 
 export type MatchListFilters = {
@@ -10,18 +10,22 @@ export type MatchListFilters = {
 }
 
 export const useMatchList = (rowsPerPage = 20) => {
-  const { changePage, ...pagination } = usePagination({ page: 0, rowsPerPage })
+  const { changePage: rawChangePage, ...pagination } = usePagination({ page: 0, rowsPerPage })
   const [filters, setFilters] = useState<MatchListFilters>({})
+  const [isPending, startTransition] = useTransition()
 
-  const changeFilters = (next: MatchListFilters) => {
-    setFilters(next)
-    changePage(0)
-  }
+  const changePage = (page: number) => startTransition(() => rawChangePage(page))
 
-  const query = useGetMatches({ page: pagination.page, count: pagination.rowsPerPage, ...filters })
+  const changeFilters = (next: MatchListFilters) =>
+    startTransition(() => {
+      setFilters(next)
+      rawChangePage(0)
+    })
+
+  const query = useGetMatchesSuspense({ page: pagination.page, count: pagination.rowsPerPage, ...filters })
   const countQuery = useCountMatches(filters)
 
   const totalPages = Math.ceil(((countQuery.data ?? 0) as number) / rowsPerPage)
 
-  return { query, countQuery, pagination, changePage, filters, changeFilters, totalPages }
+  return { query, countQuery, pagination, changePage, filters, changeFilters, totalPages, isPending }
 }

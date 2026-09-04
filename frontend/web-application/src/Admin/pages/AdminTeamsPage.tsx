@@ -1,4 +1,4 @@
-import { Suspense, use, useState } from 'react'
+import { Suspense, useState } from 'react'
 import { Outlet, useNavigate } from 'react-router'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { Button, Layout, Separator, Typography } from '@repo/design-system'
@@ -9,7 +9,6 @@ import { TablePagination } from '@repo/design-system'
 import { useTeamList } from '@Teams/application/useTeamList'
 import { AdminTeamTable } from '@Teams/ui/Admin/AdminTeamTable'
 import { AdminTeamFormSheet } from '@Teams/ui/Admin/AdminTeamFormSheet'
-import type { Team } from '@Teams/domain/Team'
 import { useGetAgeCategories } from '@AgeCategory/infrastructure/useAgeCategoryApi'
 import type { AgeCategory } from '@AgeCategory'
 
@@ -22,8 +21,8 @@ type AdminTeamListContentProps = {
 const AdminTeamListContent = ({ onEdit }: AdminTeamListContentProps) => {
   const intl = useIntl()
   const { query, countQuery, pagination, changePage } = useTeamList(25)
-  const teams = use(query.promise) as Team[]
-  const count = use(countQuery.promise)
+  const teams = query.data
+  const count = countQuery.data
   const ageCategoriesQuery = useGetAgeCategories({ page: 1, count: 100 })
   const ageCategories = (ageCategoriesQuery.data ?? []) as AgeCategory[]
   const ageCategoryMap = Object.fromEntries(

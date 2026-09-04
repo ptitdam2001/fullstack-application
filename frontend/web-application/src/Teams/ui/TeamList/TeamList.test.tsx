@@ -10,16 +10,8 @@ const mockTeams: Team[] = [
   { id: '2', name: 'Les Bleus', color: '#0000ff', areas: [] },
 ]
 
-// React 19 use() checks .status synchronously — plain Promise.resolve() suspends on first render
-function fulfilledPromise<T>(value: T): Promise<T> {
-  const p = Promise.resolve(value) as Promise<T> & { status: string; value: T }
-  p.status = 'fulfilled'
-  p.value = value
-  return p
-}
-
 const mockUseTeamList = vi.fn(() => ({
-  query: { promise: fulfilledPromise(mockTeams) },
+  query: { data: mockTeams },
   pagination: { page: 0, rowsPerPage: 12 },
   changePage: vi.fn(),
   totalPages: 1,
@@ -60,11 +52,8 @@ describe('TeamList', () => {
   })
 
   it('shows suspense fallback while loading', () => {
-    mockUseTeamList.mockReturnValueOnce({
-      query: { promise: new Promise(() => {}) as never },
-      pagination: { page: 0, rowsPerPage: 12 },
-      changePage: vi.fn(),
-      totalPages: 0,
+    mockUseTeamList.mockImplementation(() => {
+      throw new Promise(() => {})
     })
     renderWithProviders(
       <Suspense fallback={<div>Loading...</div>}>

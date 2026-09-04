@@ -1,13 +1,13 @@
 import { cn, Tooltip, AvatarWithBadge } from '@repo/design-system'
 import { TableLoader } from '@Common/Loading'
-import { Suspense, use } from 'react'
+import { Suspense } from 'react'
 import { ErrorBoundary } from '@Common/ErrorBoundary'
 import { usePlayerList } from '../application/usePlayerList'
 
 type PlayerListProps = { teamId: string; className?: string }
 
 const PlayerListInner = ({ teamId, className }: PlayerListProps) => {
-  const players = use(usePlayerList(teamId).promise)
+  const players = usePlayerList(teamId).data
   return (
     <ul className={cn('h-full w-full overflow-y-scroll', className)}>
       {players?.map(player => (

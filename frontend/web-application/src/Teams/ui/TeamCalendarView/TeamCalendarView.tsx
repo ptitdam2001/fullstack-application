@@ -1,13 +1,13 @@
 import { ErrorBoundary } from '@Common/ErrorBoundary'
 import { ListLoader } from '@Common/Loading'
 import { GameListRaw } from '@Game/ui/GameListRaw'
-import { Suspense, use } from 'react'
+import { Suspense } from 'react'
 import { useTeamCalendar } from '../../application/useTeamCalendar'
 
 type Props = { teamId: string }
 
 const TeamCalendarViewInner = ({ teamId }: Props) => {
-  const games = use(useTeamCalendar(teamId).promise)
+  const games = useTeamCalendar(teamId).data
 
   return (
     <div className="flex h-full w-full flex-col gap-2 overflow-auto">

@@ -1,7 +1,10 @@
 export {
   useGetTeams,
+  useGetTeamsSuspense,
   useCountTeams,
+  useCountTeamsSuspense,
   useGetTeamCalendar,
+  useGetTeamCalendarSuspense,
   getGetTeamsQueryKey,
   getCountTeamsQueryKey,
 } from '@Sdk/teams/teams'

@@ -5,7 +5,7 @@ import { TableLoader } from '@Common/Loading'
 import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell, TablePagination } from '@repo/design-system'
 import type { Area } from '../../domain/Area'
 import { useAreaList } from '../../application/useAreaList'
-import React, { Suspense, use } from 'react'
+import React, { Suspense } from 'react'
 
 type AreaListProps = {
   actions?: (area: Area) => React.ReactNode
@@ -13,8 +13,8 @@ type AreaListProps = {
 
 const BaseAreaList = ({ actions }: AreaListProps) => {
   const { query, countQuery, pagination, changePage, changeRowsPerPage } = useAreaList()
-  const addresses = use(query.promise)
-  const count = use(countQuery.promise)
+  const addresses = query.data
+  const count = countQuery.data
 
   return (
     <section className="flex h-full w-full flex-col gap-0.5">

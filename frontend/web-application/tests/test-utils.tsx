@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { render, renderHook, type RenderOptions } from '@testing-library/react'
 import { MemoryRouter } from 'react-router'
-import { useState, type ReactNode } from 'react'
+import { Suspense, useState, type ReactNode } from 'react'
 
 function createTestQueryClient() {
   return new QueryClient({
@@ -26,6 +26,15 @@ export function renderWithProviders(ui: ReactNode, options?: RenderOptions) {
   return render(ui, { wrapper: AllProviders, ...options })
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
+function SuspenseProviders({ children }: { children: ReactNode }) {
+  return (
+    <AllProviders>
+      <Suspense fallback={null}>{children}</Suspense>
+    </AllProviders>
+  )
+}
+
 export function renderHookWithProviders<T>(hook: () => T) {
-  return renderHook(hook, { wrapper: AllProviders })
+  return renderHook(hook, { wrapper: SuspenseProviders })
 }

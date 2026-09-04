@@ -1,4 +1,4 @@
-import { Suspense, use } from 'react'
+import { Suspense } from 'react'
 import { useGameList } from '../application/useGameList'
 import { GameListRaw } from './GameListRaw'
 import { TableLoader } from '@Common/Loading'
@@ -7,8 +7,8 @@ import { ErrorBoundary } from '@Common/ErrorBoundary'
 
 const GameListInner = () => {
   const { query, countQuery, pagination, changePage, changeRowsPerPage } = useGameList()
-  const games = use(query.promise)
-  const count = use(countQuery.promise)
+  const games = query.data
+  const count = countQuery.data
 
   return (
     <section data-testid="GameList" className="flex h-full flex-col">

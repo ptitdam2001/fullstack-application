@@ -1,4 +1,4 @@
-import { Suspense, use } from 'react'
+import { Suspense } from 'react'
 import { ErrorBoundary } from '@Common/ErrorBoundary'
 import { TableLoader } from '@Common/Loading'
 import { useTeamList } from '../../application/useTeamList'
@@ -15,7 +15,7 @@ type Props = { viewMode: ViewMode }
 export const TeamList = ({ viewMode }: Props) => {
   const { query, pagination, changePage, totalPages } = useTeamList()
 
-  const teams = use(query.promise)
+  const teams = query.data
 
   return (
     <Layout.Root>

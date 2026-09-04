@@ -1,4 +1,4 @@
-import { Suspense, use, useState } from 'react'
+import { Suspense, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 import { Layout, Separator, TablePagination, Typography } from '@repo/design-system'
 import { ErrorBoundary } from '@Common/ErrorBoundary'
@@ -13,7 +13,7 @@ import type { Match } from '@Match/domain/Match'
 
 const AdminMatchesContent = () => {
   const { query, countQuery, filters, changeFilters, pagination, changePage } = useMatchList()
-  const matches = use(query.promise)
+  const matches = query.data
   const resultCount = (countQuery.data ?? 0) as number
   const [matchForScore, setMatchForScore] = useState<Match | null>(null)
   const [matchForDelete, setMatchForDelete] = useState<Match | null>(null)
