@@ -1,6 +1,7 @@
 import type { Preview } from '@storybook/react-vite'
 import { QueryClientProvider } from '@tanstack/react-query'
-import { initialize, mswLoader } from 'msw-storybook-addon'
+import { mswLoader } from 'msw-storybook-addon/csf3'
+import { setupWorker } from 'msw/browser'
 
 import '../src/index.css'
 import React from 'react'
@@ -9,14 +10,17 @@ import { ThemeProvider } from '@Theme/Provider/ThemeProvider'
 import { Toast } from '@repo/design-system'
 import { localStorageDecorator } from './decorators/localstorage'
 import { intlDecorator } from './decorators/intl'
+
 /*
  * Initializes MSW
  * See https://github.com/mswjs/msw-storybook-addon#configuring-msw
  * to learn how to customize it
  */
-initialize({
-  onUnhandledRequest: 'bypass',
-})
+const setupMsw = async () => {
+  const worker = setupWorker()
+  await worker.start({ onUnhandledRequest: 'bypass' })
+  return worker
+}
 
 const preview: Preview = {
   parameters: {
@@ -44,7 +48,7 @@ const preview: Preview = {
   ],
 
   // 👈 Add the MSW loader to all stories
-  loaders: [mswLoader],
+  loaders: [mswLoader(setupMsw)],
 
   tags: ['autodocs'],
 }
