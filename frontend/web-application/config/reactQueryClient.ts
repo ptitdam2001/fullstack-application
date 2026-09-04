@@ -9,11 +9,6 @@ declare module '@tanstack/react-query' {
 }
 
 export const reactQueryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      experimental_prefetchInRender: true,
-    },
-  },
   mutationCache: new MutationCache({
     onSuccess: (_data, _variables, _context, mutation) => {
       reactQueryClient.invalidateQueries({

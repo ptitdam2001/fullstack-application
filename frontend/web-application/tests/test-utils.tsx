@@ -6,7 +6,7 @@ import { Suspense, useState, type ReactNode } from 'react'
 function createTestQueryClient() {
   return new QueryClient({
     defaultOptions: {
-      queries: { retry: false, experimental_prefetchInRender: true },
+      queries: { retry: false },
       mutations: { retry: false },
     },
   })
