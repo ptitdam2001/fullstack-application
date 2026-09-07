@@ -39,7 +39,11 @@ const AdminChampionshipListContent = () => {
 
   return (
     <section className="flex h-full w-full flex-col gap-0.5">
-      <AdminChampionshipTable championships={rows} onResume={id => navigate(`new/${id}`)} />
+      <AdminChampionshipTable
+        championships={rows}
+        onResume={id => navigate(`new/${id}`)}
+        onViewDetail={id => navigate(id)}
+      />
       <div className="min-h-10">
         <TablePagination
           count={(count ?? 0) as number}

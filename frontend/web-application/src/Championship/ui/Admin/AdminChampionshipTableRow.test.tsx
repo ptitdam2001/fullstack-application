@@ -40,7 +40,9 @@ const championship: ChampionshipRow = {
 
 describe('AdminChampionshipTableRow', () => {
   it('renders the championship name, season and category', () => {
-    render(<AdminChampionshipTableRow championship={championship} onResume={vi.fn()} />, { wrapper })
+    render(<AdminChampionshipTableRow championship={championship} onResume={vi.fn()} onViewDetail={vi.fn()} />, {
+      wrapper,
+    })
     expect(screen.getByText('Championnat U13 2026')).toBeInTheDocument()
     expect(screen.getByText('2025-2026')).toBeInTheDocument()
     expect(screen.getByText('U13')).toBeInTheDocument()
@@ -51,6 +53,7 @@ describe('AdminChampionshipTableRow', () => {
       <AdminChampionshipTableRow
         championship={{ ...championship, seasonLabel: null, categoryLabel: null }}
         onResume={vi.fn()}
+        onViewDetail={vi.fn()}
       />,
       { wrapper }
     )
@@ -58,15 +61,24 @@ describe('AdminChampionshipTableRow', () => {
   })
 
   it('does not show the resume action when the championship is not a draft', () => {
-    render(<AdminChampionshipTableRow championship={championship} onResume={vi.fn()} />, { wrapper })
+    render(<AdminChampionshipTableRow championship={championship} onResume={vi.fn()} onViewDetail={vi.fn()} />, {
+      wrapper,
+    })
     expect(screen.queryByText('adminChampionships.action.resume')).not.toBeInTheDocument()
   })
 
   it('shows the resume action and calls onResume when the championship is a draft', () => {
     const onResume = vi.fn()
-    render(<AdminChampionshipTableRow championship={{ ...championship, isDraft: true }} onResume={onResume} />, {
-      wrapper,
-    })
+    render(
+      <AdminChampionshipTableRow
+        championship={{ ...championship, isDraft: true }}
+        onResume={onResume}
+        onViewDetail={vi.fn()}
+      />,
+      {
+        wrapper,
+      }
+    )
 
     const button = screen.getByRole('button', { name: 'adminChampionships.action.resume' })
     fireEvent.click(button)
@@ -74,12 +86,16 @@ describe('AdminChampionshipTableRow', () => {
   })
 
   it('renders a status dot', () => {
-    render(<AdminChampionshipTableRow championship={championship} onResume={vi.fn()} />, { wrapper })
+    render(<AdminChampionshipTableRow championship={championship} onResume={vi.fn()} onViewDetail={vi.fn()} />, {
+      wrapper,
+    })
     expect(screen.getByRole('img', { name: 'adminChampionships.status.inProgress' })).toBeInTheDocument()
   })
 
   it('renders formatted start and end dates', () => {
-    render(<AdminChampionshipTableRow championship={championship} onResume={vi.fn()} />, { wrapper })
+    render(<AdminChampionshipTableRow championship={championship} onResume={vi.fn()} onViewDetail={vi.fn()} />, {
+      wrapper,
+    })
     expect(screen.getByText('9/1/2025 – 5/31/2026')).toBeInTheDocument()
   })
 
@@ -88,6 +104,7 @@ describe('AdminChampionshipTableRow', () => {
       <AdminChampionshipTableRow
         championship={{ ...championship, startDate: null, endDate: null }}
         onResume={vi.fn()}
+        onViewDetail={vi.fn()}
       />,
       { wrapper }
     )
@@ -95,13 +112,19 @@ describe('AdminChampionshipTableRow', () => {
   })
 
   it('renders the current phase type', () => {
-    render(<AdminChampionshipTableRow championship={championship} onResume={vi.fn()} />, { wrapper })
+    render(<AdminChampionshipTableRow championship={championship} onResume={vi.fn()} onViewDetail={vi.fn()} />, {
+      wrapper,
+    })
     expect(screen.getByText('adminChampionships.phaseType.GROUP')).toBeInTheDocument()
   })
 
   it('falls back to a muted placeholder when there is no current phase yet', () => {
     render(
-      <AdminChampionshipTableRow championship={{ ...championship, currentPhaseType: null }} onResume={vi.fn()} />,
+      <AdminChampionshipTableRow
+        championship={{ ...championship, currentPhaseType: null }}
+        onResume={vi.fn()}
+        onViewDetail={vi.fn()}
+      />,
       {
         wrapper,
       }
@@ -110,12 +133,16 @@ describe('AdminChampionshipTableRow', () => {
   })
 
   it('renders the teams count', () => {
-    render(<AdminChampionshipTableRow championship={championship} onResume={vi.fn()} />, { wrapper })
+    render(<AdminChampionshipTableRow championship={championship} onResume={vi.fn()} onViewDetail={vi.fn()} />, {
+      wrapper,
+    })
     expect(screen.getByText('8')).toBeInTheDocument()
   })
 
   it('renders the matches progress', () => {
-    render(<AdminChampionshipTableRow championship={championship} onResume={vi.fn()} />, { wrapper })
+    render(<AdminChampionshipTableRow championship={championship} onResume={vi.fn()} onViewDetail={vi.fn()} />, {
+      wrapper,
+    })
     expect(screen.getByText('3/12')).toBeInTheDocument()
   })
 
@@ -124,9 +151,33 @@ describe('AdminChampionshipTableRow', () => {
       <AdminChampionshipTableRow
         championship={{ ...championship, matchesPlayed: 0, matchesTotal: 0 }}
         onResume={vi.fn()}
+        onViewDetail={vi.fn()}
       />,
       { wrapper }
     )
     expect(screen.getAllByText('—')).toHaveLength(1)
+  })
+
+  it('always shows the detail action and calls onViewDetail with the championship id', () => {
+    const onViewDetail = vi.fn()
+    render(<AdminChampionshipTableRow championship={championship} onResume={vi.fn()} onViewDetail={onViewDetail} />, {
+      wrapper,
+    })
+
+    const button = screen.getByRole('button', { name: 'championshipDetail.action.detail' })
+    fireEvent.click(button)
+    expect(onViewDetail).toHaveBeenCalledWith('champ-1')
+  })
+
+  it('shows the detail action even for draft championships', () => {
+    render(
+      <AdminChampionshipTableRow
+        championship={{ ...championship, isDraft: true }}
+        onResume={vi.fn()}
+        onViewDetail={vi.fn()}
+      />,
+      { wrapper }
+    )
+    expect(screen.getByRole('button', { name: 'championshipDetail.action.detail' })).toBeInTheDocument()
   })
 })

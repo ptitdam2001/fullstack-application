@@ -1,5 +1,5 @@
 import { Button, TableRow, TableCell, Tooltip } from '@repo/design-system'
-import { BookCheck } from 'lucide-react'
+import { BookCheck, Eye } from 'lucide-react'
 import { useIntl } from 'react-intl'
 import type { ChampionshipRow } from './AdminChampionshipTable'
 import { ChampionshipStatusDot } from './ChampionshipStatusDot'
@@ -8,11 +8,12 @@ import { PHASE_TYPE_MESSAGE_ID } from '../phaseTypeMessageId'
 type AdminChampionshipTableRowProps = {
   championship: ChampionshipRow
   onResume: (id: string) => void
+  onViewDetail: (id: string) => void
 }
 
 const formatDate = (date: string | null, locale: string) => (date ? new Date(date).toLocaleDateString(locale) : null)
 
-export const AdminChampionshipTableRow = ({ championship, onResume }: AdminChampionshipTableRowProps) => {
+export const AdminChampionshipTableRow = ({ championship, onResume, onViewDetail }: AdminChampionshipTableRowProps) => {
   const intl = useIntl()
 
   const startDate = formatDate(championship.startDate, intl.locale)
@@ -43,7 +44,7 @@ export const AdminChampionshipTableRow = ({ championship, onResume }: AdminChamp
           <span className="text-muted-foreground">—</span>
         )}
       </TableCell>
-      <TableCell className="text-right">
+      <TableCell className="flex justify-end gap-1 text-right">
         {championship.isDraft && (
           <Tooltip content={intl.formatMessage({ id: 'adminChampionships.action.resumeTooltip' })}>
             <Button
@@ -56,6 +57,16 @@ export const AdminChampionshipTableRow = ({ championship, onResume }: AdminChamp
             </Button>
           </Tooltip>
         )}
+        <Tooltip content={intl.formatMessage({ id: 'championshipDetail.action.detailTooltip' })}>
+          <Button
+            variant="outline"
+            size="icon"
+            aria-label={intl.formatMessage({ id: 'championshipDetail.action.detail' })}
+            onPress={() => onViewDetail(championship.id)}
+          >
+            <Eye className="h-4 w-4" />
+          </Button>
+        </Tooltip>
       </TableCell>
     </TableRow>
   )

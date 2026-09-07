@@ -36,7 +36,7 @@ const championships: ChampionshipRow[] = [
 
 describe('AdminChampionshipTable', () => {
   it('renders table headers', () => {
-    render(<AdminChampionshipTable championships={championships} onResume={vi.fn()} />)
+    render(<AdminChampionshipTable championships={championships} onResume={vi.fn()} onViewDetail={vi.fn()} />)
     expect(screen.getByText('adminChampionships.table.name')).toBeInTheDocument()
     expect(screen.getByText('adminChampionships.table.season')).toBeInTheDocument()
     expect(screen.getByText('adminChampionships.table.category')).toBeInTheDocument()
@@ -49,18 +49,23 @@ describe('AdminChampionshipTable', () => {
   })
 
   it('renders a row per championship', () => {
-    render(<AdminChampionshipTable championships={championships} onResume={vi.fn()} />)
+    render(<AdminChampionshipTable championships={championships} onResume={vi.fn()} onViewDetail={vi.fn()} />)
     expect(screen.getByText('Championnat U13 2026')).toBeInTheDocument()
     expect(screen.getByText('Championnat U15 2026')).toBeInTheDocument()
   })
 
   it('renders an empty state when there are no championships', () => {
-    render(<AdminChampionshipTable championships={[]} onResume={vi.fn()} />)
+    render(<AdminChampionshipTable championships={[]} onResume={vi.fn()} onViewDetail={vi.fn()} />)
     expect(screen.getByText('adminChampionships.table.empty')).toBeInTheDocument()
   })
 
   it('only shows the resume action for draft championships', () => {
-    render(<AdminChampionshipTable championships={championships} onResume={vi.fn()} />)
+    render(<AdminChampionshipTable championships={championships} onResume={vi.fn()} onViewDetail={vi.fn()} />)
     expect(screen.getAllByRole('button', { name: 'adminChampionships.action.resume' })).toHaveLength(1)
+  })
+
+  it('shows the detail action for every championship', () => {
+    render(<AdminChampionshipTable championships={championships} onResume={vi.fn()} onViewDetail={vi.fn()} />)
+    expect(screen.getAllByRole('button', { name: 'championshipDetail.action.detail' })).toHaveLength(2)
   })
 })

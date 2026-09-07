@@ -21,9 +21,10 @@ export type ChampionshipRow = {
 type AdminChampionshipTableProps = {
   championships: ChampionshipRow[]
   onResume: (id: string) => void
+  onViewDetail: (id: string) => void
 }
 
-export const AdminChampionshipTable = ({ championships, onResume }: AdminChampionshipTableProps) => (
+export const AdminChampionshipTable = ({ championships, onResume, onViewDetail }: AdminChampionshipTableProps) => (
   <Table>
     <TableHeader>
       <TableHead>
@@ -62,7 +63,12 @@ export const AdminChampionshipTable = ({ championships, onResume }: AdminChampio
       )}
     >
       {championships.map(championship => (
-        <AdminChampionshipTableRow key={championship.id} championship={championship} onResume={onResume} />
+        <AdminChampionshipTableRow
+          key={championship.id}
+          championship={championship}
+          onResume={onResume}
+          onViewDetail={onViewDetail}
+        />
       ))}
     </TableBody>
   </Table>
