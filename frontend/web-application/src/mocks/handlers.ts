@@ -8,6 +8,7 @@ import { getGroupMock } from '@Sdk/group/group.msw'
 import { getMatchMock } from '@Sdk/match/match.msw'
 import { getPhaseMock } from '@Sdk/phase/phase.msw'
 import { getSeasonMock } from '@Sdk/season/season.msw'
+import { getStandingsMock } from '@Sdk/standings/standings.msw'
 import { getTeamMock } from '@Sdk/team/team.msw'
 import { getGetTeamsMockHandler, getTeamsMock, getGetTeamsResponseMock } from '@Sdk/teams/teams.msw'
 import { getGetCoachTeamsMockHandler } from '@Sdk/user-team/user-team.msw'
@@ -28,6 +29,7 @@ export const handlers = [
   ...getMatchMock(),
   ...getPhaseMock(),
   ...getSeasonMock(),
+  ...getStandingsMock(),
   ...getTeamMock(),
   ...getTeamsMock(),
   ...getUsersMock(),

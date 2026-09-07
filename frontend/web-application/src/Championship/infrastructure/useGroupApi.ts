@@ -1,1 +1,6 @@
-export { useCreateGroup, useGenerateGroupMatches, getGetPhaseGroupsQueryKey } from '@Sdk/group/group'
+export {
+  useCreateGroup,
+  useGenerateGroupMatches,
+  useGetPhaseGroupsSuspense,
+  getGetPhaseGroupsQueryKey,
+} from '@Sdk/group/group'
