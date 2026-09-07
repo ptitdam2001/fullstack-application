@@ -12,12 +12,15 @@ type AreaListProps = {
 }
 
 const BaseAreaList = ({ actions }: AreaListProps) => {
-  const { query, countQuery, pagination, changePage, changeRowsPerPage } = useAreaList()
+  const { query, countQuery, pagination, changePage, changeRowsPerPage, isPending } = useAreaList()
   const addresses = query.data
   const count = countQuery.data
 
   return (
-    <section className="flex h-full w-full flex-col gap-0.5">
+    <section
+      className={`flex h-full w-full flex-col gap-0.5 transition-opacity ${isPending ? 'opacity-50' : ''}`}
+      aria-busy={isPending}
+    >
       <Table>
         <TableHeader>
           <TableHead>

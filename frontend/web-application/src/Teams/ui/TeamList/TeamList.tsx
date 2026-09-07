@@ -13,13 +13,17 @@ type ViewMode = 'grid' | 'list'
 type Props = { viewMode: ViewMode }
 
 export const TeamList = ({ viewMode }: Props) => {
-  const { query, pagination, changePage, totalPages } = useTeamList()
+  const { query, pagination, changePage, totalPages, isPending } = useTeamList()
 
   const teams = query.data
 
   return (
     <Layout.Root>
-      <Layout.Content data-testid="TeamList" className="p-2">
+      <Layout.Content
+        data-testid="TeamList"
+        className={`p-2 transition-opacity ${isPending ? 'opacity-50' : ''}`}
+        aria-busy={isPending}
+      >
         <ErrorBoundary>
           <Suspense fallback={<TableLoader nbCols={3} nbRows={12} />}>
             {teams.length === 0 && <Empty />}

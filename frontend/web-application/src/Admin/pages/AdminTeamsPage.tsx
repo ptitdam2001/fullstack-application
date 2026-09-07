@@ -20,7 +20,7 @@ type AdminTeamListContentProps = {
 
 const AdminTeamListContent = ({ onEdit }: AdminTeamListContentProps) => {
   const intl = useIntl()
-  const { query, countQuery, pagination, changePage } = useTeamList(25)
+  const { query, countQuery, pagination, changePage, isPending } = useTeamList(25)
   const teams = query.data
   const count = countQuery.data
   const ageCategoriesQuery = useGetAgeCategories({ page: 1, count: 100 })
@@ -34,15 +34,17 @@ const AdminTeamListContent = ({ onEdit }: AdminTeamListContentProps) => {
   const navigate = useNavigate()
 
   return (
-    <section className="flex h-full w-full flex-col gap-0.5">
-      <AdminTeamTable
-        teams={teams.map(t => ({
-          ...t,
-          ageCategoryLabel: t.ageCategoryId ? ageCategoryMap[t.ageCategoryId] : undefined,
-        }))}
-        onEdit={onEdit}
-        onDelete={team => navigate(`${team.id}/delete`)}
-      />
+    <section className="flex h-full w-full flex-col gap-0.5" aria-busy={isPending}>
+      <div className={`transition-opacity ${isPending ? 'opacity-50' : ''}`}>
+        <AdminTeamTable
+          teams={teams.map(t => ({
+            ...t,
+            ageCategoryLabel: t.ageCategoryId ? ageCategoryMap[t.ageCategoryId] : undefined,
+          }))}
+          onEdit={onEdit}
+          onDelete={team => navigate(`${team.id}/delete`)}
+        />
+      </div>
       <div className="min-h-10">
         <TablePagination
           count={(count ?? 0) as number}

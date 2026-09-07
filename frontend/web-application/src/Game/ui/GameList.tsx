@@ -6,12 +6,16 @@ import { TablePagination } from '@repo/design-system'
 import { ErrorBoundary } from '@Common/ErrorBoundary'
 
 const GameListInner = () => {
-  const { query, countQuery, pagination, changePage, changeRowsPerPage } = useGameList()
+  const { query, countQuery, pagination, changePage, changeRowsPerPage, isPending } = useGameList()
   const games = query.data
   const count = countQuery.data
 
   return (
-    <section data-testid="GameList" className="flex h-full flex-col">
+    <section
+      data-testid="GameList"
+      className={`flex h-full flex-col transition-opacity ${isPending ? 'opacity-50' : ''}`}
+      aria-busy={isPending}
+    >
       <GameListRaw games={games ?? []} />
       <TablePagination
         count={count ?? 0}

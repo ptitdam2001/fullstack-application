@@ -12,7 +12,7 @@ import { DeleteMatchDialog } from '@Match/ui/Admin/DeleteMatchDialog'
 import type { Match } from '@Match/domain/Match'
 
 const AdminMatchesContent = () => {
-  const { query, countQuery, filters, changeFilters, pagination, changePage } = useMatchList()
+  const { query, countQuery, filters, changeFilters, pagination, changePage, isPending: isListPending } = useMatchList()
   const matches = query.data
   const resultCount = (countQuery.data ?? 0) as number
   const [matchForScore, setMatchForScore] = useState<Match | null>(null)
@@ -28,7 +28,10 @@ const AdminMatchesContent = () => {
   }
 
   return (
-    <section className="flex h-full w-full flex-col gap-0.5">
+    <section
+      className={`flex h-full w-full flex-col gap-0.5 transition-opacity ${isListPending ? 'opacity-50' : ''}`}
+      aria-busy={isListPending}
+    >
       <MatchFilters filters={filters} onChange={changeFilters} resultCount={resultCount} />
       <MatchCardGrid matches={matches as Match[]} onScoreClick={setMatchForScore} onDeleteClick={setMatchForDelete} />
       <div className="min-h-10">
