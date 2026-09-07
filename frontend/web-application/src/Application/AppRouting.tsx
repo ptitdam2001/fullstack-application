@@ -29,6 +29,8 @@ import { ActivatePage, ForgottenPasswordPage, LoginPage, RegisterPage, ResetPass
 import { OnboardingScreen } from '@Auth/ui/OnboardingScreen/OnboardingScreen'
 import { TeamBreadcrumb } from '@Teams'
 import { ChampionshipWizardPage } from '@Championship/pages/ChampionshipWizardPage'
+import { ChampionshipDetailPage } from '@Championship/pages/ChampionshipDetailPage'
+import { ChampionshipBreadcrumb } from '@Championship/ui/ChampionshipBreadcrumb/ChampionshipBreadcrumb'
 import {
   AdminUsersPage,
   AdminChampionshipsPage,
@@ -121,6 +123,15 @@ const router = createBrowserRouter(
               path="new/:championshipId"
               element={<ChampionshipWizardPage />}
               handle={{ breadcrumb: 'Reprendre' }}
+            />
+            <Route
+              path=":championshipId"
+              element={<ChampionshipDetailPage />}
+              handle={{
+                breadcrumb: (params: Record<string, string | undefined>) => (
+                  <ChampionshipBreadcrumb championshipId={params.championshipId!} />
+                ),
+              }}
             />
           </Route>
           <Route path="teams" element={<AdminTeamsPage />} handle={{ breadcrumb: 'Équipes' }}>
