@@ -1,7 +1,6 @@
 import { Tooltip, cn } from '@repo/design-system'
 import { useIntl } from 'react-intl'
-
-type ChampionshipStatus = 'draft' | 'inProgress' | 'finished'
+import { getChampionshipStatus, type ChampionshipStatus } from './getChampionshipStatus'
 
 type ChampionshipStatusDotProps = {
   isDraft: boolean
@@ -14,19 +13,9 @@ const STATUS_COLOR: Record<ChampionshipStatus, string> = {
   finished: 'bg-emerald-500',
 }
 
-const getStatus = (isDraft: boolean, isFinished: boolean): ChampionshipStatus => {
-  if (isDraft) {
-    return 'draft'
-  }
-  if (isFinished) {
-    return 'finished'
-  }
-  return 'inProgress'
-}
-
 export const ChampionshipStatusDot = ({ isDraft, isFinished }: ChampionshipStatusDotProps) => {
   const intl = useIntl()
-  const status = getStatus(isDraft, isFinished)
+  const status = getChampionshipStatus(isDraft, isFinished)
   const label = intl.formatMessage({ id: `adminChampionships.status.${status}` })
 
   return (

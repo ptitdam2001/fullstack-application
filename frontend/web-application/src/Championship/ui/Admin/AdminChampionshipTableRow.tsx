@@ -3,7 +3,7 @@ import { BookCheck } from 'lucide-react'
 import { useIntl } from 'react-intl'
 import type { ChampionshipRow } from './AdminChampionshipTable'
 import { ChampionshipStatusDot } from './ChampionshipStatusDot'
-import { PhaseType } from '@Championship/domain/Phase'
+import { PHASE_TYPE_MESSAGE_ID } from '../phaseTypeMessageId'
 
 type AdminChampionshipTableRowProps = {
   championship: ChampionshipRow
@@ -11,11 +11,6 @@ type AdminChampionshipTableRowProps = {
 }
 
 const formatDate = (date: string | null, locale: string) => (date ? new Date(date).toLocaleDateString(locale) : null)
-
-const PHASE_TYPE_MESSAGE_ID: Record<PhaseType, string> = {
-  [PhaseType.GROUP]: 'adminChampionships.phaseType.GROUP',
-  [PhaseType.KNOCKOUT]: 'adminChampionships.phaseType.KNOCKOUT',
-}
 
 export const AdminChampionshipTableRow = ({ championship, onResume }: AdminChampionshipTableRowProps) => {
   const intl = useIntl()
