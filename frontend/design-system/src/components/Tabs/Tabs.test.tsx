@@ -1,24 +1,28 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, fireEvent } from '@testing-library/react'
+import type { Key } from 'react-aria-components'
 import { Tabs } from './Tabs'
-import { TabsList } from './TabsList'
-import { TabsTrigger } from './TabsTrigger'
-import { TabsContent } from './TabsContent'
+import { TabList } from './TabList'
+import { Tab } from './Tab'
+import { TabPanels } from './TabPanels'
+import { TabPanel } from './TabPanel'
 
 const TabsComposed = ({
-  defaultValue = 'tab1',
-  onValueChange,
+  defaultSelectedKey = 'tab1',
+  onSelectionChange,
 }: {
-  defaultValue?: string
-  onValueChange?: (v: string) => void
+  defaultSelectedKey?: string
+  onSelectionChange?: (key: Key) => void
 }) => (
-  <Tabs defaultValue={defaultValue} onValueChange={onValueChange}>
-    <TabsList>
-      <TabsTrigger value="tab1">Tab 1</TabsTrigger>
-      <TabsTrigger value="tab2">Tab 2</TabsTrigger>
-    </TabsList>
-    <TabsContent value="tab1">Content 1</TabsContent>
-    <TabsContent value="tab2">Content 2</TabsContent>
+  <Tabs defaultSelectedKey={defaultSelectedKey} onSelectionChange={onSelectionChange}>
+    <TabList aria-label="Test tabs">
+      <Tab id="tab1">Tab 1</Tab>
+      <Tab id="tab2">Tab 2</Tab>
+    </TabList>
+    <TabPanels>
+      <TabPanel id="tab1">Content 1</TabPanel>
+      <TabPanel id="tab2">Content 2</TabPanel>
+    </TabPanels>
   </Tabs>
 )
 
@@ -32,45 +36,49 @@ describe('Tabs', () => {
 
   it('forwards className', () => {
     const { container } = render(
-      <Tabs defaultValue="a" className="custom">
-        <TabsList>
-          <TabsTrigger value="a">A</TabsTrigger>
-        </TabsList>
-        <TabsContent value="a">A content</TabsContent>
+      <Tabs defaultSelectedKey="a" className="custom">
+        <TabList aria-label="Test tabs">
+          <Tab id="a">A</Tab>
+        </TabList>
+        <TabPanels>
+          <TabPanel id="a">A content</TabPanel>
+        </TabPanels>
       </Tabs>
     )
     expect(container.querySelector('[data-slot="tabs"]')).toHaveClass('custom')
   })
 })
 
-// ─── TabsList ─────────────────────────────────────────────────────────────────
+// ─── TabList ──────────────────────────────────────────────────────────────────
 
-describe('TabsList', () => {
-  it('sets data-slot="tabs-list"', () => {
+describe('TabList', () => {
+  it('sets data-slot="tab-list"', () => {
     const { container } = render(<TabsComposed />)
-    expect(container.querySelector('[data-slot="tabs-list"]')).toBeInTheDocument()
+    expect(container.querySelector('[data-slot="tab-list"]')).toBeInTheDocument()
   })
 
   it('forwards className', () => {
     const { container } = render(
-      <Tabs defaultValue="a">
-        <TabsList className="custom">
-          <TabsTrigger value="a">A</TabsTrigger>
-        </TabsList>
-        <TabsContent value="a">Content</TabsContent>
+      <Tabs defaultSelectedKey="a">
+        <TabList aria-label="Test tabs" className="custom">
+          <Tab id="a">A</Tab>
+        </TabList>
+        <TabPanels>
+          <TabPanel id="a">Content</TabPanel>
+        </TabPanels>
       </Tabs>
     )
-    expect(container.querySelector('[data-slot="tabs-list"]')).toHaveClass('custom')
+    expect(container.querySelector('[data-slot="tab-list"]')).toHaveClass('custom')
   })
 })
 
-// ─── TabsTrigger ──────────────────────────────────────────────────────────────
+// ─── Tab ──────────────────────────────────────────────────────────────────────
 
-describe('TabsTrigger', () => {
-  it('sets data-slot="tabs-trigger"', () => {
+describe('Tab', () => {
+  it('sets data-slot="tab"', () => {
     const { container } = render(<TabsComposed />)
-    const triggers = container.querySelectorAll('[data-slot="tabs-trigger"]')
-    expect(triggers.length).toBe(2)
+    const tabs = container.querySelectorAll('[data-slot="tab"]')
+    expect(tabs.length).toBe(2)
   })
 
   it('renders tab labels', () => {
@@ -81,42 +89,56 @@ describe('TabsTrigger', () => {
 
   it('forwards className', () => {
     const { container } = render(
-      <Tabs defaultValue="a">
-        <TabsList>
-          <TabsTrigger value="a" className="custom">
+      <Tabs defaultSelectedKey="a">
+        <TabList aria-label="Test tabs">
+          <Tab id="a" className="custom">
             A
-          </TabsTrigger>
-        </TabsList>
-        <TabsContent value="a">Content</TabsContent>
+          </Tab>
+        </TabList>
+        <TabPanels>
+          <TabPanel id="a">Content</TabPanel>
+        </TabPanels>
       </Tabs>
     )
-    expect(container.querySelector('[data-slot="tabs-trigger"]')).toHaveClass('custom')
+    expect(container.querySelector('[data-slot="tab"]')).toHaveClass('custom')
+  })
+
+  it('renders a SelectionIndicator for the selected tab only', () => {
+    const { container } = render(<TabsComposed />)
+    expect(container.querySelectorAll('[data-slot="tab-indicator"]').length).toBe(1)
   })
 })
 
-// ─── TabsContent ──────────────────────────────────────────────────────────────
+// ─── TabPanels / TabPanel ────────────────────────────────────────────────────
 
-describe('TabsContent', () => {
-  it('sets data-slot="tabs-content"', () => {
+describe('TabPanels', () => {
+  it('sets data-slot="tab-panels"', () => {
     const { container } = render(<TabsComposed />)
-    const panels = container.querySelectorAll('[data-slot="tabs-content"]')
+    expect(container.querySelector('[data-slot="tab-panels"]')).toBeInTheDocument()
+  })
+})
+
+describe('TabPanel', () => {
+  it('sets data-slot="tab-panel"', () => {
+    const { container } = render(<TabsComposed />)
+    const panels = container.querySelectorAll('[data-slot="tab-panel"]')
     expect(panels.length).toBeGreaterThan(0)
   })
 
   it('shows default selected tab content', () => {
-    const { getByText } = render(<TabsComposed defaultValue="tab1" />)
+    const { getByText } = render(<TabsComposed defaultSelectedKey="tab1" />)
     expect(getByText('Content 1')).toBeInTheDocument()
   })
 
   it('switches content when tab is clicked', () => {
-    const { getByText } = render(<TabsComposed defaultValue="tab1" />)
+    const { getByText } = render(<TabsComposed defaultSelectedKey="tab1" />)
     fireEvent.click(getByText('Tab 2'))
     expect(getByText('Content 2')).toBeInTheDocument()
   })
 
-  it('calls onValueChange when tab changes', () => {
+  it('calls onSelectionChange when tab changes', () => {
     const handler = vi.fn()
-    const { getByText } = render(<TabsComposed onValueChange={handler} />)
+    const { getByText } = render(<TabsComposed onSelectionChange={handler} />)
     fireEvent.click(getByText('Tab 2'))
     expect(handler).toHaveBeenCalledWith('tab2')
   })

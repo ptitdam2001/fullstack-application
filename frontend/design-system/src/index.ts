@@ -116,9 +116,10 @@ export * from './components/Sidebar/SidebarMenuSubButton'
 export * from './components/Skeleton/Skeleton'
 
 export * from './components/Tabs/Tabs'
-export * from './components/Tabs/TabsList'
-export * from './components/Tabs/TabsTrigger'
-export * from './components/Tabs/TabsContent'
+export * from './components/Tabs/TabList'
+export * from './components/Tabs/Tab'
+export * from './components/Tabs/TabPanels'
+export * from './components/Tabs/TabPanel'
 
 export * from './components/Alert/Alert'
 

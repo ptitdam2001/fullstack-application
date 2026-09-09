@@ -14,3 +14,8 @@ Object.defineProperty(window, 'matchMedia', {
     dispatchEvent: () => false,
   }),
 })
+
+// react-aria SharedElementTransition (SelectionIndicator, TabPanels) calls getAnimations — jsdom doesn't implement it
+if (!Element.prototype.getAnimations) {
+  Element.prototype.getAnimations = () => []
+}

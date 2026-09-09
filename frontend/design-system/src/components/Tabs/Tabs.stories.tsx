@@ -2,13 +2,14 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent, within } from 'storybook/test'
 
 import { Tabs } from './Tabs'
-import { TabsContent } from './TabsContent'
-import { TabsList } from './TabsList'
-import { TabsTrigger } from './TabsTrigger'
+import { TabPanel } from './TabPanel'
+import { TabPanels } from './TabPanels'
+import { TabList } from './TabList'
+import { Tab } from './Tab'
 
 const meta = {
   component: Tabs,
-  args: { defaultValue: 'account' },
+  args: { defaultSelectedKey: 'account' },
 } satisfies Meta<typeof Tabs>
 
 export default meta
@@ -18,16 +19,18 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   render: args => (
     <Tabs {...args} className="w-80">
-      <TabsList>
-        <TabsTrigger value="account">Account</TabsTrigger>
-        <TabsTrigger value="password">Password</TabsTrigger>
-      </TabsList>
-      <TabsContent value="account">
-        <p className="text-muted-foreground text-sm">Manage your account settings.</p>
-      </TabsContent>
-      <TabsContent value="password">
-        <p className="text-muted-foreground text-sm">Change your password here.</p>
-      </TabsContent>
+      <TabList aria-label="Settings">
+        <Tab id="account">Account</Tab>
+        <Tab id="password">Password</Tab>
+      </TabList>
+      <TabPanels>
+        <TabPanel id="account">
+          <p className="text-muted-foreground text-sm">Manage your account settings.</p>
+        </TabPanel>
+        <TabPanel id="password">
+          <p className="text-muted-foreground text-sm">Change your password here.</p>
+        </TabPanel>
+      </TabPanels>
     </Tabs>
   ),
 }
@@ -35,15 +38,36 @@ export const Default: Story = {
 export const WithDisabledTab: Story = {
   render: args => (
     <Tabs {...args} className="w-80">
-      <TabsList>
-        <TabsTrigger value="account">Account</TabsTrigger>
-        <TabsTrigger value="password" disabled>
+      <TabList aria-label="Settings">
+        <Tab id="account">Account</Tab>
+        <Tab id="password" isDisabled>
           Password
-        </TabsTrigger>
-        <TabsTrigger value="settings">Settings</TabsTrigger>
-      </TabsList>
-      <TabsContent value="account">Account content</TabsContent>
-      <TabsContent value="settings">Settings content</TabsContent>
+        </Tab>
+        <Tab id="settings">Settings</Tab>
+      </TabList>
+      <TabPanels>
+        <TabPanel id="account">Account content</TabPanel>
+        <TabPanel id="settings">Settings content</TabPanel>
+      </TabPanels>
+    </Tabs>
+  ),
+}
+
+export const VerticalOrientation: Story = {
+  render: args => (
+    <Tabs {...args} orientation="vertical" className="w-80">
+      <TabList aria-label="Settings">
+        <Tab id="account">Account</Tab>
+        <Tab id="password">Password</Tab>
+      </TabList>
+      <TabPanels>
+        <TabPanel id="account">
+          <p className="text-muted-foreground text-sm">Manage your account settings.</p>
+        </TabPanel>
+        <TabPanel id="password">
+          <p className="text-muted-foreground text-sm">Change your password here.</p>
+        </TabPanel>
+      </TabPanels>
     </Tabs>
   ),
 }
@@ -51,16 +75,18 @@ export const WithDisabledTab: Story = {
 export const SelectTabOnClick: Story = {
   render: args => (
     <Tabs {...args} className="w-80">
-      <TabsList>
-        <TabsTrigger value="account">Account</TabsTrigger>
-        <TabsTrigger value="password">Password</TabsTrigger>
-      </TabsList>
-      <TabsContent value="account">
-        <p className="text-muted-foreground text-sm">Manage your account settings.</p>
-      </TabsContent>
-      <TabsContent value="password">
-        <p className="text-muted-foreground text-sm">Change your password here.</p>
-      </TabsContent>
+      <TabList aria-label="Settings">
+        <Tab id="account">Account</Tab>
+        <Tab id="password">Password</Tab>
+      </TabList>
+      <TabPanels>
+        <TabPanel id="account">
+          <p className="text-muted-foreground text-sm">Manage your account settings.</p>
+        </TabPanel>
+        <TabPanel id="password">
+          <p className="text-muted-foreground text-sm">Change your password here.</p>
+        </TabPanel>
+      </TabPanels>
     </Tabs>
   ),
   play: async ({ canvasElement }) => {
@@ -75,16 +101,18 @@ export const SelectTabOnClick: Story = {
 export const KeyboardNavigation: Story = {
   render: args => (
     <Tabs {...args} className="w-80">
-      <TabsList>
-        <TabsTrigger value="account">Account</TabsTrigger>
-        <TabsTrigger value="password">Password</TabsTrigger>
-      </TabsList>
-      <TabsContent value="account">
-        <p className="text-muted-foreground text-sm">Manage your account settings.</p>
-      </TabsContent>
-      <TabsContent value="password">
-        <p className="text-muted-foreground text-sm">Change your password here.</p>
-      </TabsContent>
+      <TabList aria-label="Settings">
+        <Tab id="account">Account</Tab>
+        <Tab id="password">Password</Tab>
+      </TabList>
+      <TabPanels>
+        <TabPanel id="account">
+          <p className="text-muted-foreground text-sm">Manage your account settings.</p>
+        </TabPanel>
+        <TabPanel id="password">
+          <p className="text-muted-foreground text-sm">Change your password here.</p>
+        </TabPanel>
+      </TabPanels>
     </Tabs>
   ),
   play: async ({ canvasElement }) => {
