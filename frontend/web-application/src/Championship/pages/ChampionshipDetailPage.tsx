@@ -1,7 +1,7 @@
 import { Suspense, useState } from 'react'
 import { useParams, useNavigate } from 'react-router'
 import { FormattedMessage } from 'react-intl'
-import { Layout } from '@repo/design-system'
+import { Card, Layout, Separator, Typography } from '@repo/design-system'
 import { ErrorBoundary } from '@Common/ErrorBoundary'
 import { TableLoader } from '@Common/Loading'
 import { NotFound } from '@Common/NotFound'
@@ -48,10 +48,24 @@ const GroupPhasePools = ({ championshipId, phase, groups }: GroupPhasePoolsProps
 
   return (
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_400px]">
-      <div className="flex flex-col gap-2">
-        <PoolSelector pools={groups} value={pool.id} onValueChange={setPoolId} />
-        <StandingsTable rows={standings.rows} teams={teams} qualifyRank={phase.qualification?.maxRank ?? 0} />
-      </div>
+      <Card.Container className="gap-2 px-0 py-2 pt-0">
+        <Card.Header className="gap-0 rounded-t-lg bg-gray-300 p-2">
+          <Card.Title className="h-10 py-0.5">
+            <Typography.Title3>
+              <FormattedMessage id="championshipDetail.standings.title" />
+            </Typography.Title3>
+          </Card.Title>
+          <Card.Action>
+            <PoolSelector pools={groups} value={pool.id} onValueChange={setPoolId} />
+          </Card.Action>
+        </Card.Header>
+
+        <Card.Content className="px-0">
+          <StandingsTable rows={standings.rows} teams={teams} qualifyRank={phase.qualification?.maxRank ?? 0} />
+          <Separator />
+        </Card.Content>
+      </Card.Container>
+
       <MatchesPanel
         matches={filteredMatches}
         filter={filter}
