@@ -1,4 +1,4 @@
-import { Button, Card, Select, SelectItem, Tabs, TabsList, TabsTrigger } from '@repo/design-system'
+import { Button, Card, Select, SelectItem, Tab, Tabs, TabList } from '@repo/design-system'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { useChampionshipList } from '@Championship/application/useChampionshipList'
 import { useAgeCategoryList } from '@AgeCategory/application/useAgeCategoryList'
@@ -52,25 +52,25 @@ export const MatchFilters = ({ filters, onChange, resultCount }: Props) => {
         </Select>
 
         <Tabs
-          value={filters.status ?? STATUS_TAB_ALL}
-          onValueChange={value =>
-            onChange({ ...filters, status: value === STATUS_TAB_ALL ? undefined : (value as MatchStatus) })
+          selectedKey={filters.status ?? STATUS_TAB_ALL}
+          onSelectionChange={key =>
+            onChange({ ...filters, status: key === STATUS_TAB_ALL ? undefined : (key as MatchStatus) })
           }
         >
-          <TabsList>
-            <TabsTrigger value={STATUS_TAB_ALL}>
+          <TabList aria-label={intl.formatMessage({ id: 'adminMatches.filters.status' })}>
+            <Tab id={STATUS_TAB_ALL}>
               <FormattedMessage id="adminMatches.tabs.all" />
-            </TabsTrigger>
-            <TabsTrigger value={MatchStatus.SCHEDULED}>
+            </Tab>
+            <Tab id={MatchStatus.SCHEDULED}>
               <FormattedMessage id="adminMatches.tabs.scheduled" />
-            </TabsTrigger>
-            <TabsTrigger value={MatchStatus.PLAYED}>
+            </Tab>
+            <Tab id={MatchStatus.PLAYED}>
               <FormattedMessage id="adminMatches.tabs.played" />
-            </TabsTrigger>
-            <TabsTrigger value={MatchStatus.FORFEITED}>
+            </Tab>
+            <Tab id={MatchStatus.FORFEITED}>
               <FormattedMessage id="adminMatches.tabs.forfeited" />
-            </TabsTrigger>
-          </TabsList>
+            </Tab>
+          </TabList>
         </Tabs>
 
         {hasActiveFilter && (

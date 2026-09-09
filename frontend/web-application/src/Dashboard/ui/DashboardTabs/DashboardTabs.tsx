@@ -1,5 +1,5 @@
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@repo/design-system'
-import { FormattedMessage } from 'react-intl'
+import { Tab, Tabs, TabList, TabPanels, TabPanel } from '@repo/design-system'
+import { FormattedMessage, useIntl } from 'react-intl'
 import { Link } from 'react-router'
 import type { UserWithoutPasswordRolesItem } from '@Sdk/model'
 import { CoachTab } from './CoachTab/CoachTab'
@@ -17,6 +17,7 @@ const ROLE_TABS = [
 ]
 
 export const DashboardTabs = ({ roles }: DashboardTabsProps) => {
+  const intl = useIntl()
   const activeTabs = ROLE_TABS.filter(t => roles.includes(t.role))
 
   if (activeTabs.length === 0) {
@@ -33,19 +34,21 @@ export const DashboardTabs = ({ roles }: DashboardTabsProps) => {
   }
 
   return (
-    <Tabs defaultValue={activeTabs[0].role} className="flex flex-1 flex-col gap-0 p-4 pt-0">
-      <TabsList className="mb-4 w-fit">
+    <Tabs defaultSelectedKey={activeTabs[0].role} className="flex flex-1 flex-col gap-0 p-4 pt-0">
+      <TabList aria-label={intl.formatMessage({ id: 'dashboard.tabs.label' })} className="mb-4 w-fit">
         {activeTabs.map(t => (
-          <TabsTrigger key={t.role} value={t.role}>
+          <Tab key={t.role} id={t.role}>
             <FormattedMessage id={t.labelKey} />
-          </TabsTrigger>
+          </Tab>
         ))}
-      </TabsList>
-      {activeTabs.map(({ role, Component }) => (
-        <TabsContent key={role} value={role}>
-          <Component />
-        </TabsContent>
-      ))}
+      </TabList>
+      <TabPanels>
+        {activeTabs.map(({ role, Component }) => (
+          <TabPanel key={role} id={role}>
+            <Component />
+          </TabPanel>
+        ))}
+      </TabPanels>
     </Tabs>
   )
 }

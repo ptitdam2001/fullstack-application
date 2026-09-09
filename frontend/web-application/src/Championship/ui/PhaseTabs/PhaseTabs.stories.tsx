@@ -27,7 +27,7 @@ export const ClickPhase: Story = {
   name: 'Cliquer un onglet appelle onValueChange',
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
-    await userEvent.click(canvas.getByRole('tab', { name: /Phase 2/ }))
+    await userEvent.click(await canvas.findByRole('tab', { name: /Phase 2/ }))
     expect(args.onValueChange).toHaveBeenCalledWith('p2')
   },
 }

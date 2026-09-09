@@ -23,7 +23,7 @@ export const ClickPool: Story = {
   name: 'Cliquer une poule appelle onValueChange',
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
-    await userEvent.click(canvas.getByRole('tab', { name: 'Poule B' }))
+    await userEvent.click(await canvas.findByRole('tab', { name: 'Poule B' }))
     expect(args.onValueChange).toHaveBeenCalledWith('g2')
   },
 }

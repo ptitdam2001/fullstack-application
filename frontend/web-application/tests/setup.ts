@@ -16,6 +16,11 @@ const localStorageMock = {
 }
 Object.defineProperty(window, 'localStorage', { value: localStorageMock, writable: true })
 
+// react-aria SharedElementTransition (SelectionIndicator, TabPanels) calls getAnimations — jsdom doesn't implement it
+if (!Element.prototype.getAnimations) {
+  Element.prototype.getAnimations = () => []
+}
+
 beforeAll(() => server.listen({ onUnhandledRequest: 'bypass' }))
 afterEach(() => {
   cleanup()

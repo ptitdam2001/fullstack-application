@@ -1,4 +1,5 @@
-import { Tabs, TabsList, TabsTrigger } from '@repo/design-system'
+import { useIntl } from 'react-intl'
+import { Tab, Tabs, TabList } from '@repo/design-system'
 import type { Group } from '../../domain/Group'
 
 type PoolSelectorProps = {
@@ -8,19 +9,21 @@ type PoolSelectorProps = {
 }
 
 export const PoolSelector = ({ pools, value, onValueChange }: PoolSelectorProps) => {
+  const intl = useIntl()
+
   if (pools.length <= 1) {
     return null
   }
 
   return (
-    <Tabs value={value} onValueChange={onValueChange}>
-      <TabsList>
+    <Tabs selectedKey={value} onSelectionChange={key => onValueChange(key as string)}>
+      <TabList aria-label={intl.formatMessage({ id: 'championshipDetail.standings.poolSelector' })}>
         {pools.map(pool => (
-          <TabsTrigger key={pool.id} value={pool.id}>
+          <Tab key={pool.id} id={pool.id}>
             {pool.name}
-          </TabsTrigger>
+          </Tab>
         ))}
-      </TabsList>
+      </TabList>
     </Tabs>
   )
 }
