@@ -16,9 +16,9 @@ export const PhaseTabs = ({ phases, value, onValueChange }: PhaseTabsProps) => {
     <Tabs selectedKey={value} onSelectionChange={key => onValueChange(key as string)}>
       <TabList aria-label={intl.formatMessage({ id: 'championshipDetail.phases.selector' })}>
         {phases.map(phase => (
-          <Tab key={phase.id} id={phase.id}>
-            {phase.name ?? phase.order}
-            <Badge variant="secondary">
+          <Tab key={phase.id} id={phase.id} className="gap-1.5">
+            {phase.name ?? intl.formatMessage({ id: 'championshipDetail.phases.label' }, { number: phase.order })}
+            <Badge variant="outline">
               <FormattedMessage id={PHASE_TYPE_MESSAGE_ID[phase.type]} />
             </Badge>
           </Tab>

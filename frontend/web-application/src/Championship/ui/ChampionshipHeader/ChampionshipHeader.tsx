@@ -1,6 +1,6 @@
 import { FormattedMessage, useIntl } from 'react-intl'
 import { Badge, Typography } from '@repo/design-system'
-import { getChampionshipStatus } from '../Admin/getChampionshipStatus'
+import { getChampionshipStatus, type ChampionshipStatus } from '../Admin/getChampionshipStatus'
 import type { Championship } from '../../domain/Championship'
 
 type ChampionshipHeaderProps = {
@@ -8,6 +8,12 @@ type ChampionshipHeaderProps = {
   seasonLabel: string | null
   categoryLabel: string | null
   phasesCount: number
+}
+
+const STATUS_BADGE_CLASS: Record<ChampionshipStatus, string> = {
+  draft: 'bg-gray-100 text-gray-800 border-transparent dark:bg-gray-800 dark:text-gray-300',
+  inProgress: 'bg-blue-100 text-blue-800 border-transparent dark:bg-blue-900 dark:text-blue-200',
+  finished: 'bg-emerald-100 text-emerald-800 border-transparent dark:bg-emerald-900 dark:text-emerald-200',
 }
 
 const Dash = () => <span className="text-muted-foreground">—</span>
@@ -27,7 +33,7 @@ export const ChampionshipHeader = ({
       <div>
         <Typography.Title1>{championship.name}</Typography.Title1>
         <div className="mt-2 flex flex-wrap gap-2">
-          <Badge variant="secondary">
+          <Badge variant="outline" className={STATUS_BADGE_CLASS[status]}>
             <FormattedMessage id={`adminChampionships.status.${status}`} />
           </Badge>
           <Badge variant="outline">{seasonLabel ?? <Dash />}</Badge>

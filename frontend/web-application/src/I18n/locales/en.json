@@ -372,6 +372,7 @@
     "action.detailTooltip": "View details",
     "stats.phases": "Phases",
     "phases.selector": "Phase selection",
+    "phases.label": "Phase {number}",
     "stats.teams": "Teams",
     "stats.matches": "Matches played",
     "points.win": "W",

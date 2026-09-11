@@ -372,6 +372,7 @@
     "action.detailTooltip": "Voir le détail",
     "stats.phases": "Phases",
     "phases.selector": "Sélection de la phase",
+    "phases.label": "Phase {number}",
     "stats.teams": "Équipes",
     "stats.matches": "Matchs joués",
     "points.win": "V",
