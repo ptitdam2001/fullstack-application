@@ -14,12 +14,12 @@ describe('TeamListPagination', () => {
 
   it('disables Previous on first page', () => {
     render(<TeamListPagination page={0} totalPages={3} onPageChange={() => {}} />)
-    expect(screen.getByRole('link', { name: /previous/i })).toHaveClass('pointer-events-none')
+    expect(screen.getByRole('link', { name: /previous/i })).toHaveAttribute('aria-disabled', 'true')
   })
 
   it('disables Next on last page', () => {
     render(<TeamListPagination page={2} totalPages={3} onPageChange={() => {}} />)
-    expect(screen.getByRole('link', { name: /next/i })).toHaveClass('pointer-events-none')
+    expect(screen.getByRole('link', { name: /next/i })).toHaveAttribute('aria-disabled', 'true')
   })
 
   it('calls onPageChange when clicking Next', () => {
