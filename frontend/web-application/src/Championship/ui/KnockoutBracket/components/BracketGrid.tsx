@@ -11,7 +11,7 @@ type Props = {
 
 const COL_W = 176
 const COL_GAP = 44
-const MATCH_H = 68
+const MATCH_H = 76
 const LEAF_GAP = 16
 const LABEL_H = 22
 
