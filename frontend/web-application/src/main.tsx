@@ -24,7 +24,12 @@ async function enableMocking() {
 
   // `worker.start()` returns a Promise that resolves
   // once the Service Worker is up and ready to intercept requests.
-  return worker.start()
+  await worker.start()
+
+  if (import.meta.env.MODE === 'e2e') {
+    const { exposeE2eOverrides } = await import('./mocks/e2eOverrides')
+    exposeE2eOverrides(worker)
+  }
 }
 
 enableMocking().then(() => {
