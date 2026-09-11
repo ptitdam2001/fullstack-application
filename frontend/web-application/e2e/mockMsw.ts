@@ -10,3 +10,9 @@ export const mockMsw = async (page: Page, ...args: MswOverrideArgs) => {
     window.__mswOverrideQueue.push(overrideArgs)
   }, args)
 }
+
+// For overrides added mid-test, after the app has already booted (window.__mswApplyOverride
+// exists by then) — e.g. mocking a PATCH response right before triggering the action that fires it.
+export const applyMswOverride = async (page: Page, ...args: MswOverrideArgs) => {
+  await page.evaluate(overrideArgs => window.__mswApplyOverride?.(...overrideArgs), args)
+}

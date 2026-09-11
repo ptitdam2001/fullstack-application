@@ -1,10 +1,14 @@
 import { test, expect } from '@playwright/test'
 import type { Match } from '@Sdk/model'
 import { MatchStatus } from '@Sdk/model'
+import { applyMswOverride, mockMsw } from './mockMsw'
 
 // MSW's generated mock randomizes `status` per match (see match.msw.ts), so a page load can
-// land with zero SCHEDULED matches and no "Enter score" button. Route interception replaces
-// the list with a fixed SCHEDULED match to make the score-entry flow deterministic.
+// land with zero SCHEDULED matches and no "Enter score" button. mockMsw() replaces the list with
+// a fixed SCHEDULED match to make the score-entry flow deterministic — page.route() can't do this,
+// MSW's Service Worker answers requests before they reach Playwright's network layer (see
+// feedback_e2e_msw_route_intercept_broken memory / src/mocks/e2eOverrides.ts).
+const BACKEND = 'http://localhost:3000'
 const scheduledMatch: Match = {
   id: 'e2e-match-1',
   area: null,
@@ -20,7 +24,7 @@ const scheduledMatch: Match = {
 
 test.describe('admin — matches score entry', () => {
   test.beforeEach(async ({ page }) => {
-    await page.route('**/matches?*', route => route.fulfill({ json: [scheduledMatch] }))
+    await mockMsw(page, 'get', `${BACKEND}/matches`, [scheduledMatch])
     await page.goto('/app/admin/matches')
   })
 
@@ -32,9 +36,12 @@ test.describe('admin — matches score entry', () => {
   })
 
   test('submitting a valid score closes the dialog', async ({ page }) => {
-    await page.route(`**/match/${scheduledMatch.id}`, route =>
-      route.fulfill({ json: { ...scheduledMatch, status: MatchStatus.PLAYED, homeGoals: 3, awayGoals: 1 } })
-    )
+    await applyMswOverride(page, 'patch', `${BACKEND}/match/${scheduledMatch.id}`, {
+      ...scheduledMatch,
+      status: MatchStatus.PLAYED,
+      homeGoals: 3,
+      awayGoals: 1,
+    })
 
     await page.getByRole('button', { name: 'Enter score' }).first().click()
     const dialog = page.getByRole('dialog', { name: 'Enter score' })
@@ -48,8 +55,12 @@ test.describe('admin — matches score entry', () => {
   })
 
   test('API error keeps the dialog open and shows a notification', async ({ page }) => {
-    await page.route(`**/match/${scheduledMatch.id}`, route =>
-      route.fulfill({ status: 400, json: { err: [{ message: 'must be object' }] } })
+    await applyMswOverride(
+      page,
+      'patch',
+      `${BACKEND}/match/${scheduledMatch.id}`,
+      { err: [{ message: 'must be object' }] },
+      400
     )
 
     await page.getByRole('button', { name: 'Enter score' }).first().click()
