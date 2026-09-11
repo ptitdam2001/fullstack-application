@@ -404,7 +404,11 @@
     "matches.empty": "Aucun match pour ce filtre",
     "matches.viewAll": "Voir tous les matchs",
     "knockout.title": "Tableau",
-    "knockout.placeholder": "Bracket bientôt disponible"
+    "knockout.empty": "Aucun tableau généré pour cette phase",
+    "knockout.round.final": "Finale",
+    "knockout.round.semiFinal": "1/2 finale",
+    "knockout.round.quarterFinal": "1/4 finale",
+    "knockout.round.n": "Tour {number}"
   },
   "adminMatches": {
     "title": "Matchs",

@@ -404,7 +404,11 @@
     "matches.empty": "No matches for this filter",
     "matches.viewAll": "View all matches",
     "knockout.title": "Bracket",
-    "knockout.placeholder": "Bracket coming soon"
+    "knockout.empty": "No bracket generated for this phase",
+    "knockout.round.final": "Final",
+    "knockout.round.semiFinal": "Semi-final",
+    "knockout.round.quarterFinal": "Quarter-final",
+    "knockout.round.n": "Round {number}"
   },
   "adminMatches": {
     "title": "Matches",

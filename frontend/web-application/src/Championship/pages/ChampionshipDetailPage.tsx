@@ -18,7 +18,7 @@ import { PhaseTabs } from '../ui/PhaseTabs/PhaseTabs'
 import { PoolSelector } from '../ui/PoolSelector/PoolSelector'
 import { StandingsTable } from '../ui/StandingsTable/StandingsTable'
 import { MatchesPanel, type MatchesFilter } from '../ui/MatchesPanel/MatchesPanel'
-import { KnockoutPlaceholder } from '../ui/KnockoutPlaceholder/KnockoutPlaceholder'
+import { KnockoutBracket } from '../ui/KnockoutBracket/KnockoutBracket'
 import { PhaseType, type Phase } from '../domain/Phase'
 import type { Group } from '../domain/Group'
 import { MatchStatus } from '../domain/Match'
@@ -90,6 +90,11 @@ const GroupPhaseContent = ({ championshipId, phase }: { championshipId: string; 
   return <GroupPhasePools championshipId={championshipId} phase={phase} groups={groups} />
 }
 
+const KnockoutPhaseContent = ({ championshipId }: { championshipId: string }) => {
+  const { data: allMatches } = useChampionshipMatches(championshipId)
+  return <KnockoutBracket matches={allMatches} />
+}
+
 const ChampionshipDetailContent = ({ championshipId }: { championshipId: string }) => {
   const { data: championship } = useChampionshipDetail(championshipId)
   const { data: phases } = usePhaseList(championshipId)
@@ -119,7 +124,7 @@ const ChampionshipDetailContent = ({ championshipId }: { championshipId: string 
             {phase.type === PhaseType.GROUP ? (
               <GroupPhaseContent championshipId={championshipId} phase={phase} />
             ) : (
-              <KnockoutPlaceholder />
+              <KnockoutPhaseContent championshipId={championshipId} />
             )}
           </Suspense>
         </>
