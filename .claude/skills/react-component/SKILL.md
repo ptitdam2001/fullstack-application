@@ -279,6 +279,32 @@ Règles du Page Object :
 - Actions (`clickViewButton()`) exécutent l'interaction et retournent `this` pour chaîner
 - Mocks de callbacks (`vi.fn()`) en propriété publique de la classe
 
+### Jamais de classe CSS comme cible de test
+
+Une assertion de test ne porte **jamais** sur une classe Tailwind (`className`, `toHaveClass`, `toContain('bg-...')`). C'est fragile — couplé à l'implémentation visuelle, casse au moindre refactor CSS sans que le comportement ait changé — et ça ne prouve rien côté fonctionnel/accessibilité.
+
+Ordre de priorité pour cibler un élément dans un getter de Page Object :
+
+1. **`role`** (+ `name` accessible) — `getByRole('button', { name: 'teamCard.view' })` : premier choix, prouve aussi l'accessibilité
+2. **`data-*` sémantique** — `data-status={status}`, `data-selected`, etc. : quand il n'y a pas de role pertinent mais qu'un état/variant doit être vérifié
+3. **`data-testid`** — dernier recours, uniquement quand ni role ni attribut sémantique n'existe naturellement
+
+```tsx
+// ✅ — role d'abord
+viewButton() {
+  return screen.getByRole('button', { name: 'teamCard.view' })
+}
+
+// ✅ — data-* sémantique si pas de role pertinent (ex. badge de statut)
+statusBadge() {
+  return screen.getByTestId('match-status-badge') // ou data-status si le composant l'expose
+}
+expect(page.statusBadge()).toHaveAttribute('data-status', 'PLAYED')
+
+// ❌ — jamais sur la classe
+expect(page.statusBadge().className).toContain('bg-green-100')
+```
+
 ### react-intl est globalement mocké
 
 `tests/setup.ts` contient `vi.mock('react-intl')`. Conséquences :

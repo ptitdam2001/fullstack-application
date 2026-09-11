@@ -66,7 +66,7 @@ export const ChangeFilter: Story = {
   name: 'Changer le filtre appelle onFilterChange',
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
-    await userEvent.click(canvas.getByRole('tab', { name: /upcoming|à venir/i }))
+    await userEvent.click(await canvas.findByRole('tab', { name: /upcoming|à venir/i }))
     expect(args.onFilterChange).toHaveBeenCalledWith('SCHEDULED')
   },
 }
@@ -75,7 +75,7 @@ export const ClickViewAll: Story = {
   name: 'Cliquer "Voir tous les matchs" appelle onViewAll',
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
-    await userEvent.click(canvas.getByRole('button', { name: /view all matches|voir tous les matchs/i }))
+    await userEvent.click(await canvas.findByRole('button', { name: /view all matches|voir tous les matchs/i }))
     expect(args.onViewAll).toHaveBeenCalled()
   },
 }
