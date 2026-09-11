@@ -2,7 +2,7 @@ import { FormattedMessage } from 'react-intl'
 import { Typography } from '@repo/design-system'
 import type { Team } from '@Teams/domain/Team'
 import { buildBracket } from '../../application/buildBracket'
-import { BracketConnectors } from './components/BracketConnectors'
+import { BracketConnectors } from '../BracketConnectors/BracketConnectors'
 
 type StepConfigKnockoutProps = {
   teams: Team[]
@@ -36,8 +36,7 @@ export const StepConfigKnockout = ({ teams, teamIds }: StepConfigKnockoutProps) 
   const leafCount = rounds.length ? rounds[0].length : 0
   const height = leafCount ? leafCount * MATCH_H + (leafCount - 1) * LEAF_GAP : MATCH_H
   const width = rounds.length ? rounds.length * COL_W + (rounds.length - 1) * COL_GAP : COL_W
-  const centerY = (roundIndex: number, matchIndex: number) =>
-    (height * (matchIndex + 0.5)) / rounds[roundIndex].length
+  const centerY = (roundIndex: number, matchIndex: number) => (height * (matchIndex + 0.5)) / rounds[roundIndex].length
   const xLeft = (roundIndex: number) => roundIndex * (COL_W + COL_GAP)
 
   return (
@@ -74,10 +73,7 @@ export const StepConfigKnockout = ({ teams, teamIds }: StepConfigKnockoutProps) 
                   className="text-muted-foreground absolute text-center text-[11px] font-semibold tracking-wide uppercase"
                   style={{ left: xLeft(roundIndex), top: -LABEL_H, width: COL_W }}
                 >
-                  <FormattedMessage
-                    id={roundLabelId(roundIndex, rounds.length)}
-                    values={{ number: roundIndex + 1 }}
-                  />
+                  <FormattedMessage id={roundLabelId(roundIndex, rounds.length)} values={{ number: roundIndex + 1 }} />
                 </div>
                 {round.map((match, matchIndex) => {
                   const aName = teamName(match.a.teamId)

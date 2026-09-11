@@ -1,4 +1,4 @@
-import { type BracketConnector } from '../../../application/buildBracket'
+import { type BracketConnector } from '../../application/buildBracket'
 
 type BracketConnectorsProps = {
   connectors: BracketConnector[]
@@ -18,7 +18,13 @@ export const BracketConnectors = ({ connectors, width, height, colW, xLeft, cent
       const y2 = centerY(c.toRound, c.toMatch)
       const xMid = (x1 + x2) / 2
       return (
-        <path key={i} d={`M${x1} ${y1} H${xMid} V${y2} H${x2}`} fill="none" className="stroke-border" strokeWidth={1.5} />
+        <path
+          key={i}
+          d={`M${x1} ${y1} H${xMid} V${y2} H${x2}`}
+          fill="none"
+          className="stroke-border"
+          strokeWidth={1.5}
+        />
       )
     })}
   </svg>
