@@ -7,7 +7,7 @@ import { prisma } from './utils/prismaClient'
 // configures dotenv to work in your application
 dotenv.config()
 
-const PORT = process.env.PORT
+const PORT = Number(process.env.PORT)
 
 const start = async () => {
   await prisma.$connect()
@@ -15,7 +15,7 @@ const start = async () => {
 
   const app = await createApp()
   app
-    .listen(PORT, () => {
+    .listen(PORT, '0.0.0.0', () => {
       logger.info('Server running at PORT: %d', PORT)
     })
     .on('error', error => {
