@@ -2334,6 +2334,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
 
+  /health:
+    get:
+      operationId: health
+      description: 'Liveness check for orchestrators and Docker HEALTHCHECK'
+      tags:
+        - Health
+      security: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+
 security:
   - jwtAuth: []
 components:
@@ -2343,6 +2358,15 @@ components:
       scheme: 'bearer'
       bearerFormat: 'JWT'
   schemas:
+    HealthStatus:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum:
+            - ok
     RegisterInput:
       type: object
       required:
