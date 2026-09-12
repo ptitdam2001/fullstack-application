@@ -1,3 +1,12 @@
 **/node_modules
-**/.git
 **/dist
+**/coverage
+**/.turbo
+**/.vite
+**/storybook-static
+**/.env
+**/.env.*
+!**/.env.sample
+.git
+**/*.log
+**/.DS_Store

@@ -1,5 +1,5 @@
 # ── Stage 1: Builder ──────────────────────────────────────────────────────────
-FROM node:lts-alpine AS builder
+FROM node:22-alpine AS builder
 
 RUN corepack enable && corepack prepare pnpm@10.13.1 --activate
 
@@ -32,7 +32,7 @@ RUN pnpm --filter @repo/design-system build && \
     pnpm --filter application-material build
 
 # ── Stage 2: Nginx ────────────────────────────────────────────────────────────
-FROM nginx:alpine AS production
+FROM nginx:1.27-alpine AS production
 
 COPY --from=builder /app/frontend/web-application/dist /usr/share/nginx/html
 COPY deployment/frontend/nginx.conf /etc/nginx/conf.d/default.conf

@@ -44,6 +44,10 @@ COPY --from=builder /app/backend/dist ./dist
 
 COPY backend/openapi.yml ./openapi.yml
 
+RUN chown -R node:node /app/backend
+
+USER node
+
 EXPOSE 3000
 
 CMD ["node", "dist/index.js"]
