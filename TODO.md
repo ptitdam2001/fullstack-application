@@ -2,6 +2,7 @@
 
 ## Global
 
+- Sécuriser mongo-express avant déploiement sur serveur distant (ME_CONFIG_BASICAUTH: "false" actuellement, ok en local uniquement — voir commentaire dans deployment/docker-compose.yml)
 - Mettre le git privé
 - Dockerisation
 - Test E2E

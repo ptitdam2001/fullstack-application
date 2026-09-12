@@ -23,6 +23,9 @@ services:
       INIT_WAIT_SEC: 3
     ports:
       - "27017:27017"
+  # TODO(pre-prod): no auth on this UI (ME_CONFIG_BASICAUTH: "false") — fine on localhost only.
+  # Before deploying this compose file to a remote server: set ME_CONFIG_BASICAUTH: "true" +
+  # ME_CONFIG_BASICAUTH_USERNAME/PASSWORD, or bind the port to "127.0.0.1:8083:8081".
   db-viewer:
     image: mongo-express
     restart: always
