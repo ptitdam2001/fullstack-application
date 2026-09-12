@@ -3,6 +3,8 @@
 ## Global
 
 - Sécuriser mongo-express avant déploiement sur serveur distant (ME_CONFIG_BASICAUTH: "false" actuellement, ok en local uniquement — voir commentaire dans deployment/docker-compose.yml)
+- Mongo dev/test tourne sur `4.4.3-bionic` (EOL) — réévaluer la version au moment de la prod
+- Ajouter des limites CPU/mémoire sur les services docker-compose avant la prod
 - Mettre le git privé
 - Dockerisation
 - Test E2E
