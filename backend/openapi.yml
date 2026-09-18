@@ -1970,6 +1970,7 @@ paths:
                 $ref: '#/components/schemas/ErrorOutput'
     get:
       operationId: getTeamJoinRequests
+      description: Restricted to an admin or a coach of the team.
       tags:
         - Teams
       parameters:
@@ -1991,10 +1992,23 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/TeamJoinRequest'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorOutput'
+        '403':
+          description: Forbidden — caller is neither an admin nor a coach of the team
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorOutput'
 
   /teams/{teamId}/join-requests/{requestId}:
     patch:
       operationId: updateTeamJoinRequest
+      description: Approve or refuse a join request. Restricted to an admin or a coach of the team.
       tags:
         - Teams
       parameters:
@@ -2021,6 +2035,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TeamJoinRequest'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorOutput'
+        '403':
+          description: Forbidden — caller is neither an admin nor a coach of the team
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorOutput'
         '404':
           description: Request not found or not pending
           content:
