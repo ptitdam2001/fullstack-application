@@ -432,7 +432,7 @@ sequenceDiagram
     participant DB as MongoDB
 
     FE->>API: PATCH /teams/{teamId}/join-requests/{requestId} { action: "approve" | "refuse" }
-    API->>UC: execute({ requestId, teamId, action, approverId })
+    API->>UC: execute({ requestId, teamId, action })
     UC->>JRRepo: findById(requestId)
     DB-->>JRRepo: TeamJoinRequest | null
     alt Non trouvé ou status != PENDING
@@ -761,7 +761,7 @@ interface ITeamJoinRequestRepository {
 | ----------------- | ------------------------------------------- | ------------------- | -------------------------------------------------------------------- |
 | `createRequest`   | `{ userId, teamId, requestedRole }`         | `TeamJoinRequest`   | Upsert demande PENDING (erreur si APPROVED existant)                 |
 | `getTeamRequests` | `{ teamId, status? }`                       | `TeamJoinRequest[]` | Liste filtrée par statut                                             |
-| `updateRequest`   | `{ requestId, teamId, action, approverId }` | `TeamJoinRequest`   | Approuve ou refuse selon `requestedRole` (guard: PENDING uniquement) |
+| `updateRequest`   | `{ requestId, teamId, action }`             | `TeamJoinRequest`   | Approuve ou refuse selon `requestedRole` (guard: PENDING uniquement) |
 
 #### Extension domaine `team` — `createTeamWithCoach`
 

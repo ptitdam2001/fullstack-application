@@ -71,27 +71,27 @@ describe('TeamJoinRequestUseCases.getTeamRequests', () => {
 describe('TeamJoinRequestUseCases.updateRequest', () => {
   it('refuses request when action is refuse', async () => {
     const repo = makeRepo()
-    const result = await make(repo).updateRequest('req-1', 'team-1', 'refuse', 'approver-1')
+    const result = await make(repo).updateRequest('req-1', 'team-1', 'refuse')
     expect(repo.refuse).toHaveBeenCalledWith('req-1')
     expect(result.status).toBe(JoinRequestStatus.REFUSED)
   })
 
   it('approves request when action is approve', async () => {
     const repo = makeRepo()
-    const result = await make(repo).updateRequest('req-1', 'team-1', 'approve', 'approver-1')
+    const result = await make(repo).updateRequest('req-1', 'team-1', 'approve')
     expect(repo.approve).toHaveBeenCalledWith('req-1', 'user-1', 'team-1', TeamRole.PLAYER)
     expect(result.status).toBe(JoinRequestStatus.APPROVED)
   })
 
   it('throws JoinRequestNotFoundError when request not found', async () => {
     await expect(
-      make({ findById: vi.fn().mockResolvedValue(null) }).updateRequest('bad-id', 'team-1', 'approve', 'approver-1')
+      make({ findById: vi.fn().mockResolvedValue(null) }).updateRequest('bad-id', 'team-1', 'approve')
     ).rejects.toThrow(JoinRequestNotFoundError)
   })
 
   it('throws JoinRequestNotFoundError when teamId does not match', async () => {
     await expect(
-      make().updateRequest('req-1', 'wrong-team', 'approve', 'approver-1')
+      make().updateRequest('req-1', 'wrong-team', 'approve')
     ).rejects.toThrow(JoinRequestNotFoundError)
   })
 
@@ -100,8 +100,7 @@ describe('TeamJoinRequestUseCases.updateRequest', () => {
       make({ findById: vi.fn().mockResolvedValue({ ...mockRequest, status: JoinRequestStatus.APPROVED }) }).updateRequest(
         'req-1',
         'team-1',
-        'approve',
-        'approver-1'
+        'approve'
       )
     ).rejects.toThrow(JoinRequestNotPendingError)
   })

@@ -9,7 +9,7 @@ import {
 } from '../domain/TeamJoinRequestErrors.js'
 import { ForbiddenError, UnauthorizedError } from '../../auth/domain/AuthErrors.js'
 import { PrismaTeamJoinRequestRepository } from './PrismaTeamJoinRequestRepository.js'
-import { JoinRequestStatus } from '../domain/TeamJoinRequest.js'
+import type { JoinRequestStatus } from '../domain/TeamJoinRequest.js'
 import { TeamRole } from '../../userTeam/domain/UserTeam.js'
 import { UserTeamUseCases } from '../../userTeam/application/UserTeamUseCases.js'
 import { PrismaUserTeamRepository } from '../../userTeam/infrastructure/PrismaUserTeamRepository.js'
@@ -70,11 +70,10 @@ export const getTeamJoinRequests = async (ctx: Context, req: Request, res: Respo
 
 export const updateTeamJoinRequest = async (ctx: Context, req: Request, res: Response) => {
   try {
-    const approverId = getAuthUserId(ctx)
     const { teamId, requestId } = ctx.request.params
     await requireTeamCoachOrAdmin(ctx, teamId)
     const { action } = req.body as { action: 'approve' | 'refuse' }
-    const request = await useCases.updateRequest(requestId, teamId, action, approverId)
+    const request = await useCases.updateRequest(requestId, teamId, action)
     return res.status(200).json(request)
   } catch (err) {
     if (err instanceof UnauthorizedError) {

@@ -21,8 +21,7 @@ export class TeamJoinRequestUseCases {
   async updateRequest(
     requestId: string,
     teamId: string,
-    action: 'approve' | 'refuse',
-    approverId: string
+    action: 'approve' | 'refuse'
   ): Promise<TeamJoinRequest> {
     const request = await this.repo.findById(requestId)
     if (!request || request.teamId !== teamId) {
