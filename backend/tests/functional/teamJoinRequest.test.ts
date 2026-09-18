@@ -4,7 +4,7 @@ import { prisma } from '../../utils/prismaClient.js'
 import { authHeaderFor } from '../support/authenticate.js'
 import { createTestAgent } from '../support/client.js'
 import { resetDatabase } from '../support/database.js'
-import { createAdmin, createTeam, createUser } from '../support/fixtures.js'
+import { assignUserToTeam, createAdmin, createTeam, createUser } from '../support/fixtures.js'
 import { TeamRole } from '@prisma/client'
 
 const unknownObjectId = (): string => randomBytes(12).toString('hex')
@@ -65,7 +65,7 @@ describe('teamJoinRequest domain — functional API', () => {
         .send({ requestedRole: TeamRole.PLAYER })
       await agent
         .patch(`/teams/${team.id}/join-requests/${createRes.body.id}`)
-        .set(authHeaderFor(admin.id))
+        .set(authHeaderFor(admin.id, true))
         .send({ action: 'refuse' })
 
       // Re-create
@@ -90,7 +90,7 @@ describe('teamJoinRequest domain — functional API', () => {
         .send({ requestedRole: TeamRole.PLAYER })
       await agent
         .patch(`/teams/${team.id}/join-requests/${createRes.body.id}`)
-        .set(authHeaderFor(admin.id))
+        .set(authHeaderFor(admin.id, true))
         .send({ action: 'approve' })
 
       // Try again
@@ -127,7 +127,7 @@ describe('teamJoinRequest domain — functional API', () => {
         .set(authHeaderFor(user2.id))
         .send({ requestedRole: TeamRole.COACH })
 
-      const res = await agent.get(`/teams/${team.id}/join-requests`).set(authHeaderFor(admin.id))
+      const res = await agent.get(`/teams/${team.id}/join-requests`).set(authHeaderFor(admin.id, true))
 
       expect(res.status).toBe(200)
       expect(res.body).toHaveLength(2)
@@ -149,13 +149,13 @@ describe('teamJoinRequest domain — functional API', () => {
         .send({ requestedRole: TeamRole.PLAYER })
       await agent
         .patch(`/teams/${team.id}/join-requests/${req1.body.id}`)
-        .set(authHeaderFor(admin.id))
+        .set(authHeaderFor(admin.id, true))
         .send({ action: 'refuse' })
 
       const res = await agent
         .get(`/teams/${team.id}/join-requests`)
         .query({ status: 'PENDING' })
-        .set(authHeaderFor(admin.id))
+        .set(authHeaderFor(admin.id, true))
 
       expect(res.status).toBe(200)
       expect(res.body).toHaveLength(1)
@@ -166,7 +166,7 @@ describe('teamJoinRequest domain — functional API', () => {
       const team = await createTeam()
       const admin = await createAdmin()
 
-      const res = await agent.get(`/teams/${team.id}/join-requests`).set(authHeaderFor(admin.id))
+      const res = await agent.get(`/teams/${team.id}/join-requests`).set(authHeaderFor(admin.id, true))
 
       expect(res.status).toBe(200)
       expect(res.body).toEqual([])
@@ -178,6 +178,46 @@ describe('teamJoinRequest domain — functional API', () => {
       const res = await agent.get(`/teams/${team.id}/join-requests`)
 
       expect(res.status).toBe(401)
+    })
+
+    it('returns 200 for a coach of the team', async () => {
+      const team = await createTeam()
+      const coach = await createUser()
+      await assignUserToTeam(coach.id, team.id, TeamRole.COACH)
+
+      const res = await agent.get(`/teams/${team.id}/join-requests`).set(authHeaderFor(coach.id))
+
+      expect(res.status).toBe(200)
+    })
+
+    it('returns 403 for an authenticated user with no role on the team', async () => {
+      const team = await createTeam()
+      const user = await createUser()
+
+      const res = await agent.get(`/teams/${team.id}/join-requests`).set(authHeaderFor(user.id))
+
+      expect(res.status).toBe(403)
+    })
+
+    it('returns 403 for a coach of a different team', async () => {
+      const team = await createTeam()
+      const otherTeam = await createTeam()
+      const coach = await createUser()
+      await assignUserToTeam(coach.id, otherTeam.id, TeamRole.COACH)
+
+      const res = await agent.get(`/teams/${team.id}/join-requests`).set(authHeaderFor(coach.id))
+
+      expect(res.status).toBe(403)
+    })
+
+    it('returns 403 for a player of the team (coach or admin only)', async () => {
+      const team = await createTeam()
+      const player = await createUser()
+      await assignUserToTeam(player.id, team.id, TeamRole.PLAYER)
+
+      const res = await agent.get(`/teams/${team.id}/join-requests`).set(authHeaderFor(player.id))
+
+      expect(res.status).toBe(403)
     })
   })
 
@@ -194,7 +234,7 @@ describe('teamJoinRequest domain — functional API', () => {
 
       const res = await agent
         .patch(`/teams/${team.id}/join-requests/${createRes.body.id}`)
-        .set(authHeaderFor(admin.id))
+        .set(authHeaderFor(admin.id, true))
         .send({ action: 'approve' })
 
       expect(res.status).toBe(200)
@@ -217,7 +257,7 @@ describe('teamJoinRequest domain — functional API', () => {
 
       await agent
         .patch(`/teams/${team.id}/join-requests/${createRes.body.id}`)
-        .set(authHeaderFor(admin.id))
+        .set(authHeaderFor(admin.id, true))
         .send({ action: 'approve' })
 
       const player = await prisma.player.findUnique({ where: { userId_teamId: { userId: user.id, teamId: team.id } } })
@@ -236,7 +276,7 @@ describe('teamJoinRequest domain — functional API', () => {
 
       const res = await agent
         .patch(`/teams/${team.id}/join-requests/${createRes.body.id}`)
-        .set(authHeaderFor(admin.id))
+        .set(authHeaderFor(admin.id, true))
         .send({ action: 'refuse' })
 
       expect(res.status).toBe(200)
@@ -252,7 +292,7 @@ describe('teamJoinRequest domain — functional API', () => {
 
       const res = await agent
         .patch(`/teams/${team.id}/join-requests/${unknownObjectId()}`)
-        .set(authHeaderFor(admin.id))
+        .set(authHeaderFor(admin.id, true))
         .send({ action: 'approve' })
 
       expect(res.status).toBe(404)
@@ -271,7 +311,7 @@ describe('teamJoinRequest domain — functional API', () => {
 
       const res = await agent
         .patch(`/teams/${team2.id}/join-requests/${createRes.body.id}`)
-        .set(authHeaderFor(admin.id))
+        .set(authHeaderFor(admin.id, true))
         .send({ action: 'approve' })
 
       expect(res.status).toBe(404)
@@ -288,12 +328,12 @@ describe('teamJoinRequest domain — functional API', () => {
         .send({ requestedRole: TeamRole.PLAYER })
       await agent
         .patch(`/teams/${team.id}/join-requests/${createRes.body.id}`)
-        .set(authHeaderFor(admin.id))
+        .set(authHeaderFor(admin.id, true))
         .send({ action: 'approve' })
 
       const res = await agent
         .patch(`/teams/${team.id}/join-requests/${createRes.body.id}`)
-        .set(authHeaderFor(admin.id))
+        .set(authHeaderFor(admin.id, true))
         .send({ action: 'refuse' })
 
       expect(res.status).toBe(404)
@@ -308,11 +348,73 @@ describe('teamJoinRequest domain — functional API', () => {
         .set(authHeaderFor(user.id))
         .send({ requestedRole: TeamRole.PLAYER })
 
-      const res = await agent
-        .patch(`/teams/${team.id}/join-requests/${createRes.body.id}`)
-        .send({ action: 'approve' })
+      const res = await agent.patch(`/teams/${team.id}/join-requests/${createRes.body.id}`).send({ action: 'approve' })
 
       expect(res.status).toBe(401)
+    })
+
+    it('lets a coach of the team approve a request', async () => {
+      const user = await createUser()
+      const coach = await createUser()
+      const team = await createTeam()
+      await assignUserToTeam(coach.id, team.id, TeamRole.COACH)
+
+      const createRes = await agent
+        .post(`/teams/${team.id}/join-requests`)
+        .set(authHeaderFor(user.id))
+        .send({ requestedRole: TeamRole.PLAYER })
+
+      const res = await agent
+        .patch(`/teams/${team.id}/join-requests/${createRes.body.id}`)
+        .set(authHeaderFor(coach.id))
+        .send({ action: 'approve' })
+
+      expect(res.status).toBe(200)
+      expect(res.body).toMatchObject({ status: 'APPROVED' })
+    })
+
+    it('returns 403 when a user tries to approve their own COACH request (privilege escalation)', async () => {
+      const attacker = await createUser()
+      const team = await createTeam()
+
+      const createRes = await agent
+        .post(`/teams/${team.id}/join-requests`)
+        .set(authHeaderFor(attacker.id))
+        .send({ requestedRole: TeamRole.COACH })
+
+      const res = await agent
+        .patch(`/teams/${team.id}/join-requests/${createRes.body.id}`)
+        .set(authHeaderFor(attacker.id))
+        .send({ action: 'approve' })
+
+      expect(res.status).toBe(403)
+
+      const userTeam = await prisma.userTeam.findFirst({ where: { userId: attacker.id, teamId: team.id } })
+      expect(userTeam).toBeNull()
+      const request = await prisma.teamJoinRequest.findUnique({ where: { id: createRes.body.id } })
+      expect(request?.status).toBe('PENDING')
+    })
+
+    it('returns 403 for a coach of a different team, and leaves the request PENDING', async () => {
+      const user = await createUser()
+      const coach = await createUser()
+      const team = await createTeam()
+      const otherTeam = await createTeam()
+      await assignUserToTeam(coach.id, otherTeam.id, TeamRole.COACH)
+
+      const createRes = await agent
+        .post(`/teams/${team.id}/join-requests`)
+        .set(authHeaderFor(user.id))
+        .send({ requestedRole: TeamRole.PLAYER })
+
+      const res = await agent
+        .patch(`/teams/${team.id}/join-requests/${createRes.body.id}`)
+        .set(authHeaderFor(coach.id))
+        .send({ action: 'refuse' })
+
+      expect(res.status).toBe(403)
+      const request = await prisma.teamJoinRequest.findUnique({ where: { id: createRes.body.id } })
+      expect(request?.status).toBe('PENDING')
     })
   })
 })
