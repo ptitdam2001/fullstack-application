@@ -4,7 +4,7 @@ import { prisma } from '../../utils/prismaClient.js'
 import { authHeaderFor } from '../support/authenticate.js'
 import { createTestAgent } from '../support/client.js'
 import { resetDatabase } from '../support/database.js'
-import { createAdmin, createAgeCategory, createTeam, createUser } from '../support/fixtures.js'
+import { createAdmin, createAgeCategory, createSeason, createTeam, createUser } from '../support/fixtures.js'
 
 /** MongoDB rejects non-ObjectId strings on @db.ObjectId fields with a 500.
  *  Use a well-formed but absent ObjectId for "unknown id" cases. */
@@ -13,11 +13,12 @@ const unknownObjectId = (): string => randomBytes(12).toString('hex')
 describe('championship domain — functional API', () => {
   let agent: Awaited<ReturnType<typeof createTestAgent>>
   let defaultAgeCategoryId: string
+  let defaultSeasonId: string
 
   const championshipInput = (overrides: Record<string, unknown> = {}) => ({
     name: 'Championnat U13 2026',
     ageCategoryId: defaultAgeCategoryId,
-    season: '2025-2026',
+    seasonId: defaultSeasonId,
     pointsConfig: { win: 3, draw: 2, loss: 1, forfeit: 0 },
     ...overrides,
   })
@@ -32,6 +33,7 @@ describe('championship domain — functional API', () => {
   beforeEach(async () => {
     await resetDatabase()
     defaultAgeCategoryId = (await createAgeCategory()).id
+    defaultSeasonId = (await createSeason()).id
   })
 
   describe('getChampionships — GET /championships', () => {
@@ -131,7 +133,7 @@ describe('championship domain — functional API', () => {
       expect(res.body).toMatchObject({
         name: 'Championnat U13 2026',
         ageCategoryId: defaultAgeCategoryId,
-        season: '2025-2026',
+        seasonId: defaultSeasonId,
         pointsConfig: { win: 3, draw: 2, loss: 1, forfeit: 0 },
       })
 

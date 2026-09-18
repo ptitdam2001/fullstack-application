@@ -124,6 +124,7 @@ export const resetDatabase = async (): Promise<void> => {
       db.collection('groups').deleteMany({}),
       db.collection('phases').deleteMany({}),
       db.collection('championships').deleteMany({}),
+      db.collection('seasons').deleteMany({}),
       db.collection('areas').deleteMany({}),
     ])
   } finally {

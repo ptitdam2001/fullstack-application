@@ -8,6 +8,7 @@ import {
   type Championship,
   type Group,
   type Phase,
+  type Season,
   type Team,
   type User,
 } from '@prisma/client'
@@ -61,17 +62,21 @@ export const createTeam = (overrides: Partial<{ name: string; ageCategoryId: str
     },
   })
 
+export const createSeason = (overrides: Partial<{ label: string }> = {}): Promise<Season> =>
+  prisma.season.create({ data: { label: overrides.label ?? unique('Saison') } })
+
 export const createChampionship = async (
-  overrides: Partial<{ name: string; ageCategoryId: string; season: string }> = {}
+  overrides: Partial<{ name: string; ageCategoryId: string; seasonId: string }> = {}
 ): Promise<Championship> => {
   const ageCategoryId = overrides.ageCategoryId ?? (await createAgeCategory()).id
+  const seasonId = overrides.seasonId ?? (await createSeason()).id
   return prisma.championship.create({
     data: {
       name: unique('Championnat'),
-      ageCategoryId,
-      season: '2025-2026',
       pointsConfig: { win: 3, draw: 2, loss: 1, forfeit: 0 },
       ...overrides,
+      ageCategoryId,
+      seasonId,
     },
   })
 }

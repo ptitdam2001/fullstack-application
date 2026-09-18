@@ -10,6 +10,7 @@ import {
   createAdmin,
   createAgeCategory,
   createPlayerOfTeam,
+  createSeason,
   createTeam,
   createUser,
 } from '../support/fixtures'
@@ -28,7 +29,7 @@ const unknownObjectId = (): string => randomBytes(12).toString('hex')
 const validUpdatePayload = (overrides: Partial<{ name: string; color: string }> = {}) => ({
   id: randomUUID(),
   name: 'Updated',
-  areas: [{ _id: randomUUID(), address: '1 rue du Stade', city: 'Lyon', longitude: 4.83, latitude: 45.76 }],
+  areas: [{ id: randomUUID(), address: '1 rue du Stade', city: 'Lyon', longitude: 4.83, latitude: 45.76 }],
   ...overrides,
 })
 
@@ -361,7 +362,7 @@ describe('team domain — functional API', () => {
         color: '#123abc',
         areas: [
           {
-            _id: randomUUID(),
+            id: randomUUID(),
             name: 'Stade',
             address: '1 rue du Stade',
             city: 'Lyon',
@@ -403,7 +404,7 @@ describe('team domain — functional API', () => {
         data: {
           name: 'D1',
           ageCategoryId,
-          season: '2025-2026',
+          seasonId: (await createSeason()).id,
           pointsConfig: { win: 3, draw: 1, loss: 0, forfeit: -1 },
         },
       })

@@ -11,7 +11,7 @@ import { createAdmin, createUser } from '../support/fixtures.js'
 const unknownObjectId = (): string => randomBytes(12).toString('hex')
 
 const userInput = (overrides: Partial<Record<string, unknown>> = {}) => ({
-  _id: randomUUID(),
+  id: randomUUID(),
   email: `new-${randomUUID()}@fixtures.local`,
   firstName: 'New',
   lastName: 'User',
