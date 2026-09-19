@@ -5,6 +5,7 @@
 - Sécuriser mongo-express avant déploiement sur serveur distant (ME_CONFIG_BASICAUTH: "false" actuellement, ok en local uniquement — voir commentaire dans deployment/docker-compose.yml)
 - Mongo dev/test tourne sur `4.4.3-bionic` (EOL) — réévaluer la version au moment de la prod
 - Ajouter des limites CPU/mémoire sur les services docker-compose avant la prod
+- Ajouter un serveur mail dans la stack et brancher un vrai `IEmailService` à la place de `NoopEmailService` — sans lui, les emails d'activation et de reset de mot de passe ne sont pas délivrés en production (spec 10, Sécurité › Logs)
 - Mettre le git privé
 - Dockerisation
 - Test E2E
@@ -15,6 +16,7 @@
 
 ## Fonctionnalités
 
+- Mettre en place l'authentification à deux facteurs (2FA)
 - Historique des championnats - passé du mode calculé au mode stocké en base
 - Mettre en place le type de sport (football, handball, basket, rugby, tennis, judo, ...) collectif ou individuel
 - Affiner la gestion des points pour les matchs (ex: règle U11 - 3 tiers temps, 1 point par tier temps gagné, 4 match gagné)
