@@ -58,5 +58,16 @@ describe('NoopEmailService logging (spec 10, Sécurité › Logs)', () => {
       await send(new NoopEmailService())
       expect(logger.warn).toHaveBeenCalledTimes(1)
     })
+
+    it.each([undefined, '', 'staging', 'prod', 'Production'])(
+      'fails closed: logs neither token nor recipient when NODE_ENV is %j',
+      async nodeEnv => {
+        vi.stubEnv('NODE_ENV', nodeEnv)
+        await send(new NoopEmailService())
+        expect(everythingLogged()).not.toContain(TOKEN)
+        expect(everythingLogged()).not.toContain(EMAIL)
+        expect(logger.warn).toHaveBeenCalledTimes(1)
+      }
+    )
   })
 })

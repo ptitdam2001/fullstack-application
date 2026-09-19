@@ -8,7 +8,7 @@
     "generate:prisma": "prisma generate",
     "format:prisma": "prisma format",
     "build": "esbuild index.ts --platform=node --format=esm --bundle --packages=external --outfile=./dist/index.js",
-    "start:dev": "tsx watch index.ts",
+    "start:dev": "NODE_ENV=development tsx watch index.ts",
     "start:prod": "node ./dist/index.js",
     "lint": "eslint .",
     "check:format": "prettier --check .",
