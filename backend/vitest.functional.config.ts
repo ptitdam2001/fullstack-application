@@ -31,6 +31,7 @@ export default defineConfig({
       JWT_EXPIRE: '7200',
       FRONTEND_URL: 'http://localhost:5173',
       MAX_LOGIN_ATTEMPTS: '5',
+      LOGIN_LOCKOUT_MINUTES: '15',
       ACTIVATION_TOKEN_EXPIRY_HOURS: '48',
       LOGIN_RATE_LIMIT: '1000',
       REGISTER_RATE_LIMIT: '1000',

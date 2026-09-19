@@ -179,6 +179,20 @@ describe('registration domain — functional API', () => {
       expect(newLogin.status).toBe(200)
     })
 
+    it('règle métier: a successful reset lifts a temporary lock and clears the counter', async () => {
+      const user = await createUser({ loginAttempts: 5, lockedUntil: new Date(Date.now() + 10 * 60_000) })
+      await agent.post('/forgot-password').send({ email: user.email })
+      const { resetToken } = await prisma.user.findUniqueOrThrow({ where: { id: user.id } })
+
+      await agent.post('/reset-password').send({ token: resetToken, newPassword: 'NewPassword123' })
+
+      const persisted = await prisma.user.findUniqueOrThrow({ where: { id: user.id } })
+      expect(persisted.lockedUntil).toBeNull()
+      expect(persisted.loginAttempts).toBe(0)
+      const login = await agent.post('/login').send({ email: user.email, password: 'NewPassword123' })
+      expect(login.status).toBe(200)
+    })
+
     it('400 — invalid token', async () => {
       const res = await agent.post('/reset-password').send({ token: 'not-a-real-token', newPassword: 'NewPassword123' })
 
@@ -253,6 +267,18 @@ describe('registration domain — functional API', () => {
       expect(res.status).toBe(200)
       const persisted = await prisma.user.findUniqueOrThrow({ where: { id: user.id } })
       expect(persisted.isBlocked).toBe(false)
+    })
+
+    it('règle métier: admin unblock also lifts a temporary lock and clears the counter', async () => {
+      const admin = await createAdmin()
+      const user = await createUser({ loginAttempts: 5, lockedUntil: new Date(Date.now() + 10 * 60_000) })
+
+      const res = await agent.patch(`/users/${user.id}/unblock`).set(authHeaderFor(admin.id, true))
+
+      expect(res.status).toBe(200)
+      const persisted = await prisma.user.findUniqueOrThrow({ where: { id: user.id } })
+      expect(persisted.lockedUntil).toBeNull()
+      expect(persisted.loginAttempts).toBe(0)
     })
 
     it('401 — unauthenticated request', async () => {

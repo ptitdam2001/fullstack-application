@@ -31,6 +31,8 @@ interface UserOverrides {
   isReferee?: boolean
   isActive?: boolean
   isBlocked?: boolean
+  loginAttempts?: number
+  lockedUntil?: Date | null
 }
 
 export const createUser = async (overrides: UserOverrides = {}): Promise<User> =>

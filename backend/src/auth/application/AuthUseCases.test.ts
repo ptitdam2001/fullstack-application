@@ -30,7 +30,7 @@ const makeRepo = (overrides: Partial<IUserRepository> = {}): IUserRepository => 
   update: vi.fn().mockResolvedValue(mockUser),
   delete: vi.fn().mockResolvedValue(undefined),
   incrementLoginAttempts: vi.fn().mockResolvedValue(1),
-  blockUser: vi.fn().mockResolvedValue(undefined),
+  lockUntil: vi.fn().mockResolvedValue(undefined),
   resetLoginAttempts: vi.fn().mockResolvedValue(undefined),
   ...overrides,
 })
@@ -77,7 +77,7 @@ const makeUseCases = (
 
 describe('AuthUseCases.login', () => {
   const withUser = (extra: Record<string, unknown> = {}) => ({
-    findByEmailWithPassword: vi.fn().mockResolvedValue({ ...mockUser, password: 'hashed', ...extra }),
+    findByEmailWithPassword: vi.fn().mockResolvedValue({ ...mockUser, password: 'hashed', lockedUntil: null, ...extra }),
   })
   const wrongPassword = { comparePassword: vi.fn().mockResolvedValue(false) }
 
@@ -152,12 +152,18 @@ describe('AuthUseCases.login', () => {
       expect(repo.incrementLoginAttempts).toHaveBeenCalledWith('user-1')
     })
 
-    it('blocks the account when attempts reach max but still answers InvalidCredentialsError', async () => {
-      const repo = makeRepo({ incrementLoginAttempts: vi.fn().mockResolvedValue(5) })
-      await expect(makeUseCases(repo, wrongPassword).login('alice@example.com', 'wrong')).rejects.toThrow(
-        InvalidCredentialsError
-      )
-      expect(repo.blockUser).toHaveBeenCalledWith('user-1')
+    it('locks the account for LOGIN_LOCKOUT_MINUTES when attempts reach max, still answering InvalidCredentialsError', async () => {
+      vi.useFakeTimers()
+      vi.setSystemTime(new Date('2026-01-01T10:00:00Z'))
+      try {
+        const repo = makeRepo({ incrementLoginAttempts: vi.fn().mockResolvedValue(5) })
+        await expect(makeUseCases(repo, wrongPassword).login('alice@example.com', 'wrong')).rejects.toThrow(
+          InvalidCredentialsError
+        )
+        expect(repo.lockUntil).toHaveBeenCalledWith('user-1', new Date('2026-01-01T10:15:00Z'))
+      } finally {
+        vi.useRealTimers()
+      }
     })
 
     it('does not block the account below the max', async () => {
@@ -165,7 +171,37 @@ describe('AuthUseCases.login', () => {
       await expect(makeUseCases(repo, wrongPassword).login('alice@example.com', 'wrong')).rejects.toThrow(
         InvalidCredentialsError
       )
-      expect(repo.blockUser).not.toHaveBeenCalled()
+      expect(repo.lockUntil).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('temporary lockout (spec 10)', () => {
+    const expired = () => new Date(Date.now() - 60_000)
+
+    it('restarts the counter when the lock has expired, before handling the attempt', async () => {
+      const repo = makeRepo(withUser({ loginAttempts: 5, lockedUntil: expired() }))
+      await expect(makeUseCases(repo, wrongPassword).login('alice@example.com', 'wrong')).rejects.toThrow(
+        InvalidCredentialsError
+      )
+      expect(repo.resetLoginAttempts).toHaveBeenCalledWith('user-1')
+      expect(repo.incrementLoginAttempts).toHaveBeenCalledWith('user-1')
+    })
+
+    it('lets the user in once the lock has expired and resets the counter only once', async () => {
+      const repo = makeRepo(withUser({ loginAttempts: 5, lockedUntil: expired() }))
+      const result = await makeUseCases(repo).login('alice@example.com', 'password')
+      expect(result.token).toBe('jwt-token')
+      expect(repo.resetLoginAttempts).toHaveBeenCalledTimes(1)
+    })
+
+    it('does not extend an active lock on further failed attempts', async () => {
+      const repo = makeRepo(withUser({ loginAttempts: 5, isBlocked: true, lockedUntil: new Date(Date.now() + 60_000) }))
+      await expect(makeUseCases(repo, wrongPassword).login('alice@example.com', 'wrong')).rejects.toThrow(
+        InvalidCredentialsError
+      )
+      expect(repo.incrementLoginAttempts).not.toHaveBeenCalled()
+      expect(repo.lockUntil).not.toHaveBeenCalled()
+      expect(repo.resetLoginAttempts).not.toHaveBeenCalled()
     })
   })
 

@@ -111,6 +111,7 @@ export class PrismaRegistrationRepository implements IRegistrationRepository {
         resetToken: null,
         resetTokenExpiry: null,
         loginAttempts: 0,
+        lockedUntil: null,
         isBlocked: false,
       },
     })
@@ -130,7 +131,7 @@ export class PrismaRegistrationRepository implements IRegistrationRepository {
   async adminUnblockUser(userId: string): Promise<void> {
     await prisma.user.update({
       where: { id: userId },
-      data: { isBlocked: false, loginAttempts: 0 },
+      data: { isBlocked: false, loginAttempts: 0, lockedUntil: null },
     })
   }
 }

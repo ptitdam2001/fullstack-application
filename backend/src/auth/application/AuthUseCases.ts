@@ -9,6 +9,7 @@ import { InvalidCredentialsError, AccountBlockedError, AccountInactiveError } fr
 import { UserNotFoundError } from '../../user/domain/UserErrors.js'
 
 const getMaxLoginAttempts = (): number => parseInt(process.env.MAX_LOGIN_ATTEMPTS ?? '5')
+const getLockoutMinutes = (): number => Number(process.env.LOGIN_LOCKOUT_MINUTES) || 15
 
 export type UserProfileWithRoles = UserProfile
 
@@ -32,10 +33,16 @@ export class AuthUseCases {
   // unknown email and wrong password are indistinguishable, and blocked/inactive
   // are only revealed to someone who knows the password.
   async login(email: string, password: string): Promise<LoginResult> {
-    const user = await this.userRepo.findByEmailWithPassword(email)
+    let user = await this.userRepo.findByEmailWithPassword(email)
     if (!user) {
       await this.authService.comparePassword(password, await this.getDummyHash())
       throw new InvalidCredentialsError()
+    }
+
+    // An expired lock restarts the counter before the attempt is handled (spec 10).
+    if (user.lockedUntil && user.lockedUntil <= new Date()) {
+      await this.userRepo.resetLoginAttempts(user.id)
+      user = { ...user, loginAttempts: 0, lockedUntil: null }
     }
 
     const isMatch = await this.authService.comparePassword(password, user.password)
@@ -43,7 +50,7 @@ export class AuthUseCases {
       if (user.isActive && !user.isBlocked) {
         const attempts = await this.userRepo.incrementLoginAttempts(user.id)
         if (attempts >= getMaxLoginAttempts()) {
-          await this.userRepo.blockUser(user.id)
+          await this.userRepo.lockUntil(user.id, new Date(Date.now() + getLockoutMinutes() * 60_000))
         }
       }
       throw new InvalidCredentialsError()

@@ -147,8 +147,12 @@ describe('auth domain — functional API', () => {
       // The locking attempt gets the same generic 401 as the others (no oracle, spec 10)
       expect(lastRes?.status).toBe(401)
 
+      // The lock is temporary: lockedUntil is set ~LOGIN_LOCKOUT_MINUTES ahead, the hard flag is untouched
       const persisted = await prisma.user.findUniqueOrThrow({ where: { id: user.id } })
-      expect(persisted.isBlocked).toBe(true)
+      expect(persisted.isBlocked).toBe(false)
+      const lockMs = (persisted.lockedUntil?.getTime() ?? 0) - Date.now()
+      expect(lockMs).toBeGreaterThan(14 * 60_000)
+      expect(lockMs).toBeLessThanOrEqual(15 * 60_000)
 
       // Blocked state is only revealed to someone who knows the password
       const afterBlock = await agent.post('/login').send({ email: user.email, password: FIXTURE_PASSWORD })
@@ -174,6 +178,64 @@ describe('auth domain — functional API', () => {
       expect(persisted.isBlocked).toBe(false)
       const stillWorks = await agent.post('/login').send({ email: user.email, password: FIXTURE_PASSWORD })
       expect(stillWorks.status).toBe(200)
+    })
+
+    describe('temporary lockout', () => {
+      const inMinutes = (m: number): Date => new Date(Date.now() + m * 60_000)
+
+      it('an expired lock lets a correct password in and clears counter and lock', async () => {
+        const user = await createUser({ loginAttempts: 5, lockedUntil: inMinutes(-1) })
+
+        const res = await agent.post('/login').send({ email: user.email, password: FIXTURE_PASSWORD })
+
+        expect(res.status).toBe(200)
+        const persisted = await prisma.user.findUniqueOrThrow({ where: { id: user.id } })
+        expect(persisted.loginAttempts).toBe(0)
+        expect(persisted.lockedUntil).toBeNull()
+      })
+
+      it('an expired lock restarts the counter: one wrong password is failure #1, not a new lock', async () => {
+        const user = await createUser({ loginAttempts: 5, lockedUntil: inMinutes(-1) })
+
+        const res = await agent.post('/login').send({ email: user.email, password: 'WrongPassword1' })
+
+        expect(res.status).toBe(401)
+        const persisted = await prisma.user.findUniqueOrThrow({ where: { id: user.id } })
+        expect(persisted.loginAttempts).toBe(1)
+        expect(persisted.lockedUntil).toBeNull()
+      })
+
+      it('an active lock answers 403 with the correct password', async () => {
+        const user = await createUser({ loginAttempts: 5, lockedUntil: inMinutes(10) })
+
+        const res = await agent.post('/login').send({ email: user.email, password: FIXTURE_PASSWORD })
+
+        expect(res.status).toBe(403)
+      })
+
+      it('failed attempts during an active lock do not extend it', async () => {
+        const lockedUntil = inMinutes(10)
+        const user = await createUser({ loginAttempts: 5, lockedUntil })
+
+        const res = await agent.post('/login').send({ email: user.email, password: 'WrongPassword1' })
+
+        expect(res.status).toBe(401)
+        const persisted = await prisma.user.findUniqueOrThrow({ where: { id: user.id } })
+        expect(persisted.loginAttempts).toBe(5)
+        expect(persisted.lockedUntil?.getTime()).toBe(lockedUntil.getTime())
+      })
+
+      it('the API still exposes a single isBlocked flag: true while locked, false once expired', async () => {
+        const admin = await createAdmin()
+        const locked = await createUser({ lockedUntil: inMinutes(10) })
+        const expired = await createUser({ lockedUntil: inMinutes(-1) })
+
+        const lockedRes = await agent.get(`/users/${locked.id}`).set(authHeaderFor(admin.id, true))
+        const expiredRes = await agent.get(`/users/${expired.id}`).set(authHeaderFor(admin.id, true))
+
+        expect(lockedRes.body.isBlocked).toBe(true)
+        expect(expiredRes.body.isBlocked).toBe(false)
+      })
     })
 
     describe('anti-enumeration', () => {

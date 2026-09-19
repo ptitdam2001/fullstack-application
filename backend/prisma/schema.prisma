@@ -201,6 +201,7 @@ model User {
   isBlocked             Boolean   @default(false)
   isReferee             Boolean   @default(false)
   loginAttempts         Int       @default(0)
+  lockedUntil           DateTime?
   activationToken       String?
   activationTokenExpiry DateTime?
   resetToken            String?
