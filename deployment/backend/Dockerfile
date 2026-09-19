@@ -46,6 +46,9 @@ COPY backend/openapi.yml ./openapi.yml
 
 RUN chown -R node:node /app/backend
 
+# Runtime only: gates the logs that must not leak in production (NoopEmailService tokens, spec 10)
+ENV NODE_ENV=production
+
 USER node
 
 EXPOSE 3000
