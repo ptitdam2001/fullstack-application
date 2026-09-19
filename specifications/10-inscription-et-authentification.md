@@ -48,7 +48,7 @@ Un compte nouvellement créé est **inactif**. Deux chemins pour l'activer :
 - Un lien d'activation unique
 - Pas d'autres informations pour l'instant (i18n et contenu enrichi spécifiés dans une phase ultérieure)
 
-> L'implémentation de l'envoi d'email est différée (Phase ultérieure). La règle métier est posée dès maintenant.
+> L'implémentation de l'envoi d'email est différée (Phase ultérieure). La règle métier est posée dès maintenant. En attendant, `NoopEmailService` ne délivre aucun email (voir Sécurité › Logs).
 
 ---
 
@@ -907,6 +907,7 @@ await prisma.$transaction([
 - **Blocage temporaire** : un tiers peut provoquer le blocage d'un compte connu avec 5 mauvais mots de passe. Le blocage expire seul (`LOGIN_LOCKOUT_MINUTES`) au lieu de durer jusqu'à intervention de l'Admin ; cela borne le déni de service ciblé sans l'éliminer (l'attaquant peut le renouveler à chaque expiration)
 - **Ordre de vérification au login** : credentials → blocage → `isActive` — l'état du compte n'est révélé qu'à qui connaît le mot de passe ; email inconnu et mauvais mot de passe sont indiscernables (même `401`, temps égalisé par une comparaison bcrypt factice)
 - **Tokens** : générés via `crypto.randomUUID()` (entropie 122 bits), stockés en clair, supprimés immédiatement après usage
+- **Logs** : aucune donnée personnelle dans les logs applicatifs (adresse email du destinataire notamment), et aucun token en production. Tant que l'envoi d'email est différé, `NoopEmailService` ne journalise que le fait qu'aucun email n'est envoyé ; hors production (`NODE_ENV !== 'production'`) il journalise en plus le token, **sans destinataire**, pour permettre l'activation et le reset en local. Conséquence en production : les emails d'activation et de reset ne sont pas délivrés — activation par l'Admin uniquement, reset de mot de passe indisponible — jusqu'à l'arrivée d'un vrai `IEmailService`. L'image Docker backend fixe `NODE_ENV=production`.
 - **Validation des payloads** : `openapi-backend` valide tous les inputs entrants — pas de validation manuelle dans les handlers
 - **Routes admin** : `requireAdmin(ctx)` sur `adminActivateUser` et `adminUnblockUser`
 - **Routes coach/admin** : `GET /teams/{teamId}/join-requests` et `PATCH .../join-requests/{requestId}` — vérifier que l'appelant est `COACH` de l'équipe (`IUserTeamRepository.hasRole()`) ou `isAdmin`
