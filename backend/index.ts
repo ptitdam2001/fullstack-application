@@ -24,6 +24,7 @@ const start = async () => {
 }
 
 start().catch(error => {
-  logger.error('Failed to connect to database: %s', error.message)
+  logger.error('Failed to connect to database')
+  logger.error(error)
   process.exit(1)
 })
