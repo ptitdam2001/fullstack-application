@@ -144,13 +144,65 @@ describe('auth domain — functional API', () => {
         lastRes = await agent.post('/login').send({ email: user.email, password: 'WrongPassword1' })
       }
 
-      expect(lastRes?.status).toBe(403)
+      // The locking attempt gets the same generic 401 as the others (no oracle, spec 10)
+      expect(lastRes?.status).toBe(401)
 
       const persisted = await prisma.user.findUniqueOrThrow({ where: { id: user.id } })
       expect(persisted.isBlocked).toBe(true)
 
+      // Blocked state is only revealed to someone who knows the password
       const afterBlock = await agent.post('/login').send({ email: user.email, password: FIXTURE_PASSWORD })
       expect(afterBlock.status).toBe(403)
+    })
+
+    it('règle métier: only consecutive failures count — a successful login resets the counter', async () => {
+      const user = await createUser()
+      const maxAttempts = Number(process.env.MAX_LOGIN_ATTEMPTS)
+
+      for (let i = 0; i < maxAttempts - 1; i++) {
+        await agent.post('/login').send({ email: user.email, password: 'WrongPassword1' })
+      }
+      const success = await agent.post('/login').send({ email: user.email, password: FIXTURE_PASSWORD })
+      expect(success.status).toBe(200)
+      expect((await prisma.user.findUniqueOrThrow({ where: { id: user.id } })).loginAttempts).toBe(0)
+
+      for (let i = 0; i < maxAttempts - 1; i++) {
+        await agent.post('/login').send({ email: user.email, password: 'WrongPassword1' })
+      }
+
+      const persisted = await prisma.user.findUniqueOrThrow({ where: { id: user.id } })
+      expect(persisted.isBlocked).toBe(false)
+      const stillWorks = await agent.post('/login').send({ email: user.email, password: FIXTURE_PASSWORD })
+      expect(stillWorks.status).toBe(200)
+    })
+
+    describe('anti-enumeration', () => {
+      it('unknown email and wrong password return the same status and body', async () => {
+        const user = await createUser()
+
+        const unknown = await agent.post('/login').send({ email: 'nobody@fixtures.local', password: 'WrongPassword1' })
+        const wrong = await agent.post('/login').send({ email: user.email, password: 'WrongPassword1' })
+
+        expect(unknown.status).toBe(401)
+        expect(wrong.status).toBe(401)
+        expect(unknown.body).toEqual(wrong.body)
+      })
+
+      it('401 — wrong password on a blocked account does not reveal it is blocked', async () => {
+        const user = await createUser({ isBlocked: true })
+        const res = await agent.post('/login').send({ email: user.email, password: 'WrongPassword1' })
+
+        expect(res.status).toBe(401)
+        expect((await prisma.user.findUniqueOrThrow({ where: { id: user.id } })).loginAttempts).toBe(0)
+      })
+
+      it('401 — wrong password on an inactive account does not reveal it and does not count as a failure', async () => {
+        const user = await createUser({ isActive: false })
+        const res = await agent.post('/login').send({ email: user.email, password: 'WrongPassword1' })
+
+        expect(res.status).toBe(401)
+        expect((await prisma.user.findUniqueOrThrow({ where: { id: user.id } })).loginAttempts).toBe(0)
+      })
     })
   })
 

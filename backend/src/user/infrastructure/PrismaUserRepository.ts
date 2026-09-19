@@ -107,4 +107,8 @@ export class PrismaUserRepository implements IUserRepository {
   async blockUser(userId: string): Promise<void> {
     await prisma.user.update({ where: { id: userId }, data: { isBlocked: true } })
   }
+
+  async resetLoginAttempts(userId: string): Promise<void> {
+    await prisma.user.update({ where: { id: userId }, data: { loginAttempts: 0 } })
+  }
 }

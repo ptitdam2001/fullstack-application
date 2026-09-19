@@ -31,6 +31,7 @@ const makeRepo = (overrides: Partial<IUserRepository> = {}): IUserRepository => 
   delete: vi.fn().mockResolvedValue(undefined),
   incrementLoginAttempts: vi.fn().mockResolvedValue(1),
   blockUser: vi.fn().mockResolvedValue(undefined),
+  resetLoginAttempts: vi.fn().mockResolvedValue(undefined),
   ...overrides,
 })
 
@@ -75,6 +76,11 @@ const makeUseCases = (
   )
 
 describe('AuthUseCases.login', () => {
+  const withUser = (extra: Record<string, unknown> = {}) => ({
+    findByEmailWithPassword: vi.fn().mockResolvedValue({ ...mockUser, password: 'hashed', ...extra }),
+  })
+  const wrongPassword = { comparePassword: vi.fn().mockResolvedValue(false) }
+
   it('returns token when credentials are valid', async () => {
     const result = await makeUseCases().login('alice@example.com', 'password')
     expect(result.token).toBe('jwt-token')
@@ -82,47 +88,113 @@ describe('AuthUseCases.login', () => {
     expect(result.isAdmin).toBe(false)
   })
 
-  it('throws UserNotFoundError when email does not exist', async () => {
-    await expect(
-      makeUseCases({ findByEmailWithPassword: vi.fn().mockResolvedValue(null) }).login('unknown@example.com', 'x')
-    ).rejects.toThrow(UserNotFoundError)
-  })
+  describe('anti-enumeration (spec 10)', () => {
+    it('throws InvalidCredentialsError, not UserNotFoundError, when email does not exist', async () => {
+      await expect(
+        makeUseCases({ findByEmailWithPassword: vi.fn().mockResolvedValue(null) }).login('unknown@example.com', 'x')
+      ).rejects.toThrow(InvalidCredentialsError)
+    })
 
-  it('throws AccountBlockedError when account is blocked', async () => {
-    await expect(
-      makeUseCases({ findByEmailWithPassword: vi.fn().mockResolvedValue({ ...mockUser, password: 'hashed', isBlocked: true }) }).login(
-        'alice@example.com',
-        'password'
+    it('still runs a bcrypt comparison when email does not exist (equalises response time)', async () => {
+      const authService = makeAuthService()
+      const uc = new AuthUseCases(
+        makeRepo({ findByEmailWithPassword: vi.fn().mockResolvedValue(null) }),
+        authService,
+        makeUserTeamRepo(),
+        makeUserMatchRepo()
       )
-    ).rejects.toThrow(AccountBlockedError)
-  })
+      await expect(uc.login('unknown@example.com', 'x')).rejects.toThrow(InvalidCredentialsError)
+      expect(authService.comparePassword).toHaveBeenCalledTimes(1)
+      expect(authService.comparePassword).toHaveBeenCalledWith('x', expect.any(String))
+    })
 
-  it('throws AccountInactiveError when account is not active', async () => {
-    await expect(
-      makeUseCases({ findByEmailWithPassword: vi.fn().mockResolvedValue({ ...mockUser, password: 'hashed', isActive: false }) }).login(
-        'alice@example.com',
-        'password'
+    it('throws InvalidCredentialsError on wrong password for a blocked account, without incrementing', async () => {
+      const repo = makeRepo(withUser({ isBlocked: true }))
+      await expect(makeUseCases(repo, wrongPassword).login('alice@example.com', 'wrong')).rejects.toThrow(
+        InvalidCredentialsError
       )
-    ).rejects.toThrow(AccountInactiveError)
+      expect(repo.incrementLoginAttempts).not.toHaveBeenCalled()
+    })
+
+    it('throws InvalidCredentialsError on wrong password for an inactive account, without incrementing', async () => {
+      const repo = makeRepo(withUser({ isActive: false }))
+      await expect(makeUseCases(repo, wrongPassword).login('alice@example.com', 'wrong')).rejects.toThrow(
+        InvalidCredentialsError
+      )
+      expect(repo.incrementLoginAttempts).not.toHaveBeenCalled()
+    })
+
+    it('reveals AccountBlockedError only with the correct password', async () => {
+      await expect(makeUseCases(withUser({ isBlocked: true })).login('alice@example.com', 'password')).rejects.toThrow(
+        AccountBlockedError
+      )
+    })
+
+    it('reveals AccountInactiveError only with the correct password', async () => {
+      await expect(makeUseCases(withUser({ isActive: false })).login('alice@example.com', 'password')).rejects.toThrow(
+        AccountInactiveError
+      )
+    })
+
+    it('reports blocked before inactive when both apply', async () => {
+      await expect(
+        makeUseCases(withUser({ isBlocked: true, isActive: false })).login('alice@example.com', 'password')
+      ).rejects.toThrow(AccountBlockedError)
+    })
   })
 
-  it('throws InvalidCredentialsError and increments attempts on wrong password', async () => {
-    const repo = makeRepo()
-    const uc = makeUseCases(repo, { comparePassword: vi.fn().mockResolvedValue(false) })
-    await expect(uc.login('alice@example.com', 'wrong')).rejects.toThrow(InvalidCredentialsError)
-    expect(repo.incrementLoginAttempts).toHaveBeenCalledWith('user-1')
+  describe('failed attempts', () => {
+    it('throws InvalidCredentialsError and increments attempts on wrong password', async () => {
+      const repo = makeRepo()
+      await expect(makeUseCases(repo, wrongPassword).login('alice@example.com', 'wrong')).rejects.toThrow(
+        InvalidCredentialsError
+      )
+      expect(repo.incrementLoginAttempts).toHaveBeenCalledWith('user-1')
+    })
+
+    it('blocks the account when attempts reach max but still answers InvalidCredentialsError', async () => {
+      const repo = makeRepo({ incrementLoginAttempts: vi.fn().mockResolvedValue(5) })
+      await expect(makeUseCases(repo, wrongPassword).login('alice@example.com', 'wrong')).rejects.toThrow(
+        InvalidCredentialsError
+      )
+      expect(repo.blockUser).toHaveBeenCalledWith('user-1')
+    })
+
+    it('does not block the account below the max', async () => {
+      const repo = makeRepo({ incrementLoginAttempts: vi.fn().mockResolvedValue(4) })
+      await expect(makeUseCases(repo, wrongPassword).login('alice@example.com', 'wrong')).rejects.toThrow(
+        InvalidCredentialsError
+      )
+      expect(repo.blockUser).not.toHaveBeenCalled()
+    })
   })
 
-  it('blocks account and throws AccountBlockedError when attempts reach max', async () => {
-    const repo = makeRepo({ incrementLoginAttempts: vi.fn().mockResolvedValue(5) })
-    const uc = makeUseCases(repo, { comparePassword: vi.fn().mockResolvedValue(false) })
-    await expect(uc.login('alice@example.com', 'wrong')).rejects.toThrow(AccountBlockedError)
-    expect(repo.blockUser).toHaveBeenCalledWith('user-1')
+  describe('consecutive failures only (spec 10)', () => {
+    it('resets the counter after a successful login when it is above zero', async () => {
+      const repo = makeRepo(withUser({ loginAttempts: 3 }))
+      await makeUseCases(repo).login('alice@example.com', 'password')
+      expect(repo.resetLoginAttempts).toHaveBeenCalledWith('user-1')
+    })
+
+    it('does not touch the counter after a successful login when it is already zero', async () => {
+      const repo = makeRepo(withUser({ loginAttempts: 0 }))
+      await makeUseCases(repo).login('alice@example.com', 'password')
+      expect(repo.resetLoginAttempts).not.toHaveBeenCalled()
+    })
+
+    it('does not reset the counter when the account is blocked or inactive', async () => {
+      const repo = makeRepo(withUser({ loginAttempts: 3, isBlocked: true }))
+      await expect(makeUseCases(repo).login('alice@example.com', 'password')).rejects.toThrow(AccountBlockedError)
+      expect(repo.resetLoginAttempts).not.toHaveBeenCalled()
+    })
   })
 
   it('calls generateToken with userId, isAdmin, and isCoach', async () => {
     const authService = makeAuthService()
-    await new AuthUseCases(makeRepo(), authService, makeUserTeamRepo(), makeUserMatchRepo()).login('alice@example.com', 'password')
+    await new AuthUseCases(makeRepo(), authService, makeUserTeamRepo(), makeUserMatchRepo()).login(
+      'alice@example.com',
+      'password'
+    )
     expect(authService.generateToken).toHaveBeenCalledWith('user-1', false, false)
   })
 })

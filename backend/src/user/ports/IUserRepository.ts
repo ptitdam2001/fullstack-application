@@ -11,4 +11,5 @@ export interface IUserRepository {
   delete(id: string): Promise<void>
   incrementLoginAttempts(userId: string): Promise<number>
   blockUser(userId: string): Promise<void>
+  resetLoginAttempts(userId: string): Promise<void>
 }

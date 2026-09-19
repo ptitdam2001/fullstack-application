@@ -20,11 +20,35 @@ export class AuthUseCases {
     private readonly userMatchRepo: IUserMatchRepository
   ) {}
 
+  // Lazily hashed once: lets an unknown email cost one bcrypt comparison like a known one.
+  private dummyHash?: Promise<string>
+
+  private getDummyHash(): Promise<string> {
+    this.dummyHash ??= this.authService.hashPassword(crypto.randomUUID())
+    return this.dummyHash
+  }
+
+  // Credentials first, account state after (spec 10, "Anti-énumération à la connexion"):
+  // unknown email and wrong password are indistinguishable, and blocked/inactive
+  // are only revealed to someone who knows the password.
   async login(email: string, password: string): Promise<LoginResult> {
     const user = await this.userRepo.findByEmailWithPassword(email)
     if (!user) {
-      throw new UserNotFoundError()
+      await this.authService.comparePassword(password, await this.getDummyHash())
+      throw new InvalidCredentialsError()
     }
+
+    const isMatch = await this.authService.comparePassword(password, user.password)
+    if (!isMatch) {
+      if (user.isActive && !user.isBlocked) {
+        const attempts = await this.userRepo.incrementLoginAttempts(user.id)
+        if (attempts >= getMaxLoginAttempts()) {
+          await this.userRepo.blockUser(user.id)
+        }
+      }
+      throw new InvalidCredentialsError()
+    }
+
     if (user.isBlocked) {
       throw new AccountBlockedError()
     }
@@ -32,14 +56,9 @@ export class AuthUseCases {
       throw new AccountInactiveError()
     }
 
-    const isMatch = await this.authService.comparePassword(password, user.password)
-    if (!isMatch) {
-      const attempts = await this.userRepo.incrementLoginAttempts(user.id)
-      if (attempts >= getMaxLoginAttempts()) {
-        await this.userRepo.blockUser(user.id)
-        throw new AccountBlockedError()
-      }
-      throw new InvalidCredentialsError()
+    // Only consecutive failures count towards the lock (spec 10).
+    if (user.loginAttempts > 0) {
+      await this.userRepo.resetLoginAttempts(user.id)
     }
 
     const coachTeams = await this.userTeamRepo.findByUserAndRole(user.id, TeamRole.COACH)

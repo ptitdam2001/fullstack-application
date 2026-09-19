@@ -29,6 +29,7 @@ const makeRepo = (overrides: Partial<IUserRepository> = {}): IUserRepository => 
   delete: vi.fn().mockResolvedValue(undefined),
   incrementLoginAttempts: vi.fn().mockResolvedValue(1),
   blockUser: vi.fn().mockResolvedValue(undefined),
+  resetLoginAttempts: vi.fn().mockResolvedValue(undefined),
   ...overrides,
 })
 
