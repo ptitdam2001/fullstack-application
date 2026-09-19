@@ -7,13 +7,17 @@ export class UserTeamUseCases {
 
   async assign(userId: string, teamId: string, role: TeamRole): Promise<UserTeam> {
     const already = await this.repo.hasRole(userId, teamId, role)
-    if (already) throw new UserTeamAlreadyExistsError(userId, teamId, role)
+    if (already) {
+      throw new UserTeamAlreadyExistsError(userId, teamId, role)
+    }
     return this.repo.assign(userId, teamId, role)
   }
 
   async remove(userId: string, teamId: string, role: TeamRole): Promise<void> {
     const exists = await this.repo.hasRole(userId, teamId, role)
-    if (!exists) throw new UserTeamNotFoundError(userId, teamId, role)
+    if (!exists) {
+      throw new UserTeamNotFoundError(userId, teamId, role)
+    }
     return this.repo.remove(userId, teamId, role)
   }
 

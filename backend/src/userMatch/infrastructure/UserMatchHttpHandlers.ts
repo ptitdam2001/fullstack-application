@@ -13,7 +13,9 @@ export const assignReferee = async (ctx: Context, _: Request, res: Response) => 
   try {
     res.status(201).json(await useCases.assign(userId, matchId))
   } catch (err) {
-    if (err instanceof UserMatchAlreadyExistsError) return res.status(409).json({ status: 409, message: err.message })
+    if (err instanceof UserMatchAlreadyExistsError) {
+      return res.status(409).json({ status: 409, message: err.message })
+    }
     throw err
   }
 }
@@ -25,7 +27,9 @@ export const removeReferee = async (ctx: Context, _: Request, res: Response) => 
     await useCases.remove(userId, matchId)
     res.status(204).send()
   } catch (err) {
-    if (err instanceof UserMatchNotFoundError) return res.status(404).json({ status: 404, message: err.message })
+    if (err instanceof UserMatchNotFoundError) {
+      return res.status(404).json({ status: 404, message: err.message })
+    }
     throw err
   }
 }

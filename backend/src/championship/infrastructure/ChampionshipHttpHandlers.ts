@@ -33,7 +33,9 @@ export const getChampionship = async (ctx: Context, _: Request, res: Response) =
   try {
     res.json(await useCases.getById(ctx.request.params.id))
   } catch (err) {
-    if (err instanceof ChampionshipNotFoundError) return res.status(404).json({ status: 404, message: err.message })
+    if (err instanceof ChampionshipNotFoundError) {
+      return res.status(404).json({ status: 404, message: err.message })
+    }
     throw err
   }
 }
@@ -48,7 +50,9 @@ export const updateChampionship = async (ctx: Context, req: Request, res: Respon
   try {
     res.json(await useCases.update(ctx.request.params.id, req.body))
   } catch (err) {
-    if (err instanceof ChampionshipNotFoundError) return res.status(404).json({ status: 404, message: err.message })
+    if (err instanceof ChampionshipNotFoundError) {
+      return res.status(404).json({ status: 404, message: err.message })
+    }
     throw err
   }
 }
@@ -59,7 +63,9 @@ export const removeChampionship = async (ctx: Context, _: Request, res: Response
     await useCases.delete(ctx.request.params.id)
     res.status(204).send()
   } catch (err) {
-    if (err instanceof ChampionshipNotFoundError) return res.status(404).json({ status: 404, message: err.message })
+    if (err instanceof ChampionshipNotFoundError) {
+      return res.status(404).json({ status: 404, message: err.message })
+    }
     throw err
   }
 }

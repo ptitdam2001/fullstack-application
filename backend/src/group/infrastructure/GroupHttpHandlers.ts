@@ -16,7 +16,9 @@ export const getGroup = async (ctx: Context, _: Request, res: Response) => {
   try {
     res.json(await useCases.getById(ctx.request.params.id))
   } catch (err) {
-    if (err instanceof GroupNotFoundError) return res.status(404).json({ status: 404, message: err.message })
+    if (err instanceof GroupNotFoundError) {
+      return res.status(404).json({ status: 404, message: err.message })
+    }
     throw err
   }
 }
@@ -31,7 +33,9 @@ export const updateGroup = async (ctx: Context, req: Request, res: Response) => 
   try {
     res.json(await useCases.update(ctx.request.params.id, req.body))
   } catch (err) {
-    if (err instanceof GroupNotFoundError) return res.status(404).json({ status: 404, message: err.message })
+    if (err instanceof GroupNotFoundError) {
+      return res.status(404).json({ status: 404, message: err.message })
+    }
     throw err
   }
 }
@@ -41,8 +45,12 @@ export const generateGroupMatches = async (ctx: Context, _: Request, res: Respon
   try {
     res.status(201).json(await useCases.generateMatches(ctx.request.params.id))
   } catch (err) {
-    if (err instanceof GroupNotFoundError) {return res.status(404).json({ status: 404, message: err.message })}
-    if (err instanceof GroupLockedError) {return res.status(409).json({ status: 409, message: err.message })}
+    if (err instanceof GroupNotFoundError) {
+      return res.status(404).json({ status: 404, message: err.message })
+    }
+    if (err instanceof GroupLockedError) {
+      return res.status(409).json({ status: 409, message: err.message })
+    }
     throw err
   }
 }
@@ -53,7 +61,9 @@ export const removeGroup = async (ctx: Context, _: Request, res: Response) => {
     await useCases.delete(ctx.request.params.id)
     res.status(204).send()
   } catch (err) {
-    if (err instanceof GroupNotFoundError) return res.status(404).json({ status: 404, message: err.message })
+    if (err instanceof GroupNotFoundError) {
+      return res.status(404).json({ status: 404, message: err.message })
+    }
     throw err
   }
 }

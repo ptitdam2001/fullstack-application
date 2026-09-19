@@ -16,7 +16,9 @@ export class GroupUseCases {
 
   async getById(id: string) {
     const group = await this.repo.findById(id)
-    if (!group) throw new GroupNotFoundError(id)
+    if (!group) {
+      throw new GroupNotFoundError(id)
+    }
     return group
   }
 

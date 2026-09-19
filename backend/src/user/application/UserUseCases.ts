@@ -11,7 +11,9 @@ export class UserUseCases {
 
   async getById(id: string): Promise<UserProfile> {
     const user = await this.userRepo.findById(id)
-    if (!user) throw new UserNotFoundError()
+    if (!user) {
+      throw new UserNotFoundError()
+    }
     return user
   }
 
@@ -22,13 +24,17 @@ export class UserUseCases {
 
   async update(id: string, input: UpdateUserInput): Promise<UserProfile> {
     const existing = await this.userRepo.findById(id)
-    if (!existing) throw new UserNotFoundError()
+    if (!existing) {
+      throw new UserNotFoundError()
+    }
     return this.userRepo.update(id, input)
   }
 
   async delete(id: string): Promise<void> {
     const existing = await this.userRepo.findById(id)
-    if (!existing) throw new UserNotFoundError()
+    if (!existing) {
+      throw new UserNotFoundError()
+    }
     return this.userRepo.delete(id)
   }
 }

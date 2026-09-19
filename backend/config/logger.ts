@@ -1,10 +1,15 @@
-import chalk from 'chalk'
+import chalk, { type ChalkInstance } from 'chalk'
 import winston from 'winston'
+
+const levelColors: Record<string, ChalkInstance> = {
+  error: chalk.red,
+  warn: chalk.yellow,
+  info: chalk.green,
+}
 
 const colorize = winston.format(info => {
   const level = info.level
-  const color =
-    level === 'error' ? chalk.red : level === 'warn' ? chalk.yellow : level === 'info' ? chalk.green : chalk.white
+  const color = levelColors[level] ?? chalk.white
   info.message = color(info.message)
   return info
 })

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { RegistrationUseCases } from './RegistrationUseCases.js'
 import type { IRegistrationRepository } from '../ports/IRegistrationRepository.js'
 import type { IEmailService } from '../ports/IEmailService.js'
