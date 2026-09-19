@@ -1,6 +1,5 @@
 import cors from 'cors'
 import express, { type Application, type NextFunction, type Request, type Response } from 'express'
-import morgan from 'morgan'
 import jwt from 'jsonwebtoken'
 import { rateLimit } from 'express-rate-limit'
 const { TokenExpiredError } = jwt
@@ -30,6 +29,7 @@ import * as healthHandlers from './src/health/infrastructure/HealthHttpHandlers'
 
 import addFormats from 'ajv-formats'
 import { logger } from './config/logger'
+import { createRequestLogger } from './config/requestLogger'
 
 /**
  * Builds and initializes the Express + OpenAPI app without binding a port.
@@ -133,7 +133,7 @@ export const createApp = async (): Promise<Application> => {
   await api.init()
 
   // logging
-  app.use(morgan('combined'))
+  app.use(createRequestLogger())
 
   // use as express middleware
   app.use((req: RequestOpenApi, res: Request) => api.handleRequest(req, req, res))
