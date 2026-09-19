@@ -66,10 +66,12 @@ Un lien / formulaire permet de **renvoyer l'email d'activation** à l'adresse en
 
 ### Cas : mauvais mot de passe — blocage progressif
 
-| Tentatives échouées | Comportement                                                   |
+| Tentatives échouées consécutives | Comportement                                                   |
 | ------------------- | -------------------------------------------------------------- |
 | 1 à 4               | Message d'erreur générique ("email ou mot de passe incorrect") |
 | 5                   | Compte **bloqué** — connexion impossible ; la 5ᵉ tentative reçoit encore le message générique, le blocage est signalé par un message spécifique dès qu'un mot de passe **correct** est saisi |
+
+Une connexion réussie remet le compteur à zéro : seuls 5 échecs **consécutifs** bloquent le compte.
 
 Un compte bloqué ne peut être débloqué que par **l'Admin**. L'utilisateur doit contacter l'admin pour en faire la demande.
 
@@ -286,6 +288,10 @@ sequenceDiagram
             else isActive = false
                 UC-->>API: AccountInactiveError → 403
             else
+                opt loginAttempts > 0
+                    UC->>UserRepo: resetLoginAttempts(userId)
+                    UserRepo->>DB: prisma.user.update({ loginAttempts: 0 })
+                end
                 UC->>AuthSvc: generateToken(userId, isAdmin)
                 AuthSvc-->>UC: token
                 UC-->>API: TokenData
@@ -793,17 +799,18 @@ interface ITeamRepository {
 
 #### Extension domaine `auth` — login enrichi
 
-Deux nouvelles méthodes requises sur `IUserRepository` :
+Trois nouvelles méthodes requises sur `IUserRepository` :
 
 ```typescript
 interface IUserRepository {
   // ... méthodes existantes ...
   incrementLoginAttempts(userId: string): Promise<number>; // retourne le nouveau compteur
   blockUser(userId: string): Promise<void>;
+  resetLoginAttempts(userId: string): Promise<void>; // appelé à la connexion réussie si le compteur > 0
 }
 ```
 
-Le `LoginUseCase` vérifie dans cet ordre : credentials (comparaison bcrypt, factice si l'email est inconnu) → incrémenter/bloquer en cas d'échec sur un compte actif et non bloqué → `isBlocked` → `isActive` (ces deux derniers uniquement si le mot de passe est correct).
+Le `LoginUseCase` vérifie dans cet ordre : credentials (comparaison bcrypt, factice si l'email est inconnu) → incrémenter/bloquer en cas d'échec sur un compte actif et non bloqué → `isBlocked` → `isActive` (ces deux derniers uniquement si le mot de passe est correct) → remise à zéro du compteur si > 0, puis génération du token.
 
 ---
 
@@ -833,8 +840,8 @@ Tentative échouée (compte actif et non bloqué) :
 Bon mot de passe sur un compte bloqué → 403 (compte bloqué)
 Bon mot de passe sur un compte inactif → 403 (compte non activé)
 
-Reset loginAttempts : uniquement via resetPassword (remet loginAttempts=0 + isBlocked=false)
-Connexion réussie : ne remet PAS loginAttempts à 0
+Reset loginAttempts : resetPassword (loginAttempts=0 + isBlocked=false), déblocage par l'Admin, et chaque connexion réussie (loginAttempts=0)
+Seuls les échecs consécutifs comptent : un mot de passe correct efface les échecs précédents
 ```
 
 **Upsert `TeamJoinRequest`**
