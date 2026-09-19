@@ -58,7 +58,7 @@ L'utilisateur saisit son **email** et son **mot de passe**.
 
 ### Cas : compte inactif
 
-Un message d'erreur s'affiche :
+Ce message n'est affiché **qu'avec le bon mot de passe** (voir « Anti-énumération à la connexion ») :
 
 > "Votre compte n'est pas encore activé. Vérifiez votre boîte email ou demandez un renvoi du lien d'activation."
 
@@ -69,9 +69,20 @@ Un lien / formulaire permet de **renvoyer l'email d'activation** à l'adresse en
 | Tentatives échouées | Comportement                                                   |
 | ------------------- | -------------------------------------------------------------- |
 | 1 à 4               | Message d'erreur générique ("email ou mot de passe incorrect") |
-| 5                   | Compte **bloqué** — message spécifique, connexion impossible   |
+| 5                   | Compte **bloqué** — connexion impossible ; la 5ᵉ tentative reçoit encore le message générique, le blocage est signalé par un message spécifique dès qu'un mot de passe **correct** est saisi |
 
 Un compte bloqué ne peut être débloqué que par **l'Admin**. L'utilisateur doit contacter l'admin pour en faire la demande.
+
+### Anti-énumération à la connexion
+
+Le login ne doit permettre de deviner ni l'existence d'un compte, ni son état, sans connaître le mot de passe :
+
+- **Credentials d'abord, état du compte ensuite.**
+- Email inconnu ou mot de passe incorrect (compte actif, inactif ou bloqué) → **même réponse** : `401` « email ou mot de passe incorrect ».
+- Les états _bloqué_ et _inactif_ (`403`) ne sont révélés qu'avec le **bon** mot de passe ; _bloqué_ prime sur _inactif_.
+- Email inconnu : une comparaison bcrypt factice est exécutée pour que le temps de réponse ne distingue pas ce cas.
+- Un compte déjà bloqué ou inactif n'incrémente pas `loginAttempts` (un compte non activé ne doit pas arriver bloqué à l'activation).
+- Hors périmètre : `POST /register` reste en `409` explicite (Option A, voir Sécurité).
 
 ### Redirect post-connexion
 
@@ -254,29 +265,32 @@ sequenceDiagram
     UserRepo->>DB: prisma.user.findUnique(...)
     DB-->>UserRepo: User | null
     alt User non trouvé
-        UC-->>API: NotFoundError → 404
-    else isBlocked = true
-        UC-->>API: AccountBlockedError → 403
-    else isActive = false
-        UC-->>API: AccountInactiveError → 403
-    else
+        UC->>AuthSvc: comparePassword(password, dummyHash) — égalise le temps de réponse
+        UC-->>API: InvalidCredentialsError → 401
+    else User trouvé
         UC->>AuthSvc: comparePassword(password, hash)
         alt Mot de passe incorrect
-            UC->>UserRepo: incrementLoginAttempts(userId)
-            UserRepo->>DB: prisma.user.update(loginAttempts: { increment: 1 })
-            DB-->>UserRepo: { loginAttempts }
-            alt loginAttempts >= 5
-                UC->>UserRepo: blockUser(userId)
-                UserRepo->>DB: prisma.user.update({ isBlocked: true })
-                UC-->>API: AccountBlockedError → 403
-            else
-                UC-->>API: InvalidCredentialsError → 401
+            opt compte actif et non bloqué
+                UC->>UserRepo: incrementLoginAttempts(userId)
+                UserRepo->>DB: prisma.user.update(loginAttempts: { increment: 1 })
+                DB-->>UserRepo: { loginAttempts }
+                opt loginAttempts >= 5
+                    UC->>UserRepo: blockUser(userId)
+                    UserRepo->>DB: prisma.user.update({ isBlocked: true })
+                end
             end
+            UC-->>API: InvalidCredentialsError → 401
         else Mot de passe correct
-            UC->>AuthSvc: generateToken(userId, isAdmin)
-            AuthSvc-->>UC: token
-            UC-->>API: TokenData
-            API-->>FE: 200 TokenData
+            alt isBlocked = true
+                UC-->>API: AccountBlockedError → 403
+            else isActive = false
+                UC-->>API: AccountInactiveError → 403
+            else
+                UC->>AuthSvc: generateToken(userId, isAdmin)
+                AuthSvc-->>UC: token
+                UC-->>API: TokenData
+                API-->>FE: 200 TokenData
+            end
         end
     end
 ```
@@ -789,7 +803,7 @@ interface IUserRepository {
 }
 ```
 
-Le `LoginUseCase` existant doit vérifier dans cet ordre : `isBlocked` → `isActive` → credentials → incrémenter/bloquer.
+Le `LoginUseCase` vérifie dans cet ordre : credentials (comparaison bcrypt, factice si l'email est inconnu) → incrémenter/bloquer en cas d'échec sur un compte actif et non bloqué → `isBlocked` → `isActive` (ces deux derniers uniquement si le mot de passe est correct).
 
 ---
 
@@ -811,10 +825,13 @@ const resetTokenExpiry = new Date(Date.now() + 7 * 24 * 3_600_000); // 7 jours �
 **Blocage progressif**
 
 ```text
-Tentative échouée :
+Tentative échouée (compte actif et non bloqué) :
   loginAttempts += 1
-  si loginAttempts >= 5 → isBlocked = true → 403
-  sinon → 401 "email ou mot de passe incorrect"
+  si loginAttempts >= 5 → isBlocked = true
+  dans tous les cas → 401 "email ou mot de passe incorrect"
+
+Bon mot de passe sur un compte bloqué → 403 (compte bloqué)
+Bon mot de passe sur un compte inactif → 403 (compte non activé)
 
 Reset loginAttempts : uniquement via resetPassword (remet loginAttempts=0 + isBlocked=false)
 Connexion réussie : ne remet PAS loginAttempts à 0
@@ -870,7 +887,7 @@ await prisma.$transaction([
 - **Inscription** : `409 Conflict` si email déjà enregistré — erreur explicite (Option A)
 - **`forgotPassword` / `resendActivation`** : toujours `200` — le client ne sait pas si l'email existe (anti-énumération)
 - **`activateAccount` / `resetPassword`** : `400` générique sur token invalide ou expiré — sans distinguer les deux cas pour ne pas aider un attaquant
-- **Ordre de vérification au login** : `isBlocked` → `isActive` → credentials — évite de révéler l'état du compte via les credentials
+- **Ordre de vérification au login** : credentials → `isBlocked` → `isActive` — l'état du compte n'est révélé qu'à qui connaît le mot de passe ; email inconnu et mauvais mot de passe sont indiscernables (même `401`, temps égalisé par une comparaison bcrypt factice)
 - **Tokens** : générés via `crypto.randomUUID()` (entropie 122 bits), stockés en clair, supprimés immédiatement après usage
 - **Validation des payloads** : `openapi-backend` valide tous les inputs entrants — pas de validation manuelle dans les handlers
 - **Routes admin** : `requireAdmin(ctx)` sur `adminActivateUser` et `adminUnblockUser`
