@@ -69,11 +69,11 @@ Un lien / formulaire permet de **renvoyer l'email d'activation** à l'adresse en
 | Tentatives échouées consécutives | Comportement                                                   |
 | ------------------- | -------------------------------------------------------------- |
 | 1 à 4               | Message d'erreur générique ("email ou mot de passe incorrect") |
-| 5                   | Compte **bloqué** — connexion impossible ; la 5ᵉ tentative reçoit encore le message générique, le blocage est signalé par un message spécifique dès qu'un mot de passe **correct** est saisi |
+| 5                   | Compte **bloqué temporairement** — connexion impossible ; la 5ᵉ tentative reçoit encore le message générique, le blocage est signalé par un message spécifique dès qu'un mot de passe **correct** est saisi |
 
 Une connexion réussie remet le compteur à zéro : seuls 5 échecs **consécutifs** bloquent le compte.
 
-Un compte bloqué ne peut être débloqué que par **l'Admin**. L'utilisateur doit contacter l'admin pour en faire la demande.
+Le blocage est **temporaire** : il expire au bout de `LOGIN_LOCKOUT_MINUTES` minutes (15 par défaut) et le compteur repart alors à zéro. Il peut être levé avant l'échéance par l'**Admin** ou par un reset de mot de passe réussi. Pendant le blocage, de nouvelles tentatives échouées ne le prolongent pas.
 
 ### Anti-énumération à la connexion
 
@@ -197,7 +197,7 @@ Disponible : à l'onboarding et depuis la page profil.
 - Un lien d'activation ou de reset expiré ou déjà utilisé affiche une page d'erreur avec option de renvoi.
 - L'utilisateur ne peut pas avoir deux demandes d'adhésion en attente pour la **même** équipe simultanément.
 - L'utilisateur peut avoir des demandes en attente pour plusieurs équipes différentes.
-- Un compte bloqué ne peut pas se connecter même avec le bon mot de passe.
+- Un compte bloqué ne peut pas se connecter, même avec le bon mot de passe, tant que le blocage est actif.
 
 ---
 
@@ -270,6 +270,10 @@ sequenceDiagram
         UC->>AuthSvc: comparePassword(password, dummyHash) — égalise le temps de réponse
         UC-->>API: InvalidCredentialsError → 401
     else User trouvé
+        opt lockedUntil <= now (blocage expiré)
+            UC->>UserRepo: resetLoginAttempts(userId)
+            UserRepo->>DB: prisma.user.update({ loginAttempts: 0, lockedUntil: null })
+        end
         UC->>AuthSvc: comparePassword(password, hash)
         alt Mot de passe incorrect
             opt compte actif et non bloqué
@@ -277,13 +281,13 @@ sequenceDiagram
                 UserRepo->>DB: prisma.user.update(loginAttempts: { increment: 1 })
                 DB-->>UserRepo: { loginAttempts }
                 opt loginAttempts >= 5
-                    UC->>UserRepo: blockUser(userId)
-                    UserRepo->>DB: prisma.user.update({ isBlocked: true })
+                    UC->>UserRepo: lockUntil(userId, now + LOGIN_LOCKOUT_MINUTES)
+                    UserRepo->>DB: prisma.user.update({ lockedUntil })
                 end
             end
             UC-->>API: InvalidCredentialsError → 401
         else Mot de passe correct
-            alt isBlocked = true
+            alt isBlocked ou lockedUntil > now
                 UC-->>API: AccountBlockedError → 403
             else isActive = false
                 UC-->>API: AccountInactiveError → 403
@@ -407,7 +411,7 @@ sequenceDiagram
         UC->>AuthSvc: hashPassword(newPassword)
         AuthSvc-->>UC: hashedPassword
         UC->>RegRepo: resetPassword(userId, hashedPassword)
-        Note over RegRepo,DB: password=hash, resetToken=null, resetTokenExpiry=null, loginAttempts=0, isBlocked=false
+        Note over RegRepo,DB: password=hash, resetToken=null, resetTokenExpiry=null, loginAttempts=0, lockedUntil=null, isBlocked=false
         RegRepo->>DB: prisma.user.update(...)
         UC-->>API: void
         API-->>FE: 200
@@ -513,6 +517,7 @@ model User {
   isBlocked             Boolean   @default(false)   // nouveau
   isReferee             Boolean   @default(false)   // nouveau — auto-déclaration arbitre
   loginAttempts         Int       @default(0)       // nouveau
+  lockedUntil           DateTime?                   // blocage temporaire : fin du verrouillage (null = pas de verrou)
   activationToken       String?                     // nouveau
   activationTokenExpiry DateTime?                   // nouveau
   resetToken            String?                     // nouveau
@@ -805,12 +810,14 @@ Trois nouvelles méthodes requises sur `IUserRepository` :
 interface IUserRepository {
   // ... méthodes existantes ...
   incrementLoginAttempts(userId: string): Promise<number>; // retourne le nouveau compteur
-  blockUser(userId: string): Promise<void>;
-  resetLoginAttempts(userId: string): Promise<void>; // appelé à la connexion réussie si le compteur > 0
+  lockUntil(userId: string, until: Date): Promise<void>; // blocage temporaire (lockedUntil = until)
+  resetLoginAttempts(userId: string): Promise<void>; // loginAttempts = 0 et lockedUntil = null ; appelé à la connexion réussie si le compteur > 0, et quand un blocage a expiré
 }
 ```
 
-Le `LoginUseCase` vérifie dans cet ordre : credentials (comparaison bcrypt, factice si l'email est inconnu) → incrémenter/bloquer en cas d'échec sur un compte actif et non bloqué → `isBlocked` → `isActive` (ces deux derniers uniquement si le mot de passe est correct) → remise à zéro du compteur si > 0, puis génération du token.
+Le `LoginUseCase` vérifie dans cet ordre : remise à zéro si le blocage a expiré → credentials (comparaison bcrypt, factice si l'email est inconnu) → incrémenter/bloquer temporairement en cas d'échec sur un compte actif et non bloqué → blocage (`isBlocked` ou `lockedUntil > now`) → `isActive` (ces deux derniers uniquement si le mot de passe est correct) → remise à zéro du compteur si > 0, puis génération du token.
+
+Un compte est **bloqué** quand `isBlocked` ou `lockedUntil > now`. L'API continue d'exposer un seul booléen `isBlocked`, vrai dans les deux cas (aucun changement de contrat `openapi.yml`).
 
 ---
 
@@ -832,15 +839,18 @@ const resetTokenExpiry = new Date(Date.now() + 7 * 24 * 3_600_000); // 7 jours �
 **Blocage progressif**
 
 ```text
+Blocage expiré (lockedUntil <= now) : loginAttempts = 0 et lockedUntil = null avant traitement de la tentative
+
 Tentative échouée (compte actif et non bloqué) :
   loginAttempts += 1
-  si loginAttempts >= 5 → isBlocked = true
+  si loginAttempts >= 5 → lockedUntil = now + LOGIN_LOCKOUT_MINUTES (défaut 15 min)
   dans tous les cas → 401 "email ou mot de passe incorrect"
+  (un compte déjà bloqué n'est pas prolongé par de nouvelles tentatives)
 
 Bon mot de passe sur un compte bloqué → 403 (compte bloqué)
 Bon mot de passe sur un compte inactif → 403 (compte non activé)
 
-Reset loginAttempts : resetPassword (loginAttempts=0 + isBlocked=false), déblocage par l'Admin, et chaque connexion réussie (loginAttempts=0)
+Reset (loginAttempts=0 + lockedUntil=null) : resetPassword (+ isBlocked=false), déblocage par l'Admin (+ isBlocked=false), expiration du blocage, et chaque connexion réussie
 Seuls les échecs consécutifs comptent : un mot de passe correct efface les échecs précédents
 ```
 
@@ -894,7 +904,8 @@ await prisma.$transaction([
 - **Inscription** : `409 Conflict` si email déjà enregistré — erreur explicite (Option A)
 - **`forgotPassword` / `resendActivation`** : toujours `200` — le client ne sait pas si l'email existe (anti-énumération)
 - **`activateAccount` / `resetPassword`** : `400` générique sur token invalide ou expiré — sans distinguer les deux cas pour ne pas aider un attaquant
-- **Ordre de vérification au login** : credentials → `isBlocked` → `isActive` — l'état du compte n'est révélé qu'à qui connaît le mot de passe ; email inconnu et mauvais mot de passe sont indiscernables (même `401`, temps égalisé par une comparaison bcrypt factice)
+- **Blocage temporaire** : un tiers peut provoquer le blocage d'un compte connu avec 5 mauvais mots de passe. Le blocage expire seul (`LOGIN_LOCKOUT_MINUTES`) au lieu de durer jusqu'à intervention de l'Admin ; cela borne le déni de service ciblé sans l'éliminer (l'attaquant peut le renouveler à chaque expiration)
+- **Ordre de vérification au login** : credentials → blocage → `isActive` — l'état du compte n'est révélé qu'à qui connaît le mot de passe ; email inconnu et mauvais mot de passe sont indiscernables (même `401`, temps égalisé par une comparaison bcrypt factice)
 - **Tokens** : générés via `crypto.randomUUID()` (entropie 122 bits), stockés en clair, supprimés immédiatement après usage
 - **Validation des payloads** : `openapi-backend` valide tous les inputs entrants — pas de validation manuelle dans les handlers
 - **Routes admin** : `requireAdmin(ctx)` sur `adminActivateUser` et `adminUnblockUser`
@@ -906,6 +917,6 @@ await prisma.$transaction([
 
 - **Race condition inscription** : deux registrations simultanées avec le même email → contrainte `@@unique` sur `email` (MongoDB) garantit qu'une seule réussit — l'autre lève `PrismaClientKnownRequestError` code `P2002`, à mapper en `409`
 - **Resend activation sur compte déjà actif** : le use case vérifie `isActive` avant de générer un token — si actif, retourne `200` sans effet
-- **Reset password sur compte bloqué** : débloque le compte (`isBlocked=false`) + remet `loginAttempts=0` en même opération — comportement voulu par la spec
+- **Reset password sur compte bloqué** : débloque le compte (`isBlocked=false`, `lockedUntil=null`) + remet `loginAttempts=0` en même opération — comportement voulu par la spec
 - **Upsert join request sur statut APPROVED** : le use case vérifie le statut existant avant l'upsert — si `APPROVED`, lève `AlreadyMemberError` (409)
 - **`POST /teams/with-coach` sans contrainte de doublons** : un utilisateur peut créer plusieurs équipes et être COACH de chacune — pas de contrainte à ajouter
