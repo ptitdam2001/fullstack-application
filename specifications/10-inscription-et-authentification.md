@@ -411,7 +411,7 @@ sequenceDiagram
         UC->>AuthSvc: hashPassword(newPassword)
         AuthSvc-->>UC: hashedPassword
         UC->>RegRepo: resetPassword(userId, hashedPassword)
-        Note over RegRepo,DB: password=hash, resetToken=null, resetTokenExpiry=null, loginAttempts=0, lockedUntil=null, isBlocked=false
+        Note over RegRepo,DB: password=hash, resetToken=null, resetTokenExpiry=null, loginAttempts=0, lockedUntil=null, isBlocked=false, tokensValidAfter=now
         RegRepo->>DB: prisma.user.update(...)
         UC-->>API: void
         API-->>FE: 200
@@ -518,6 +518,7 @@ model User {
   isReferee             Boolean   @default(false)   // nouveau — auto-déclaration arbitre
   loginAttempts         Int       @default(0)       // nouveau
   lockedUntil           DateTime?                   // blocage temporaire : fin du verrouillage (null = pas de verrou)
+  tokensValidAfter      DateTime?                   // révocation : tout JWT émis avant cette date est refusé (posé par resetPassword)
   activationToken       String?                     // nouveau
   activationTokenExpiry DateTime?                   // nouveau
   resetToken            String?                     // nouveau
@@ -918,6 +919,7 @@ await prisma.$transaction([
 
 - **Race condition inscription** : deux registrations simultanées avec le même email → contrainte `@@unique` sur `email` (MongoDB) garantit qu'une seule réussit — l'autre lève `PrismaClientKnownRequestError` code `P2002`, à mapper en `409`
 - **Resend activation sur compte déjà actif** : le use case vérifie `isActive` avant de générer un token — si actif, retourne `200` sans effet
+- **Sessions (JWT)** : le token ne prouve que l'identité ; `isAdmin`, `isCoach` et l'état du compte (existant, actif, non bloqué) sont relus en base à chaque requête authentifiée, donc blocage, rétrogradation, retrait de coach et suppression prennent effet immédiatement (`401` pour un compte supprimé, inactif ou bloqué). Un reset de mot de passe réussi pose `tokensValidAfter` : les tokens émis avant sont refusés (une session volée ne survit pas au reset). `POST /logout` ne révoque pas le token — le frontend le supprime — car une révocation par token demanderait un suivi des sessions, ou déconnecterait tous les appareils de l'utilisateur
 - **Reset password sur compte bloqué** : débloque le compte (`isBlocked=false`, `lockedUntil=null`) + remet `loginAttempts=0` en même opération — comportement voulu par la spec
 - **Upsert join request sur statut APPROVED** : le use case vérifie le statut existant avant l'upsert — si `APPROVED`, lève `AlreadyMemberError` (409)
 - **`POST /teams/with-coach` sans contrainte de doublons** : un utilisateur peut créer plusieurs équipes et être COACH de chacune — pas de contrainte à ajouter

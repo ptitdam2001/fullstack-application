@@ -20,7 +20,7 @@ L'application est un monorepo structuré en trois parties :
 | Validation des requêtes | `openapi-backend`                     | Valide automatiquement les payloads entrants contre la spec OpenAPI                               |
 | Base de données         | MongoDB                               | Schéma flexible adapté au domaine sportif (configurations de points variables, phases dynamiques) |
 | ORM                     | Prisma                                | Typage TypeScript des requêtes, migrations, génération du client Prisma                           |
-| Authentification        | JWT (access token) + bcrypt           | Stateless, compatible avec les architectures distribuées                                          |
+| Authentification        | JWT (access token) + bcrypt           | Identité vérifiable sans session serveur ; droits et état du compte relus en base à chaque requête (spec 08) |
 | Tests                   | Vitest (unitaires sur use cases)      | Les use cases de la couche application peuvent être testés sans infrastructure                    |
 | Linting                 | ESLint via `@repo/eslint-config/node` | Config partagée avec le frontend                                                                  |
 | Formatage               | Prettier via `@repo/prettier-config`  | Config partagée avec le frontend                                                                  |

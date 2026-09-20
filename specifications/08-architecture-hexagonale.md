@@ -154,7 +154,7 @@ interface IChampionshipRepository {
 
 ### Authentification et guards
 
-Le JWT contient `{ userId, isAdmin }`. Deux guards sont disponibles dans `src/auth/application/requireRoles.ts` :
+Le JWT ne prouve que l'**identité** (`userId`, `iat`). À chaque requête authentifiée, le security handler relit en base l'état du compte et les droits (`isAdmin`, `isCoach`) : le `TokenPayload` fourni aux guards vient de la base, jamais des claims du token. La requête est refusée en `401` si le compte n'existe plus, est inactif ou bloqué, ou si le token a été émis avant `User.tokensValidAfter` (reset de mot de passe). Une rétrogradation, un blocage ou un retrait de coach prend donc effet immédiatement. Deux guards sont disponibles dans `src/auth/application/requireRoles.ts` :
 
 ```ts
 // Vérifie que le token est valide et retourne le payload
