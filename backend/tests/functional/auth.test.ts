@@ -4,7 +4,8 @@ import { prisma } from '../../utils/prismaClient.js'
 import { authHeaderFor } from '../support/authenticate.js'
 import { createTestAgent } from '../support/client.js'
 import { resetDatabase } from '../support/database.js'
-import { createAdmin, createTeam, createUser, FIXTURE_PASSWORD } from '../support/fixtures.js'
+import { assignUserToTeam, createAdmin, createTeam, createUser, FIXTURE_PASSWORD } from '../support/fixtures.js'
+import { JwtAuthService } from '../../src/auth/infrastructure/JwtAuthService.js'
 
 describe('auth domain — functional API', () => {
   let agent: Awaited<ReturnType<typeof createTestAgent>>
@@ -265,6 +266,81 @@ describe('auth domain — functional API', () => {
         expect(res.status).toBe(401)
         expect((await prisma.user.findUniqueOrThrow({ where: { id: user.id } })).loginAttempts).toBe(0)
       })
+    })
+  })
+
+  // ─── session state ──────────────────────────────────────────────────────
+  describe('authenticated requests reflect the current database state (spec 10, Sécurité › Sessions)', () => {
+    const areaBody = { address: '1 rue du Stade', city: 'Lyon', longitude: 4.83, latitude: 45.76 }
+    const inMinutes = (m: number): Date => new Date(Date.now() + m * 60_000)
+
+    it('ignores an isAdmin claim the database does not back', async () => {
+      const user = await createUser()
+
+      const res = await agent.get('/users').set(authHeaderFor(user.id, true))
+
+      expect(res.status).toBe(403)
+    })
+
+    it('applies a promotion without a new token', async () => {
+      const user = await createUser()
+      const header = authHeaderFor(user.id)
+      expect((await agent.get('/users').set(header)).status).toBe(403)
+
+      await prisma.user.update({ where: { id: user.id }, data: { isAdmin: true } })
+
+      expect((await agent.get('/users').set(header)).status).toBe(200)
+    })
+
+    it('applies a demotion immediately', async () => {
+      const admin = await createAdmin()
+      const header = authHeaderFor(admin.id, true)
+      expect((await agent.get('/users').set(header)).status).toBe(200)
+
+      await prisma.user.update({ where: { id: admin.id }, data: { isAdmin: false } })
+
+      expect((await agent.get('/users').set(header)).status).toBe(403)
+    })
+
+    it.each([
+      ['blocked', (id: string) => prisma.user.update({ where: { id }, data: { isBlocked: true } })],
+      [
+        'temporarily locked',
+        (id: string) => prisma.user.update({ where: { id }, data: { lockedUntil: inMinutes(10) } }),
+      ],
+      ['deactivated', (id: string) => prisma.user.update({ where: { id }, data: { isActive: false } })],
+      ['deleted', (id: string) => prisma.user.delete({ where: { id } })],
+    ])('answers 401 to a valid token once the account is %s', async (_label, change) => {
+      const user = await createUser()
+      const header = authHeaderFor(user.id)
+      expect((await agent.get('/me').set(header)).status).toBe(200)
+
+      await change(user.id)
+
+      expect((await agent.get('/me').set(header)).status).toBe(401)
+    })
+
+    it('lets a coach edit an area only while they are still a coach', async () => {
+      const coach = await createUser()
+      const team = await createTeam()
+      await assignUserToTeam(coach.id, team.id, TeamRole.COACH)
+      const area = await prisma.area.create({ data: areaBody })
+      const header = authHeaderFor(coach.id)
+      expect((await agent.patch(`/areas/${area.id}`).set(header).send(areaBody)).status).toBe(200)
+
+      await prisma.userTeam.deleteMany({ where: { userId: coach.id } })
+
+      expect((await agent.patch(`/areas/${area.id}`).set(header).send(areaBody)).status).toBe(403)
+    })
+
+    it('ignores an isCoach claim the database does not back', async () => {
+      const user = await createUser()
+      const area = await prisma.area.create({ data: areaBody })
+      const forged = { Authorization: `Bearer ${new JwtAuthService().generateToken(user.id, false, true)}` }
+
+      const res = await agent.patch(`/areas/${area.id}`).set(forged).send(areaBody)
+
+      expect(res.status).toBe(403)
     })
   })
 

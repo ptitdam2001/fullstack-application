@@ -1,4 +1,4 @@
-import type { UserProfile, CreateUserInput, UpdateUserInput } from '../domain/User.js'
+import type { AuthState, UserProfile, CreateUserInput, UpdateUserInput } from '../domain/User.js'
 
 export type UserFilterOptions = { isActive?: boolean }
 
@@ -12,4 +12,5 @@ export interface IUserRepository {
   incrementLoginAttempts(userId: string): Promise<number>
   lockUntil(userId: string, until: Date): Promise<void>
   resetLoginAttempts(userId: string): Promise<void>
+  findAuthState(userId: string): Promise<AuthState | null>
 }

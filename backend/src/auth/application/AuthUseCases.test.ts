@@ -4,7 +4,12 @@ import type { IUserRepository } from '../../user/ports/IUserRepository.js'
 import type { IAuthService } from '../ports/IAuthService.js'
 import type { IUserTeamRepository } from '../../userTeam/ports/IUserTeamRepository.js'
 import type { IUserMatchRepository } from '../../userMatch/ports/IUserMatchRepository.js'
-import { InvalidCredentialsError, AccountBlockedError, AccountInactiveError } from '../domain/AuthErrors.js'
+import {
+  InvalidCredentialsError,
+  AccountBlockedError,
+  AccountInactiveError,
+  UnauthorizedError,
+} from '../domain/AuthErrors.js'
 import { UserNotFoundError } from '../../user/domain/UserErrors.js'
 import { TeamRole } from '../../userTeam/domain/UserTeam.js'
 
@@ -32,6 +37,7 @@ const makeRepo = (overrides: Partial<IUserRepository> = {}): IUserRepository => 
   incrementLoginAttempts: vi.fn().mockResolvedValue(1),
   lockUntil: vi.fn().mockResolvedValue(undefined),
   resetLoginAttempts: vi.fn().mockResolvedValue(undefined),
+  findAuthState: vi.fn().mockResolvedValue({ isAdmin: false, isActive: true, isBlocked: false, isCoach: false }),
   ...overrides,
 })
 
@@ -232,6 +238,54 @@ describe('AuthUseCases.login', () => {
       'password'
     )
     expect(authService.generateToken).toHaveBeenCalledWith('user-1', false, false)
+  })
+})
+
+describe('AuthUseCases.authenticate (spec 10, Sécurité › Sessions)', () => {
+  const claims = { userId: 'user-1', isAdmin: true, isCoach: true, iat: 100, exp: 200 }
+  const withToken = (overrides: Record<string, unknown> = {}) => ({
+    verifyToken: vi.fn().mockReturnValue({ ...claims, ...overrides }),
+  })
+  const withState = (state: Record<string, unknown> | null) => ({
+    findAuthState: vi
+      .fn()
+      .mockResolvedValue(state && { isAdmin: false, isActive: true, isBlocked: false, isCoach: false, ...state }),
+  })
+
+  it('takes roles from the database and ignores what the token claims', async () => {
+    const payload = await makeUseCases(withState({}), withToken()).authenticate('jwt')
+    expect(payload).toMatchObject({ userId: 'user-1', isAdmin: false, isCoach: false })
+  })
+
+  it('reflects a promotion made after the token was issued', async () => {
+    const payload = await makeUseCases(withState({ isAdmin: true }), withToken({ isAdmin: false })).authenticate('jwt')
+    expect(payload.isAdmin).toBe(true)
+  })
+
+  it('takes isCoach from the database', async () => {
+    const payload = await makeUseCases(withState({ isCoach: true }), withToken({ isCoach: false })).authenticate('jwt')
+    expect(payload.isCoach).toBe(true)
+  })
+
+  it('reads the state of the token owner', async () => {
+    const repo = makeRepo(withState({}))
+    await makeUseCases(repo, withToken()).authenticate('jwt')
+    expect(repo.findAuthState).toHaveBeenCalledWith('user-1')
+  })
+
+  it.each([
+    ['the account no longer exists', null],
+    ['the account is inactive', { isActive: false }],
+    ['the account is blocked', { isBlocked: true }],
+  ])('throws UnauthorizedError when %s', async (_label, state) => {
+    await expect(makeUseCases(withState(state), withToken()).authenticate('jwt')).rejects.toThrow(UnauthorizedError)
+  })
+
+  it('does not query the database when the token is invalid', async () => {
+    const repo = makeRepo(withState({}))
+    const invalid = { verifyToken: vi.fn().mockImplementation(() => { throw new Error('jwt expired') }) }
+    await expect(makeUseCases(repo, invalid).authenticate('jwt')).rejects.toThrow('jwt expired')
+    expect(repo.findAuthState).not.toHaveBeenCalled()
   })
 })
 

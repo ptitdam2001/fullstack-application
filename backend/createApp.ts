@@ -1,15 +1,13 @@
 import cors from 'cors'
 import express, { type Application, type NextFunction, type Request, type Response } from 'express'
-import jwt from 'jsonwebtoken'
 import { rateLimit } from 'express-rate-limit'
-const { TokenExpiredError } = jwt
-type Secret = jwt.Secret
 
 import { OpenAPIBackend, type Request as RequestOpenApi } from 'openapi-backend'
 import helmet from 'helmet'
 
 import { UnauthorizedError, ForbiddenError } from './src/auth/domain/AuthErrors'
 import * as authHandlers from './src/auth/infrastructure/AuthHttpHandlers'
+import { jwtSecurityHandler } from './src/auth/infrastructure/JwtSecurityHandler'
 import * as registrationHandlers from './src/registration/infrastructure/RegistrationHttpHandlers'
 import * as userHandlers from './src/user/infrastructure/UserHttpHandlers'
 import * as teamHandlers from './src/team/infrastructure/TeamHttpHandlers'
@@ -114,21 +112,7 @@ export const createApp = async (): Promise<Application> => {
     },
   })
 
-  api.registerSecurityHandler('jwtAuth', ctx => {
-    const authHeader = ctx.request.headers['authorization']
-    if (!authHeader) {
-      throw new Error('Missing authorization header')
-    }
-    const token = authHeader.replace('Bearer ', '')
-    try {
-      return jwt.verify(token, process.env.JWT_SECRET as Secret)
-    } catch (err) {
-      if (err instanceof TokenExpiredError) {
-        throw new Error('Token has expired', { cause: err })
-      }
-      throw err
-    }
-  })
+  api.registerSecurityHandler('jwtAuth', jwtSecurityHandler)
 
   await api.init()
 

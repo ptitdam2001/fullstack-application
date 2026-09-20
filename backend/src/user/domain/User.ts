@@ -16,6 +16,14 @@ export type UserProfile = {
   roles: UserRole[]
 }
 
+/** What an authenticated request is allowed to do right now, read from the database (spec 10, Sécurité › Sessions). */
+export type AuthState = {
+  isAdmin: boolean
+  isActive: boolean
+  isBlocked: boolean
+  isCoach: boolean
+}
+
 export type CreateUserInput = {
   firstName: string
   lastName?: string

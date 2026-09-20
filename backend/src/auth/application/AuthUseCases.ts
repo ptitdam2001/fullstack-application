@@ -1,11 +1,16 @@
 import type { IUserRepository } from '../../user/ports/IUserRepository.js'
 import type { IAuthService } from '../ports/IAuthService.js'
 import type { UserProfile, UserRole } from '../../user/domain/User.js'
-import type { LoginResult } from '../domain/User.js'
+import type { LoginResult, TokenPayload } from '../domain/User.js'
 import type { IUserTeamRepository } from '../../userTeam/ports/IUserTeamRepository.js'
 import type { IUserMatchRepository } from '../../userMatch/ports/IUserMatchRepository.js'
 import { TeamRole } from '../../userTeam/domain/UserTeam.js'
-import { InvalidCredentialsError, AccountBlockedError, AccountInactiveError } from '../domain/AuthErrors.js'
+import {
+  InvalidCredentialsError,
+  AccountBlockedError,
+  AccountInactiveError,
+  UnauthorizedError,
+} from '../domain/AuthErrors.js'
 import { UserNotFoundError } from '../../user/domain/UserErrors.js'
 
 const getMaxLoginAttempts = (): number => parseInt(process.env.MAX_LOGIN_ATTEMPTS ?? '5')
@@ -72,6 +77,17 @@ export class AuthUseCases {
     const isCoach = coachTeams.length > 0
     const token = this.authService.generateToken(user.id, user.isAdmin, isCoach)
     return { userId: user.id, email: user.email, isAdmin: user.isAdmin, token }
+  }
+
+  // The JWT only proves who the caller is. Rights and account state are read from the database on every
+  // request, so a block, demotion, coach removal or deletion takes effect immediately (spec 10, Sécurité › Sessions).
+  async authenticate(token: string): Promise<TokenPayload> {
+    const claims = this.authService.verifyToken(token)
+    const state = await this.userRepo.findAuthState(claims.userId)
+    if (!state || !state.isActive || state.isBlocked) {
+      throw new UnauthorizedError()
+    }
+    return { userId: claims.userId, isAdmin: state.isAdmin, isCoach: state.isCoach, iat: claims.iat, exp: claims.exp }
   }
 
   async me(userId: string): Promise<UserProfileWithRoles> {

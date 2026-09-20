@@ -1,6 +1,7 @@
 import { prisma } from '../../../utils/prismaClient.js'
 import type { IUserRepository } from '../ports/IUserRepository.js'
-import type { UserProfile, UserRole, CreateUserInput, UpdateUserInput } from '../domain/User.js'
+import type { AuthState, UserProfile, UserRole, CreateUserInput, UpdateUserInput } from '../domain/User.js'
+import { TeamRole } from '../../userTeam/domain/UserTeam.js'
 
 const select = {
   id: true,
@@ -34,6 +35,8 @@ type RawUser = {
   updatedAt: Date
 }
 
+const isLockActive = (lockedUntil: Date | null): boolean => lockedUntil !== null && lockedUntil > new Date()
+
 function toUserProfile({ lockedUntil, ...raw }: RawUser): UserProfile {
   const roles: UserRole[] = []
   if (raw.isAdmin) {
@@ -43,8 +46,7 @@ function toUserProfile({ lockedUntil, ...raw }: RawUser): UserProfile {
     roles.push('REFEREE')
   }
   // A temporary login lock surfaces as isBlocked so the API keeps a single flag (spec 10)
-  const isLocked = lockedUntil !== null && lockedUntil > new Date()
-  return { ...raw, isBlocked: raw.isBlocked || isLocked, roles }
+  return { ...raw, isBlocked: raw.isBlocked || isLockActive(lockedUntil), roles }
 }
 
 export class PrismaUserRepository implements IUserRepository {
@@ -112,6 +114,28 @@ export class PrismaUserRepository implements IUserRepository {
 
   async lockUntil(userId: string, until: Date): Promise<void> {
     await prisma.user.update({ where: { id: userId }, data: { lockedUntil: until } })
+  }
+
+  async findAuthState(userId: string): Promise<AuthState | null> {
+    const row = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        isAdmin: true,
+        isActive: true,
+        isBlocked: true,
+        lockedUntil: true,
+        userTeams: { where: { role: TeamRole.COACH }, select: { id: true }, take: 1 },
+      },
+    })
+    if (!row) {
+      return null
+    }
+    return {
+      isAdmin: row.isAdmin,
+      isActive: row.isActive,
+      isBlocked: row.isBlocked || isLockActive(row.lockedUntil),
+      isCoach: row.userTeams.length > 0,
+    }
   }
 
   async resetLoginAttempts(userId: string): Promise<void> {
