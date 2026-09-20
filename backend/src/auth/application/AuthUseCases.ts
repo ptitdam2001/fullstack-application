@@ -87,6 +87,14 @@ export class AuthUseCases {
     if (!state || !state.isActive || state.isBlocked) {
       throw new UnauthorizedError()
     }
+    // iat has whole-second precision, so compare in seconds: a token issued in the same second as the reset
+    // (e.g. the login right after it) stays valid. A token without iat cannot be dated: refuse it.
+    if (
+      state.tokensValidAfter &&
+      !(claims.iat !== undefined && claims.iat >= Math.floor(state.tokensValidAfter.getTime() / 1000))
+    ) {
+      throw new UnauthorizedError()
+    }
     return { userId: claims.userId, isAdmin: state.isAdmin, isCoach: state.isCoach, iat: claims.iat, exp: claims.exp }
   }
 

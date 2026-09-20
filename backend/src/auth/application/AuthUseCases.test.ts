@@ -37,7 +37,7 @@ const makeRepo = (overrides: Partial<IUserRepository> = {}): IUserRepository => 
   incrementLoginAttempts: vi.fn().mockResolvedValue(1),
   lockUntil: vi.fn().mockResolvedValue(undefined),
   resetLoginAttempts: vi.fn().mockResolvedValue(undefined),
-  findAuthState: vi.fn().mockResolvedValue({ isAdmin: false, isActive: true, isBlocked: false, isCoach: false }),
+  findAuthState: vi.fn().mockResolvedValue({ isAdmin: false, isActive: true, isBlocked: false, isCoach: false, tokensValidAfter: null }),
   ...overrides,
 })
 
@@ -249,7 +249,9 @@ describe('AuthUseCases.authenticate (spec 10, Sécurité › Sessions)', () => {
   const withState = (state: Record<string, unknown> | null) => ({
     findAuthState: vi
       .fn()
-      .mockResolvedValue(state && { isAdmin: false, isActive: true, isBlocked: false, isCoach: false, ...state }),
+      .mockResolvedValue(
+        state && { isAdmin: false, isActive: true, isBlocked: false, isCoach: false, tokensValidAfter: null, ...state }
+      ),
   })
 
   it('takes roles from the database and ignores what the token claims', async () => {
@@ -279,6 +281,34 @@ describe('AuthUseCases.authenticate (spec 10, Sécurité › Sessions)', () => {
     ['the account is blocked', { isBlocked: true }],
   ])('throws UnauthorizedError when %s', async (_label, state) => {
     await expect(makeUseCases(withState(state), withToken()).authenticate('jwt')).rejects.toThrow(UnauthorizedError)
+  })
+
+  describe('token revocation (tokensValidAfter)', () => {
+    // withToken() claims iat = 100 (seconds since epoch)
+    it('refuses a token issued before tokensValidAfter', async () => {
+      const uc = makeUseCases(withState({ tokensValidAfter: new Date(200_000) }), withToken())
+      await expect(uc.authenticate('jwt')).rejects.toThrow(UnauthorizedError)
+    })
+
+    it('accepts a token issued in the same second as tokensValidAfter (a login right after the reset)', async () => {
+      const uc = makeUseCases(withState({ tokensValidAfter: new Date(100_500) }), withToken())
+      await expect(uc.authenticate('jwt')).resolves.toMatchObject({ userId: 'user-1' })
+    })
+
+    it('accepts a token issued after tokensValidAfter', async () => {
+      const uc = makeUseCases(withState({ tokensValidAfter: new Date(50_000) }), withToken())
+      await expect(uc.authenticate('jwt')).resolves.toMatchObject({ userId: 'user-1' })
+    })
+
+    it('refuses a token without iat once a revocation date exists (fail closed)', async () => {
+      const uc = makeUseCases(withState({ tokensValidAfter: new Date(50_000) }), withToken({ iat: undefined }))
+      await expect(uc.authenticate('jwt')).rejects.toThrow(UnauthorizedError)
+    })
+
+    it('does not require iat when nothing was revoked', async () => {
+      const uc = makeUseCases(withState({}), withToken({ iat: undefined }))
+      await expect(uc.authenticate('jwt')).resolves.toMatchObject({ userId: 'user-1' })
+    })
   })
 
   it('does not query the database when the token is invalid', async () => {

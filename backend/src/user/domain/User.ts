@@ -22,6 +22,8 @@ export type AuthState = {
   isActive: boolean
   isBlocked: boolean
   isCoach: boolean
+  /** JWTs issued before this date are refused (set by a password reset). */
+  tokensValidAfter: Date | null
 }
 
 export type CreateUserInput = {

@@ -124,6 +124,7 @@ export class PrismaUserRepository implements IUserRepository {
         isActive: true,
         isBlocked: true,
         lockedUntil: true,
+        tokensValidAfter: true,
         userTeams: { where: { role: TeamRole.COACH }, select: { id: true }, take: 1 },
       },
     })
@@ -135,6 +136,7 @@ export class PrismaUserRepository implements IUserRepository {
       isActive: row.isActive,
       isBlocked: row.isBlocked || isLockActive(row.lockedUntil),
       isCoach: row.userTeams.length > 0,
+      tokensValidAfter: row.tokensValidAfter,
     }
   }
 
