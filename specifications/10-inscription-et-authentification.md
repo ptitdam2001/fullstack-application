@@ -913,6 +913,30 @@ await prisma.$transaction([
 - **Routes admin** : `requireAdmin(ctx)` sur `adminActivateUser` et `adminUnblockUser`
 - **Routes coach/admin** : `GET /teams/{teamId}/join-requests` et `PATCH .../join-requests/{requestId}` — vérifier que l'appelant est `COACH` de l'équipe (`IUserTeamRepository.hasRole()`) ou `isAdmin`
 
+
+### Limitation de débit
+
+Les routes publiques de la section authentification sont limitées pour freiner le brute force, l'inondation d'emails et l'énumération. Un dépassement répond `429` avec le corps `{ "status": 429, "message": "..." }` et les en-têtes standard `RateLimit` (draft-8) ; la requête n'est pas traitée.
+
+| Route(s)                                    | Clé de limitation        | Limite par défaut | Fenêtre | Variable d'environnement |
+| ------------------------------------------- | ------------------------ | ----------------- | ------- | ------------------------ |
+| `POST /login`                               | IP                       | 10                | 15 min  | `LOGIN_RATE_LIMIT`       |
+| `POST /register`                            | IP                       | 5                 | 1 h     | `REGISTER_RATE_LIMIT`    |
+| `POST /forgot-password`, `POST /resend-activation` | IP                | 5                 | 1 h     | `EMAIL_RATE_LIMIT`       |
+| `POST /forgot-password`, `POST /resend-activation` | adresse email     | 5                 | 1 h     | `EMAIL_RATE_LIMIT`       |
+| `POST /activate`, `POST /reset-password`    | IP                       | 10                | 15 min  | `TOKEN_RATE_LIMIT`       |
+
+Règles :
+
+- **Compteur partagé** entre les routes d'une même ligne : `/forgot-password` et `/resend-activation` consomment le même quota (un attaquant ne double pas son débit en alternant), de même pour `/activate` et `/reset-password`. Les deux clés (IP et adresse email) s'appliquent : dépasser l'une ou l'autre suffit à recevoir `429`.
+- **Pourquoi deux clés sur les routes d'email** : la limite par IP freine un même client ; la limite par adresse empêche d'inonder la boîte d'une victime depuis de nombreuses IP.
+- **Adresse email** : lue dans le corps de la requête, normalisée (`trim` + minuscules). Sans adresse valide dans le corps, seule la limite par IP s'applique (la validation `openapi-backend` répond ensuite `400`).
+- **Anti-énumération** : le `429` ne dépend que du nombre de requêtes, jamais de l'existence du compte ; `/forgot-password` et `/resend-activation` restent en `200` dans les autres cas.
+- **Rôle de chaque limite** : `/login` et `/activate` / `/reset-password` (brute force et devinette de token ; les tokens UUID v4 de 122 bits sont impossibles à deviner en pratique, la limite est une défense en profondeur) ; `/register`, `/forgot-password`, `/resend-activation` (abus et envoi massif d'emails, notamment une fois un vrai `IEmailService` branché).
+- **Valeurs** : les défauts ci-dessus s'appliquent si la variable est absente ou invalide ; les tests fonctionnels et le stack de test smoke les relèvent (1000) pour ne pas se bloquer eux-mêmes.
+- **Blocage ciblé accepté** : un attaquant qui connaît une adresse peut épuiser son quota par email pendant 1 h ; l'utilisateur reçoit alors `429` sur `/forgot-password` et `/resend-activation`. Compromis retenu contre l'inondation d'emails ; l'adresse n'est jamais confirmée ni infirmée.
+- **Limites connues** : les compteurs sont **en mémoire et propres à chaque instance** de l'API — avec plusieurs instances, la limite effective est multipliée ; un store partagé (ex. Redis) sera nécessaire. La clé IP est `req.ip` : derrière un reverse proxy sans `trust proxy`, tous les clients partagent l'IP du proxy et donc le même compteur ; à décider avec la topologie de déploiement.
+
 ---
 
 ### Cas limites techniques
