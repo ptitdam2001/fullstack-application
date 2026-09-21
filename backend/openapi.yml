@@ -68,6 +68,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
+        '429':
+          description: Too many login attempts — rate limit reached for this IP (see specifications/10, Limitation de débit)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorOutput'
   /logout:
     post:
       operationId: logout
@@ -113,6 +119,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
+        '429':
+          description: Too many registration attempts — rate limit reached for this IP
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorOutput'
 
   /forgot-password:
     post:
@@ -130,6 +142,12 @@ paths:
           description: 'successful'
         500:
           description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorOutput'
+        '429':
+          description: Too many requests — rate limit reached for this IP or this email address
           content:
             application/json:
               schema:
@@ -1817,6 +1835,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
+        '429':
+          description: Too many requests — rate limit reached for this IP
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorOutput'
 
   /resend-activation:
     post:
@@ -1833,6 +1857,12 @@ paths:
       responses:
         '200':
           description: Email sent (always 200 for anti-enumeration)
+        '429':
+          description: Too many requests — rate limit reached for this IP or this email address
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorOutput'
 
   /reset-password:
     post:
@@ -1851,6 +1881,12 @@ paths:
           description: Password reset successfully
         '400':
           description: Invalid or expired token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorOutput'
+        '429':
+          description: Too many requests — rate limit reached for this IP
           content:
             application/json:
               schema:
