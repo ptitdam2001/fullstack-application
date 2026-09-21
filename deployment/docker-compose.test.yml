@@ -30,6 +30,8 @@ services:
       MAX_LOGIN_ATTEMPTS: "1000"
       LOGIN_RATE_LIMIT: "1000"
       REGISTER_RATE_LIMIT: "1000"
+      EMAIL_RATE_LIMIT: "1000"
+      TOKEN_RATE_LIMIT: "1000"
       FRONTEND_URL: http://localhost:3001
     depends_on:
       mongodb-test:

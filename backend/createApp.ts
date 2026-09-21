@@ -1,6 +1,5 @@
 import cors from 'cors'
 import express, { type Application, type NextFunction, type Request, type Response } from 'express'
-import { rateLimit } from 'express-rate-limit'
 
 import { OpenAPIBackend, type Request as RequestOpenApi } from 'openapi-backend'
 import helmet from 'helmet'
@@ -28,6 +27,7 @@ import * as healthHandlers from './src/health/infrastructure/HealthHttpHandlers'
 import addFormats from 'ajv-formats'
 import { logger } from './config/logger'
 import { createRequestLogger } from './config/requestLogger'
+import { applyAuthRateLimits } from './config/rateLimits'
 
 /**
  * Builds and initializes the Express + OpenAPI app without binding a port.
@@ -46,23 +46,7 @@ export const createApp = async (): Promise<Application> => {
     })
   )
 
-  const loginRateLimit = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    limit: Number(process.env.LOGIN_RATE_LIMIT) || 10,
-    standardHeaders: 'draft-8',
-    legacyHeaders: false,
-    message: { status: 429, message: 'Too many login attempts, please try again later.' },
-  })
-  app.post('/login', loginRateLimit)
-
-  const registerRateLimit = rateLimit({
-    windowMs: 60 * 60 * 1000,
-    limit: Number(process.env.REGISTER_RATE_LIMIT) || 5,
-    standardHeaders: 'draft-8',
-    legacyHeaders: false,
-    message: { status: 429, message: 'Too many registration attempts, please try again later.' },
-  })
-  app.post('/register', registerRateLimit)
+  applyAuthRateLimits(app)
 
   const api = new OpenAPIBackend({
     definition: './openapi.yml',

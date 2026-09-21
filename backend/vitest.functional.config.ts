@@ -35,6 +35,8 @@ export default defineConfig({
       ACTIVATION_TOKEN_EXPIRY_HOURS: '48',
       LOGIN_RATE_LIMIT: '1000',
       REGISTER_RATE_LIMIT: '1000',
+      EMAIL_RATE_LIMIT: '1000',
+      TOKEN_RATE_LIMIT: '1000',
     },
   },
 })
