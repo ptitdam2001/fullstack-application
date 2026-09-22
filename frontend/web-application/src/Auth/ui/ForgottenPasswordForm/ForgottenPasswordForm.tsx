@@ -21,8 +21,13 @@ export const ForgottenPasswordForm = () => {
     try {
       await resend({ data: { email: sentEmail } })
       toast(intl.formatMessage({ id: 'activate.resend.success' }))
-    } catch {
-      toast(intl.formatMessage({ id: 'auth.error.generic' }))
+    } catch (err: unknown) {
+      const status = (err as { response?: { status?: number } })?.response?.status
+      if (status === 429) {
+        toast(intl.formatMessage({ id: 'auth.error.tooManyRequests' }))
+      } else {
+        toast(intl.formatMessage({ id: 'auth.error.generic' }))
+      }
     }
   }
 
@@ -47,8 +52,17 @@ export const ForgottenPasswordForm = () => {
       </h2>
       <Form
         onSubmit={async data => {
-          await process(data.email!)
-          setSentEmail(data.email!)
+          try {
+            await process(data.email!)
+            setSentEmail(data.email!)
+          } catch (err: unknown) {
+            const status = (err as { response?: { status?: number } })?.response?.status
+            if (status === 429) {
+              toast(intl.formatMessage({ id: 'auth.error.tooManyRequests' }))
+            } else {
+              toast(intl.formatMessage({ id: 'auth.error.generic' }))
+            }
+          }
         }}
         className="flex flex-col"
       >

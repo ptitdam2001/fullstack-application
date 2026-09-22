@@ -35,8 +35,13 @@ export const ResetPasswordForm = () => {
         onSubmit={async (data: ResetFormValues) => {
           try {
             await process(token, data.newPassword)
-          } catch {
-            toast(intl.formatMessage({ id: 'resetPassword.error.generic' }))
+          } catch (err: unknown) {
+            const status = (err as { response?: { status?: number } })?.response?.status
+            if (status === 429) {
+              toast(intl.formatMessage({ id: 'resetPassword.error.tooManyRequests' }))
+            } else {
+              toast(intl.formatMessage({ id: 'resetPassword.error.generic' }))
+            }
           }
         }}
         className="flex flex-col"
