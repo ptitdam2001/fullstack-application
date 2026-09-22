@@ -2463,7 +2463,7 @@ components:
       properties:
         name:
           type: string
-          nullable: false
+          nullable: true
         address:
           type: string
           nullable: false
@@ -2752,7 +2752,7 @@ components:
     User:
       properties:
         lastName:
-          nullable: false
+          nullable: true
           type: string
           minLength: 1
         firstName:
@@ -2784,6 +2784,7 @@ components:
           format: date-time
         avatar:
           type: string
+          nullable: true
         roles:
           type: array
           description: Contextual roles derived from team memberships and isReferee flag
@@ -3121,7 +3122,9 @@ components:
           type: string
           nullable: true
         qualification:
-          $ref: '#/components/schemas/PhaseQualification'
+          oneOf:
+            - $ref: '#/components/schemas/PhaseQualification'
+            - type: 'null'
 
     Phase:
       allOf:
