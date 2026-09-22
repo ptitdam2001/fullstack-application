@@ -3392,13 +3392,14 @@ components:
     ChampionshipInput:
       type: object
       required:
+        - name
         - ageCategoryId
         - seasonId
         - pointsConfig
       properties:
         name:
           type: string
-          nullable: true
+          nullable: false
         ageCategoryId:
           type: string
           nullable: false
