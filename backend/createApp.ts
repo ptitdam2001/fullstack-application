@@ -34,13 +34,20 @@ import { applyAuthRateLimits } from './config/rateLimits'
  * Lets supertest drive the app in-memory for functional tests (see ADR-0001).
  */
 export const createApp = async (): Promise<Application> => {
+  const frontendUrl = process.env.FRONTEND_URL
+  if (!frontendUrl) {
+    // Fail closed instead of opening CORS to any origin (`cors()` treats a missing
+    // `origin` the same as `'*'`) — every real environment already sets this.
+    throw new Error('FRONTEND_URL must be set')
+  }
+
   const app = express()
 
   app.use(express.json())
   app.use(helmet())
   app.use(
     cors({
-      origin: process.env.FRONTEND_URL ?? '*',
+      origin: frontendUrl,
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
       allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
     })
