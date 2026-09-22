@@ -14,7 +14,8 @@
     "check:format": "prettier --check .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:functional": "vitest run --config vitest.functional.config.ts"
+    "test:functional": "vitest run --config vitest.functional.config.ts",
+    "check:sync-schema": "tsx scripts/check-schema-sync.ts"
   },
   "keywords": [],
   "author": "",
