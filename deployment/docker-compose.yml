@@ -13,6 +13,8 @@ services:
       - ../backend/openapi.yml:/openapi.yml
     environment:
       SWAGGER_JSON: /openapi.yml
+  # TODO(pre-prod): hardcoded root/example creds — fine on localhost only. Before deploying this
+  # compose file to a remote server: use secrets/env-injected creds, or keep the loopback bind below.
   mongodb:
     image: prismagraphql/mongo-single-replica:4.4.3-bionic
     env_file: ../backend/.env
@@ -22,7 +24,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: example
       INIT_WAIT_SEC: 3
     ports:
-      - "27017:27017"
+      - "127.0.0.1:27017:27017"
   # TODO(pre-prod): no auth on this UI (ME_CONFIG_BASICAUTH: "false") — fine on localhost only.
   # Before deploying this compose file to a remote server: set ME_CONFIG_BASICAUTH: "true" +
   # ME_CONFIG_BASICAUTH_USERNAME/PASSWORD, or bind the port to "127.0.0.1:8083:8081".
