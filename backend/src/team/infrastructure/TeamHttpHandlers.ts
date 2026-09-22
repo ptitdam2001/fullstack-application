@@ -13,6 +13,7 @@ import { UserTeamUseCases } from '../../userTeam/application/UserTeamUseCases.js
 import { PrismaUserTeamRepository } from '../../userTeam/infrastructure/PrismaUserTeamRepository.js'
 import { TeamRole } from '../../userTeam/domain/UserTeam.js'
 import { logger } from '../../../config/logger.js'
+import { parsePage, parsePageSize } from '../../../config/pagination.js'
 
 const teamUseCases = new TeamUseCases(new PrismaTeamRepository())
 const playerUseCases = new PlayerUseCases(new PrismaPlayerRepository())
@@ -84,8 +85,8 @@ export const removeTeam = async (ctx: Context, _: Request, res: Response) => {
 // Tout utilisateur authentifié peut voir les joueurs d'une équipe
 export const getTeamPlayers = async (ctx: Context, _: Request, res: Response) => {
   const teamId = ctx.request.params.teamId
-  const page = Number(ctx.request.query.page) || 1
-  const count = Number(ctx.request.query.count) || 20
+  const page = parsePage(ctx.request.query.page)
+  const count = parsePageSize(ctx.request.query.count)
   try {
     res.json(await teamUseCases.getPlayers(teamId, { page, count }))
   } catch (err) {
@@ -98,8 +99,8 @@ export const getTeamPlayers = async (ctx: Context, _: Request, res: Response) =>
 
 export const getTeamCalendar = async (ctx: Context, _: Request, res: Response) => {
   const teamId = ctx.request.params.teamId
-  const page = Number(ctx.request.query.page) || 1
-  const count = Number(ctx.request.query.count) || 20
+  const page = parsePage(ctx.request.query.page)
+  const count = parsePageSize(ctx.request.query.count)
   const startDate = ctx.request.query.startDate ? new Date(ctx.request.query.startDate as string) : undefined
   const endDate = ctx.request.query.endDate ? new Date(ctx.request.query.endDate as string) : undefined
   try {

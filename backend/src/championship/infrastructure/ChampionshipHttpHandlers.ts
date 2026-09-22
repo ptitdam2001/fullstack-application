@@ -8,6 +8,7 @@ import { PrismaPhaseRepository } from '../../phase/infrastructure/PrismaPhaseRep
 import { PrismaGroupRepository } from '../../group/infrastructure/PrismaGroupRepository.js'
 import { PrismaMatchRepository } from '../../match/infrastructure/PrismaMatchRepository.js'
 import { PrismaBracketRepository } from '../../bracket/infrastructure/PrismaBracketRepository.js'
+import { parsePage, parsePageSize } from '../../../config/pagination.js'
 
 const useCases = new ChampionshipUseCases(
   new PrismaChampionshipRepository(),
@@ -24,8 +25,8 @@ export const countChampionships = async (ctx: Context, _: Request, res: Response
 }
 
 export const getChampionships = async (ctx: Context, _: Request, res: Response) => {
-  const page = Number(ctx.request.query.page) || 1
-  const count = Number(ctx.request.query.count) || 20
+  const page = parsePage(ctx.request.query.page)
+  const count = parsePageSize(ctx.request.query.count)
   res.json(await useCases.getAll({ page, count }))
 }
 

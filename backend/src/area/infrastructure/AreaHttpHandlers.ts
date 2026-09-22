@@ -4,6 +4,7 @@ import { AreaUseCases } from '../application/AreaUseCases.js'
 import { PrismaAreaRepository } from './PrismaAreaRepository.js'
 import { AreaNotFoundError } from '../domain/AreaErrors.js'
 import { requireAdmin, requireAdminOrCoach } from '../../auth/application/requireRoles.js'
+import { parsePage, parsePageSize } from '../../../config/pagination.js'
 
 const useCases = new AreaUseCases(new PrismaAreaRepository())
 
@@ -12,8 +13,8 @@ export const countAllAreas = async (_: Context, __: Request, res: Response) => {
 }
 
 export const getAreaList = async (ctx: Context, _: Request, res: Response) => {
-  const page = Number(ctx.request.query.page) || 0
-  const limit = Number(ctx.request.query.limit) || 20
+  const page = parsePage(ctx.request.query.page, 0)
+  const limit = parsePageSize(ctx.request.query.limit)
   res.json(await useCases.getAll({ page, limit }))
 }
 

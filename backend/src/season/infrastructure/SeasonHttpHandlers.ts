@@ -2,7 +2,11 @@ import type { Request, Response } from 'express'
 import type { Context } from 'openapi-backend'
 import { SeasonUseCases } from '../application/SeasonUseCases.js'
 import { PrismaSeasonRepository } from './PrismaSeasonRepository.js'
-import { SeasonNotFoundError, SeasonDuplicateLabelError, SeasonHasUnfinishedChampionshipsError } from '../domain/SeasonErrors.js'
+import {
+  SeasonNotFoundError,
+  SeasonDuplicateLabelError,
+  SeasonHasUnfinishedChampionshipsError,
+} from '../domain/SeasonErrors.js'
 import { requireAdmin } from '../../auth/application/requireRoles.js'
 import { ChampionshipUseCases } from '../../championship/application/ChampionshipUseCases.js'
 import { PrismaChampionshipRepository } from '../../championship/infrastructure/PrismaChampionshipRepository.js'
@@ -10,6 +14,7 @@ import { PrismaPhaseRepository } from '../../phase/infrastructure/PrismaPhaseRep
 import { PrismaGroupRepository } from '../../group/infrastructure/PrismaGroupRepository.js'
 import { PrismaMatchRepository } from '../../match/infrastructure/PrismaMatchRepository.js'
 import { PrismaBracketRepository } from '../../bracket/infrastructure/PrismaBracketRepository.js'
+import { parsePage, parsePageSize } from '../../../config/pagination.js'
 
 const championshipUseCases = new ChampionshipUseCases(
   new PrismaChampionshipRepository(),
@@ -25,8 +30,8 @@ export const countSeasons = async (_: Context, __: Request, res: Response) => {
 }
 
 export const getSeasons = async (ctx: Context, _: Request, res: Response) => {
-  const page = Number(ctx.request.query.page) || 1
-  const count = Number(ctx.request.query.count) || 20
+  const page = parsePage(ctx.request.query.page)
+  const count = parsePageSize(ctx.request.query.count)
   res.json(await useCases.getAll({ page, count }))
 }
 

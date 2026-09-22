@@ -11,6 +11,7 @@ import { PrismaGroupRepository } from '../../group/infrastructure/PrismaGroupRep
 import { PrismaPhaseRepository } from '../../phase/infrastructure/PrismaPhaseRepository.js'
 import { PrismaChampionshipRepository } from '../../championship/infrastructure/PrismaChampionshipRepository.js'
 import { PrismaTeamRepository } from '../../team/infrastructure/PrismaTeamRepository.js'
+import { parsePage, parsePageSize } from '../../../config/pagination.js'
 
 const bracketUseCases = new BracketUseCases(new PrismaBracketRepository(), new PrismaMatchRepository())
 const useCases = new MatchUseCases(
@@ -33,8 +34,8 @@ export const countMatches = async (ctx: Context, __: Request, res: Response) => 
 
 export const getMatches = async (ctx: Context, _: Request, res: Response) => {
   requireAdmin(ctx)
-  const page = Number(ctx.request.query.page) || 1
-  const count = Number(ctx.request.query.count) || 20
+  const page = parsePage(ctx.request.query.page)
+  const count = parsePageSize(ctx.request.query.count)
   const status = ctx.request.query.status as string | undefined
   const pastDue = ctx.request.query.pastDue === 'true'
   const championshipId = ctx.request.query.championshipId as string | undefined

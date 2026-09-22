@@ -4,6 +4,7 @@ import { AgeCategoryUseCases } from '../application/AgeCategoryUseCases.js'
 import { PrismaAgeCategoryRepository } from './PrismaAgeCategoryRepository.js'
 import { AgeCategoryNotFoundError } from '../domain/AgeCategoryErrors.js'
 import { requireAdmin } from '../../auth/application/requireRoles.js'
+import { parsePage, parsePageSize } from '../../../config/pagination.js'
 
 const useCases = new AgeCategoryUseCases(new PrismaAgeCategoryRepository())
 
@@ -12,8 +13,8 @@ export const countAgeCategories = async (_: Context, __: Request, res: Response)
 }
 
 export const getAgeCategories = async (ctx: Context, _: Request, res: Response) => {
-  const page = Number(ctx.request.query.page) || 1
-  const count = Number(ctx.request.query.count) || 20
+  const page = parsePage(ctx.request.query.page)
+  const count = parsePageSize(ctx.request.query.count)
   res.json(await useCases.getAll({ page, count }))
 }
 
