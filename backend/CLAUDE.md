@@ -12,6 +12,7 @@ pnpm check:type      # TypeScript type checking (no emit)
 pnpm vitest run      # Run all unit tests
 pnpm generate:prisma # Regenerate Prisma client after schema changes
 pnpm format:prisma   # Format prisma/schema.prisma
+pnpm check:sync-schema # Flag nullability drift between openapi.yml and prisma/schema.prisma
 ```
 
 ## Architecture

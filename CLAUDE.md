@@ -70,6 +70,7 @@ pnpm build           # Bundle with esbuild → dist/index.js
 pnpm check:type      # TypeScript type checking
 pnpm generate:prisma # Regenerate Prisma client after schema changes
 pnpm lint            # ESLint (extends @repo/eslint-config/node)
+pnpm check:sync-schema # Flag nullability drift between openapi.yml and prisma/schema.prisma
 ```
 
 ### Frontend (`frontend/`)
@@ -151,6 +152,10 @@ specifications/ (business rules)
 ```
 
 > `pnpm generate:prisma` regenerates the Prisma **client** from `schema.prisma`. It does **not** read `openapi.yml` — the two sources must be kept in sync manually.
+
+### Automated guardrail
+
+`backend/scripts/check-schema-sync.ts` (`pnpm check:sync-schema` from `backend/`) flags fields whose **nullability** disagrees between `openapi.yml` and `schema.prisma`, scoped to openapi schemas whose name exactly matches a prisma model (e.g. `Area` ↔ `model Area`) — Input/Result/WithoutId DTOs are intentionally partial and out of scope. It runs in a pre-commit hook (`.husky/pre-commit`, only when one of the two files is staged) and in CI (`.github/workflows/schema-sync.yml`). It does not check field types or presence — a manual review of the propagation workflow above is still required for those.
 
 ### Documentation sync on API changes
 
