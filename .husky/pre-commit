@@ -1,0 +1,5 @@
+staged=$(git diff --cached --name-only)
+
+if echo "$staged" | grep -qE '^backend/(openapi\.yml|prisma/schema\.prisma)$'; then
+  (cd backend && pnpm check:sync-schema)
+fi
