@@ -10,6 +10,11 @@ yarn-error.log*
 lerna-debug.log*
 .pnpm-debug.log*
 
+# Bun (this repo uses pnpm; ignore stray lockfiles from accidental bun installs)
+
+bun.lockb
+bun.lock
+
 # Caches
 
 .cache
