@@ -6,31 +6,33 @@ import tailwindcss from '@tailwindcss/vite'
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin'
 import { playwright } from '@vitest/browser-playwright'
 
+const dirname = import.meta.dirname
+
 const ALIASES = {
-  '@Auth': path.resolve(__dirname, './src/Auth'),
-  '@Layouts': path.resolve(__dirname, './src/Layouts/'),
-  '@Theme': path.resolve(__dirname, './src/Theme'),
-  '@Common': path.resolve(__dirname, './src/Common'),
-  '@Teams': path.resolve(__dirname, './src/Teams'),
-  '@Player': path.resolve(__dirname, './src/Player'),
-  '@Game': path.resolve(__dirname, './src/Game'),
-  '@Calendar': path.resolve(__dirname, './src/Calendar'),
-  '@Application': path.resolve(__dirname, './src/Application'),
-  '@Sdk': path.resolve(__dirname, './src/sdk/generated'),
-  '@Settings': path.resolve(__dirname, './src/Settings'),
-  '@Dashboard': path.resolve(__dirname, './src/Dashboard'),
-  '@Admin': path.resolve(__dirname, './src/Admin'),
-  '@AgeCategory': path.resolve(__dirname, './src/AgeCategory'),
-  '@Season': path.resolve(__dirname, './src/Season'),
-  '@Championship': path.resolve(__dirname, './src/Championship'),
-  '@Match': path.resolve(__dirname, './src/Match'),
-  '@Area': path.resolve(__dirname, './src/Area'),
-  '@': path.resolve(__dirname, './src'),
-  '@Config': path.resolve(__dirname, './config'),
-  '@I18n': path.resolve(__dirname, './src/I18n'),
+  '@Auth': path.resolve(dirname, './src/Auth'),
+  '@Layouts': path.resolve(dirname, './src/Layouts/'),
+  '@Theme': path.resolve(dirname, './src/Theme'),
+  '@Common': path.resolve(dirname, './src/Common'),
+  '@Teams': path.resolve(dirname, './src/Teams'),
+  '@Player': path.resolve(dirname, './src/Player'),
+  '@Game': path.resolve(dirname, './src/Game'),
+  '@Calendar': path.resolve(dirname, './src/Calendar'),
+  '@Application': path.resolve(dirname, './src/Application'),
+  '@Sdk': path.resolve(dirname, './src/sdk/generated'),
+  '@Settings': path.resolve(dirname, './src/Settings'),
+  '@Dashboard': path.resolve(dirname, './src/Dashboard'),
+  '@Admin': path.resolve(dirname, './src/Admin'),
+  '@AgeCategory': path.resolve(dirname, './src/AgeCategory'),
+  '@Season': path.resolve(dirname, './src/Season'),
+  '@Championship': path.resolve(dirname, './src/Championship'),
+  '@Match': path.resolve(dirname, './src/Match'),
+  '@Area': path.resolve(dirname, './src/Area'),
+  '@': path.resolve(dirname, './src'),
+  '@Config': path.resolve(dirname, './config'),
+  '@I18n': path.resolve(dirname, './src/I18n'),
 }
 
-const storybookPlugins = await storybookTest({ configDir: path.join(__dirname, '.storybook') })
+const storybookPlugins = await storybookTest({ configDir: path.join(dirname, '.storybook') })
 
 // https://vite.dev/config/
 export default defineConfig({
