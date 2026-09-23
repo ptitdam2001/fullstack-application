@@ -266,14 +266,15 @@ Honour it literally: one scope, one fix, follow-ups listed separately.
 
 This repo uses [Conventional Commits](https://www.conventionalcommits.org/) enforced by commitlint + husky. Use `git cz` for an interactive prompt instead of `git commit`.
 
+- Never commit directly to `main`. Every feature starts on a branch: `git checkout -b <type>/<description>` (`feature/`, `fix/`, `chore/`, `refactor/`, `docs/`, `test/` — e.g. `feature/coach-dashboard`).
 - Create structured, atomic commits grouped by concern (e.g., security fixes, refactor, tests) rather than single large commits.
-- Push to main after the user confirms completion.
+- Once the feature is complete and tests pass, open a PR targeting `main` — use the `ship-feature` skill to generate the description (API routes from `openapi.yml`, frontend module changes) and create it via `gh pr create`.
 
 ## Commit Strategy
 
 - Make atomic commits per logical change with structured messages.
 - Run tests before each commit; do not commit failing tests.
-- Push to main after the user confirms the work block is complete.
+- Ship via PR — see [Commits & Workflow](#commits--workflow) above for the branch + PR flow.
 
 ## Working Style
 
@@ -395,6 +396,7 @@ Recurring mistakes confirmed by session history — check these before debugging
 | `spec-writer`             | "écrire une spec", "nouvelle fonctionnalité", "créer une spec", "spec pour X"    | Interview structurée → document de spécification fonctionnelle dans `specifications/`                                                              |
 | `spec-tech-writer`        | "specs technique", "partie technique", "enrichir la spec", "technical spec"      | Interview dev senior → section technique (Prisma, OpenAPI, hexagonal, séquence, sécurité) dans la spec existante                                   |
 | `create-form`             | "créer un formulaire", "ajouter un form", "migrer useForm", "nouveau formulaire" | Crée un formulaire avec `@repo/form-factory` : schema Zod, mode de validation, Field + Form + DevTools auto, tests unitaires, story avec play      |
+| `ship-feature`            | "créer une PR", "ouvrir une PR", "ship la feature", "terminer la feature"        | Vérifie la branche + tests, génère la description PR (routes API + changements frontend) depuis le diff, crée la PR via `gh pr create`             |
 
 > Frontend component and module guidance is also available in package-level CLAUDE.md files:
 >
