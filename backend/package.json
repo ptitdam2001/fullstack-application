@@ -37,15 +37,6 @@
     "prisma": "^6.19.3",
     "winston": "^3.19.0"
   },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "bcrypt",
-      "@prisma/client",
-      "@prisma/engines",
-      "esbuild",
-      "prisma"
-    ]
-  },
   "devDependencies": {
     "@repo/eslint-config": "file:../tooling/eslint-config",
     "@repo/prettier-config": "file:../tooling/prettier-config",

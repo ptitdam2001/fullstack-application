@@ -1,4 +1,11 @@
 onlyBuiltDependencies:
+  - '@prisma/client'
   - '@prisma/engines'
   - bcrypt
+  - esbuild
   - prisma
+
+ignoredBuiltDependencies:
+  - cpu-features
+  - protobufjs
+  - ssh2
