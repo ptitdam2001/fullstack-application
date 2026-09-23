@@ -291,7 +291,7 @@ After each step:
 ## Monorepo Layout
 
 ```text
-fullstack-application/          # pnpm workspace root (pnpm@10.13.1)
+fullstack-application/          # pnpm workspace root (pnpm@12.6.0)
 ├── package.json                # devDeps: commitlint, husky, commitizen
 ├── pnpm-workspace.yaml         # workspace: tooling/*
 │

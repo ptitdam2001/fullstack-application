@@ -19,14 +19,5 @@
       "path": "@commitlint/cz-commitlint"
     }
   },
-  "packageManager": "pnpm@12.5.1",
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "bcrypt",
-      "@prisma/client",
-      "@prisma/engines",
-      "esbuild",
-      "prisma"
-    ]
-  }
+  "packageManager": "pnpm@12.6.0"
 }
