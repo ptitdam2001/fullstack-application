@@ -22,4 +22,4 @@ Group changes into atomic, concern-based commits (security, refactor, tests, doc
 
 ## After committing
 
-- Push to main only after user confirmation.
+- Never push to `main` directly. Once the feature branch is ready, use the `ship-feature` skill to open a PR.
