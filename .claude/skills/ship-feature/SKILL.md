@@ -101,16 +101,24 @@ Template (omit any section with nothing to report):
 
 Title: short, imperative, Conventional-Commits-flavored (e.g. `feat(championship): add wizard review step`) — under 70 chars.
 
-## Step 4 — Confirm, then create
+## Step 4 — Pick labels
 
-Show the title + description to the user. Once confirmed:
+```bash
+gh label list --repo <owner>/<repo>
+```
+
+Match the PR content against the repo's **existing** labels only (e.g. `backend`, `frontend`, `documentation`, `devops`, `bug`, `enhancement`). Never invent or create a new label — if nothing fits, skip labeling.
+
+## Step 5 — Confirm, then create
+
+Show the title + description + chosen labels to the user. Once confirmed:
 
 ```bash
 git push -u origin <branch>
 gh pr create --base main --title "<title>" --body "$(cat <<'EOF'
 <description>
 EOF
-)"
+)" --assignee "@me" --label "<label1>" --label "<label2>"
 ```
 
 Return the PR URL.
