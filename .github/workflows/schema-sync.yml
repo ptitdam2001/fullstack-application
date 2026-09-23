@@ -11,6 +11,7 @@ on:
     paths:
       - "backend/openapi.yml"
       - "backend/prisma/schema.prisma"
+  workflow_dispatch: {}
 
 jobs:
   check-sync:
