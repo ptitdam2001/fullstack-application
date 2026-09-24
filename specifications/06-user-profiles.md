@@ -79,8 +79,11 @@ Officiel désigné pour un ou plusieurs matchs via `UserMatch`. Accès en lectur
 | Créer un utilisateur            | ✅    | ❌    | ❌      | ❌     | ❌          |
 | Modifier un utilisateur         | ✅    | ❌    | ❌      | ❌     | ❌          |
 | Supprimer un utilisateur        | ✅    | ❌    | ❌      | ❌     | ❌          |
+| Promouvoir / retirer admin      | ✅¹   | ❌    | ❌      | ❌     | ❌          |
 | Voir son propre profil          | ✅    | ✅    | ✅      | ✅     | ✅          |
 | Demander à rejoindre une équipe | ❌    | ❌    | ❌      | ❌     | ✅          |
+
+¹ Via `PATCH /user/{id}` avec `isAdmin`. Un admin **ne peut pas se retirer son propre** `isAdmin` (`403 Forbidden`) : cela empêche de verrouiller la plateforme sans admin par erreur. Retirer le rôle d'un autre admin reste permis.
 
 ### Championnats
 
@@ -93,30 +96,30 @@ Officiel désigné pour un ou plusieurs matchs via `UserMatch`. Accès en lectur
 
 ### Équipes
 
-| Action                          | Admin | Coach (son équipe) | Coach (autre) | Arbitre | Joueur | Sans équipe |
-| ------------------------------- | ----- | ------------------ | ------------- | ------- | ------ | ----------- |
-| Lister / consulter              | ✅    | ✅                 | ✅            | ✅      | ✅     | ✅          |
-| Créer                           | ✅    | ✅ (devient coach) | ❌            | ❌      | ❌     | ❌          |
-| Modifier                        | ✅    | ✅                 | ❌            | ❌      | ❌     | ❌          |
-| Supprimer                       | ✅    | ❌                 | ❌            | ❌      | ❌     | ❌          |
-| Voir les joueurs d'une équipe   | ✅    | ✅                 | ✅            | ✅      | ✅     | ✅          |
-| Gérer les joueurs d'une équipe  | ✅    | ✅                 | ❌            | ❌      | ❌     | ❌          |
-| Assigner un coach à une équipe  | ✅    | ❌                 | ❌            | ❌      | ❌     | ❌          |
+| Action                         | Admin | Coach (son équipe) | Coach (autre) | Arbitre | Joueur | Sans équipe |
+| ------------------------------ | ----- | ------------------ | ------------- | ------- | ------ | ----------- |
+| Lister / consulter             | ✅    | ✅                 | ✅            | ✅      | ✅     | ✅          |
+| Créer                          | ✅    | ✅ (devient coach) | ❌            | ❌      | ❌     | ❌          |
+| Modifier                       | ✅    | ✅                 | ❌            | ❌      | ❌     | ❌          |
+| Supprimer                      | ✅    | ❌                 | ❌            | ❌      | ❌     | ❌          |
+| Voir les joueurs d'une équipe  | ✅    | ✅                 | ✅            | ✅      | ✅     | ✅          |
+| Gérer les joueurs d'une équipe | ✅    | ✅                 | ❌            | ❌      | ❌     | ❌          |
+| Assigner un coach à une équipe | ✅    | ❌                 | ❌            | ❌      | ❌     | ❌          |
 
 > La vérification "son équipe" est effectuée en DB via `UserTeamUseCases.hasRole(userId, teamId, COACH)` dans le use case.
 
 ### Matchs
 
-| Action                   | Admin | Coach | Arbitre (assigné) | Joueur |
-| ------------------------ | ----- | ----- | ----------------- | ------ |
-| Lister / consulter       | ✅    | ✅    | ✅                | ✅     |
-| Créer / générer          | ✅    | ❌    | ❌                | ❌     |
-| Modifier les métadonnées | ✅    | ❌    | ❌                | ❌     |
-| Saisir le score          | ✅    | ❌    | ✅                | ❌     |
-| Valider le score         | ✅    | ❌    | ✅                | ❌     |
-| Déclarer un forfait (pré-match, son équipe) | ✅ | ✅ | ❌          | ❌     |
-| Déclarer un forfait (pendant le match)      | ✅ | ❌ | ✅ (son match) | ❌  |
-| Assigner un arbitre      | ✅    | ❌    | ❌                | ❌     |
+| Action                                      | Admin | Coach | Arbitre (assigné) | Joueur |
+| ------------------------------------------- | ----- | ----- | ----------------- | ------ |
+| Lister / consulter                          | ✅    | ✅    | ✅                | ✅     |
+| Créer / générer                             | ✅    | ❌    | ❌                | ❌     |
+| Modifier les métadonnées                    | ✅    | ❌    | ❌                | ❌     |
+| Saisir le score                             | ✅    | ❌    | ✅                | ❌     |
+| Valider le score                            | ✅    | ❌    | ✅                | ❌     |
+| Déclarer un forfait (pré-match, son équipe) | ✅    | ✅    | ❌                | ❌     |
+| Déclarer un forfait (pendant le match)      | ✅    | ❌    | ✅ (son match)    | ❌     |
+| Assigner un arbitre                         | ✅    | ❌    | ❌                | ❌     |
 
 > Un arbitre ne peut saisir un score que pour les matchs où il a un enregistrement `UserMatch(userId, matchId)`.
 > Un match peut avoir plusieurs arbitres.

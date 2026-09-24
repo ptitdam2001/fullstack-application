@@ -1,6 +1,6 @@
 import type { IUserRepository, UserFilterOptions, UserListOptions } from '../ports/IUserRepository.js'
 import type { UserProfile, CreateUserInput, UpdateUserInput } from '../domain/User.js'
-import { UserNotFoundError } from '../domain/UserErrors.js'
+import { CannotSelfDemoteError, UserNotFoundError } from '../domain/UserErrors.js'
 
 export class UserUseCases {
   constructor(private readonly userRepo: IUserRepository) {}
@@ -26,10 +26,15 @@ export class UserUseCases {
     return this.userRepo.create({ ...input, password: hashed })
   }
 
-  async update(id: string, input: UpdateUserInput): Promise<UserProfile> {
+  /** @param actorId the authenticated admin performing the update */
+  async update(id: string, input: UpdateUserInput, actorId: string): Promise<UserProfile> {
     const existing = await this.userRepo.findById(id)
     if (!existing) {
       throw new UserNotFoundError()
+    }
+    // Strict `=== false`: an update without isAdmin (undefined) must not count as a revoke
+    if (id === actorId && input.isAdmin === false) {
+      throw new CannotSelfDemoteError()
     }
     return this.userRepo.update(id, input)
   }

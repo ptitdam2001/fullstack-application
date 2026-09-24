@@ -258,6 +258,36 @@ describe('user domain — functional API', () => {
       expect(res.body).toMatchObject({ id: user.id, firstName: 'Renamed' })
     })
 
+    it('admin promotes a user to admin', async () => {
+      const user = await createUser()
+      const admin = await createAdmin()
+
+      const res = await agent.patch(`/user/${user.id}`).set(authHeaderFor(admin.id, true)).send({ isAdmin: true })
+
+      expect(res.status).toBe(200)
+      expect(res.body).toMatchObject({ id: user.id, isAdmin: true, roles: expect.arrayContaining(['ADMIN']) })
+    })
+
+    it('admin revokes the admin role of another admin', async () => {
+      const other = await createAdmin()
+      const admin = await createAdmin()
+
+      const res = await agent.patch(`/user/${other.id}`).set(authHeaderFor(admin.id, true)).send({ isAdmin: false })
+
+      expect(res.status).toBe(200)
+      expect(res.body).toMatchObject({ id: other.id, isAdmin: false })
+    })
+
+    it('403 — admin revoking their own admin role, left unchanged', async () => {
+      const admin = await createAdmin()
+
+      const res = await agent.patch(`/user/${admin.id}`).set(authHeaderFor(admin.id, true)).send({ isAdmin: false })
+
+      expect(res.status).toBe(403)
+      const stored = await prisma.user.findUnique({ where: { id: admin.id }, select: { isAdmin: true } })
+      expect(stored?.isAdmin).toBe(true)
+    })
+
     it('404 — unknown id', async () => {
       const admin = await createAdmin()
 
