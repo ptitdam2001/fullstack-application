@@ -78,12 +78,14 @@ Officiel désigné pour un ou plusieurs matchs via `UserMatch`. Accès en lectur
 | Lister les utilisateurs         | ✅    | ❌    | ❌      | ❌     | ❌          |
 | Créer un utilisateur            | ✅    | ❌    | ❌      | ❌     | ❌          |
 | Modifier un utilisateur         | ✅    | ❌    | ❌      | ❌     | ❌          |
-| Supprimer un utilisateur        | ✅    | ❌    | ❌      | ❌     | ❌          |
+| Supprimer un utilisateur        | ✅²   | ❌    | ❌      | ❌     | ❌          |
 | Promouvoir / retirer admin      | ✅¹   | ❌    | ❌      | ❌     | ❌          |
 | Voir son propre profil          | ✅    | ✅    | ✅      | ✅     | ✅          |
 | Demander à rejoindre une équipe | ❌    | ❌    | ❌      | ❌     | ✅          |
 
 ¹ Via `PATCH /user/{id}` avec `isAdmin`. Un admin **ne peut pas se retirer son propre** `isAdmin` (`403 Forbidden`) : cela empêche de verrouiller la plateforme sans admin par erreur. Retirer le rôle d'un autre admin reste permis.
+
+² Via `DELETE /user/{id}`. Un admin **ne peut pas supprimer son propre compte** (`403 Forbidden`), pour la même raison. Supprimer un autre admin reste permis.
 
 ### Championnats
 

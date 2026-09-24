@@ -705,7 +705,7 @@ paths:
   /user/{id}:
     delete:
       operationId: 'removeUser'
-      description: ''
+      description: 'Admin only. An admin cannot delete their own account (403).'
       tags:
         - Users
       parameters:
@@ -716,12 +716,14 @@ paths:
             type: 'string'
 
       responses:
-        200:
-          description: ''
+        204:
+          description: 'User deleted'
+        403:
+          description: 'Caller is not an admin, or is trying to delete their own account'
           content:
             application/json:
               schema:
-                type: 'boolean'
+                $ref: '#/components/schemas/ErrorOutput'
         404:
           description: ''
           content:

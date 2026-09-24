@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { UserUseCases } from './UserUseCases.js'
 import type { IUserRepository } from '../ports/IUserRepository.js'
-import { CannotSelfDemoteError, UserNotFoundError } from '../domain/UserErrors.js'
+import { CannotSelfDeleteError, CannotSelfDemoteError, UserNotFoundError } from '../domain/UserErrors.js'
 import type { UserProfile } from '../domain/User.js'
 
 const mockUser: UserProfile = {
@@ -102,9 +102,9 @@ describe('UserUseCases.create', () => {
   })
 })
 
-describe('UserUseCases.update', () => {
-  const ADMIN_ID = 'admin-1'
+const ADMIN_ID = 'admin-1'
 
+describe('UserUseCases.update', () => {
   it('updates user when found', async () => {
     const result = await new UserUseCases(makeRepo()).update('user-1', { firstName: 'Updated' }, ADMIN_ID)
     expect(result.firstName).toBe('Updated')
@@ -149,12 +149,24 @@ describe('UserUseCases.update', () => {
 describe('UserUseCases.delete', () => {
   it('deletes user when found', async () => {
     const repo = makeRepo()
-    await new UserUseCases(repo).delete('user-1')
+    await new UserUseCases(repo).delete('user-1', ADMIN_ID)
     expect(repo.delete).toHaveBeenCalledWith('user-1')
   })
 
   it('throws UserNotFoundError when user does not exist', async () => {
     const repo = makeRepo({ findById: vi.fn().mockResolvedValue(null) })
-    await expect(new UserUseCases(repo).delete('unknown')).rejects.toThrow(UserNotFoundError)
+    await expect(new UserUseCases(repo).delete('unknown', ADMIN_ID)).rejects.toThrow(UserNotFoundError)
+  })
+
+  it('deletes another admin', async () => {
+    const repo = makeRepo({ findById: vi.fn().mockResolvedValue({ ...mockUser, id: 'admin-2', isAdmin: true }) })
+    await new UserUseCases(repo).delete('admin-2', ADMIN_ID)
+    expect(repo.delete).toHaveBeenCalledWith('admin-2')
+  })
+
+  it('refuses an admin deleting their own account, without writing', async () => {
+    const repo = makeRepo({ findById: vi.fn().mockResolvedValue({ ...mockUser, id: ADMIN_ID, isAdmin: true }) })
+    await expect(new UserUseCases(repo).delete(ADMIN_ID, ADMIN_ID)).rejects.toThrow(CannotSelfDeleteError)
+    expect(repo.delete).not.toHaveBeenCalled()
   })
 })

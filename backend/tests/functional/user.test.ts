@@ -336,5 +336,15 @@ describe('user domain — functional API', () => {
 
       expect(res.status).toBe(404)
     })
+
+    it('403 — admin cannot delete their own account', async () => {
+      const admin = await createAdmin()
+
+      const res = await agent.delete(`/user/${admin.id}`).set(authHeaderFor(admin.id, true))
+
+      expect(res.status).toBe(403)
+      const stored = await prisma.user.findUnique({ where: { id: admin.id } })
+      expect(stored).not.toBeNull()
+    })
   })
 })
