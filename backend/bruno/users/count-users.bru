@@ -1,0 +1,19 @@
+meta {
+  name: Count Users
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{baseUrl}}/users/count?isActive=true
+  body: none
+  auth: bearer
+}
+
+params:query {
+  isActive: true
+}
+
+auth:bearer {
+  token: {{token}}
+}

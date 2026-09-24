@@ -31,13 +31,16 @@ const makeRepo = (overrides: Partial<IUserRepository> = {}): IUserRepository => 
   findById: vi.fn().mockResolvedValue(mockUser),
   findByEmailWithPassword: vi.fn().mockResolvedValue({ ...mockUser, password: 'hashed' }),
   findAll: vi.fn().mockResolvedValue([mockUser]),
+  count: vi.fn().mockResolvedValue(1),
   create: vi.fn().mockResolvedValue(mockUser),
   update: vi.fn().mockResolvedValue(mockUser),
   delete: vi.fn().mockResolvedValue(undefined),
   incrementLoginAttempts: vi.fn().mockResolvedValue(1),
   lockUntil: vi.fn().mockResolvedValue(undefined),
   resetLoginAttempts: vi.fn().mockResolvedValue(undefined),
-  findAuthState: vi.fn().mockResolvedValue({ isAdmin: false, isActive: true, isBlocked: false, isCoach: false, tokensValidAfter: null }),
+  findAuthState: vi
+    .fn()
+    .mockResolvedValue({ isAdmin: false, isActive: true, isBlocked: false, isCoach: false, tokensValidAfter: null }),
   ...overrides,
 })
 
@@ -83,7 +86,9 @@ const makeUseCases = (
 
 describe('AuthUseCases.login', () => {
   const withUser = (extra: Record<string, unknown> = {}) => ({
-    findByEmailWithPassword: vi.fn().mockResolvedValue({ ...mockUser, password: 'hashed', lockedUntil: null, ...extra }),
+    findByEmailWithPassword: vi
+      .fn()
+      .mockResolvedValue({ ...mockUser, password: 'hashed', lockedUntil: null, ...extra }),
   })
   const wrongPassword = { comparePassword: vi.fn().mockResolvedValue(false) }
 
@@ -313,7 +318,11 @@ describe('AuthUseCases.authenticate (spec 10, Sécurité › Sessions)', () => {
 
   it('does not query the database when the token is invalid', async () => {
     const repo = makeRepo(withState({}))
-    const invalid = { verifyToken: vi.fn().mockImplementation(() => { throw new Error('jwt expired') }) }
+    const invalid = {
+      verifyToken: vi.fn().mockImplementation(() => {
+        throw new Error('jwt expired')
+      }),
+    }
     await expect(makeUseCases(repo, invalid).authenticate('jwt')).rejects.toThrow('jwt expired')
     expect(repo.findAuthState).not.toHaveBeenCalled()
   })
@@ -328,33 +337,37 @@ describe('AuthUseCases.me', () => {
   })
 
   it('includes ADMIN role when user isAdmin', async () => {
-    const user = await makeUseCases({ findById: vi.fn().mockResolvedValue({ ...mockUser, isAdmin: true }) }).me('user-1')
+    const user = await makeUseCases({ findById: vi.fn().mockResolvedValue({ ...mockUser, isAdmin: true }) }).me(
+      'user-1'
+    )
     expect(user.roles).toContain('ADMIN')
   })
 
   it('includes REFEREE role when user isReferee', async () => {
-    const user = await makeUseCases({ findById: vi.fn().mockResolvedValue({ ...mockUser, isReferee: true }) }).me('user-1')
+    const user = await makeUseCases({ findById: vi.fn().mockResolvedValue({ ...mockUser, isReferee: true }) }).me(
+      'user-1'
+    )
     expect(user.roles).toContain('REFEREE')
   })
 
   it('includes COACH role when user has coach team', async () => {
     const coachEntry = { id: 'ut-1', userId: 'user-1', teamId: 'team-1', role: TeamRole.COACH }
-    const user = await makeUseCases(
-      undefined,
-      undefined,
-      { findByUserAndRole: vi.fn().mockImplementation((_, role) => Promise.resolve(role === TeamRole.COACH ? [coachEntry] : [])) }
-    ).me('user-1')
+    const user = await makeUseCases(undefined, undefined, {
+      findByUserAndRole: vi
+        .fn()
+        .mockImplementation((_, role) => Promise.resolve(role === TeamRole.COACH ? [coachEntry] : [])),
+    }).me('user-1')
     expect(user.roles).toContain('COACH')
     expect(user.roles).not.toContain('PLAYER')
   })
 
   it('includes PLAYER role when user has player team', async () => {
     const playerEntry = { id: 'ut-2', userId: 'user-1', teamId: 'team-1', role: TeamRole.PLAYER }
-    const user = await makeUseCases(
-      undefined,
-      undefined,
-      { findByUserAndRole: vi.fn().mockImplementation((_, role) => Promise.resolve(role === TeamRole.PLAYER ? [playerEntry] : [])) }
-    ).me('user-1')
+    const user = await makeUseCases(undefined, undefined, {
+      findByUserAndRole: vi
+        .fn()
+        .mockImplementation((_, role) => Promise.resolve(role === TeamRole.PLAYER ? [playerEntry] : [])),
+    }).me('user-1')
     expect(user.roles).toContain('PLAYER')
     expect(user.roles).not.toContain('COACH')
   })
@@ -375,10 +388,12 @@ describe('AuthUseCases.me', () => {
       undefined,
       { findByUser: vi.fn().mockResolvedValue([matchEntry]) }
     ).me('user-1')
-    expect(user.roles.filter((r) => r === 'REFEREE')).toHaveLength(1)
+    expect(user.roles.filter(r => r === 'REFEREE')).toHaveLength(1)
   })
 
   it('throws UserNotFoundError when user does not exist', async () => {
-    await expect(makeUseCases({ findById: vi.fn().mockResolvedValue(null) }).me('unknown-id')).rejects.toThrow(UserNotFoundError)
+    await expect(makeUseCases({ findById: vi.fn().mockResolvedValue(null) }).me('unknown-id')).rejects.toThrow(
+      UserNotFoundError
+    )
   })
 })

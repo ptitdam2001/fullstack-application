@@ -28,6 +28,25 @@ export const getUsers = async (ctx: Context, _: Request, res: Response) => {
   }
 }
 
+export const countUsers = async (ctx: Context, _: Request, res: Response) => {
+  try {
+    requireAdmin(ctx)
+    const isActive = ctx.request.query.isActive
+    return res
+      .status(200)
+      .json(await useCases.count(isActive === undefined ? undefined : { isActive: isActive === 'true' }))
+  } catch (err) {
+    if (err instanceof ForbiddenError) {
+      return res.status(403).json({ message: 'Forbidden', status: 403 })
+    }
+    if (err instanceof UnauthorizedError) {
+      return res.status(401).json({ message: 'Unauthorized', status: 401 })
+    }
+    logger.error(err)
+    return res.status(500).json({ message: 'Error! Something went wrong.', status: 500 })
+  }
+}
+
 export const getUser = async (ctx: Context, _: Request, res: Response) => {
   try {
     requireAdmin(ctx)

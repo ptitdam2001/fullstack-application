@@ -1,5 +1,5 @@
 import { prisma } from '../../../utils/prismaClient.js'
-import type { IUserRepository } from '../ports/IUserRepository.js'
+import type { IUserRepository, UserFilterOptions } from '../ports/IUserRepository.js'
 import type { AuthState, UserProfile, UserRole, CreateUserInput, UpdateUserInput } from '../domain/User.js'
 import { TeamRole } from '../../userTeam/domain/UserTeam.js'
 
@@ -68,6 +68,12 @@ export class PrismaUserRepository implements IUserRepository {
   async findAll(): Promise<UserProfile[]> {
     const rows = await prisma.user.findMany({ select })
     return rows.map(toUserProfile)
+  }
+
+  count(filters?: UserFilterOptions): Promise<number> {
+    return prisma.user.count({
+      where: { ...(filters?.isActive !== undefined && { isActive: filters.isActive }) },
+    })
   }
 
   async create(input: CreateUserInput): Promise<UserProfile> {

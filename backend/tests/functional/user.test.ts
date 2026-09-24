@@ -62,6 +62,45 @@ describe('user domain — functional API', () => {
     })
   })
 
+  describe('countUsers — GET /users/count', () => {
+    it('401 — unauthenticated request', async () => {
+      const res = await agent.get('/users/count')
+
+      expect(res.status).toBe(401)
+    })
+
+    it('403 — non-admin user', async () => {
+      const user = await createUser()
+
+      const res = await agent.get('/users/count').set(authHeaderFor(user.id))
+
+      expect(res.status).toBe(403)
+    })
+
+    it('nominal: admin counts all users', async () => {
+      await createUser()
+      await createUser({ isActive: false })
+      const admin = await createAdmin()
+
+      const res = await agent.get('/users/count').set(authHeaderFor(admin.id, true))
+
+      expect(res.status).toBe(200)
+      expect(res.body).toBe(3)
+    })
+
+    it('filters by isActive', async () => {
+      await createUser({ isActive: false })
+      await createUser({ isActive: false })
+      const admin = await createAdmin()
+
+      const inactive = await agent.get('/users/count?isActive=false').set(authHeaderFor(admin.id, true))
+      const active = await agent.get('/users/count?isActive=true').set(authHeaderFor(admin.id, true))
+
+      expect(inactive.body).toBe(2)
+      expect(active.body).toBe(1)
+    })
+  })
+
   describe('createUser — POST /user', () => {
     it('401 — unauthenticated request', async () => {
       const res = await agent.post('/user').send(userInput())
@@ -150,7 +189,10 @@ describe('user domain — functional API', () => {
       const user = await createUser()
       const admin = await createAdmin()
 
-      const res = await agent.patch(`/user/${user.id}`).set(authHeaderFor(admin.id, true)).send({ firstName: 'Renamed' })
+      const res = await agent
+        .patch(`/user/${user.id}`)
+        .set(authHeaderFor(admin.id, true))
+        .send({ firstName: 'Renamed' })
 
       expect(res.status).toBe(200)
       expect(res.body).toMatchObject({ id: user.id, firstName: 'Renamed' })
