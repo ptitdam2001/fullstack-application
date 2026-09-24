@@ -25,13 +25,22 @@ const getUserStatus = (user: User): UserStatus => {
 
 type AdminUserTableRowProps = {
   user: User
+  /** The row is the authenticated admin — self-deletion is refused by the API, so the action is hidden. */
+  isSelf: boolean
   onEdit: (userId: string) => void
   onDelete: (user: User) => void
   onActivate: (userId: string) => void
   onUnblock: (userId: string) => void
 }
 
-export const AdminUserTableRow = ({ user, onEdit, onDelete, onActivate, onUnblock }: AdminUserTableRowProps) => {
+export const AdminUserTableRow = ({
+  user,
+  isSelf,
+  onEdit,
+  onDelete,
+  onActivate,
+  onUnblock,
+}: AdminUserTableRowProps) => {
   const intl = useIntl()
   const status = getUserStatus(user)
   const roles = user.roles ?? []
@@ -88,14 +97,16 @@ export const AdminUserTableRow = ({ user, onEdit, onDelete, onActivate, onUnbloc
           >
             <Pencil className="h-4 w-4" />
           </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            aria-label={intl.formatMessage({ id: 'adminUsers.action.delete' })}
-            onPress={() => onDelete(user)}
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
+          {!isSelf && (
+            <Button
+              variant="outline"
+              size="icon"
+              aria-label={intl.formatMessage({ id: 'adminUsers.action.delete' })}
+              onPress={() => onDelete(user)}
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          )}
         </div>
       </TableCell>
     </TableRow>

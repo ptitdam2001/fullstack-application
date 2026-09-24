@@ -74,6 +74,16 @@ describe('AdminUserTableRow', () => {
       expect(page.onDelete).toHaveBeenCalledWith(user)
     })
 
+    it("hides delete on the admin's own row", () => {
+      const page = new AdminUserTableRowPage(user, true).render()
+      expect(page.queryDeleteButton()).not.toBeInTheDocument()
+    })
+
+    it("keeps edit on the admin's own row", () => {
+      const page = new AdminUserTableRowPage(user, true).render()
+      expect(page.editButton()).toBeInTheDocument()
+    })
+
     it('hides activate and unblock for an active, unblocked user', () => {
       const page = new AdminUserTableRowPage(user).render()
       expect(page.activateButton()).not.toBeInTheDocument()
