@@ -62,6 +62,66 @@ describe('user domain — functional API', () => {
     })
   })
 
+  describe('getUsers — pagination & filters', () => {
+    const seedUsers = async (n: number) => {
+      for (let i = 0; i < n; i++) {
+        await createUser()
+      }
+    }
+
+    it('without page nor limit returns every user (opt-in pagination)', async () => {
+      await seedUsers(24)
+      const admin = await createAdmin()
+
+      const res = await agent.get('/users').set(authHeaderFor(admin.id, true))
+
+      expect(res.status).toBe(200)
+      expect(res.body).toHaveLength(25)
+    })
+
+    it('paginates with a zero-based page and no overlap between pages', async () => {
+      await seedUsers(4)
+      const admin = await createAdmin()
+
+      const first = await agent.get('/users?page=0&limit=2').set(authHeaderFor(admin.id, true))
+      const second = await agent.get('/users?page=1&limit=2').set(authHeaderFor(admin.id, true))
+      const last = await agent.get('/users?page=2&limit=2').set(authHeaderFor(admin.id, true))
+
+      expect(first.body).toHaveLength(2)
+      expect(second.body).toHaveLength(2)
+      expect(last.body).toHaveLength(1)
+      const ids = [...first.body, ...second.body, ...last.body].map((u: { id: string }) => u.id)
+      expect(new Set(ids).size).toBe(5)
+    })
+
+    it('limit alone defaults page to 0', async () => {
+      await seedUsers(3)
+      const admin = await createAdmin()
+
+      const res = await agent.get('/users?limit=2').set(authHeaderFor(admin.id, true))
+
+      expect(res.body).toHaveLength(2)
+    })
+
+    it('caps limit at 100', async () => {
+      await seedUsers(101)
+      const admin = await createAdmin()
+
+      const res = await agent.get('/users?page=0&limit=500').set(authHeaderFor(admin.id, true))
+
+      expect(res.body).toHaveLength(100)
+    })
+
+    it('filters by isActive', async () => {
+      const pending = await createUser({ isActive: false })
+      const admin = await createAdmin()
+
+      const res = await agent.get('/users?isActive=false').set(authHeaderFor(admin.id, true))
+
+      expect(res.body.map((u: { id: string }) => u.id)).toEqual([pending.id])
+    })
+  })
+
   describe('countUsers — GET /users/count', () => {
     it('401 — unauthenticated request', async () => {
       const res = await agent.get('/users/count')

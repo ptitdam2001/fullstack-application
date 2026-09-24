@@ -56,6 +56,12 @@ describe('UserUseCases.getAll', () => {
     expect(repo.findAll).toHaveBeenCalledWith({ isActive: false })
   })
 
+  it('forwards pagination alongside the filter to the repo', async () => {
+    const repo = makeRepo()
+    await new UserUseCases(repo).getAll({ isActive: true, pagination: { page: 1, limit: 10 } })
+    expect(repo.findAll).toHaveBeenCalledWith({ isActive: true, pagination: { page: 1, limit: 10 } })
+  })
+
   it('returned user profile with exposed roles', async () => {
     const users = await new UserUseCases(makeRepo()).getAll()
     expect(users[0].roles).toBeDefined()
