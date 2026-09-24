@@ -6,6 +6,7 @@ export interface IUserRepository {
   findById(id: string): Promise<UserProfile | null>
   findByEmailWithPassword(email: string): Promise<(UserProfile & { password: string; lockedUntil: Date | null }) | null>
   findAll(filters?: UserFilterOptions): Promise<UserProfile[]>
+  count(filters?: UserFilterOptions): Promise<number>
   create(input: CreateUserInput): Promise<UserProfile>
   update(id: string, input: UpdateUserInput): Promise<UserProfile>
   delete(id: string): Promise<void>

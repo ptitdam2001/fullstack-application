@@ -183,6 +183,25 @@ paths:
                 type: 'array'
                 items:
                   $ref: '#/components/schemas/User'
+  /users/count:
+    get:
+      operationId: countUsers
+      description: Count users (admin only)
+      tags:
+        - Users
+      parameters:
+        - in: query
+          name: isActive
+          schema:
+            type: boolean
+          description: Filter by active status (false = inactive/pending activation)
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Count'
   /user:
     post:
       operationId: 'createUser'

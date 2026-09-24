@@ -9,6 +9,10 @@ export class UserUseCases {
     return this.userRepo.findAll(filters)
   }
 
+  async count(filters?: UserFilterOptions): Promise<number> {
+    return this.userRepo.count(filters)
+  }
+
   async getById(id: string): Promise<UserProfile> {
     const user = await this.userRepo.findById(id)
     if (!user) {

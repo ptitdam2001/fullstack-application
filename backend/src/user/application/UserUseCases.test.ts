@@ -24,6 +24,7 @@ const makeRepo = (overrides: Partial<IUserRepository> = {}): IUserRepository => 
   findById: vi.fn().mockResolvedValue(mockUser),
   findByEmailWithPassword: vi.fn(),
   findAll: vi.fn().mockResolvedValue([mockUser]),
+  count: vi.fn().mockResolvedValue(1),
   create: vi.fn().mockResolvedValue(mockUser),
   update: vi.fn().mockResolvedValue({ ...mockUser, firstName: 'Updated' }),
   delete: vi.fn().mockResolvedValue(undefined),
@@ -59,6 +60,18 @@ describe('UserUseCases.getAll', () => {
     const users = await new UserUseCases(makeRepo()).getAll()
     expect(users[0].roles).toBeDefined()
     expect(users[0].roles).toEqual([])
+  })
+})
+
+describe('UserUseCases.count', () => {
+  it('returns the repository count', async () => {
+    expect(await new UserUseCases(makeRepo()).count()).toBe(1)
+  })
+
+  it('forwards the isActive filter to the repo', async () => {
+    const repo = makeRepo()
+    await new UserUseCases(repo).count({ isActive: false })
+    expect(repo.count).toHaveBeenCalledWith({ isActive: false })
   })
 })
 
