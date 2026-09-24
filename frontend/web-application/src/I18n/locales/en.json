@@ -295,6 +295,17 @@
     "form.ageCategoryId": "Age category",
     "form.ageCategoryId.none": "No category"
   },
+  "adminUsers": {
+    "form.firstName": "First name",
+    "form.lastName": "Last name",
+    "form.email": "Email",
+    "form.avatar": "Avatar (URL)",
+    "form.isAdmin": "Administrator",
+    "form.isAdmin.selfHint": "You cannot revoke your own administrator role.",
+    "form.submit": "Save",
+    "toast.updated": "User updated successfully",
+    "toast.updateError": "Error while updating the user"
+  },
   "adminAreas": {
     "title": "Areas",
     "table.address": "Address",

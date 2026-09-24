@@ -295,6 +295,17 @@
     "form.ageCategoryId": "Catégorie d'âge",
     "form.ageCategoryId.none": "Aucune catégorie"
   },
+  "adminUsers": {
+    "form.firstName": "Prénom",
+    "form.lastName": "Nom",
+    "form.email": "Email",
+    "form.avatar": "Avatar (URL)",
+    "form.isAdmin": "Administrateur",
+    "form.isAdmin.selfHint": "Vous ne pouvez pas retirer votre propre rôle d'administrateur.",
+    "form.submit": "Enregistrer",
+    "toast.updated": "Utilisateur modifié avec succès",
+    "toast.updateError": "Erreur lors de la modification de l'utilisateur"
+  },
   "adminAreas": {
     "title": "Lieux",
     "table.address": "Adresse",
