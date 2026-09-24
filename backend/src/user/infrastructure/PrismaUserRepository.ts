@@ -1,5 +1,5 @@
 import { prisma } from '../../../utils/prismaClient.js'
-import type { IUserRepository, UserFilterOptions } from '../ports/IUserRepository.js'
+import type { IUserRepository, UserFilterOptions, UserListOptions } from '../ports/IUserRepository.js'
 import type { AuthState, UserProfile, UserRole, CreateUserInput, UpdateUserInput } from '../domain/User.js'
 import { TeamRole } from '../../userTeam/domain/UserTeam.js'
 
@@ -49,6 +49,10 @@ function toUserProfile({ lockedUntil, ...raw }: RawUser): UserProfile {
   return { ...raw, isBlocked: raw.isBlocked || isLockActive(lockedUntil), roles }
 }
 
+const toWhere = (filters?: UserFilterOptions) => ({
+  ...(filters?.isActive !== undefined && { isActive: filters.isActive }),
+})
+
 export class PrismaUserRepository implements IUserRepository {
   async findById(id: string): Promise<UserProfile | null> {
     const row = await prisma.user.findUnique({ where: { id }, select })
@@ -65,15 +69,20 @@ export class PrismaUserRepository implements IUserRepository {
     return { ...toUserProfile(row), password: row.password, lockedUntil: row.lockedUntil }
   }
 
-  async findAll(): Promise<UserProfile[]> {
-    const rows = await prisma.user.findMany({ select })
+  async findAll(options?: UserListOptions): Promise<UserProfile[]> {
+    const pagination = options?.pagination
+    const rows = await prisma.user.findMany({
+      where: toWhere(options),
+      // Stable order so pages don't overlap or skip users between requests
+      orderBy: { createdAt: 'asc' },
+      ...(pagination && { skip: pagination.page * pagination.limit, take: pagination.limit }),
+      select,
+    })
     return rows.map(toUserProfile)
   }
 
   count(filters?: UserFilterOptions): Promise<number> {
-    return prisma.user.count({
-      where: { ...(filters?.isActive !== undefined && { isActive: filters.isActive }) },
-    })
+    return prisma.user.count({ where: toWhere(filters) })
   }
 
   async create(input: CreateUserInput): Promise<UserProfile> {

@@ -1,12 +1,12 @@
-import type { IUserRepository, UserFilterOptions } from '../ports/IUserRepository.js'
+import type { IUserRepository, UserFilterOptions, UserListOptions } from '../ports/IUserRepository.js'
 import type { UserProfile, CreateUserInput, UpdateUserInput } from '../domain/User.js'
 import { UserNotFoundError } from '../domain/UserErrors.js'
 
 export class UserUseCases {
   constructor(private readonly userRepo: IUserRepository) {}
 
-  async getAll(filters?: UserFilterOptions): Promise<UserProfile[]> {
-    return this.userRepo.findAll(filters)
+  async getAll(options?: UserListOptions): Promise<UserProfile[]> {
+    return this.userRepo.findAll(options)
   }
 
   async count(filters?: UserFilterOptions): Promise<number> {
