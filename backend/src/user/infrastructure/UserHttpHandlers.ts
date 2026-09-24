@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express'
 import type { Context } from 'openapi-backend'
 import { UserUseCases } from '../application/UserUseCases.js'
-import { CannotSelfDemoteError, UserNotFoundError } from '../domain/UserErrors.js'
+import { CannotSelfDeleteError, CannotSelfDemoteError, UserNotFoundError } from '../domain/UserErrors.js'
 import { PrismaUserRepository } from './PrismaUserRepository.js'
 import { getAuthUserId, requireAdmin } from '../../auth/application/requireRoles.js'
 import { ForbiddenError, UnauthorizedError } from '../../auth/domain/AuthErrors.js'
@@ -130,11 +130,14 @@ export const updateUser = async (ctx: Context, req: Request, res: Response) => {
 export const removeUser = async (ctx: Context, _: Request, res: Response) => {
   try {
     requireAdmin(ctx)
-    await useCases.delete(ctx.request.params.id as string)
+    await useCases.delete(ctx.request.params.id as string, getAuthUserId(ctx))
     return res.status(204).send()
   } catch (err) {
     if (err instanceof ForbiddenError) {
       return res.status(403).json({ message: 'Forbidden', status: 403 })
+    }
+    if (err instanceof CannotSelfDeleteError) {
+      return res.status(403).json({ message: err.message, status: 403 })
     }
     if (err instanceof UnauthorizedError) {
       return res.status(401).json({ message: 'Unauthorized', status: 401 })

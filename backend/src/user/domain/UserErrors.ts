@@ -12,3 +12,11 @@ export class CannotSelfDemoteError extends Error {
     this.name = 'CannotSelfDemoteError'
   }
 }
+
+/** An admin cannot delete their own account (spec 06) — same lockout risk as a self-demote. */
+export class CannotSelfDeleteError extends Error {
+  constructor() {
+    super('An admin cannot delete their own account')
+    this.name = 'CannotSelfDeleteError'
+  }
+}
