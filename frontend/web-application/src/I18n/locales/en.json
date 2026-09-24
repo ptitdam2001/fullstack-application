@@ -304,7 +304,17 @@
     "form.isAdmin.selfHint": "You cannot revoke your own administrator role.",
     "form.submit": "Save",
     "toast.updated": "User updated successfully",
-    "toast.updateError": "Error while updating the user"
+    "toast.updateError": "Error while updating the user",
+    "dialog.cancel": "Cancel",
+    "delete.title": "Delete user",
+    "delete.description": "Are you sure you want to delete the account of \"{userName}\"? This action cannot be undone.",
+    "delete.confirm": "Delete",
+    "activate.title": "Activate account",
+    "activate.description": "Activate the account of \"{userName}\"? The user will be able to sign in right away.",
+    "activate.confirm": "Activate",
+    "unblock.title": "Unblock account",
+    "unblock.description": "Unblock the account of \"{userName}\"? Their failed sign-in counter will be reset.",
+    "unblock.confirm": "Unblock"
   },
   "adminAreas": {
     "title": "Areas",
