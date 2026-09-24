@@ -24,12 +24,16 @@ export class AdminUserTableRowPage {
   onActivate = vi.fn()
   onUnblock = vi.fn()
 
-  constructor(private user: User) {}
+  constructor(
+    private user: User,
+    private isSelf = false
+  ) {}
 
   render() {
     render(
       <AdminUserTableRow
         user={this.user}
+        isSelf={this.isSelf}
         onEdit={this.onEdit}
         onDelete={this.onDelete}
         onActivate={this.onActivate}
@@ -66,6 +70,10 @@ export class AdminUserTableRowPage {
 
   deleteButton() {
     return screen.getByLabelText('adminUsers.action.delete')
+  }
+
+  queryDeleteButton() {
+    return screen.queryByLabelText('adminUsers.action.delete')
   }
 
   activateButton() {

@@ -5,13 +5,22 @@ import { AdminUserTableRow } from './AdminUserTableRow'
 
 type AdminUserTableProps = {
   users: User[]
+  /** Authenticated admin id, used to hide the delete action on their own row. */
+  currentUserId?: string
   onEdit: (userId: string) => void
   onDelete: (user: User) => void
   onActivate: (userId: string) => void
   onUnblock: (userId: string) => void
 }
 
-export const AdminUserTable = ({ users, onEdit, onDelete, onActivate, onUnblock }: AdminUserTableProps) => (
+export const AdminUserTable = ({
+  users,
+  currentUserId,
+  onEdit,
+  onDelete,
+  onActivate,
+  onUnblock,
+}: AdminUserTableProps) => (
   <Table>
     <TableHeader>
       <TableHead>
@@ -41,6 +50,7 @@ export const AdminUserTable = ({ users, onEdit, onDelete, onActivate, onUnblock 
         <AdminUserTableRow
           key={user.id}
           user={user}
+          isSelf={user.id === currentUserId}
           onEdit={onEdit}
           onDelete={onDelete}
           onActivate={onActivate}

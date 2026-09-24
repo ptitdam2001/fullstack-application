@@ -9,12 +9,16 @@ export class AdminUserTablePage {
   onActivate = vi.fn()
   onUnblock = vi.fn()
 
-  constructor(private users: User[]) {}
+  constructor(
+    private users: User[],
+    private currentUserId?: string
+  ) {}
 
   render() {
     render(
       <AdminUserTable
         users={this.users}
+        currentUserId={this.currentUserId}
         onEdit={this.onEdit}
         onDelete={this.onDelete}
         onActivate={this.onActivate}
@@ -34,6 +38,10 @@ export class AdminUserTablePage {
 
   rowEmail(email: string) {
     return screen.getByText(email)
+  }
+
+  deleteButtons() {
+    return screen.getAllByLabelText('adminUsers.action.delete')
   }
 
   clickEdit(index: number) {

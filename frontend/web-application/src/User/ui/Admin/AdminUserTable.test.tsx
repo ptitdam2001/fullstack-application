@@ -50,6 +50,18 @@ describe('AdminUserTable', () => {
     expect(page.onDelete).toHaveBeenCalledWith(users[2])
   })
 
+  it('hides delete only on the current admin row', () => {
+    const page = new AdminUserTablePage(users, 'u-2').render()
+    expect(page.deleteButtons()).toHaveLength(2)
+    page.clickDelete(1)
+    expect(page.onDelete).toHaveBeenCalledWith(users[2])
+  })
+
+  it('shows delete on every row when no current user is given', () => {
+    const page = new AdminUserTablePage(users).render()
+    expect(page.deleteButtons()).toHaveLength(3)
+  })
+
   it('forwards onActivate to rows', () => {
     const page = new AdminUserTablePage(users).render().clickActivate(0)
     expect(page.onActivate).toHaveBeenCalledWith('u-2')
