@@ -22,7 +22,7 @@ export const useMatchList = (rowsPerPage = 20) => {
       rawChangePage(0)
     })
 
-  const query = useGetMatchesSuspense({ page: pagination.page, count: pagination.rowsPerPage, ...filters })
+  const query = useGetMatchesSuspense({ page: pagination.page + 1, count: pagination.rowsPerPage, ...filters })
   const countQuery = useCountMatches(filters)
 
   const totalPages = Math.ceil(((countQuery.data ?? 0) as number) / rowsPerPage)

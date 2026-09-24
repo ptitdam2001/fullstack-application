@@ -10,7 +10,7 @@ import {
 export const useAgeCategoryList = (rowsPerPage = 20) => {
   const { changePage, ...pagination } = usePagination({ page: 0, rowsPerPage })
 
-  const query = useGetAgeCategories({ page: pagination.page, count: pagination.rowsPerPage })
+  const query = useGetAgeCategories({ page: pagination.page + 1, count: pagination.rowsPerPage })
   const countQuery = useCountAgeCategories()
 
   const totalPages = Math.ceil(((countQuery.data ?? 0) as number) / rowsPerPage)
@@ -23,7 +23,7 @@ export const useAgeCategoryListSuspense = (rowsPerPage = 20) => {
   const [isPending, startTransition] = useTransition()
   const changePage = (page: number) => startTransition(() => rawChangePage(page))
 
-  const query = useGetAgeCategoriesSuspense({ page: pagination.page, count: pagination.rowsPerPage })
+  const query = useGetAgeCategoriesSuspense({ page: pagination.page + 1, count: pagination.rowsPerPage })
   const countQuery = useCountAgeCategoriesSuspense()
 
   const totalPages = Math.ceil(((countQuery.data ?? 0) as number) / rowsPerPage)
