@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { UserUseCases } from './UserUseCases.js'
 import type { IUserRepository } from '../ports/IUserRepository.js'
-import { UserNotFoundError } from '../domain/UserErrors.js'
+import { CannotSelfDemoteError, UserNotFoundError } from '../domain/UserErrors.js'
 import type { UserProfile } from '../domain/User.js'
 
 const mockUser: UserProfile = {
@@ -103,14 +103,46 @@ describe('UserUseCases.create', () => {
 })
 
 describe('UserUseCases.update', () => {
+  const ADMIN_ID = 'admin-1'
+
   it('updates user when found', async () => {
-    const result = await new UserUseCases(makeRepo()).update('user-1', { firstName: 'Updated' })
+    const result = await new UserUseCases(makeRepo()).update('user-1', { firstName: 'Updated' }, ADMIN_ID)
     expect(result.firstName).toBe('Updated')
   })
 
   it('throws UserNotFoundError when user does not exist', async () => {
     const repo = makeRepo({ findById: vi.fn().mockResolvedValue(null) })
-    await expect(new UserUseCases(repo).update('unknown', { firstName: 'X' })).rejects.toThrow(UserNotFoundError)
+    await expect(new UserUseCases(repo).update('unknown', { firstName: 'X' }, ADMIN_ID)).rejects.toThrow(
+      UserNotFoundError
+    )
+  })
+
+  describe('isAdmin', () => {
+    it('promotes another user to admin', async () => {
+      const repo = makeRepo()
+      await new UserUseCases(repo).update('user-1', { isAdmin: true }, ADMIN_ID)
+      expect(repo.update).toHaveBeenCalledWith('user-1', { isAdmin: true })
+    })
+
+    it('revokes the admin role of another admin', async () => {
+      const repo = makeRepo({ findById: vi.fn().mockResolvedValue({ ...mockUser, id: 'admin-2', isAdmin: true }) })
+      await new UserUseCases(repo).update('admin-2', { isAdmin: false }, ADMIN_ID)
+      expect(repo.update).toHaveBeenCalledWith('admin-2', { isAdmin: false })
+    })
+
+    it('refuses an admin revoking their own admin role, without writing', async () => {
+      const repo = makeRepo({ findById: vi.fn().mockResolvedValue({ ...mockUser, id: ADMIN_ID, isAdmin: true }) })
+      await expect(new UserUseCases(repo).update(ADMIN_ID, { isAdmin: false }, ADMIN_ID)).rejects.toThrow(
+        CannotSelfDemoteError
+      )
+      expect(repo.update).not.toHaveBeenCalled()
+    })
+
+    it('lets an admin edit their own profile when isAdmin is not revoked', async () => {
+      const repo = makeRepo({ findById: vi.fn().mockResolvedValue({ ...mockUser, id: ADMIN_ID, isAdmin: true }) })
+      await new UserUseCases(repo).update(ADMIN_ID, { firstName: 'Me', isAdmin: true }, ADMIN_ID)
+      expect(repo.update).toHaveBeenCalledWith(ADMIN_ID, { firstName: 'Me', isAdmin: true })
+    })
   })
 })
 

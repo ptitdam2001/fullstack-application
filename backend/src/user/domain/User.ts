@@ -40,4 +40,5 @@ export type UpdateUserInput = {
   lastName?: string
   email?: string
   avatar?: string
+  isAdmin?: boolean
 }

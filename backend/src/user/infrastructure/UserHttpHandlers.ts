@@ -1,9 +1,9 @@
 import type { Request, Response } from 'express'
 import type { Context } from 'openapi-backend'
 import { UserUseCases } from '../application/UserUseCases.js'
-import { UserNotFoundError } from '../domain/UserErrors.js'
+import { CannotSelfDemoteError, UserNotFoundError } from '../domain/UserErrors.js'
 import { PrismaUserRepository } from './PrismaUserRepository.js'
-import { requireAdmin } from '../../auth/application/requireRoles.js'
+import { getAuthUserId, requireAdmin } from '../../auth/application/requireRoles.js'
 import { ForbiddenError, UnauthorizedError } from '../../auth/domain/AuthErrors.js'
 import { JwtAuthService } from '../../auth/infrastructure/JwtAuthService.js'
 import { logger } from '../../../config/logger.js'
@@ -108,10 +108,13 @@ export const createUser = async (ctx: Context, req: Request, res: Response) => {
 export const updateUser = async (ctx: Context, req: Request, res: Response) => {
   try {
     requireAdmin(ctx)
-    return res.status(200).json(await useCases.update(ctx.request.params.id as string, req.body))
+    return res.status(200).json(await useCases.update(ctx.request.params.id as string, req.body, getAuthUserId(ctx)))
   } catch (err) {
     if (err instanceof ForbiddenError) {
       return res.status(403).json({ message: 'Forbidden', status: 403 })
+    }
+    if (err instanceof CannotSelfDemoteError) {
+      return res.status(403).json({ message: err.message, status: 403 })
     }
     if (err instanceof UnauthorizedError) {
       return res.status(401).json({ message: 'Unauthorized', status: 401 })
