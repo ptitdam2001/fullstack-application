@@ -27,6 +27,7 @@ const ALIASES = {
   '@Championship': path.resolve(dirname, './src/Championship'),
   '@Match': path.resolve(dirname, './src/Match'),
   '@Area': path.resolve(dirname, './src/Area'),
+  '@User': path.resolve(dirname, './src/User'),
   '@': path.resolve(dirname, './src'),
   '@Config': path.resolve(dirname, './config'),
   '@I18n': path.resolve(dirname, './src/I18n'),

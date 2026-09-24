@@ -52,6 +52,8 @@
       "@Match/*": ["./src/Match/*", "./src/Match/"],
       "@Area": ["./src/Area/index.ts"],
       "@Area/*": ["./src/Area/*", "./src/Area/"],
+      "@User": ["./src/User/index.ts"],
+      "@User/*": ["./src/User/*", "./src/User/"],
       "@Sdk/*": ["./src/sdk/generated/", "./src/sdk/generated/*"],
       "@Config/*": ["./config/*", "./config/"],
       "@I18n/*": ["./src/I18n/*", "./src/I18n"],
