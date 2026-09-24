@@ -10,7 +10,7 @@ import {
 export const useSeasonList = (rowsPerPage = 20) => {
   const { changePage, ...pagination } = usePagination({ page: 0, rowsPerPage })
 
-  const query = useGetSeasons({ page: pagination.page, count: pagination.rowsPerPage })
+  const query = useGetSeasons({ page: pagination.page + 1, count: pagination.rowsPerPage })
   const countQuery = useCountSeasons()
 
   const totalPages = Math.ceil(((countQuery.data ?? 0) as number) / rowsPerPage)
@@ -23,7 +23,7 @@ export const useSeasonListSuspense = (rowsPerPage = 20) => {
   const [isPending, startTransition] = useTransition()
   const changePage = (page: number) => startTransition(() => rawChangePage(page))
 
-  const query = useGetSeasonsSuspense({ page: pagination.page, count: pagination.rowsPerPage })
+  const query = useGetSeasonsSuspense({ page: pagination.page + 1, count: pagination.rowsPerPage })
   const countQuery = useCountSeasonsSuspense()
 
   const totalPages = Math.ceil(((countQuery.data ?? 0) as number) / rowsPerPage)
