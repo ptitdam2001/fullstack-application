@@ -304,7 +304,17 @@
     "form.isAdmin.selfHint": "Vous ne pouvez pas retirer votre propre rôle d'administrateur.",
     "form.submit": "Enregistrer",
     "toast.updated": "Utilisateur modifié avec succès",
-    "toast.updateError": "Erreur lors de la modification de l'utilisateur"
+    "toast.updateError": "Erreur lors de la modification de l'utilisateur",
+    "dialog.cancel": "Annuler",
+    "delete.title": "Supprimer l'utilisateur",
+    "delete.description": "Êtes-vous sûr de vouloir supprimer le compte de « {userName} » ? Cette action est irréversible.",
+    "delete.confirm": "Supprimer",
+    "activate.title": "Activer le compte",
+    "activate.description": "Activer le compte de « {userName} » ? L'utilisateur pourra se connecter immédiatement.",
+    "activate.confirm": "Activer",
+    "unblock.title": "Débloquer le compte",
+    "unblock.description": "Débloquer le compte de « {userName} » ? Son compteur de tentatives de connexion sera remis à zéro.",
+    "unblock.confirm": "Débloquer"
   },
   "adminAreas": {
     "title": "Lieux",
