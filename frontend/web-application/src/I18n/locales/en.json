@@ -314,7 +314,15 @@
     "activate.confirm": "Activate",
     "unblock.title": "Unblock account",
     "unblock.description": "Unblock the account of \"{userName}\"? Their failed sign-in counter will be reset.",
-    "unblock.confirm": "Unblock"
+    "unblock.confirm": "Unblock",
+    "title": "User Management",
+    "dialog.edit.title": "Edit user",
+    "toast.deleted": "User deleted successfully",
+    "toast.deleteError": "Error while deleting the user",
+    "toast.activated": "Account activated successfully",
+    "toast.activateError": "Error while activating the account",
+    "toast.unblocked": "Account unblocked successfully",
+    "toast.unblockError": "Error while unblocking the account"
   },
   "adminAreas": {
     "title": "Areas",

@@ -2,6 +2,7 @@ import { Badge, Button, TableRow, TableCell } from '@repo/design-system'
 import { Pencil, Trash2, UserCheck, Unlock } from 'lucide-react'
 import { FormattedMessage, useIntl } from 'react-intl'
 import type { User } from '../../domain/User'
+import { userFullName } from './userFullName'
 
 type UserStatus = 'active' | 'pending' | 'blocked'
 
@@ -47,7 +48,7 @@ export const AdminUserTableRow = ({
 
   return (
     <TableRow id={user.id}>
-      <TableCell className="font-medium">{[user.firstName, user.lastName].filter(Boolean).join(' ')}</TableCell>
+      <TableCell className="font-medium">{userFullName(user)}</TableCell>
       <TableCell>{user.email}</TableCell>
       <TableCell>
         {roles.length > 0 ? (
