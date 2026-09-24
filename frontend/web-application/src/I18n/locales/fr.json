@@ -314,7 +314,15 @@
     "activate.confirm": "Activer",
     "unblock.title": "Débloquer le compte",
     "unblock.description": "Débloquer le compte de « {userName} » ? Son compteur de tentatives de connexion sera remis à zéro.",
-    "unblock.confirm": "Débloquer"
+    "unblock.confirm": "Débloquer",
+    "title": "Gestion des utilisateurs",
+    "dialog.edit.title": "Modifier l'utilisateur",
+    "toast.deleted": "Utilisateur supprimé avec succès",
+    "toast.deleteError": "Erreur lors de la suppression de l'utilisateur",
+    "toast.activated": "Compte activé avec succès",
+    "toast.activateError": "Erreur lors de l'activation du compte",
+    "toast.unblocked": "Compte débloqué avec succès",
+    "toast.unblockError": "Erreur lors du déblocage du compte"
   },
   "adminAreas": {
     "title": "Lieux",
