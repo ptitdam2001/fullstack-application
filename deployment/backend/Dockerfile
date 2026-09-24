@@ -1,10 +1,11 @@
 # ── Stage 1: Builder ──────────────────────────────────────────────────────────
 FROM node:22-alpine AS builder
 
-RUN corepack enable && corepack prepare pnpm@10.13.1 --activate
+RUN corepack enable && corepack prepare pnpm@12.6.0 --activate
 
 WORKDIR /app/backend
-COPY backend/package.json backend/pnpm-lock.yaml ./
+# pnpm-workspace.yaml holds allowBuilds: without it pnpm skips native builds (bcrypt)
+COPY backend/package.json backend/pnpm-lock.yaml backend/pnpm-workspace.yaml ./
 
 # Tooling packages referenced via file: in devDependencies
 COPY tooling/eslint-config/ /app/tooling/eslint-config/
@@ -24,10 +25,11 @@ RUN pnpm build
 # ── Stage 2: Production ───────────────────────────────────────────────────────
 FROM node:22-alpine AS production
 
-RUN corepack enable && corepack prepare pnpm@10.13.1 --activate
+RUN corepack enable && corepack prepare pnpm@12.6.0 --activate
 
 WORKDIR /app/backend
-COPY backend/package.json backend/pnpm-lock.yaml ./
+# pnpm-workspace.yaml holds allowBuilds: without it pnpm skips native builds (bcrypt)
+COPY backend/package.json backend/pnpm-lock.yaml backend/pnpm-workspace.yaml ./
 
 COPY tooling/eslint-config/ /app/tooling/eslint-config/
 COPY tooling/prettier-config/ /app/tooling/prettier-config/
