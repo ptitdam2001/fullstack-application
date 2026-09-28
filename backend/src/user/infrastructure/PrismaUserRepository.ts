@@ -17,6 +17,9 @@ const select = {
   avatar: true,
   createdAt: true,
   updatedAt: true,
+  // Contextual roles live in relation tables (spec 06), not on User
+  userTeams: { select: { role: true } },
+  userMatches: { select: { id: true }, take: 1 },
 } as const
 
 type RawUser = {
@@ -33,20 +36,35 @@ type RawUser = {
   avatar: string | null
   createdAt: Date
   updatedAt: Date
+  userTeams: { role: `${TeamRole}` }[]
+  userMatches: { id: string }[]
 }
 
 const isLockActive = (lockedUntil: Date | null): boolean => lockedUntil !== null && lockedUntil > new Date()
 
-function toUserProfile({ lockedUntil, ...raw }: RawUser): UserProfile {
-  const roles: UserRole[] = []
-  if (raw.isAdmin) {
-    roles.push('ADMIN')
+/**
+ * Resolves the roles exposed on the API from the global flags and the relation tables (spec 06):
+ * ADMIN ← isAdmin, COACH/PLAYER ← userTeams, REFEREE ← isReferee or at least one userMatch.
+ * Each role appears at most once.
+ */
+function deriveRoles({ isAdmin, isReferee, userTeams, userMatches }: RawUser): UserRole[] {
+  const allRoles = new Set<UserRole>()
+
+  if (isAdmin) {
+    allRoles.add('ADMIN')
   }
-  if (raw.isReferee) {
-    roles.push('REFEREE')
+  userTeams.forEach(({ role }) => allRoles.add(role))
+
+  if (isReferee || userMatches.length > 0) {
+    allRoles.add('REFEREE')
   }
+  return Array.from(allRoles)
+}
+
+function toUserProfile(raw: RawUser): UserProfile {
+  const { lockedUntil, userTeams: _userTeams, userMatches: _userMatches, ...profile } = raw
   // A temporary login lock surfaces as isBlocked so the API keeps a single flag (spec 10)
-  return { ...raw, isBlocked: raw.isBlocked || isLockActive(lockedUntil), roles }
+  return { ...profile, isBlocked: profile.isBlocked || isLockActive(lockedUntil), roles: deriveRoles(raw) }
 }
 
 const toWhere = (filters?: UserFilterOptions) => ({
