@@ -3,7 +3,6 @@ import { AuthUseCases } from './AuthUseCases.js'
 import type { IUserRepository } from '../../user/ports/IUserRepository.js'
 import type { IAuthService } from '../ports/IAuthService.js'
 import type { IUserTeamRepository } from '../../userTeam/ports/IUserTeamRepository.js'
-import type { IUserMatchRepository } from '../../userMatch/ports/IUserMatchRepository.js'
 import {
   InvalidCredentialsError,
   AccountBlockedError,
@@ -11,7 +10,6 @@ import {
   UnauthorizedError,
 } from '../domain/AuthErrors.js'
 import { UserNotFoundError } from '../../user/domain/UserErrors.js'
-import { TeamRole } from '../../userTeam/domain/UserTeam.js'
 
 const mockUser = {
   id: 'user-1',
@@ -62,27 +60,11 @@ const makeUserTeamRepo = (overrides: Partial<IUserTeamRepository> = {}): IUserTe
   ...overrides,
 })
 
-const makeUserMatchRepo = (overrides: Partial<IUserMatchRepository> = {}): IUserMatchRepository => ({
-  assign: vi.fn(),
-  remove: vi.fn(),
-  findByMatch: vi.fn().mockResolvedValue([]),
-  findByUser: vi.fn().mockResolvedValue([]),
-  isReferee: vi.fn().mockResolvedValue(false),
-  ...overrides,
-})
-
 const makeUseCases = (
   userRepo?: Partial<IUserRepository>,
   authService?: Partial<IAuthService>,
-  userTeamRepo?: Partial<IUserTeamRepository>,
-  userMatchRepo?: Partial<IUserMatchRepository>
-) =>
-  new AuthUseCases(
-    makeRepo(userRepo),
-    makeAuthService(authService),
-    makeUserTeamRepo(userTeamRepo),
-    makeUserMatchRepo(userMatchRepo)
-  )
+  userTeamRepo?: Partial<IUserTeamRepository>
+) => new AuthUseCases(makeRepo(userRepo), makeAuthService(authService), makeUserTeamRepo(userTeamRepo))
 
 describe('AuthUseCases.login', () => {
   const withUser = (extra: Record<string, unknown> = {}) => ({
@@ -111,8 +93,7 @@ describe('AuthUseCases.login', () => {
       const uc = new AuthUseCases(
         makeRepo({ findByEmailWithPassword: vi.fn().mockResolvedValue(null) }),
         authService,
-        makeUserTeamRepo(),
-        makeUserMatchRepo()
+        makeUserTeamRepo()
       )
       await expect(uc.login('unknown@example.com', 'x')).rejects.toThrow(InvalidCredentialsError)
       expect(authService.comparePassword).toHaveBeenCalledTimes(1)
@@ -238,10 +219,7 @@ describe('AuthUseCases.login', () => {
 
   it('calls generateToken with userId, isAdmin, and isCoach', async () => {
     const authService = makeAuthService()
-    await new AuthUseCases(makeRepo(), authService, makeUserTeamRepo(), makeUserMatchRepo()).login(
-      'alice@example.com',
-      'password'
-    )
+    await new AuthUseCases(makeRepo(), authService, makeUserTeamRepo()).login('alice@example.com', 'password')
     expect(authService.generateToken).toHaveBeenCalledWith('user-1', false, false)
   })
 })
@@ -329,66 +307,16 @@ describe('AuthUseCases.authenticate (spec 10, Sécurité › Sessions)', () => {
 })
 
 describe('AuthUseCases.me', () => {
-  it('returns user profile with empty roles when user has no team or match', async () => {
-    const user = await makeUseCases().me('user-1')
+  it('returns the profile with the roles resolved by the user repository', async () => {
+    const findById = vi.fn().mockResolvedValue({ ...mockUser, roles: ['COACH', 'REFEREE'] })
+    const userTeamRepo = makeUserTeamRepo()
+
+    const user = await makeUseCases({ findById }, undefined, userTeamRepo).me('user-1')
+
+    expect(findById).toHaveBeenCalledWith('user-1')
     expect(user.id).toBe('user-1')
-    expect(user.email).toBe('alice@example.com')
-    expect(user.roles).toEqual([])
-  })
-
-  it('includes ADMIN role when user isAdmin', async () => {
-    const user = await makeUseCases({ findById: vi.fn().mockResolvedValue({ ...mockUser, isAdmin: true }) }).me(
-      'user-1'
-    )
-    expect(user.roles).toContain('ADMIN')
-  })
-
-  it('includes REFEREE role when user isReferee', async () => {
-    const user = await makeUseCases({ findById: vi.fn().mockResolvedValue({ ...mockUser, isReferee: true }) }).me(
-      'user-1'
-    )
-    expect(user.roles).toContain('REFEREE')
-  })
-
-  it('includes COACH role when user has coach team', async () => {
-    const coachEntry = { id: 'ut-1', userId: 'user-1', teamId: 'team-1', role: TeamRole.COACH }
-    const user = await makeUseCases(undefined, undefined, {
-      findByUserAndRole: vi
-        .fn()
-        .mockImplementation((_, role) => Promise.resolve(role === TeamRole.COACH ? [coachEntry] : [])),
-    }).me('user-1')
-    expect(user.roles).toContain('COACH')
-    expect(user.roles).not.toContain('PLAYER')
-  })
-
-  it('includes PLAYER role when user has player team', async () => {
-    const playerEntry = { id: 'ut-2', userId: 'user-1', teamId: 'team-1', role: TeamRole.PLAYER }
-    const user = await makeUseCases(undefined, undefined, {
-      findByUserAndRole: vi
-        .fn()
-        .mockImplementation((_, role) => Promise.resolve(role === TeamRole.PLAYER ? [playerEntry] : [])),
-    }).me('user-1')
-    expect(user.roles).toContain('PLAYER')
-    expect(user.roles).not.toContain('COACH')
-  })
-
-  it('includes REFEREE role from match assignments when isReferee is false', async () => {
-    const matchEntry = { id: 'um-1', userId: 'user-1', matchId: 'match-1' }
-    const user = await makeUseCases(undefined, undefined, undefined, {
-      findByUser: vi.fn().mockResolvedValue([matchEntry]),
-    }).me('user-1')
-    expect(user.roles).toContain('REFEREE')
-  })
-
-  it('does not duplicate REFEREE role when isReferee and has match assignments', async () => {
-    const matchEntry = { id: 'um-1', userId: 'user-1', matchId: 'match-1' }
-    const user = await makeUseCases(
-      { findById: vi.fn().mockResolvedValue({ ...mockUser, isReferee: true }) },
-      undefined,
-      undefined,
-      { findByUser: vi.fn().mockResolvedValue([matchEntry]) }
-    ).me('user-1')
-    expect(user.roles.filter(r => r === 'REFEREE')).toHaveLength(1)
+    expect(user.roles).toEqual(['COACH', 'REFEREE'])
+    expect(userTeamRepo.findByUserAndRole).not.toHaveBeenCalled()
   })
 
   it('throws UserNotFoundError when user does not exist', async () => {

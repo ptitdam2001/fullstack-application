@@ -2,15 +2,9 @@ import type { Context } from 'openapi-backend'
 import { AuthUseCases } from '../application/AuthUseCases.js'
 import { PrismaUserRepository } from '../../user/infrastructure/PrismaUserRepository.js'
 import { PrismaUserTeamRepository } from '../../userTeam/infrastructure/PrismaUserTeamRepository.js'
-import { PrismaUserMatchRepository } from '../../userMatch/infrastructure/PrismaUserMatchRepository.js'
 import { JwtAuthService } from './JwtAuthService.js'
 
-const useCases = new AuthUseCases(
-  new PrismaUserRepository(),
-  new JwtAuthService(),
-  new PrismaUserTeamRepository(),
-  new PrismaUserMatchRepository()
-)
+const useCases = new AuthUseCases(new PrismaUserRepository(), new JwtAuthService(), new PrismaUserTeamRepository())
 
 /** `jwtAuth` security scheme: any throw makes openapi-backend answer 401. */
 export const jwtSecurityHandler = async (ctx: Context) => {
