@@ -4,7 +4,8 @@ import { prisma } from '../../utils/prismaClient.js'
 import { authHeaderFor } from '../support/authenticate.js'
 import { createTestAgent } from '../support/client.js'
 import { resetDatabase } from '../support/database.js'
-import { createAdmin, createUser } from '../support/fixtures.js'
+import { TeamRole } from '@prisma/client'
+import { assignUserToTeam, createAdmin, createTeam, createUser } from '../support/fixtures.js'
 
 /** MongoDB rejects non-ObjectId strings on @db.ObjectId fields with a 500.
  *  Use a well-formed but absent ObjectId for "unknown id" cases. */
@@ -59,6 +60,84 @@ describe('user domain — functional API', () => {
       expect(res.body).toEqual(
         expect.arrayContaining([expect.objectContaining({ id: user.id }), expect.objectContaining({ id: admin.id })])
       )
+    })
+  })
+
+  describe('getUsers — contextual roles', () => {
+    const rolesOf = (body: { id: string; roles: string[] }[], id: string) => body.find(u => u.id === id)?.roles
+
+    it('derives COACH and PLAYER from team memberships', async () => {
+      const admin = await createAdmin()
+      const team = await createTeam()
+      const coach = await createUser()
+      const player = await createUser()
+      const both = await createUser()
+      await assignUserToTeam(coach.id, team.id, TeamRole.COACH)
+      await assignUserToTeam(player.id, team.id, TeamRole.PLAYER)
+      await assignUserToTeam(both.id, team.id, TeamRole.COACH)
+      await assignUserToTeam(both.id, team.id, TeamRole.PLAYER)
+
+      const res = await agent.get('/users').set(authHeaderFor(admin.id, true))
+
+      expect(res.status).toBe(200)
+      expect(rolesOf(res.body, admin.id)).toEqual(['ADMIN'])
+      expect(rolesOf(res.body, coach.id)).toEqual(['COACH'])
+      expect(rolesOf(res.body, player.id)).toEqual(['PLAYER'])
+      expect(rolesOf(res.body, both.id)).toEqual(expect.arrayContaining(['COACH', 'PLAYER']))
+      expect(rolesOf(res.body, both.id)).toHaveLength(2)
+    })
+
+    it('lists a role once even when held in several teams', async () => {
+      const admin = await createAdmin()
+      const coach = await createUser()
+      await assignUserToTeam(coach.id, (await createTeam()).id, TeamRole.COACH)
+      await assignUserToTeam(coach.id, (await createTeam()).id, TeamRole.COACH)
+
+      const res = await agent.get('/users').set(authHeaderFor(admin.id, true))
+
+      expect(rolesOf(res.body, coach.id)).toEqual(['COACH'])
+    })
+
+    it('derives REFEREE from match assignments without the isReferee flag', async () => {
+      const admin = await createAdmin()
+      const referee = await createUser({ isReferee: false })
+      const match = await prisma.match.create({ data: {} })
+      await prisma.userMatch.create({ data: { userId: referee.id, matchId: match.id } })
+
+      const res = await agent.get('/users').set(authHeaderFor(admin.id, true))
+
+      expect(rolesOf(res.body, referee.id)).toEqual(['REFEREE'])
+    })
+
+    it('derives REFEREE from the isReferee flag without match assignments', async () => {
+      const admin = await createAdmin()
+      const referee = await createUser({ isReferee: true })
+
+      const res = await agent.get('/users').set(authHeaderFor(admin.id, true))
+
+      expect(rolesOf(res.body, referee.id)).toEqual(['REFEREE'])
+    })
+
+    it('lists REFEREE once when both flagged and assigned to a match', async () => {
+      const admin = await createAdmin()
+      const referee = await createUser({ isReferee: true })
+      const match = await prisma.match.create({ data: {} })
+      await prisma.userMatch.create({ data: { userId: referee.id, matchId: match.id } })
+
+      const res = await agent.get('/users').set(authHeaderFor(admin.id, true))
+
+      expect(rolesOf(res.body, referee.id)).toEqual(['REFEREE'])
+    })
+
+    it('GET /users/{id} returns the same contextual roles', async () => {
+      const admin = await createAdmin()
+      const coach = await createUser()
+      await assignUserToTeam(coach.id, (await createTeam()).id, TeamRole.COACH)
+
+      const res = await agent.get(`/users/${coach.id}`).set(authHeaderFor(admin.id, true))
+
+      expect(res.status).toBe(200)
+      expect(res.body.roles).toEqual(['COACH'])
     })
   })
 
