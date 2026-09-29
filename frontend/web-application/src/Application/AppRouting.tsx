@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { FormattedMessage } from 'react-intl'
 import {
   createBrowserRouter,
   createRoutesFromElements,
@@ -115,7 +116,11 @@ const router = createBrowserRouter(
           handle={{ breadcrumb: 'Administration' }}
         >
           <Route index element={<Navigate to="users" />} />
-          <Route path="users" element={<AdminUsersPage />} handle={{ breadcrumb: 'Utilisateurs' }} />
+          <Route
+            path="users"
+            element={<AdminUsersPage />}
+            handle={{ breadcrumb: <FormattedMessage id="adminSidebar.users" /> }}
+          />
           <Route path="championships" handle={{ breadcrumb: 'Championnats' }}>
             <Route index element={<AdminChampionshipsPage />} />
             <Route path="new" element={<ChampionshipWizardPage />} handle={{ breadcrumb: 'Nouveau championnat' }} />
