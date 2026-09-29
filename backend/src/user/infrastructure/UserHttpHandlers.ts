@@ -19,7 +19,7 @@ const buildFilter = (query: Context['request']['query']): UserFilterOptions => (
 })
 
 /** Maps GET /users query params to list options. Pagination is opt-in (see UserListOptions). */
-export const toUserListOptions = (query: Context['request']['query']): UserListOptions => {
+const toUserListOptions =(query: Context['request']['query']): UserListOptions => {
   // Case 1: page or/and limit are present
   if ('page' in query || 'limit' in query) {
     const { page, limit } = query
