@@ -10,11 +10,10 @@ import {
 } from '../domain/AuthErrors.js'
 import { UserNotFoundError } from '../../user/domain/UserErrors.js'
 import { PrismaUserRepository } from '../../user/infrastructure/PrismaUserRepository.js'
-import { PrismaUserTeamRepository } from '../../userTeam/infrastructure/PrismaUserTeamRepository'
 import { JwtAuthService } from './JwtAuthService.js'
 import { logger } from '../../../config/logger.js'
 
-const useCases = new AuthUseCases(new PrismaUserRepository(), new JwtAuthService(), new PrismaUserTeamRepository())
+const useCases = new AuthUseCases(new PrismaUserRepository(), new JwtAuthService())
 
 export const login = async (_: Context, req: Request, res: Response) => {
   try {

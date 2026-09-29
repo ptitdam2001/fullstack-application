@@ -2,7 +2,6 @@ import { describe, it, expect, vi } from 'vitest'
 import { AuthUseCases } from './AuthUseCases.js'
 import type { IUserRepository } from '../../user/ports/IUserRepository.js'
 import type { IAuthService } from '../ports/IAuthService.js'
-import type { IUserTeamRepository } from '../../userTeam/ports/IUserTeamRepository.js'
 import {
   InvalidCredentialsError,
   AccountBlockedError,
@@ -23,6 +22,7 @@ const mockUser = {
   loginAttempts: 0,
   avatar: null,
   createdAt: new Date(),
+  roles: [],
 }
 
 const makeRepo = (overrides: Partial<IUserRepository> = {}): IUserRepository => ({
@@ -50,21 +50,8 @@ const makeAuthService = (overrides: Partial<IAuthService> = {}): IAuthService =>
   ...overrides,
 })
 
-const makeUserTeamRepo = (overrides: Partial<IUserTeamRepository> = {}): IUserTeamRepository => ({
-  assign: vi.fn(),
-  remove: vi.fn(),
-  findByTeamAndRole: vi.fn().mockResolvedValue([]),
-  findByUserAndRole: vi.fn().mockResolvedValue([]),
-  findByUser: vi.fn().mockResolvedValue([]),
-  hasRole: vi.fn().mockResolvedValue(false),
-  ...overrides,
-})
-
-const makeUseCases = (
-  userRepo?: Partial<IUserRepository>,
-  authService?: Partial<IAuthService>,
-  userTeamRepo?: Partial<IUserTeamRepository>
-) => new AuthUseCases(makeRepo(userRepo), makeAuthService(authService), makeUserTeamRepo(userTeamRepo))
+const makeUseCases = (userRepo?: Partial<IUserRepository>, authService?: Partial<IAuthService>) =>
+  new AuthUseCases(makeRepo(userRepo), makeAuthService(authService))
 
 describe('AuthUseCases.login', () => {
   const withUser = (extra: Record<string, unknown> = {}) => ({
@@ -90,11 +77,7 @@ describe('AuthUseCases.login', () => {
 
     it('still runs a bcrypt comparison when email does not exist (equalises response time)', async () => {
       const authService = makeAuthService()
-      const uc = new AuthUseCases(
-        makeRepo({ findByEmailWithPassword: vi.fn().mockResolvedValue(null) }),
-        authService,
-        makeUserTeamRepo()
-      )
+      const uc = new AuthUseCases(makeRepo({ findByEmailWithPassword: vi.fn().mockResolvedValue(null) }), authService)
       await expect(uc.login('unknown@example.com', 'x')).rejects.toThrow(InvalidCredentialsError)
       expect(authService.comparePassword).toHaveBeenCalledTimes(1)
       expect(authService.comparePassword).toHaveBeenCalledWith('x', expect.any(String))
@@ -219,8 +202,14 @@ describe('AuthUseCases.login', () => {
 
   it('calls generateToken with userId, isAdmin, and isCoach', async () => {
     const authService = makeAuthService()
-    await new AuthUseCases(makeRepo(), authService, makeUserTeamRepo()).login('alice@example.com', 'password')
+    await new AuthUseCases(makeRepo(), authService).login('alice@example.com', 'password')
     expect(authService.generateToken).toHaveBeenCalledWith('user-1', false, false)
+  })
+
+  it('derives isCoach from the roles resolved by the user repository', async () => {
+    const authService = makeAuthService()
+    await makeUseCases(withUser({ roles: ['COACH'] }), authService).login('alice@example.com', 'password')
+    expect(authService.generateToken).toHaveBeenCalledWith('user-1', false, true)
   })
 })
 
@@ -309,14 +298,12 @@ describe('AuthUseCases.authenticate (spec 10, Sécurité › Sessions)', () => {
 describe('AuthUseCases.me', () => {
   it('returns the profile with the roles resolved by the user repository', async () => {
     const findById = vi.fn().mockResolvedValue({ ...mockUser, roles: ['COACH', 'REFEREE'] })
-    const userTeamRepo = makeUserTeamRepo()
 
-    const user = await makeUseCases({ findById }, undefined, userTeamRepo).me('user-1')
+    const user = await makeUseCases({ findById }).me('user-1')
 
     expect(findById).toHaveBeenCalledWith('user-1')
     expect(user.id).toBe('user-1')
     expect(user.roles).toEqual(['COACH', 'REFEREE'])
-    expect(userTeamRepo.findByUserAndRole).not.toHaveBeenCalled()
   })
 
   it('throws UserNotFoundError when user does not exist', async () => {

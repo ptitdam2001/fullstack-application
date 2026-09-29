@@ -2,8 +2,6 @@ import type { IUserRepository } from '../../user/ports/IUserRepository.js'
 import type { IAuthService } from '../ports/IAuthService.js'
 import type { UserProfile } from '../../user/domain/User.js'
 import type { LoginResult, TokenPayload } from '../domain/User.js'
-import type { IUserTeamRepository } from '../../userTeam/ports/IUserTeamRepository.js'
-import { TeamRole } from '../../userTeam/domain/UserTeam.js'
 import {
   InvalidCredentialsError,
   AccountBlockedError,
@@ -20,8 +18,7 @@ export type UserProfileWithRoles = UserProfile
 export class AuthUseCases {
   constructor(
     private readonly userRepo: IUserRepository,
-    private readonly authService: IAuthService,
-    private readonly userTeamRepo: IUserTeamRepository
+    private readonly authService: IAuthService
   ) {}
 
   // Lazily hashed once: lets an unknown email cost one bcrypt comparison like a known one.
@@ -71,9 +68,7 @@ export class AuthUseCases {
       await this.userRepo.resetLoginAttempts(user.id)
     }
 
-    const coachTeams = await this.userTeamRepo.findByUserAndRole(user.id, TeamRole.COACH)
-    const isCoach = coachTeams.length > 0
-    const token = this.authService.generateToken(user.id, user.isAdmin, isCoach)
+    const token = this.authService.generateToken(user.id, user.isAdmin, user.roles.includes('COACH'))
     return { userId: user.id, email: user.email, isAdmin: user.isAdmin, token }
   }
 
