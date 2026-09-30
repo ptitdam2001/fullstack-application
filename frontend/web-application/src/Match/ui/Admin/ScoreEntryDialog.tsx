@@ -9,6 +9,7 @@ import {
   DialogPortal,
   DialogTitle,
   NumberField,
+  Toast,
 } from '@repo/design-system'
 import { createFormFactory } from '@repo/form-factory'
 import { MatchStatus, ScoreEntrySchema } from '../../domain/Match'
@@ -36,6 +37,7 @@ const TeamRow = ({ team }: { team: MatchTeamSummary | null | undefined }) => (
 
 export const ScoreEntryDialog = ({ match, open, onOpenChange, onFinish }: Props) => {
   const intl = useIntl()
+  const toast = Toast.useToast()
   const hasScore = match.status === MatchStatus.PLAYED
   const { form, Field, Form } = scoreEntryFormFactory.useForm({
     defaultValues: { homeGoals: match.homeGoals ?? 0, awayGoals: match.awayGoals ?? 0 },
@@ -45,8 +47,13 @@ export const ScoreEntryDialog = ({ match, open, onOpenChange, onFinish }: Props)
   const scheduledDate = formatDate(match.scheduledAt, intl.locale)
 
   const onSubmit = async (data: ScoreEntryValues) => {
-    await submitScore(data)
-    onFinish?.()
+    try {
+      await submitScore(data)
+      toast(intl.formatMessage({ id: 'adminMatches.toast.scoreSaved' }))
+      onFinish?.()
+    } catch {
+      toast(intl.formatMessage({ id: 'adminMatches.toast.scoreError' }))
+    }
   }
 
   const isValid = form.formState.isValid

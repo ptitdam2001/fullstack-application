@@ -507,7 +507,9 @@
     "deleteDialog.description": "Le match {homeTeam} - {awayTeam} du {date} sera supprimé définitivement. Cette action est irréversible.",
     "deleteDialog.descriptionNoDate": "Le match {homeTeam} - {awayTeam} sera supprimé définitivement. Cette action est irréversible.",
     "deleteDialog.cancel": "Annuler",
-    "deleteDialog.confirm": "Supprimer"
+    "deleteDialog.confirm": "Supprimer",
+    "toast.scoreSaved": "Score enregistré",
+    "toast.scoreError": "Erreur lors de l'enregistrement du score"
   },
   "adminSeasons": {
     "title": "Saisons",
