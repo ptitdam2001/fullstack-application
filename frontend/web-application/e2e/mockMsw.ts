@@ -14,5 +14,8 @@ export const mockMsw = async (page: Page, ...args: MswOverrideArgs) => {
 // For overrides added mid-test, after the app has already booted (window.__mswApplyOverride
 // exists by then) — e.g. mocking a PATCH response right before triggering the action that fires it.
 export const applyMswOverride = async (page: Page, ...args: MswOverrideArgs) => {
-  await page.evaluate(overrideArgs => window.__mswApplyOverride?.(...overrideArgs), args)
+  // page.goto() resolves on `load`, before main.tsx has awaited worker.start() and exposed the
+  // bridge — wait for it, and call it without `?.` so a missing bridge fails instead of no-op'ing.
+  await page.waitForFunction(() => typeof window.__mswApplyOverride === 'function', undefined, { timeout: 5_000 })
+  await page.evaluate(overrideArgs => window.__mswApplyOverride!(...overrideArgs), args)
 }

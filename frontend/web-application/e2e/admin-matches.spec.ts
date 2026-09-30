@@ -52,6 +52,7 @@ test.describe('admin — matches score entry', () => {
     await dialog.getByRole('button', { name: 'Submit' }).click()
 
     await expect(dialog).not.toBeVisible({ timeout: 5_000 })
+    await expect(page.getByRole('region', { name: /Notifications/ }).getByText('Score saved')).toBeVisible()
   })
 
   test('API error keeps the dialog open and shows a notification', async ({ page }) => {
@@ -71,6 +72,9 @@ test.describe('admin — matches score entry', () => {
     await dialog.getByRole('textbox', { name: 'Away goals' }).fill('1')
     await dialog.getByRole('button', { name: 'Submit' }).click()
 
+    await expect(
+      page.getByRole('region', { name: /Notifications/ }).getByText('Error while saving the score')
+    ).toBeVisible({ timeout: 5_000 })
     await expect(dialog).toBeVisible()
   })
 
