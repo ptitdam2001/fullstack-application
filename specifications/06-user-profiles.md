@@ -76,7 +76,7 @@ Officiel désigné pour un ou plusieurs matchs via `UserMatch`. Accès en lectur
 | Action                          | Admin | Coach | Arbitre | Joueur | Sans équipe |
 | ------------------------------- | ----- | ----- | ------- | ------ | ----------- |
 | Lister les utilisateurs         | ✅    | ❌    | ❌      | ❌     | ❌          |
-| Créer un utilisateur            | ✅    | ❌    | ❌      | ❌     | ❌          |
+| Créer un utilisateur            | ❌³   | ❌    | ❌      | ❌     | ❌          |
 | Modifier un utilisateur         | ✅    | ❌    | ❌      | ❌     | ❌          |
 | Supprimer un utilisateur        | ✅²   | ❌    | ❌      | ❌     | ❌          |
 | Promouvoir / retirer admin      | ✅¹   | ❌    | ❌      | ❌     | ❌          |
@@ -86,6 +86,8 @@ Officiel désigné pour un ou plusieurs matchs via `UserMatch`. Accès en lectur
 ¹ Via `PATCH /user/{id}` avec `isAdmin`. Un admin **ne peut pas se retirer son propre** `isAdmin` (`403 Forbidden`) : cela empêche de verrouiller la plateforme sans admin par erreur. Retirer le rôle d'un autre admin reste permis.
 
 ² Via `DELETE /user/{id}`. Un admin **ne peut pas supprimer son propre compte** (`403 Forbidden`), pour la même raison. Supprimer un autre admin reste permis.
+
+³ Aucun rôle ne crée de compte à la place de quelqu'un : un compte naît uniquement par l'inscription (`/register`), puis un admin l'active. Un mot de passe choisi par l'admin serait un secret connu d'un tiers, et l'utilisateur ne pourrait pas le changer tant qu'aucun email n'est délivré (réinitialisation indisponible). Une future « invitation » (jeton à usage unique, sur le modèle de la réinitialisation) remplacera ce besoin quand un vrai service d'email existera.
 
 ### Championnats
 

@@ -96,7 +96,6 @@ Légende : ✅ couvert · ❌ test fonctionnel à écrire (S3) · 🚫 route dé
 | Méthode | Path          | operationId  | Statut                     |
 | ------- | ------------- | ------------ | --------------------------- |
 | GET     | `/users`      | `getUsers`   | ✅ couvert (`user.test.ts`)  |
-| POST    | `/user`       | `createUser` | ✅ couvert (`user.test.ts`)  |
 | DELETE  | `/user/{id}`  | `removeUser` | ✅ couvert (`user.test.ts`)  |
 | PATCH   | `/user/{id}`  | `updateUser` | ✅ couvert (`user.test.ts`)  |
 | GET     | `/users/{id}` | `getUser`    | ✅ couvert (`user.test.ts`)  |
