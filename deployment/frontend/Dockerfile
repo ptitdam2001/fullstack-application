@@ -1,7 +1,7 @@
 # ── Stage 1: Builder ──────────────────────────────────────────────────────────
 FROM node:22-alpine AS builder
 
-RUN corepack enable && corepack prepare pnpm@10.13.1 --activate
+RUN corepack enable && corepack prepare pnpm@12.6.0 --activate
 
 WORKDIR /app/frontend
 
