@@ -47,7 +47,7 @@ SEED_TEST_URL := mongodb://root:example@localhost:27019/app?authSource=admin&dir
 
 stack-test-up: ## Lance la stack test isolée (build + seed)
 	$(COMPOSE_TEST) up -d --build --wait
-	DATABASE_URL=$(SEED_TEST_URL) $(MAKE) seed
+	DATABASE_URL='$(SEED_TEST_URL)' $(MAKE) seed
 
 stack-test-down: ## Arrête la stack test et supprime les volumes
 	$(COMPOSE_TEST) down -v
