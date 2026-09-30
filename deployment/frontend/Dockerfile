@@ -26,6 +26,11 @@ COPY frontend/design-system/ design-system/
 COPY frontend/form-factory/ form-factory/
 COPY frontend/web-application/ web-application/
 
+# src/sdk is gitignored: generate it with orval from the API contract
+# (orval.config.ts reads ../../backend/openapi.yml relative to web-application)
+COPY backend/openapi.yml /app/backend/openapi.yml
+RUN pnpm --filter application-material gen:sdk
+
 # Build workspace packages in dependency order
 RUN pnpm --filter @repo/design-system build && \
     pnpm --filter @repo/form-factory build && \
