@@ -236,6 +236,26 @@
     "config": "Configuration",
     "settings": "Settings"
   },
+  "breadcrumb": {
+    "home": "Home",
+    "myProfile": "My profile",
+    "teams": "Teams",
+    "list": "List",
+    "create": "Create",
+    "players": "Players",
+    "calendar": "Calendar",
+    "matches": "Matches",
+    "admin": "Administration",
+    "adminUsers": "Users",
+    "championships": "Championships",
+    "newChampionship": "New championship",
+    "resumeChampionship": "Resume",
+    "delete": "Delete",
+    "settings": "Settings",
+    "areas": "Areas",
+    "ageCategories": "Age categories",
+    "seasons": "Seasons"
+  },
   "register": {
     "section.team": "Your team",
     "section.personalInfo": "Personal info",

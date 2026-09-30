@@ -7,6 +7,7 @@ import {
   BreadcrumbSeparator,
 } from '@repo/design-system'
 import React from 'react'
+import { FormattedMessage } from 'react-intl'
 
 import { useBreadcrumbs } from './useBreadcrumbs'
 
@@ -17,7 +18,9 @@ export const Breadcrumbs = () => {
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem>
-          <BreadcrumbLink href="/app">Home</BreadcrumbLink>
+          <BreadcrumbLink href="/app">
+            <FormattedMessage id="breadcrumb.home" />
+          </BreadcrumbLink>
         </BreadcrumbItem>
 
         {entries.map(({ node, to, isLast }) => (

@@ -66,12 +66,16 @@ const router = createBrowserRouter(
       >
         <Route index element={<Dashboard />} />
         <Route path="onboarding" element={<OnboardingScreen />} />
-        <Route path="my-profile" element={<MyProfile />} handle={{ breadcrumb: 'Mon profil' }} />
+        <Route
+          path="my-profile"
+          element={<MyProfile />}
+          handle={{ breadcrumb: <FormattedMessage id="breadcrumb.myProfile" /> }}
+        />
 
-        <Route path="team" element={<TeamLayout />} handle={{ breadcrumb: 'Équipes' }}>
+        <Route path="team" element={<TeamLayout />} handle={{ breadcrumb: <FormattedMessage id="breadcrumb.teams" /> }}>
           <Route index element={<Navigate to="list" />} />
 
-          <Route path="list" element={<TeamsPage />} handle={{ breadcrumb: 'Liste' }}>
+          <Route path="list" element={<TeamsPage />} handle={{ breadcrumb: <FormattedMessage id="breadcrumb.list" /> }}>
             <Route
               path=":teamId/edit"
               element={<TeamEditPage />}
@@ -79,7 +83,11 @@ const router = createBrowserRouter(
                 breadcrumb: (params: Record<string, string | undefined>) => <TeamBreadcrumb teamId={params.teamId!} />,
               }}
             />
-            <Route path="create" element={<TeamCreatePage />} handle={{ breadcrumb: 'Créer' }} />
+            <Route
+              path="create"
+              element={<TeamCreatePage />}
+              handle={{ breadcrumb: <FormattedMessage id="breadcrumb.create" /> }}
+            />
           </Route>
 
           <Route
@@ -89,15 +97,27 @@ const router = createBrowserRouter(
             }}
           >
             <Route index element={<TeamPage />} />
-            <Route path="players" element={<TeamPlayersPage />} handle={{ breadcrumb: 'Joueurs' }} />
+            <Route
+              path="players"
+              element={<TeamPlayersPage />}
+              handle={{ breadcrumb: <FormattedMessage id="breadcrumb.players" /> }}
+            />
           </Route>
 
-          <Route path="create" element={<TeamCreatePage />} handle={{ breadcrumb: 'Créer' }} />
+          <Route
+            path="create"
+            element={<TeamCreatePage />}
+            handle={{ breadcrumb: <FormattedMessage id="breadcrumb.create" /> }}
+          />
         </Route>
 
-        <Route path="calendar" element={<CalendarPage />} handle={{ breadcrumb: 'Calendrier' }} />
+        <Route
+          path="calendar"
+          element={<CalendarPage />}
+          handle={{ breadcrumb: <FormattedMessage id="breadcrumb.calendar" /> }}
+        />
 
-        <Route path="games" handle={{ breadcrumb: 'Matchs' }}>
+        <Route path="games" handle={{ breadcrumb: <FormattedMessage id="breadcrumb.matches" /> }}>
           <Route index element={<GameList />} />
           <Route
             path=":gameId"
@@ -113,21 +133,25 @@ const router = createBrowserRouter(
               <Outlet />
             </RequireRole>
           }
-          handle={{ breadcrumb: 'Administration' }}
+          handle={{ breadcrumb: <FormattedMessage id="breadcrumb.admin" /> }}
         >
           <Route index element={<Navigate to="users" />} />
           <Route
             path="users"
             element={<AdminUsersPage />}
-            handle={{ breadcrumb: <FormattedMessage id="adminSidebar.users" /> }}
+            handle={{ breadcrumb: <FormattedMessage id="breadcrumb.adminUsers" /> }}
           />
-          <Route path="championships" handle={{ breadcrumb: 'Championnats' }}>
+          <Route path="championships" handle={{ breadcrumb: <FormattedMessage id="breadcrumb.championships" /> }}>
             <Route index element={<AdminChampionshipsPage />} />
-            <Route path="new" element={<ChampionshipWizardPage />} handle={{ breadcrumb: 'Nouveau championnat' }} />
+            <Route
+              path="new"
+              element={<ChampionshipWizardPage />}
+              handle={{ breadcrumb: <FormattedMessage id="breadcrumb.newChampionship" /> }}
+            />
             <Route
               path="new/:championshipId"
               element={<ChampionshipWizardPage />}
-              handle={{ breadcrumb: 'Reprendre' }}
+              handle={{ breadcrumb: <FormattedMessage id="breadcrumb.resumeChampionship" /> }}
             />
             <Route
               path=":championshipId"
@@ -139,18 +163,34 @@ const router = createBrowserRouter(
               }}
             />
           </Route>
-          <Route path="teams" element={<AdminTeamsPage />} handle={{ breadcrumb: 'Équipes' }}>
-            <Route path=":teamId/delete" element={<AdminTeamDeletePage />} handle={{ breadcrumb: 'Supprimer' }} />
+          <Route
+            path="teams"
+            element={<AdminTeamsPage />}
+            handle={{ breadcrumb: <FormattedMessage id="breadcrumb.teams" /> }}
+          >
+            <Route
+              path=":teamId/delete"
+              element={<AdminTeamDeletePage />}
+              handle={{ breadcrumb: <FormattedMessage id="breadcrumb.delete" /> }}
+            />
           </Route>
-          <Route path="matches" handle={{ breadcrumb: 'Matchs' }}>
+          <Route path="matches" handle={{ breadcrumb: <FormattedMessage id="breadcrumb.matches" /> }}>
             <Route index element={<AdminMatchesPage />} />
           </Route>
         </Route>
 
-        <Route path="settings" element={<SettingsLayout />} handle={{ breadcrumb: 'Paramètres' }}>
+        <Route
+          path="settings"
+          element={<SettingsLayout />}
+          handle={{ breadcrumb: <FormattedMessage id="breadcrumb.settings" /> }}
+        >
           <Route index element={<MainSettingsPage />} />
 
-          <Route element={<AreasPage />} path="areas" handle={{ breadcrumb: 'Aires' }} />
+          <Route
+            element={<AreasPage />}
+            path="areas"
+            handle={{ breadcrumb: <FormattedMessage id="breadcrumb.areas" /> }}
+          />
           <Route
             path="age-categories"
             element={
@@ -158,7 +198,7 @@ const router = createBrowserRouter(
                 <AdminAgeCategoriesPage />
               </RequireRole>
             }
-            handle={{ breadcrumb: "Catégories d'âge" }}
+            handle={{ breadcrumb: <FormattedMessage id="breadcrumb.ageCategories" /> }}
           />
           <Route
             path="seasons"
@@ -167,7 +207,7 @@ const router = createBrowserRouter(
                 <AdminSeasonsPage />
               </RequireRole>
             }
-            handle={{ breadcrumb: 'Saisons' }}
+            handle={{ breadcrumb: <FormattedMessage id="breadcrumb.seasons" /> }}
           />
         </Route>
       </Route>

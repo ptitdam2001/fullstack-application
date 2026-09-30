@@ -236,6 +236,26 @@
     "config": "Configuration",
     "settings": "Paramètres"
   },
+  "breadcrumb": {
+    "home": "Accueil",
+    "myProfile": "Mon profil",
+    "teams": "Équipes",
+    "list": "Liste",
+    "create": "Créer",
+    "players": "Joueurs",
+    "calendar": "Calendrier",
+    "matches": "Matchs",
+    "admin": "Administration",
+    "adminUsers": "Utilisateurs",
+    "championships": "Championnats",
+    "newChampionship": "Nouveau championnat",
+    "resumeChampionship": "Reprendre",
+    "delete": "Supprimer",
+    "settings": "Paramètres",
+    "areas": "Aires",
+    "ageCategories": "Catégories d'âge",
+    "seasons": "Saisons"
+  },
   "register": {
     "section.team": "Votre équipe",
     "section.personalInfo": "Informations personnelles",
