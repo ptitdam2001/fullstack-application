@@ -3,8 +3,8 @@ packages:
   - 'form-factory'
   - 'web-application'
 
-onlyBuiltDependencies:
-  - '@tailwindcss/oxide'
-  - esbuild
-  - msw
-  - storybook-addon-remix-react-router
+allowBuilds:
+  '@tailwindcss/oxide': true
+  esbuild: true
+  msw: true
+  storybook-addon-remix-react-router: true
