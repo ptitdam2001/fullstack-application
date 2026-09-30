@@ -6,8 +6,9 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
       INIT_WAIT_SEC: 10
+    # root/example creds: bind to loopback so the DB is not reachable from the LAN (same as docker-compose.yml)
     ports:
-      - "27019:27017"
+      - "127.0.0.1:27019:27017"
     healthcheck:
       test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
       interval: 5s
