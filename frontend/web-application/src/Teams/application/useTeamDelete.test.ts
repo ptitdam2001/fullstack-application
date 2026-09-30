@@ -11,11 +11,18 @@ describe('useTeamDelete', () => {
   })
 
   it('deleteTeam calls remove mutation and returns success', async () => {
-    server.use(http.delete('/team/:id', () => HttpResponse.json(undefined, { status: 200 })))
+    let receivedId: string | undefined
+    server.use(
+      http.delete('*/team/:id', ({ params }) => {
+        receivedId = params.id as string
+        return HttpResponse.json(undefined, { status: 200 })
+      })
+    )
 
     const { result } = renderHookWithProviders(() => useTeamDelete())
     result.current.deleteTeam('team-1')
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
+    expect(receivedId).toBe('team-1')
   })
 })

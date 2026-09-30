@@ -13,7 +13,7 @@ describe('useMatchDelete', () => {
   it('deleteMatch calls DELETE /match/:id and succeeds', async () => {
     let receivedId: string | undefined
     server.use(
-      http.delete('/match/:id', ({ params }) => {
+      http.delete('*/match/:id', ({ params }) => {
         receivedId = params.id as string
         return HttpResponse.json({})
       })
