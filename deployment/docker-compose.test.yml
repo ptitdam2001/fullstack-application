@@ -6,7 +6,8 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
       INIT_WAIT_SEC: 10
-    # root/example creds: bind to loopback so the DB is not reachable from the LAN (same as docker-compose.yml)
+    # root/example creds: loopback only, not reachable from the LAN (same as docker-compose.yml).
+    # api-test and front-test below are loopback-bound too: weak smoke secrets + public seed creds.
     ports:
       - "127.0.0.1:27019:27017"
     healthcheck:
@@ -20,7 +21,7 @@ services:
       context: ..
       dockerfile: deployment/backend/Dockerfile
     ports:
-      - "4001:3000"
+      - "127.0.0.1:4001:3000"
     environment:
       PORT: "3000"
       DATABASE_URL: mongodb://root:example@mongodb-test:27017/app?authSource=admin&directConnection=true
@@ -45,6 +46,6 @@ services:
       args:
         VITE_BACKEND_BASEURL: http://localhost:4001/
     ports:
-      - "3001:80"
+      - "127.0.0.1:3001:80"
     depends_on:
       - api-test
