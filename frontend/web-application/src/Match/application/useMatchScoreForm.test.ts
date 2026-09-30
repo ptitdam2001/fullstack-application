@@ -24,7 +24,7 @@ describe('useMatchScoreForm', () => {
   it('submitScore sends the match with the score and PLAYED status, and succeeds', async () => {
     let receivedBody: unknown
     server.use(
-      http.patch('/match/:id', async ({ request }) => {
+      http.patch('*/match/:id', async ({ request }) => {
         receivedBody = await request.json()
         return HttpResponse.json({ ...match, status: MatchStatus.PLAYED, homeGoals: 3, awayGoals: 1 })
       })
