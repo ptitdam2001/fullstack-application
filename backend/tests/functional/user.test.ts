@@ -1,4 +1,4 @@
-import { randomBytes, randomUUID } from 'node:crypto'
+import { randomBytes } from 'node:crypto'
 import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { prisma } from '../../utils/prismaClient.js'
 import { authHeaderFor } from '../support/authenticate.js'
@@ -10,19 +10,6 @@ import { assignUserToTeam, createAdmin, createTeam, createUser } from '../suppor
 /** MongoDB rejects non-ObjectId strings on @db.ObjectId fields with a 500.
  *  Use a well-formed but absent ObjectId for "unknown id" cases. */
 const unknownObjectId = (): string => randomBytes(12).toString('hex')
-
-const userInput = (overrides: Partial<Record<string, unknown>> = {}) => ({
-  id: randomUUID(),
-  email: `new-${randomUUID()}@fixtures.local`,
-  firstName: 'New',
-  lastName: 'User',
-  isAdmin: false,
-  isActive: false,
-  isBlocked: false,
-  isReferee: false,
-  password: 'Test@1234',
-  ...overrides,
-})
 
 describe('user domain — functional API', () => {
   let agent: Awaited<ReturnType<typeof createTestAgent>>
@@ -240,32 +227,18 @@ describe('user domain — functional API', () => {
     })
   })
 
-  describe('createUser — POST /user', () => {
-    it('401 — unauthenticated request', async () => {
-      const res = await agent.post('/user').send(userInput())
-
-      expect(res.status).toBe(401)
-    })
-
-    it('403 — non-admin user', async () => {
-      const user = await createUser()
-
-      const res = await agent.post('/user').set(authHeaderFor(user.id)).send(userInput())
-
-      expect(res.status).toBe(403)
-    })
-
-    it('nominal: admin creates a user with a hashed password', async () => {
+  describe('POST /user — removed', () => {
+    // Accounts are only created via /register + admin activation (spec 06, note ³)
+    it('404 — admin cannot create a user directly', async () => {
       const admin = await createAdmin()
-      const input = userInput({ email: 'created@fixtures.local', firstName: 'Created' })
 
-      const res = await agent.post('/user').set(authHeaderFor(admin.id, true)).send(input)
+      const res = await agent
+        .post('/user')
+        .set(authHeaderFor(admin.id, true))
+        .send({ email: 'created@fixtures.local', firstName: 'Created', password: 'Test@1234' })
 
-      expect(res.status).toBe(201)
-      expect(res.body).toMatchObject({ email: 'created@fixtures.local', firstName: 'Created', isAdmin: false })
-
-      const stored = await prisma.user.findUnique({ where: { id: res.body.id } })
-      expect(stored?.password).not.toBe('Test@1234')
+      expect(res.status).toBe(404)
+      expect(await prisma.user.count({ where: { email: 'created@fixtures.local' } })).toBe(0)
     })
   })
 

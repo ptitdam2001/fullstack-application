@@ -1,4 +1,4 @@
-import type { AuthState, UserProfile, CreateUserInput, UpdateUserInput } from '../domain/User.js'
+import type { AuthState, UserProfile, UpdateUserInput } from '../domain/User.js'
 
 export type UserFilterOptions = { isActive?: boolean }
 /** Zero-based page. Pagination is opt-in: omitted → every matching user is returned. */
@@ -10,7 +10,6 @@ export interface IUserRepository {
   findByEmailWithPassword(email: string): Promise<(UserProfile & { password: string; lockedUntil: Date | null }) | null>
   findAll(options?: UserListOptions): Promise<UserProfile[]>
   count(filters?: UserFilterOptions): Promise<number>
-  create(input: CreateUserInput): Promise<UserProfile>
   update(id: string, input: UpdateUserInput): Promise<UserProfile>
   delete(id: string): Promise<void>
   incrementLoginAttempts(userId: string): Promise<number>

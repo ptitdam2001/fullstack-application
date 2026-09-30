@@ -30,7 +30,6 @@ const makeRepo = (overrides: Partial<IUserRepository> = {}): IUserRepository => 
   findByEmailWithPassword: vi.fn().mockResolvedValue({ ...mockUser, password: 'hashed' }),
   findAll: vi.fn().mockResolvedValue([mockUser]),
   count: vi.fn().mockResolvedValue(1),
-  create: vi.fn().mockResolvedValue(mockUser),
   update: vi.fn().mockResolvedValue(mockUser),
   delete: vi.fn().mockResolvedValue(undefined),
   incrementLoginAttempts: vi.fn().mockResolvedValue(1),

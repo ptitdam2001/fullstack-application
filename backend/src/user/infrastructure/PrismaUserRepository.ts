@@ -1,6 +1,6 @@
 import { prisma } from '../../../utils/prismaClient.js'
 import type { IUserRepository, UserFilterOptions, UserListOptions } from '../ports/IUserRepository.js'
-import type { AuthState, UserProfile, UserRole, CreateUserInput, UpdateUserInput } from '../domain/User.js'
+import type { AuthState, UserProfile, UserRole, UpdateUserInput } from '../domain/User.js'
 import { TeamRole } from '../../userTeam/domain/UserTeam.js'
 
 const select = {
@@ -101,21 +101,6 @@ export class PrismaUserRepository implements IUserRepository {
 
   count(filters?: UserFilterOptions): Promise<number> {
     return prisma.user.count({ where: toWhere(filters) })
-  }
-
-  async create(input: CreateUserInput): Promise<UserProfile> {
-    const row = await prisma.user.create({
-      data: {
-        firstName: input.firstName,
-        lastName: input.lastName,
-        email: input.email,
-        password: input.password,
-        isAdmin: input.isAdmin ?? false,
-        avatar: input.avatar,
-      },
-      select,
-    })
-    return toUserProfile(row)
   }
 
   async update(id: string, input: UpdateUserInput): Promise<UserProfile> {

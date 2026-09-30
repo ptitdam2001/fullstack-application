@@ -26,15 +26,6 @@ export type AuthState = {
   tokensValidAfter: Date | null
 }
 
-export type CreateUserInput = {
-  firstName: string
-  lastName?: string
-  email: string
-  password: string
-  isAdmin?: boolean
-  avatar?: string
-}
-
 export type UpdateUserInput = {
   firstName?: string
   lastName?: string

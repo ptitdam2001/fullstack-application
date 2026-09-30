@@ -202,31 +202,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Count'
-  /user:
-    post:
-      operationId: 'createUser'
-      description: ''
-      tags:
-        - Users
-      parameters: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/User'
-      responses:
-        200:
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-        500:
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorOutput'
   /user/{userId}/player:
     post:
       operationId: createPlayer
