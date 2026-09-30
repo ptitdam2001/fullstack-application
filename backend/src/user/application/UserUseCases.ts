@@ -1,5 +1,5 @@
 import type { IUserRepository, UserFilterOptions, UserListOptions } from '../ports/IUserRepository.js'
-import type { UserProfile, CreateUserInput, UpdateUserInput } from '../domain/User.js'
+import type { UserProfile, UpdateUserInput } from '../domain/User.js'
 import { CannotSelfDeleteError, CannotSelfDemoteError, UserNotFoundError } from '../domain/UserErrors.js'
 
 export class UserUseCases {
@@ -19,11 +19,6 @@ export class UserUseCases {
       throw new UserNotFoundError()
     }
     return user
-  }
-
-  async create(input: CreateUserInput, hashPassword: (p: string) => Promise<string>): Promise<UserProfile> {
-    const hashed = await hashPassword(input.password)
-    return this.userRepo.create({ ...input, password: hashed })
   }
 
   /** @param actorId the authenticated admin performing the update */

@@ -25,7 +25,6 @@ const makeRepo = (overrides: Partial<IUserRepository> = {}): IUserRepository => 
   findByEmailWithPassword: vi.fn(),
   findAll: vi.fn().mockResolvedValue([mockUser]),
   count: vi.fn().mockResolvedValue(1),
-  create: vi.fn().mockResolvedValue(mockUser),
   update: vi.fn().mockResolvedValue({ ...mockUser, firstName: 'Updated' }),
   delete: vi.fn().mockResolvedValue(undefined),
   incrementLoginAttempts: vi.fn().mockResolvedValue(1),
@@ -34,8 +33,6 @@ const makeRepo = (overrides: Partial<IUserRepository> = {}): IUserRepository => 
   findAuthState: vi.fn().mockResolvedValue(null),
   ...overrides,
 })
-
-const hashFn = vi.fn().mockResolvedValue('hashed-password')
 
 describe('UserUseCases.getAll', () => {
   it('returns all users', async () => {
@@ -90,15 +87,6 @@ describe('UserUseCases.getById', () => {
   it('throws UserNotFoundError when not found', async () => {
     const repo = makeRepo({ findById: vi.fn().mockResolvedValue(null) })
     await expect(new UserUseCases(repo).getById('unknown')).rejects.toThrow(UserNotFoundError)
-  })
-})
-
-describe('UserUseCases.create', () => {
-  it('hashes password before creating user', async () => {
-    const repo = makeRepo()
-    await new UserUseCases(repo).create({ firstName: 'Bob', email: 'bob@example.com', password: 'plain' }, hashFn)
-    expect(hashFn).toHaveBeenCalledWith('plain')
-    expect(repo.create).toHaveBeenCalledWith(expect.objectContaining({ password: 'hashed-password' }))
   })
 })
 
