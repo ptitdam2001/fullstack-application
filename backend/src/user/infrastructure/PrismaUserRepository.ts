@@ -87,6 +87,14 @@ export class PrismaUserRepository implements IUserRepository {
     return { ...toUserProfile(row), password: row.password, lockedUntil: row.lockedUntil }
   }
 
+  async findByIdWithPassword(id: string): Promise<(UserProfile & { password: string }) | null> {
+    const row = await prisma.user.findUnique({ where: { id }, select: { ...select, password: true } })
+    if (!row) {
+      return null
+    }
+    return { ...toUserProfile(row), password: row.password }
+  }
+
   async findAll(options?: UserListOptions): Promise<UserProfile[]> {
     const pagination = options?.pagination
     const rows = await prisma.user.findMany({
@@ -161,5 +169,19 @@ export class PrismaUserRepository implements IUserRepository {
 
   async resetLoginAttempts(userId: string): Promise<void> {
     await prisma.user.update({ where: { id: userId }, data: { loginAttempts: 0, lockedUntil: null } })
+  }
+
+  async changePassword(userId: string, hashedPassword: string, tokensValidAfter: Date): Promise<void> {
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        password: hashedPassword,
+        tokensValidAfter,
+        loginAttempts: 0,
+        lockedUntil: null,
+        resetToken: null,
+        resetTokenExpiry: null,
+      },
+    })
   }
 }

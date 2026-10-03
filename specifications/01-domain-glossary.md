@@ -66,6 +66,14 @@ Paramètre du championnat définissant combien de points sont attribués selon l
 
 Compte applicatif. Possède un flag `isAdmin` pour les droits système. Les rôles métier (coach, joueur, arbitre) sont portés par les relations `UserTeam` et `UserMatch`, pas par `User` directement.
 
+### Photo de profil (avatar)
+
+Image associée à un `User`, choisie par l'utilisateur depuis la page compte. `User.avatar` contient son URL. Voir `specifications/24-page-compte.md`.
+
+### Image (Image)
+
+Fichier image stocké par l'application (aujourd'hui uniquement les photos de profil), servi par `GET /images/{id}`. Stockage provisoire en base, isolé derrière le port `IImageStorage`.
+
 ### Appartenance équipe (UserTeam)
 
 Relation entre un `User` et une `Team` avec un rôle contextuel (`COACH` ou `PLAYER`). Contrainte d'unicité sur `[userId, teamId, role]` : un même utilisateur peut être COACH et PLAYER de la même équipe simultanément, mais ne peut pas avoir le même rôle deux fois dans la même équipe.

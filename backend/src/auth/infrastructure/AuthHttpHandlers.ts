@@ -7,6 +7,8 @@ import {
   AccountBlockedError,
   AccountInactiveError,
   UnauthorizedError,
+  WeakPasswordError,
+  WrongCurrentPasswordError,
 } from '../domain/AuthErrors.js'
 import { UserNotFoundError } from '../../user/domain/UserErrors.js'
 import { PrismaUserRepository } from '../../user/infrastructure/PrismaUserRepository.js'
@@ -43,6 +45,32 @@ export const me = async (ctx: Context, _: Request, res: Response) => {
   } catch (err) {
     if (err instanceof UnauthorizedError) {
       return res.status(401).json({ message: 'Unauthorized', status: 401 })
+    }
+    if (err instanceof UserNotFoundError) {
+      return res.status(404).json({ message: 'User not found', status: 404 })
+    }
+    logger.error(err)
+    return res.status(500).json({ message: 'Error! Something went wrong.', status: 500 })
+  }
+}
+
+export const changeMyPassword = async (ctx: Context, req: Request, res: Response) => {
+  try {
+    const { currentPassword, newPassword } = req.body
+    return res.status(200).json(await useCases.changePassword(getAuthUserId(ctx), currentPassword, newPassword))
+  } catch (err) {
+    if (err instanceof UnauthorizedError) {
+      return res.status(401).json({ message: 'Unauthorized', status: 401 })
+    }
+    // 400, not 401: the session is fine, and clients treat any 401 as "session expired".
+    if (err instanceof WrongCurrentPasswordError) {
+      return res.status(400).json({ message: 'Mot de passe actuel incorrect', status: 400 })
+    }
+    if (err instanceof WeakPasswordError) {
+      return res.status(400).json({
+        message: 'Le mot de passe doit contenir au moins 8 caractères, 1 chiffre et 1 majuscule',
+        status: 400,
+      })
     }
     if (err instanceof UserNotFoundError) {
       return res.status(404).json({ message: 'User not found', status: 404 })

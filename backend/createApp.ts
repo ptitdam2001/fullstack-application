@@ -9,6 +9,8 @@ import * as authHandlers from './src/auth/infrastructure/AuthHttpHandlers'
 import { jwtSecurityHandler } from './src/auth/infrastructure/JwtSecurityHandler'
 import * as registrationHandlers from './src/registration/infrastructure/RegistrationHttpHandlers'
 import * as userHandlers from './src/user/infrastructure/UserHttpHandlers'
+import * as profileHandlers from './src/user/infrastructure/ProfileHttpHandlers'
+import * as imageHandlers from './src/image/infrastructure/ImageHttpHandlers'
 import * as teamHandlers from './src/team/infrastructure/TeamHttpHandlers'
 import * as teamJoinRequestHandlers from './src/teamJoinRequest/infrastructure/TeamJoinRequestHttpHandlers'
 import * as matchHandlers from './src/match/infrastructure/MatchHttpHandlers'
@@ -28,6 +30,7 @@ import addFormats from 'ajv-formats'
 import { logger } from './config/logger'
 import { createRequestLogger } from './config/requestLogger'
 import { applyAuthRateLimits } from './config/rateLimits'
+import { applyBodyLimits } from './config/bodyLimits'
 
 /**
  * Builds and initializes the Express + OpenAPI app without binding a port.
@@ -43,6 +46,8 @@ export const createApp = async (): Promise<Application> => {
 
   const app = express()
 
+  // Before the global parser: a route with its own limit must be parsed by its own parser.
+  applyBodyLimits(app)
   app.use(express.json())
   app.use(helmet())
   app.use(
@@ -72,6 +77,8 @@ export const createApp = async (): Promise<Application> => {
       ...authHandlers,
       ...registrationHandlers,
       ...userHandlers,
+      ...profileHandlers,
+      ...imageHandlers,
       ...teamHandlers,
       ...teamJoinRequestHandlers,
       ...matchHandlers,

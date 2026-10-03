@@ -381,6 +381,27 @@ describe('user domain — functional API', () => {
       expect(stored).toBeNull()
     })
 
+    it('règle métier: deleting a user deletes their stored images, and only theirs', async () => {
+      const user = await createUser()
+      const other = await createUser()
+      const admin = await createAdmin()
+      const data = Buffer.from([0xff, 0xd8, 0xff, 0xe0])
+      const image = await prisma.image.create({
+        data: { data, contentType: 'image/jpeg', size: data.length, ownerId: user.id },
+      })
+      const otherImage = await prisma.image.create({
+        data: { data, contentType: 'image/jpeg', size: data.length, ownerId: other.id },
+      })
+      await prisma.user.update({ where: { id: user.id }, data: { avatar: `/images/${image.id}` } })
+
+      const res = await agent.delete(`/user/${user.id}`).set(authHeaderFor(admin.id, true))
+
+      expect(res.status).toBe(204)
+      expect(await prisma.image.findUnique({ where: { id: image.id } })).toBeNull()
+      expect((await agent.get(`/images/${image.id}`)).status).toBe(404)
+      expect(await prisma.image.findUnique({ where: { id: otherImage.id } })).not.toBeNull()
+    })
+
     it('404 — unknown id', async () => {
       const admin = await createAdmin()
 

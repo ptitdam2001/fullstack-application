@@ -42,6 +42,20 @@ describe('rate limiting — functional API', () => {
     expect(second.body).toMatchObject({ status: 429 })
   })
 
+  // Mounted ahead of authentication: the limit holds whether or not the caller is signed in.
+  it('PUT /me/password answers 429 once its limit is reached', async () => {
+    vi.stubEnv('LOGIN_RATE_LIMIT', '1')
+    const agent = supertest(await createApp())
+    const body = { currentPassword: 'Whatever123', newPassword: 'Password123' }
+
+    const first = await agent.put('/me/password').send(body)
+    const second = await agent.put('/me/password').send(body)
+
+    expect(first.status).toBe(401)
+    expect(second.status).toBe(429)
+    expect(second.body).toMatchObject({ status: 429 })
+  })
+
   it('does not rate limit an unrelated route', async () => {
     vi.stubEnv('TOKEN_RATE_LIMIT', '1')
     vi.stubEnv('EMAIL_RATE_LIMIT', '1')

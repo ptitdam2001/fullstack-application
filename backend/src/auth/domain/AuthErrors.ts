@@ -26,6 +26,22 @@ export class EmailAlreadyInUseError extends Error {
   }
 }
 
+/** The current password given to change it is wrong. Not an authentication failure: the caller is signed in. */
+export class WrongCurrentPasswordError extends Error {
+  constructor() {
+    super('Current password is incorrect')
+    this.name = 'WrongCurrentPasswordError'
+  }
+}
+
+/** The new password breaks the password rules (spec 10). */
+export class WeakPasswordError extends Error {
+  constructor() {
+    super('Password does not meet the password rules')
+    this.name = 'WeakPasswordError'
+  }
+}
+
 export class AccountBlockedError extends Error {
   constructor() {
     super('Account is blocked')

@@ -20,3 +20,13 @@ export class CannotSelfDeleteError extends Error {
     this.name = 'CannotSelfDeleteError'
   }
 }
+
+export type InvalidAvatarReason = 'INVALID_ENCODING' | 'EMPTY' | 'TOO_LARGE' | 'UNSUPPORTED_TYPE' | 'CONTENT_MISMATCH'
+
+/** The uploaded profile picture is refused. The message never echoes the payload. */
+export class InvalidAvatarError extends Error {
+  constructor(readonly reason: InvalidAvatarReason) {
+    super(`Invalid avatar: ${reason}`)
+    this.name = 'InvalidAvatarError'
+  }
+}

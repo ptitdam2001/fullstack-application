@@ -7,6 +7,7 @@ import { RegisterBody } from '@Sdk/authentication/authentication.zod'
 import type { RegisterInput } from '@Sdk/model'
 import { TeamSelectField } from '@Teams/ui/TeamSelect/TeamSelectField'
 import { useRegisterAction } from '../../application/useRegisterAction'
+import { getPasswordStrength } from '../../domain/password'
 
 const RegisterFormSchema = RegisterBody.extend({
   confirmPassword: z.string().min(1),
@@ -18,20 +19,6 @@ const RegisterFormSchema = RegisterBody.extend({
 type RegisterFormValues = z.infer<typeof RegisterFormSchema>
 
 const registerFormFactory = createFormFactory({ schema: RegisterFormSchema })
-
-const getPasswordStrength = (password: string): 0 | 1 | 2 | 3 => {
-  let score = 0
-  if (password.length >= 8) {
-    score++
-  }
-  if (/[0-9]/.test(password)) {
-    score++
-  }
-  if (/[A-Z]/.test(password)) {
-    score++
-  }
-  return score as 0 | 1 | 2 | 3
-}
 
 const strengthKeys = [
   'register.strength.weak',

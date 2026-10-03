@@ -5,6 +5,7 @@ import { getBracketMock } from '@Sdk/bracket/bracket.msw'
 import { getChampionshipMock } from '@Sdk/championship/championship.msw'
 import { getGamesMock } from '@Sdk/games/games.msw'
 import { getGroupMock } from '@Sdk/group/group.msw'
+import { getImagesMock } from '@Sdk/images/images.msw'
 import { getMatchMock } from '@Sdk/match/match.msw'
 import { getPhaseMock } from '@Sdk/phase/phase.msw'
 import { getSeasonMock } from '@Sdk/season/season.msw'
@@ -26,6 +27,7 @@ export const handlers = [
   ...getChampionshipMock(),
   ...getGamesMock(),
   ...getGroupMock(),
+  ...getImagesMock(),
   ...getMatchMock(),
   ...getPhaseMock(),
   ...getSeasonMock(),
