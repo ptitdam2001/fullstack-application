@@ -7,7 +7,7 @@ import Axios, { type AxiosError, type AxiosRequestConfig } from 'axios'
 import { clearAuthStorage } from '@Auth/infrastructure/authStorage'
 import { redirectToLogin } from '@Auth/infrastructure/authNavigation'
 
-const getBaseUrl = () => import.meta.env.VITE_BACKEND_BASEURL ?? 'http://localhost:4000/'
+export const getBaseUrl = (): string => import.meta.env.VITE_BACKEND_BASEURL ?? 'http://localhost:4000/'
 
 const getAxiosConfig = (): AxiosRequestConfig => {
   const localstorageContent = localStorage.getItem('user')
