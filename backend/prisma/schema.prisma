@@ -219,6 +219,24 @@ model User {
 }
 
 // ─────────────────────────────────────────
+// IMAGE
+// ─────────────────────────────────────────
+
+// Binary storage behind the IImageStorage port (src/image) — meant to be swapped for S3 or
+// another file store. No Prisma relation to User on purpose: the owner is cleaned up through the port.
+model Image {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  data        Bytes
+  contentType String
+  size        Int
+  ownerId     String   @db.ObjectId
+  createdAt   DateTime @default(now())
+
+  @@index([ownerId])
+  @@map("images")
+}
+
+// ─────────────────────────────────────────
 // AREA
 // ─────────────────────────────────────────
 

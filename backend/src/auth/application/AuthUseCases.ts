@@ -7,7 +7,10 @@ import {
   AccountBlockedError,
   AccountInactiveError,
   UnauthorizedError,
+  WeakPasswordError,
+  WrongCurrentPasswordError,
 } from '../domain/AuthErrors.js'
+import { isPasswordValid } from '../domain/PasswordPolicy.js'
 import { UserNotFoundError } from '../../user/domain/UserErrors.js'
 
 const getMaxLoginAttempts = (): number => parseInt(process.env.MAX_LOGIN_ATTEMPTS ?? '5')
@@ -99,5 +102,31 @@ export class AuthUseCases {
 
     // Contextual roles are resolved by the user repository, same as GET /users (spec 06)
     return user
+  }
+
+  /**
+   * Changes the password of a signed-in user. Every token issued before the change is revoked, the one
+   * of this very request included, so a fresh one is returned to keep the caller signed in.
+   */
+  async changePassword(userId: string, currentPassword: string, newPassword: string): Promise<LoginResult> {
+    const user = await this.userRepo.findByIdWithPassword(userId)
+    if (!user) {
+      throw new UserNotFoundError()
+    }
+    // Current password first: the rules of the new one are only discussed with someone who knows it.
+    if (!(await this.authService.comparePassword(currentPassword, user.password))) {
+      throw new WrongCurrentPasswordError()
+    }
+    if (!isPasswordValid(newPassword)) {
+      throw new WeakPasswordError()
+    }
+
+    const hashed = await this.authService.hashPassword(newPassword)
+    // Revocation date taken BEFORE the token is signed: `authenticate` accepts a token whose iat (whole
+    // seconds) is not older than this date floored to the second, so the fresh token always passes.
+    await this.userRepo.changePassword(userId, hashed, new Date())
+
+    const token = this.authService.generateToken(user.id, user.isAdmin, user.roles.includes('COACH'))
+    return { userId: user.id, email: user.email, isAdmin: user.isAdmin, token }
   }
 }

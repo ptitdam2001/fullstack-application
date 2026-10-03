@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest'
+import { afterEach, describe, it, expect, vi } from 'vitest'
 import { AuthUseCases } from './AuthUseCases.js'
 import type { IUserRepository } from '../../user/ports/IUserRepository.js'
 import type { IAuthService } from '../ports/IAuthService.js'
@@ -7,8 +7,12 @@ import {
   AccountBlockedError,
   AccountInactiveError,
   UnauthorizedError,
+  WeakPasswordError,
+  WrongCurrentPasswordError,
 } from '../domain/AuthErrors.js'
 import { UserNotFoundError } from '../../user/domain/UserErrors.js'
+import { JwtAuthService } from '../infrastructure/JwtAuthService.js'
+import type { AuthState } from '../../user/domain/User.js'
 
 const mockUser = {
   id: 'user-1',
@@ -28,6 +32,7 @@ const mockUser = {
 const makeRepo = (overrides: Partial<IUserRepository> = {}): IUserRepository => ({
   findById: vi.fn().mockResolvedValue(mockUser),
   findByEmailWithPassword: vi.fn().mockResolvedValue({ ...mockUser, password: 'hashed' }),
+  findByIdWithPassword: vi.fn().mockResolvedValue({ ...mockUser, password: 'hashed' }),
   findAll: vi.fn().mockResolvedValue([mockUser]),
   count: vi.fn().mockResolvedValue(1),
   update: vi.fn().mockResolvedValue(mockUser),
@@ -38,6 +43,7 @@ const makeRepo = (overrides: Partial<IUserRepository> = {}): IUserRepository => 
   findAuthState: vi
     .fn()
     .mockResolvedValue({ isAdmin: false, isActive: true, isBlocked: false, isCoach: false, tokensValidAfter: null }),
+  changePassword: vi.fn().mockResolvedValue(undefined),
   ...overrides,
 })
 
@@ -309,5 +315,147 @@ describe('AuthUseCases.me', () => {
     await expect(makeUseCases({ findById: vi.fn().mockResolvedValue(null) }).me('unknown-id')).rejects.toThrow(
       UserNotFoundError
     )
+  })
+})
+
+describe('AuthUseCases.changePassword', () => {
+  const withStoredPassword = (extra: Record<string, unknown> = {}) => ({
+    findByIdWithPassword: vi.fn().mockResolvedValue({ ...mockUser, password: 'stored-hash', ...extra }),
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
+    vi.unstubAllEnvs()
+  })
+
+  it('stores the new hash, revokes the previous tokens and returns a fresh token', async () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-10-02T10:00:00.500Z'))
+    const repo = { ...withStoredPassword(), changePassword: vi.fn().mockResolvedValue(undefined) }
+    const authService = {
+      comparePassword: vi.fn().mockResolvedValue(true),
+      hashPassword: vi.fn().mockResolvedValue('new-hash'),
+      generateToken: vi.fn().mockReturnValue('fresh-token'),
+    }
+
+    const result = await makeUseCases(repo, authService).changePassword('user-1', 'Current123', 'NewPassword1')
+
+    expect(authService.comparePassword).toHaveBeenCalledWith('Current123', 'stored-hash')
+    expect(authService.hashPassword).toHaveBeenCalledWith('NewPassword1')
+    expect(repo.changePassword).toHaveBeenCalledWith('user-1', 'new-hash', new Date('2026-10-02T10:00:00.500Z'))
+    expect(result).toEqual({ userId: 'user-1', email: 'alice@example.com', isAdmin: false, token: 'fresh-token' })
+  })
+
+  it('signs the fresh token after the password is stored', async () => {
+    const repo = { ...withStoredPassword(), changePassword: vi.fn().mockResolvedValue(undefined) }
+    const authService = { generateToken: vi.fn().mockReturnValue('fresh-token') }
+
+    await makeUseCases(repo, authService).changePassword('user-1', 'Current123', 'NewPassword1')
+
+    expect(repo.changePassword.mock.invocationCallOrder[0]).toBeLessThan(
+      authService.generateToken.mock.invocationCallOrder[0]
+    )
+  })
+
+  it('carries the current rights into the fresh token', async () => {
+    const authService = { generateToken: vi.fn().mockReturnValue('fresh-token') }
+    const repo = withStoredPassword({ isAdmin: true, roles: ['ADMIN', 'COACH'] })
+
+    const result = await makeUseCases(repo, authService).changePassword('user-1', 'Current123', 'NewPassword1')
+
+    expect(authService.generateToken).toHaveBeenCalledWith('user-1', true, true)
+    expect(result.isAdmin).toBe(true)
+  })
+
+  it('refuses a wrong current password without writing', async () => {
+    const repo = { ...withStoredPassword(), changePassword: vi.fn() }
+    const authService = { comparePassword: vi.fn().mockResolvedValue(false), hashPassword: vi.fn() }
+
+    await expect(makeUseCases(repo, authService).changePassword('user-1', 'Wrong123', 'NewPassword1')).rejects.toThrow(
+      WrongCurrentPasswordError
+    )
+    expect(authService.hashPassword).not.toHaveBeenCalled()
+    expect(repo.changePassword).not.toHaveBeenCalled()
+  })
+
+  it.each([
+    ['shorter than 8 characters', 'Abc1'],
+    ['without a digit', 'NewPassword'],
+    ['without an uppercase letter', 'newpassword1'],
+  ])('refuses a new password %s without writing (spec 10)', async (_label, newPassword) => {
+    const repo = { ...withStoredPassword(), changePassword: vi.fn() }
+
+    await expect(makeUseCases(repo).changePassword('user-1', 'Current123', newPassword)).rejects.toThrow(
+      WeakPasswordError
+    )
+    expect(repo.changePassword).not.toHaveBeenCalled()
+  })
+
+  it('reports a wrong current password before a weak new one', async () => {
+    const authService = { comparePassword: vi.fn().mockResolvedValue(false) }
+
+    await expect(
+      makeUseCases(withStoredPassword(), authService).changePassword('user-1', 'Wrong123', 'weak')
+    ).rejects.toThrow(WrongCurrentPasswordError)
+  })
+
+  it('throws UserNotFoundError when the user no longer exists', async () => {
+    const repo = { findByIdWithPassword: vi.fn().mockResolvedValue(null) }
+
+    await expect(makeUseCases(repo).changePassword('gone', 'Current123', 'NewPassword1')).rejects.toThrow(
+      UserNotFoundError
+    )
+  })
+
+  // Real JWTs against the real `authenticate`: iat has whole-second precision while tokensValidAfter has
+  // milliseconds, so the fresh token must survive the revocation it was issued with.
+  describe('token revocation, with real tokens', () => {
+    const setUp = async () => {
+      vi.stubEnv('JWT_SECRET', 'unit-test-secret-long-enough')
+      const authService = new JwtAuthService()
+      const state: AuthState = {
+        isAdmin: false,
+        isActive: true,
+        isBlocked: false,
+        isCoach: false,
+        tokensValidAfter: null,
+      }
+      const storedHash = await authService.hashPassword('Current123')
+      const repo = makeRepo({
+        findByIdWithPassword: vi.fn().mockResolvedValue({ ...mockUser, password: storedHash }),
+        findAuthState: vi.fn().mockImplementation(async () => state),
+        changePassword: vi.fn().mockImplementation(async (_id: string, _hash: string, tokensValidAfter: Date) => {
+          state.tokensValidAfter = tokensValidAfter
+        }),
+      })
+      return { authService, useCases: new AuthUseCases(repo, authService) }
+    }
+
+    it.each([
+      ['at the very start of a second', '2026-10-02T10:00:00.000Z'],
+      ['at the very end of a second', '2026-10-02T10:00:00.999Z'],
+    ])('accepts the fresh token when the change happens %s', async (_label, now) => {
+      vi.useFakeTimers()
+      vi.setSystemTime(new Date(now))
+      const { useCases } = await setUp()
+
+      const { token } = await useCases.changePassword('user-1', 'Current123', 'NewPassword1')
+
+      await expect(useCases.authenticate(token)).resolves.toMatchObject({ userId: 'user-1' })
+    })
+
+    it('refuses a token issued before the change', async () => {
+      vi.useFakeTimers()
+      vi.setSystemTime(new Date('2026-10-02T09:59:00.000Z'))
+      const { authService, useCases } = await setUp()
+      const oldToken = authService.generateToken('user-1', false, false)
+      await expect(useCases.authenticate(oldToken)).resolves.toMatchObject({ userId: 'user-1' })
+
+      vi.setSystemTime(new Date('2026-10-02T10:00:00.500Z'))
+      const { token } = await useCases.changePassword('user-1', 'Current123', 'NewPassword1')
+
+      await expect(useCases.authenticate(oldToken)).rejects.toThrow(UnauthorizedError)
+      await expect(useCases.authenticate(token)).resolves.toMatchObject({ userId: 'user-1' })
+    })
   })
 })

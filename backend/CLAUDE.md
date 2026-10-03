@@ -29,7 +29,7 @@ src/<domain>/
 └── infrastructure/ # PrismaRepository + HttpHandlers (adapters)
 ```
 
-**Domains**: `auth`, `user`, `team`, `player` (inside team), `match`, `championship`
+**Domains**: `auth`, `user`, `team`, `player` (inside team), `match`, `championship`, `image` (file storage behind the `IImageStorage` port — MongoDB today, replaceable by S3)
 
 **Request flow**: `index.ts` → OpenAPI Backend (validates + routes by operationId) → HttpHandler → UseCases → Repository → Prisma
 
@@ -51,7 +51,7 @@ Copy `.env.sample` → `.env` and configure:
 - `JWT_SECRET` — JWT signing secret
 - `PORT` — defaults to 3000. **Note**: the frontend `config/axios-instance.ts` hardcodes port `4000` — align your `.env` or update the axios instance if you change this.
 - `JWT_EXPIRE` — defaults to `'2h'`
-- `LOGIN_RATE_LIMIT`, `REGISTER_RATE_LIMIT`, `EMAIL_RATE_LIMIT`, `TOKEN_RATE_LIMIT`, `MAX_LOGIN_ATTEMPTS`, `LOGIN_LOCKOUT_MINUTES` — abuse limits on the public auth routes (keys, defaults and windows: `specifications/10-inscription-et-authentification.md` › Limitation de débit). Rate limits live in `config/rateLimits.ts`; the functional test config and the smoke stack raise them to 1000
+- `LOGIN_RATE_LIMIT`, `REGISTER_RATE_LIMIT`, `EMAIL_RATE_LIMIT`, `TOKEN_RATE_LIMIT`, `MAX_LOGIN_ATTEMPTS`, `LOGIN_LOCKOUT_MINUTES` — abuse limits on the public auth routes; `LOGIN_RATE_LIMIT` also caps the authenticated `PUT /me/password`, with its own counter (keys, defaults and windows: `specifications/10-inscription-et-authentification.md` › Limitation de débit). Rate limits live in `config/rateLimits.ts`; the functional test config and the smoke stack raise them to 1000
 
 ## Key Files
 

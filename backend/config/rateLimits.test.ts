@@ -19,6 +19,9 @@ const buildApp = (env: Record<string, string> = {}): Express => {
       res.sendStatus(200)
     }
   )
+  app.put('/me/password', (_req, res) => {
+    res.sendStatus(200)
+  })
   return app
 }
 
@@ -158,6 +161,23 @@ describe('applyAuthRateLimits (spec 10, Limitation de débit)', () => {
       expect(await statuses(Array.from({ length: 3 }, () => () => post(app, '/register', body)))).toEqual([
         200, 200, 429,
       ])
+    })
+  })
+
+  describe('PUT /me/password', () => {
+    const put = (app: Express, ip = '10.0.0.1') =>
+      request(app).put('/me/password').set('X-Forwarded-For', ip).send({ currentPassword: 'a', newPassword: 'b' })
+
+    it('limits per IP, with the login limit', async () => {
+      const app = buildApp({ LOGIN_RATE_LIMIT: '2' })
+      expect(await statuses([() => put(app), () => put(app), () => put(app)])).toEqual([200, 200, 429])
+      expect((await put(app, '10.0.0.2')).status).toBe(200)
+    })
+
+    it('keeps its own counter: it neither eats the /login quota nor is eaten by it', async () => {
+      const app = buildApp({ LOGIN_RATE_LIMIT: '1' })
+      const login = () => post(app, '/login', {})
+      expect(await statuses([() => put(app), login, () => put(app), login])).toEqual([200, 200, 429, 429])
     })
   })
 

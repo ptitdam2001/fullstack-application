@@ -32,14 +32,25 @@ const normalizedEmail = (req: Request): string | undefined => {
 }
 
 /**
- * Rate limits on the public auth routes (spec 10, Limitation de débit). Counters are in memory and
- * per API instance. Each `app.post([...])` shares one counter between its routes. Must be mounted
- * after `express.json()` (the email limit reads the body) and before the OpenAPI handler.
+ * Rate limits on the public auth routes (spec 10, Limitation de débit) and on the authenticated
+ * password change. Counters are in memory and per API instance. Each `app.post([...])` shares one
+ * counter between its routes. Must be mounted after `express.json()` (the email limit reads the body)
+ * and before the OpenAPI handler.
  */
 export const applyAuthRateLimits = (app: Express): void => {
   app.post(
     '/login',
     limiter(limitFromEnv('LOGIN_RATE_LIMIT', 10), FIFTEEN_MINUTES, 'Too many login attempts, please try again later.')
+  )
+  // Same password-guessing surface as /login (the current password is checked), hence the same limit —
+  // but its own counter: changing a password must not eat into the login quota, nor the reverse.
+  app.put(
+    '/me/password',
+    limiter(
+      limitFromEnv('LOGIN_RATE_LIMIT', 10),
+      FIFTEEN_MINUTES,
+      'Too many password change attempts, please try again later.'
+    )
   )
   app.post(
     '/register',

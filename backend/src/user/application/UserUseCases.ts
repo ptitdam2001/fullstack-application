@@ -1,9 +1,13 @@
 import type { IUserRepository, UserFilterOptions, UserListOptions } from '../ports/IUserRepository.js'
 import type { UserProfile, UpdateUserInput } from '../domain/User.js'
 import { CannotSelfDeleteError, CannotSelfDemoteError, UserNotFoundError } from '../domain/UserErrors.js'
+import type { IImageStorage } from '../../image/ports/IImageStorage.js'
 
 export class UserUseCases {
-  constructor(private readonly userRepo: IUserRepository) {}
+  constructor(
+    private readonly userRepo: IUserRepository,
+    private readonly imageStorage: IImageStorage
+  ) {}
 
   async getAll(options?: UserListOptions): Promise<UserProfile[]> {
     return this.userRepo.findAll(options)
@@ -43,6 +47,8 @@ export class UserUseCases {
     if (id === actorId) {
       throw new CannotSelfDeleteError()
     }
-    return this.userRepo.delete(id)
+    await this.userRepo.delete(id)
+    // After the user: a failure here leaves an unreferenced image, never a profile pointing at a missing one.
+    await this.imageStorage.deleteByOwner(id)
   }
 }
