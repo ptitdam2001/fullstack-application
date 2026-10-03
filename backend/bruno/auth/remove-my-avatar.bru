@@ -1,0 +1,15 @@
+meta {
+  name: Remove My Avatar
+  type: http
+  seq: 12
+}
+
+delete {
+  url: {{baseUrl}}/me/avatar
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
