@@ -5,6 +5,13 @@ export { useActivateAccount } from '@Sdk/authentication/authentication'
 export { useResendActivation } from '@Sdk/authentication/authentication'
 export { useResetPassword } from '@Sdk/authentication/authentication'
 export { useDeclareReferee } from '@Sdk/authentication/authentication'
+export {
+  useUpdateMyProfile,
+  useUpdateMyAvatar,
+  useRemoveMyAvatar,
+  useChangeMyPassword,
+  getMeQueryKey,
+} from '@Sdk/authentication/authentication'
 
 export { useCreateTeamJoinRequest } from '@Sdk/teams/teams'
 export { useCreateTeamWithCoach } from '@Sdk/teams/teams'
