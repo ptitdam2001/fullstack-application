@@ -23,6 +23,32 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
+    patch:
+      operationId: updateMyProfile
+      summary: Update the identity fields of the current authenticated user (any role)
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMyProfileInput'
+      responses:
+        '200':
+          description: Updated current user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserWithoutPassword'
+        '400':
+          description: The payload breaks the schema (unknown field, empty or blank first name, empty or blank last name)
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorOutput'
   /me/teams:
     get:
       operationId: getMyTeams
@@ -40,6 +66,134 @@ paths:
                   $ref: '#/components/schemas/UserTeamWithTeam'
         '401':
           description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorOutput'
+  /me/avatar:
+    put:
+      operationId: updateMyAvatar
+      summary: Replace the profile picture of the current authenticated user (any role)
+      description: The previous picture, if any, is deleted. `avatar` of the returned user holds the URL of the new one.
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UploadAvatarInput'
+      responses:
+        '200':
+          description: Updated current user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserWithoutPassword'
+        '400':
+          description: The payload is not a JPEG, PNG or WebP image, or it exceeds the size limit
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorOutput'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorOutput'
+    delete:
+      operationId: removeMyAvatar
+      summary: Remove the profile picture of the current authenticated user (any role)
+      tags:
+        - Authentication
+      responses:
+        '200':
+          description: Updated current user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserWithoutPassword'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorOutput'
+  /me/password:
+    put:
+      operationId: changeMyPassword
+      summary: Change the password of the current authenticated user (any role)
+      description: >-
+        Every token issued before the change is revoked, including the one used for this request.
+        The response carries a fresh token so the caller stays signed in.
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangePasswordInput'
+      responses:
+        '200':
+          description: Password changed — fresh token for the current session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenData'
+        '400':
+          description: >-
+            The current password is wrong, or the new one breaks the password rules.
+            Deliberately not a 401, which means "session expired" to the clients.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorOutput'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorOutput'
+        '429':
+          description: Too many attempts — rate limit reached
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorOutput'
+  /images/{id}:
+    get:
+      operationId: getImage
+      summary: Serve a stored image (profile pictures)
+      description: Public so that an `<img>` tag can load it — a browser sends no Authorization header for images.
+      tags:
+        - Images
+      security: [] # no auth needed
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The image bytes, served with its stored content type
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+            image/png:
+              schema:
+                type: string
+                format: binary
+            image/webp:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Image not found
           content:
             application/json:
               schema:
@@ -2547,6 +2701,54 @@ components:
           type: string
           minLength: 8
           nullable: false
+    UpdateMyProfileInput:
+      type: object
+      additionalProperties: false
+      properties:
+        firstName:
+          type: string
+          minLength: 1
+          pattern: '\S'
+          nullable: false
+          description: At least one non-blank character.
+        lastName:
+          type: string
+          minLength: 1
+          pattern: '\S'
+          nullable: true
+          description: Null clears the last name.
+    UploadAvatarInput:
+      type: object
+      additionalProperties: false
+      required:
+        - contentType
+        - data
+      properties:
+        contentType:
+          type: string
+          enum:
+            - image/jpeg
+            - image/png
+            - image/webp
+        data:
+          type: string
+          minLength: 1
+          description: Base64-encoded image bytes (no `data:` prefix). The client resizes the picture before sending it.
+    ChangePasswordInput:
+      type: object
+      additionalProperties: false
+      required:
+        - currentPassword
+        - newPassword
+      properties:
+        currentPassword:
+          type: string
+          minLength: 1
+          nullable: false
+        newPassword:
+          type: string
+          minLength: 8
+          nullable: false
     JoinRequestStatus:
       type: string
       enum:
@@ -2808,7 +3010,7 @@ components:
     UserWithoutPassword:
       properties:
         lastName:
-          nullable: false
+          nullable: true
           type: string
         firstName:
           nullable: false
@@ -2839,6 +3041,7 @@ components:
           format: date-time
         avatar:
           type: string
+          nullable: true
         roles:
           type: array
           nullable: false

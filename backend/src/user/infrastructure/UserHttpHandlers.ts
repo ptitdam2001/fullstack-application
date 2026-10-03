@@ -3,6 +3,7 @@ import type { Context } from 'openapi-backend'
 import { UserUseCases } from '../application/UserUseCases.js'
 import { CannotSelfDeleteError, CannotSelfDemoteError, UserNotFoundError } from '../domain/UserErrors.js'
 import { PrismaUserRepository } from './PrismaUserRepository.js'
+import { PrismaImageStorage } from '../../image/infrastructure/PrismaImageStorage.js'
 import { getAuthUserId, requireAdmin } from '../../auth/application/requireRoles.js'
 import { ForbiddenError, UnauthorizedError } from '../../auth/domain/AuthErrors.js'
 import { logger } from '../../../config/logger.js'
@@ -10,7 +11,7 @@ import { parsePage, parsePageSize } from '../../../config/pagination.js'
 import type { UserFilterOptions, UserListOptions } from '../ports/IUserRepository.js'
 
 const repo = new PrismaUserRepository()
-const useCases = new UserUseCases(repo)
+const useCases = new UserUseCases(repo, new PrismaImageStorage())
 
 const buildFilter = (query: Context['request']['query']): UserFilterOptions => ({
   ...(query.isActive !== undefined && { isActive: query.isActive === 'true' }),

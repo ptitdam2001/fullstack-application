@@ -28,8 +28,17 @@ export type AuthState = {
 
 export type UpdateUserInput = {
   firstName?: string
-  lastName?: string
+  /** Null clears it. */
+  lastName?: string | null
   email?: string
-  avatar?: string
+  /** Null clears it. */
+  avatar?: string | null
   isAdmin?: boolean
+}
+
+/** The only fields a user may change on their own profile (PATCH /me). */
+export type UpdateMyProfileInput = {
+  firstName?: string
+  /** Null clears it. */
+  lastName?: string | null
 }
