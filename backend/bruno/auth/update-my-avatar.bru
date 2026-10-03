@@ -1,0 +1,28 @@
+meta {
+  name: Update My Avatar
+  type: http
+  seq: 11
+}
+
+put {
+  url: {{baseUrl}}/me/avatar
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "contentType": "image/png",
+    "data": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
+  }
+}
+
+script:post-response {
+  if (res.status === 200 && res.body.avatar) {
+    bru.setVar("imageId", res.body.avatar.split("/").pop());
+  }
+}
