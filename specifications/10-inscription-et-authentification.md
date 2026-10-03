@@ -115,6 +115,21 @@ Le dashboard `/app` s'adapte ensuite selon les rôles : admin → `AdminDashboar
 
 ---
 
+## Changement de mot de passe (utilisateur connecté)
+
+Un utilisateur connecté change son mot de passe depuis la page compte (`PUT /me/password`), sans passer par le flux « mot de passe oublié ». La spécification complète est dans [[24-page-compte]].
+
+**Règles :**
+
+- Le **mot de passe actuel** est exigé.
+- Le nouveau mot de passe est soumis aux mêmes règles de validation qu'à l'inscription.
+- La confirmation du nouveau mot de passe est vérifiée par l'interface uniquement ; elle n'est pas envoyée à l'API.
+- Un mot de passe actuel incorrect répond `400`, **jamais `401`** : pour le frontend, `401` signifie « session expirée » (stockage vidé, redirection vers la connexion).
+- Un changement réussi **révoque tous les tokens émis auparavant** (`tokensValidAfter`, comme le reset) : les autres appareils sont déconnectés. La réponse fournit un nouveau token (`TokenData`) pour que la session courante continue.
+- La route est soumise à une limitation de débit (voir « Limitation de débit »).
+
+---
+
 ## Première connexion — onboarding sans équipe
 
 À la connexion d'un utilisateur dont `user.roles` est vide ou absent, un **écran d'onboarding** est affiché à la place du dashboard.
@@ -180,6 +195,7 @@ Disponible : à l'onboarding et depuis la page profil.
 | S'inscrire                             | ✅                  | —           | —     |
 | Se connecter                           | ✅                  | ✅          | ✅    |
 | Réinitialiser son mot de passe         | ✅                  | ✅          | ✅    |
+| Changer son mot de passe (connecté)    | —                   | ✅          | ✅    |
 | Renvoyer l'email d'activation          | ✅ (compte inactif) | —           | —     |
 | Activer un compte (email)              | ✅                  | —           | —     |
 | Activer un compte (panel)              | ❌                  | ❌          | ✅    |
@@ -518,7 +534,7 @@ model User {
   isReferee             Boolean   @default(false)   // nouveau — auto-déclaration arbitre
   loginAttempts         Int       @default(0)       // nouveau
   lockedUntil           DateTime?                   // blocage temporaire : fin du verrouillage (null = pas de verrou)
-  tokensValidAfter      DateTime?                   // révocation : tout JWT émis avant cette date est refusé (posé par resetPassword)
+  tokensValidAfter      DateTime?                   // révocation : tout JWT émis avant cette date est refusé (posé par resetPassword et changeMyPassword)
   activationToken       String?                     // nouveau
   activationTokenExpiry DateTime?                   // nouveau
   resetToken            String?                     // nouveau
@@ -916,7 +932,7 @@ await prisma.$transaction([
 
 ### Limitation de débit
 
-Les routes publiques de la section authentification sont limitées pour freiner le brute force, l'inondation d'emails et l'énumération. Un dépassement répond `429` avec le corps `{ "status": 429, "message": "..." }` et les en-têtes standard `RateLimit` (draft-8) ; la requête n'est pas traitée.
+Les routes publiques de la section authentification, ainsi que la route authentifiée de changement de mot de passe, sont limitées pour freiner le brute force, l'inondation d'emails et l'énumération. Un dépassement répond `429` avec le corps `{ "status": 429, "message": "..." }` et les en-têtes standard `RateLimit` (draft-8) ; la requête n'est pas traitée.
 
 | Route(s)                                    | Clé de limitation        | Limite par défaut | Fenêtre | Variable d'environnement |
 | ------------------------------------------- | ------------------------ | ----------------- | ------- | ------------------------ |
@@ -925,6 +941,7 @@ Les routes publiques de la section authentification sont limitées pour freiner 
 | `POST /forgot-password`, `POST /resend-activation` | IP                | 5                 | 1 h     | `EMAIL_RATE_LIMIT`       |
 | `POST /forgot-password`, `POST /resend-activation` | adresse email     | 5                 | 1 h     | `EMAIL_RATE_LIMIT`       |
 | `POST /activate`, `POST /reset-password`    | IP                       | 10                | 15 min  | `TOKEN_RATE_LIMIT`       |
+| `PUT /me/password`                          | IP                       | 10                | 15 min  | `LOGIN_RATE_LIMIT`       |
 
 Règles :
 
@@ -932,6 +949,7 @@ Règles :
 - **Pourquoi deux clés sur les routes d'email** : la limite par IP freine un même client ; la limite par adresse empêche d'inonder la boîte d'une victime depuis de nombreuses IP.
 - **Adresse email** : lue dans le corps de la requête, normalisée (`trim` + minuscules). Sans adresse valide dans le corps, seule la limite par IP s'applique (la validation `openapi-backend` répond ensuite `400`).
 - **Anti-énumération** : le `429` ne dépend que du nombre de requêtes, jamais de l'existence du compte ; `/forgot-password` et `/resend-activation` restent en `200` dans les autres cas.
+- **`PUT /me/password`** : seule route authentifiée limitée. Elle borne la devinette du mot de passe actuel par quiconque dispose d'une session ouverte (poste non verrouillé, token volé), qui contournerait sinon le blocage progressif de `/login`. Voir [[24-page-compte]].
 - **Rôle de chaque limite** : `/login` et `/activate` / `/reset-password` (brute force et devinette de token ; les tokens UUID v4 de 122 bits sont impossibles à deviner en pratique, la limite est une défense en profondeur) ; `/register`, `/forgot-password`, `/resend-activation` (abus et envoi massif d'emails, notamment une fois un vrai `IEmailService` branché).
 - **Valeurs** : les défauts ci-dessus s'appliquent si la variable est absente ou invalide ; les tests fonctionnels et le stack de test smoke les relèvent (1000) pour ne pas se bloquer eux-mêmes.
 - **Blocage ciblé accepté** : un attaquant qui connaît une adresse peut épuiser son quota par email pendant 1 h ; l'utilisateur reçoit alors `429` sur `/forgot-password` et `/resend-activation`. Compromis retenu contre l'inondation d'emails ; l'adresse n'est jamais confirmée ni infirmée.
@@ -943,7 +961,7 @@ Règles :
 
 - **Race condition inscription** : deux registrations simultanées avec le même email → contrainte `@@unique` sur `email` (MongoDB) garantit qu'une seule réussit — l'autre lève `PrismaClientKnownRequestError` code `P2002`, à mapper en `409`
 - **Resend activation sur compte déjà actif** : le use case vérifie `isActive` avant de générer un token — si actif, retourne `200` sans effet
-- **Sessions (JWT)** : le token ne prouve que l'identité ; `isAdmin`, `isCoach` et l'état du compte (existant, actif, non bloqué) sont relus en base à chaque requête authentifiée, donc blocage, rétrogradation, retrait de coach et suppression prennent effet immédiatement (`401` pour un compte supprimé, inactif ou bloqué). Un reset de mot de passe réussi pose `tokensValidAfter` : les tokens émis avant sont refusés (une session volée ne survit pas au reset). `POST /logout` ne révoque pas le token — le frontend le supprime — car une révocation par token demanderait un suivi des sessions, ou déconnecterait tous les appareils de l'utilisateur
+- **Sessions (JWT)** : le token ne prouve que l'identité ; `isAdmin`, `isCoach` et l'état du compte (existant, actif, non bloqué) sont relus en base à chaque requête authentifiée, donc blocage, rétrogradation, retrait de coach et suppression prennent effet immédiatement (`401` pour un compte supprimé, inactif ou bloqué). Un reset de mot de passe réussi pose `tokensValidAfter` : les tokens émis avant sont refusés (une session volée ne survit pas au reset). Un changement de mot de passe par l'utilisateur connecté (`PUT /me/password`, voir [[24-page-compte]]) pose `tokensValidAfter` de la même façon et renvoie un nouveau token pour la session courante. `POST /logout` ne révoque pas le token — le frontend le supprime — car une révocation par token demanderait un suivi des sessions, ou déconnecterait tous les appareils de l'utilisateur
 - **Reset password sur compte bloqué** : débloque le compte (`isBlocked=false`, `lockedUntil=null`) + remet `loginAttempts=0` en même opération — comportement voulu par la spec
 - **Upsert join request sur statut APPROVED** : le use case vérifie le statut existant avant l'upsert — si `APPROVED`, lève `AlreadyMemberError` (409)
 - **`POST /teams/with-coach` sans contrainte de doublons** : un utilisateur peut créer plusieurs équipes et être COACH de chacune — pas de contrainte à ajouter

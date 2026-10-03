@@ -73,21 +73,25 @@ Officiel désigné pour un ou plusieurs matchs via `UserMatch`. Accès en lectur
 
 ### Gestion des utilisateurs
 
-| Action                          | Admin | Coach | Arbitre | Joueur | Sans équipe |
-| ------------------------------- | ----- | ----- | ------- | ------ | ----------- |
-| Lister les utilisateurs         | ✅    | ❌    | ❌      | ❌     | ❌          |
-| Créer un utilisateur            | ❌³   | ❌    | ❌      | ❌     | ❌          |
-| Modifier un utilisateur         | ✅    | ❌    | ❌      | ❌     | ❌          |
-| Supprimer un utilisateur        | ✅²   | ❌    | ❌      | ❌     | ❌          |
-| Promouvoir / retirer admin      | ✅¹   | ❌    | ❌      | ❌     | ❌          |
-| Voir son propre profil          | ✅    | ✅    | ✅      | ✅     | ✅          |
-| Demander à rejoindre une équipe | ❌    | ❌    | ❌      | ❌     | ✅          |
+| Action                                          | Admin | Coach | Arbitre | Joueur | Sans équipe |
+| ----------------------------------------------- | ----- | ----- | ------- | ------ | ----------- |
+| Lister les utilisateurs                         | ✅    | ❌    | ❌      | ❌     | ❌          |
+| Créer un utilisateur                            | ❌³   | ❌    | ❌      | ❌     | ❌          |
+| Modifier un utilisateur                         | ✅    | ❌    | ❌      | ❌     | ❌          |
+| Supprimer un utilisateur                        | ✅²   | ❌    | ❌      | ❌     | ❌          |
+| Promouvoir / retirer admin                      | ✅¹   | ❌    | ❌      | ❌     | ❌          |
+| Voir son propre profil                          | ✅    | ✅    | ✅      | ✅     | ✅          |
+| Modifier son propre profil (prénom, nom, photo) | ✅⁴   | ✅⁴   | ✅⁴     | ✅⁴    | ✅⁴         |
+| Changer son mot de passe                        | ✅⁴   | ✅⁴   | ✅⁴     | ✅⁴    | ✅⁴         |
+| Demander à rejoindre une équipe                 | ❌    | ❌    | ❌      | ❌     | ✅          |
 
 ¹ Via `PATCH /user/{id}` avec `isAdmin`. Un admin **ne peut pas se retirer son propre** `isAdmin` (`403 Forbidden`) : cela empêche de verrouiller la plateforme sans admin par erreur. Retirer le rôle d'un autre admin reste permis.
 
 ² Via `DELETE /user/{id}`. Un admin **ne peut pas supprimer son propre compte** (`403 Forbidden`), pour la même raison. Supprimer un autre admin reste permis.
 
 ³ Aucun rôle ne crée de compte à la place de quelqu'un : un compte naît uniquement par l'inscription (`/register`), puis un admin l'active. Un mot de passe choisi par l'admin serait un secret connu d'un tiers, et l'utilisateur ne pourrait pas le changer tant qu'aucun email n'est délivré (réinitialisation indisponible). Une future « invitation » (jeton à usage unique, sur le modèle de la réinitialisation) remplacera ce besoin quand un vrai service d'email existera.
+
+⁴ Depuis la page compte (`/app/my-profile`), via `PATCH /me`, `PUT`/`DELETE /me/avatar` et `PUT /me/password` — voir [[24-page-compte]]. Ces routes n'agissent que sur le compte de l'utilisateur connecté. Elles ne permettent de modifier ni l'**email**, ni les **rôles** et l'état du compte (`isAdmin`, `isReferee`, `isActive`, `isBlocked`) ; le changement de mot de passe exige le mot de passe actuel.
 
 ### Championnats
 
@@ -179,6 +183,7 @@ Officiel désigné pour un ou plusieurs matchs via `UserMatch`. Accès en lectur
 ## Contraintes de sécurité
 
 - Toutes les routes requièrent un JWT valide (sauf `POST /login` et `POST /forgot-password`).
+- `GET /images/{id}` (photos de profil) est publique : une balise `<img>` n'envoie pas de JWT — compromis détaillé dans [[24-page-compte]].
 - Les vérifications de propriété (coach → son équipe, arbitre → son match) sont effectuées dans les use cases via les repositories `UserTeam` et `UserMatch`.
 - Token absent ou expiré → `401 Unauthorized`.
 - Droits insuffisants → `403 Forbidden`.
