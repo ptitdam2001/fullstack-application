@@ -148,6 +148,7 @@ test.describe('smoke — account page', () => {
   // BUG (spec 24 « Section Photo » 1 et 4, « Section Profil » 4 : photo/initiales et identité dans le menu
   // latéral, « quel que soit le profil ») : les profils Arbitre et Sans équipe ont le menu générique
   // (ConnectedAppSidebar), sans avatar ni nom — la photo n'y apparaît jamais.
+  // Suivi : https://github.com/ptitdam2001/fullstack-application/issues/50
   test.fixme('a user without any role sees their avatar and name in the sidebar footer', async ({ page }) => {
     await signIn(page, NO_ROLE_USER.password, NO_ROLE_USER.email)
     const account = new AccountPage(page)
