@@ -79,6 +79,7 @@ Ces actions ne permettent pas de modifier les rôles ni l'état du compte (`isAd
 - La **confirmation** doit être identique au nouveau mot de passe. Elle est vérifiée par l'interface uniquement ; elle n'est pas transmise à l'API.
 - Après un changement réussi, **toutes les sessions ouvertes avant le changement sont révoquées** (même mécanisme que la réinitialisation de mot de passe). La session courante est prolongée par un nouveau jeton, délivré dans la réponse : l'utilisateur n'a pas à se reconnecter.
 - Le nombre de tentatives est **limité** (voir « Sécurité › Limitation de débit »).
+- Un mot de passe actuel erroné compte comme un **échec de connexion**. Au 5ᵉ échec consécutif, le compte est **bloqué temporairement** et **toutes ses sessions sont déconnectées** (voir « Sécurité › Blocage après échecs »).
 
 ### Photo
 
@@ -116,20 +117,21 @@ Décision d'architecture associée : le stockage est isolé derrière un port (`
 
 ## Cas limites et messages d'erreur
 
-| Situation                                                       | Comportement attendu                                                                     |
-| --------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| Prénom vidé                                                     | Enregistrement refusé, erreur sur le champ                                               |
-| Nom vidé                                                        | Accepté : le nom est effacé                                                              |
-| Mot de passe actuel incorrect                                   | Changement refusé, message d'erreur sur le formulaire ; l'utilisateur **reste connecté** |
-| Nouveau mot de passe ne respectant pas les règles               | Changement refusé, erreur sur le champ                                                   |
-| Confirmation différente du nouveau mot de passe                 | Erreur sur le champ de confirmation, aucune requête envoyée                              |
-| Trop de tentatives de changement de mot de passe                | Changement refusé, message invitant à réessayer plus tard                                |
-| Fichier qui n'est pas une image JPEG, PNG ou WebP               | Envoi refusé, message d'erreur                                                           |
-| Fichier dont le contenu ne correspond pas au format annoncé     | Envoi refusé, message d'erreur ; la photo précédente est conservée                       |
-| Image dépassant la taille maximale                              | Envoi refusé, message d'erreur ; la photo précédente est conservée                       |
-| Suppression de la photo alors qu'il n'y en a pas                | Sans effet                                                                               |
-| Session expirée ou révoquée pendant l'utilisation de la page    | Redirection vers la page de connexion (comportement commun à toute l'application)        |
-| Autre appareil connecté au moment du changement de mot de passe | Sa session est révoquée : il est renvoyé vers la page de connexion à sa prochaine action |
+| Situation                                                       | Comportement attendu                                                                           |
+| --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| Prénom vidé                                                     | Enregistrement refusé, erreur sur le champ                                                     |
+| Nom vidé                                                        | Accepté : le nom est effacé                                                                    |
+| Mot de passe actuel incorrect                                   | Changement refusé, message d'erreur sur le formulaire ; l'utilisateur **reste connecté**       |
+| 5ᵉ mot de passe actuel incorrect consécutif                     | Compte bloqué temporairement, toutes les sessions déconnectées : retour à la page de connexion |
+| Nouveau mot de passe ne respectant pas les règles               | Changement refusé, erreur sur le champ                                                         |
+| Confirmation différente du nouveau mot de passe                 | Erreur sur le champ de confirmation, aucune requête envoyée                                    |
+| Trop de tentatives de changement de mot de passe                | Changement refusé, message invitant à réessayer plus tard                                      |
+| Fichier qui n'est pas une image JPEG, PNG ou WebP               | Envoi refusé, message d'erreur                                                                 |
+| Fichier dont le contenu ne correspond pas au format annoncé     | Envoi refusé, message d'erreur ; la photo précédente est conservée                             |
+| Image dépassant la taille maximale                              | Envoi refusé, message d'erreur ; la photo précédente est conservée                             |
+| Suppression de la photo alors qu'il n'y en a pas                | Sans effet                                                                                     |
+| Session expirée ou révoquée pendant l'utilisation de la page    | Redirection vers la page de connexion (comportement commun à toute l'application)              |
+| Autre appareil connecté au moment du changement de mot de passe | Sa session est révoquée : il est renvoyé vers la page de connexion à sa prochaine action       |
 
 > Tous les messages passent par l'i18n (`react-intl`) — aucun texte en dur.
 
@@ -247,6 +249,7 @@ L'ordre est volontaire : **nouvelle image, puis `User.avatar`, puis suppression 
 ```prisma
 model Image {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  publicId    String   @unique
   data        Bytes
   contentType String
   size        Int
@@ -258,6 +261,7 @@ model Image {
 }
 ```
 
+- `publicId` : identifiant **aléatoire** de 128 bits (base64url, 22 caractères), seul identifiant exposé dans l'URL (`/images/{publicId}`). L'`id` MongoDB n'est jamais exposé (voir « Sécurité › Route d'image publique »).
 - `data` : octets de l'image ; `size` : leur nombre ; `contentType` : type MIME servi tel quel par `GET /images/{id}`.
 - `ownerId` : identifiant de l'utilisateur propriétaire. **Aucune relation Prisma vers `User`**, volontairement : le nettoyage (remplacement, suppression de la photo, suppression du compte) passe par le port `IImageStorage`, pour que le modèle puisse disparaître le jour où le stockage devient externe.
 - Pas de `deletedAt` : une image est supprimée définitivement.
@@ -481,7 +485,18 @@ Un changement réussi pose `tokensValidAfter = now` : tout JWT émis avant est r
 | ------------------ | --- | ----------------- | ------- | ------------------------ |
 | `PUT /me/password` | IP  | 10                | 15 min  | `LOGIN_RATE_LIMIT`       |
 
-La route réutilise la variable de `/login` (même surface : un mot de passe est vérifié), mais avec **son propre compteur** : changer de mot de passe ne consomme pas le quota de connexion, et inversement. Un mot de passe actuel erroné n'incrémente pas `loginAttempts` : sinon, une session ouverte par un tiers permettrait de bloquer le compte de son titulaire.
+La route réutilise la variable de `/login` (même surface : un mot de passe est vérifié), mais avec **son propre compteur** : changer de mot de passe ne consomme pas le quota de connexion, et inversement.
+
+#### Blocage après échecs
+
+La limite de débit porte sur l'IP : elle ne freine pas un attaquant qui détient un token volé et change d'adresse. Un compteur **par compte** complète donc la protection.
+
+- Un mot de passe actuel erroné incrémente `loginAttempts`, le **même compteur** que les échecs de connexion, avec le même seuil (`MAX_LOGIN_ATTEMPTS`, 5 par défaut) et la même durée de blocage (`LOGIN_LOCKOUT_MINUTES`, 15 minutes par défaut) — voir [[10-inscription-et-authentification]], « Cas : mauvais mot de passe — blocage progressif ».
+- En dessous du seuil : `400`, la session reste valide.
+- Au seuil : `lockedUntil` est posé **et** `tokensValidAfter = now`. La tentative répond `401` : c'est le seul cas où un mot de passe actuel erroné répond `401`, parce que la session n'existe réellement plus. Le frontend renvoie alors l'utilisateur vers la page de connexion.
+- Pourquoi révoquer les sessions : `lockedUntil` n'est contrôlé qu'à la connexion. Un blocage seul laisserait vivante la session qui devine.
+- Un changement de mot de passe réussi remet le compteur à zéro. Un mot de passe actuel correct accompagné d'un nouveau mot de passe hors règles ne compte pas comme un échec.
+- Conséquence assumée : quiconque dispose d'une session ouverte peut bloquer le compte pendant 15 minutes. C'est préférable à lui laisser deviner le mot de passe, et sa session est coupée du même coup.
 
 #### Validation des images
 
@@ -498,7 +513,8 @@ La route réutilise la variable de `/login` (même surface : un mot de passe est
 Compromis accepté :
 
 - Une photo de profil est une donnée **peu sensible**, déjà visible des autres utilisateurs de l'application.
-- L'identifiant d'une image n'est **pas un secret** : la confidentialité ne repose pas dessus. Qui connaît l'URL peut lire l'image, même sans compte.
+- Qui connaît l'URL d'une image peut la lire, même sans compte. En revanche l'URL **ne se devine pas** : l'identifiant exposé est un jeton aléatoire de 128 bits, pas l'ObjectId MongoDB. Un ObjectId contient une date et un compteur ; à partir d'une seule URL connue, il aurait permis de parcourir les photos de tous les membres, dont des mineurs.
+- Un identifiant qui n'a pas la forme attendue répond `404` sans interroger la base.
 - La route ne sert que les images de la collection `images` et n'expose ni le propriétaire ni aucune autre donnée.
 - La réponse est **cacheable** : l'identifiant est immuable, une nouvelle photo a une nouvelle URL.
 - `X-Content-Type-Options: nosniff` est renvoyé avec l'image : le navigateur s'en tient au `Content-Type` enregistré et n'interprète jamais le contenu comme du HTML ou du script.

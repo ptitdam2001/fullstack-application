@@ -387,18 +387,18 @@ describe('user domain — functional API', () => {
       const admin = await createAdmin()
       const data = Buffer.from([0xff, 0xd8, 0xff, 0xe0])
       const image = await prisma.image.create({
-        data: { data, contentType: 'image/jpeg', size: data.length, ownerId: user.id },
+        data: { publicId: 'a'.repeat(22), data, contentType: 'image/jpeg', size: data.length, ownerId: user.id },
       })
       const otherImage = await prisma.image.create({
-        data: { data, contentType: 'image/jpeg', size: data.length, ownerId: other.id },
+        data: { publicId: 'b'.repeat(22), data, contentType: 'image/jpeg', size: data.length, ownerId: other.id },
       })
-      await prisma.user.update({ where: { id: user.id }, data: { avatar: `/images/${image.id}` } })
+      await prisma.user.update({ where: { id: user.id }, data: { avatar: `/images/${image.publicId}` } })
 
       const res = await agent.delete(`/user/${user.id}`).set(authHeaderFor(admin.id, true))
 
       expect(res.status).toBe(204)
       expect(await prisma.image.findUnique({ where: { id: image.id } })).toBeNull()
-      expect((await agent.get(`/images/${image.id}`)).status).toBe(404)
+      expect((await agent.get(`/images/${image.publicId}`)).status).toBe(404)
       expect(await prisma.image.findUnique({ where: { id: otherImage.id } })).not.toBeNull()
     })
 

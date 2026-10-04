@@ -171,6 +171,10 @@ export class PrismaUserRepository implements IUserRepository {
     await prisma.user.update({ where: { id: userId }, data: { loginAttempts: 0, lockedUntil: null } })
   }
 
+  async revokeTokens(userId: string, at: Date): Promise<void> {
+    await prisma.user.update({ where: { id: userId }, data: { tokensValidAfter: at } })
+  }
+
   async changePassword(userId: string, hashedPassword: string, tokensValidAfter: Date): Promise<void> {
     await prisma.user.update({
       where: { id: userId },

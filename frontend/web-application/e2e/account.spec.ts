@@ -285,6 +285,17 @@ test.describe('account — password', () => {
     await expect(account.heading).toBeVisible()
   })
 
+  test('server 401 (account locked after too many wrong passwords) signs the user out', async ({ page }) => {
+    const account = new AccountPage(page)
+    await applyMswOverride(page, 'put', '*/me/password', { status: 401, message: 'Unauthorized' }, 401)
+
+    await account.changePassword('WrongPassword1', 'NewPassword1')
+
+    await expect(page).toHaveURL(/\/auth\/signin/)
+    // The stored session is emptied: no token is left for the next request
+    expect(await account.storedToken()).toBeFalsy()
+  })
+
   test('server 429 invites the user to retry later', async ({ page }) => {
     const account = new AccountPage(page)
     await applyMswOverride(page, 'put', '*/me/password', { status: 429, message: 'Too many requests' }, 429)

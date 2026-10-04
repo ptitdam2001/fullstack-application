@@ -193,7 +193,7 @@ test.describe('smoke — account page', () => {
     await expect.poll(() => account.photo.evaluate(naturalSize)).toEqual({ width: 256, height: 256 })
 
     const firstUrl = (await account.photo.getAttribute('src'))!
-    expect(firstUrl).toMatch(new RegExp(`^${API_URL}/images/[0-9a-f]{24}$`))
+    expect(firstUrl).toMatch(new RegExp(`^${API_URL}/images/[A-Za-z0-9_-]{22}$`))
 
     // The sidebar picture is refreshed without a reload, and really loads
     const sidebarImage = account.sidebarAvatar.locator('img')
@@ -466,7 +466,7 @@ test.describe('smoke — account API hardening', () => {
     const accepted = await putAvatar(request, token, 'image/jpeg', atLimit)
     expect(accepted.status()).toBe(200)
     const avatar = ((await accepted.json()) as Me).avatar!
-    expect(avatar).toMatch(/^\/images\/[0-9a-f]{24}$/)
+    expect(avatar).toMatch(/^\/images\/[A-Za-z0-9_-]{22}$/)
     const served = await request.get(`${API_URL}${avatar}`)
     expect(served.status()).toBe(200)
     expect((await served.body()).length).toBe(MAX_AVATAR_BYTES)
@@ -501,6 +501,7 @@ test.describe('smoke — account API hardening', () => {
     for (const id of [
       'not-an-id',
       'aaaaaaaaaaaaaaaaaaaaaaaa',
+      'aaaaaaaaaaaaaaaaaaaaaa',
       '123',
       '%00',
       '..%2F..%2Fme',

@@ -21,7 +21,7 @@ const fakeImage = (header: number[], size = 64): Buffer => {
   return buffer
 }
 
-const IMAGE_URL = /^\/images\/([0-9a-f]{24})$/
+const IMAGE_URL = /^\/images\/([A-Za-z0-9_-]{22})$/
 const imageIdOf = (avatar: string): string => {
   const match = IMAGE_URL.exec(avatar)
   if (!match) {
@@ -176,7 +176,7 @@ describe('account page (self-service profile) — functional API', () => {
       expect(image.headers['content-type']).toBe('image/png')
       expect(Buffer.compare(image.body, PNG_BYTES)).toBe(0)
 
-      const row = await prisma.image.findUniqueOrThrow({ where: { id: imageIdOf(res.body.avatar) } })
+      const row = await prisma.image.findUniqueOrThrow({ where: { publicId: imageIdOf(res.body.avatar) } })
       expect(row).toMatchObject({ ownerId: user.id, contentType: 'image/png', size: PNG_BYTES.length })
     })
 
@@ -484,7 +484,52 @@ describe('account page (self-service profile) — functional API', () => {
       const after = await prisma.user.findUniqueOrThrow({ where: { id: user.id } })
       expect(after.password).toBe(before.password)
       expect(after.tokensValidAfter).toBeNull()
+      expect(after.loginAttempts).toBe(1)
+      expect(after.lockedUntil).toBeNull()
       expect((await agent.get('/me').set(header)).status).toBe(200)
+    })
+
+    it('règle métier: the 5th wrong current password locks the account and signs every session out', async () => {
+      const user = await createUser()
+      const header = olderAuthHeaderFor(user.id)
+      const otherDevice = olderAuthHeaderFor(user.id)
+      const attempt = () =>
+        agent.put('/me/password').set(header).send({ currentPassword: 'Wrong@1234', newPassword: NEW_PASSWORD })
+
+      for (let i = 0; i < 4; i += 1) {
+        expect((await attempt()).status).toBe(400)
+      }
+      expect((await agent.get('/me').set(header)).status).toBe(200)
+
+      const locking = await attempt()
+
+      expect(locking.status).toBe(401)
+      expect(locking.body).not.toHaveProperty('token')
+      const stored = await prisma.user.findUniqueOrThrow({ where: { id: user.id } })
+      expect(stored.password).toBe(user.password)
+      expect(stored.lockedUntil!.getTime()).toBeGreaterThan(Date.now())
+      // Every session is gone, not only the guessing one
+      expect((await agent.get('/me').set(header)).status).toBe(401)
+      expect((await agent.get('/me').set(otherDevice)).status).toBe(401)
+      // …and the right password does not sign in while the lock lasts
+      const login = await agent.post('/login').send({ email: user.email, password: FIXTURE_PASSWORD })
+      expect(login.status).toBe(403)
+    })
+
+    it('règle métier: a successful change restarts the count of wrong current passwords', async () => {
+      const user = await createUser()
+      const header = olderAuthHeaderFor(user.id)
+      for (let i = 0; i < 4; i += 1) {
+        await agent.put('/me/password').set(header).send({ currentPassword: 'Wrong@1234', newPassword: NEW_PASSWORD })
+      }
+
+      const res = await agent
+        .put('/me/password')
+        .set(header)
+        .send({ currentPassword: FIXTURE_PASSWORD, newPassword: NEW_PASSWORD })
+
+      expect(res.status).toBe(200)
+      expect((await prisma.user.findUniqueOrThrow({ where: { id: user.id } })).loginAttempts).toBe(0)
     })
 
     it.each([
