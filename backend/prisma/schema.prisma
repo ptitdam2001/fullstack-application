@@ -226,6 +226,9 @@ model User {
 // another file store. No Prisma relation to User on purpose: the owner is cleaned up through the port.
 model Image {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  // Random identifier exposed in the URL. The ObjectId is never exposed: it embeds a date and a
+  // counter, so the images of the other users could be enumerated from a single known URL.
+  publicId    String   @unique
   data        Bytes
   contentType String
   size        Int

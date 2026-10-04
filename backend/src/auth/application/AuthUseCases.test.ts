@@ -44,6 +44,7 @@ const makeRepo = (overrides: Partial<IUserRepository> = {}): IUserRepository => 
     .fn()
     .mockResolvedValue({ isAdmin: false, isActive: true, isBlocked: false, isCoach: false, tokensValidAfter: null }),
   changePassword: vi.fn().mockResolvedValue(undefined),
+  revokeTokens: vi.fn().mockResolvedValue(undefined),
   ...overrides,
 })
 
@@ -376,6 +377,55 @@ describe('AuthUseCases.changePassword', () => {
     )
     expect(authService.hashPassword).not.toHaveBeenCalled()
     expect(repo.changePassword).not.toHaveBeenCalled()
+  })
+
+  describe('wrong current passwords count like failed logins', () => {
+    const wrongPassword = { comparePassword: vi.fn().mockResolvedValue(false) }
+
+    it('counts the attempt, without locking or signing out below the threshold', async () => {
+      const repo = {
+        ...withStoredPassword(),
+        incrementLoginAttempts: vi.fn().mockResolvedValue(4),
+        lockUntil: vi.fn(),
+        revokeTokens: vi.fn(),
+      }
+
+      await expect(
+        makeUseCases(repo, wrongPassword).changePassword('user-1', 'Wrong123', 'NewPassword1')
+      ).rejects.toThrow(WrongCurrentPasswordError)
+      expect(repo.incrementLoginAttempts).toHaveBeenCalledWith('user-1')
+      expect(repo.lockUntil).not.toHaveBeenCalled()
+      expect(repo.revokeTokens).not.toHaveBeenCalled()
+    })
+
+    it('at the threshold: locks the account, signs every session out and answers Unauthorized', async () => {
+      const repo = {
+        ...withStoredPassword(),
+        incrementLoginAttempts: vi.fn().mockResolvedValue(5),
+        lockUntil: vi.fn().mockResolvedValue(undefined),
+        revokeTokens: vi.fn().mockResolvedValue(undefined),
+        changePassword: vi.fn(),
+      }
+      const before = Date.now()
+
+      await expect(
+        makeUseCases(repo, wrongPassword).changePassword('user-1', 'Wrong123', 'NewPassword1')
+      ).rejects.toThrow(UnauthorizedError)
+
+      const [, until] = repo.lockUntil.mock.calls[0] as [string, Date]
+      expect(until.getTime()).toBeGreaterThanOrEqual(before + 15 * 60_000)
+      const [revokedUser, revokedAt] = repo.revokeTokens.mock.calls[0] as [string, Date]
+      expect(revokedUser).toBe('user-1')
+      expect(revokedAt.getTime()).toBeGreaterThanOrEqual(before)
+      expect(repo.changePassword).not.toHaveBeenCalled()
+    })
+
+    it('does not count a right current password, even with a weak new one', async () => {
+      const repo = { ...withStoredPassword(), incrementLoginAttempts: vi.fn() }
+
+      await expect(makeUseCases(repo).changePassword('user-1', 'Current123', 'weak')).rejects.toThrow(WeakPasswordError)
+      expect(repo.incrementLoginAttempts).not.toHaveBeenCalled()
+    })
   })
 
   it.each([

@@ -124,7 +124,8 @@ Un utilisateur connecté change son mot de passe depuis la page compte (`PUT /me
 - Le **mot de passe actuel** est exigé.
 - Le nouveau mot de passe est soumis aux mêmes règles de validation qu'à l'inscription.
 - La confirmation du nouveau mot de passe est vérifiée par l'interface uniquement ; elle n'est pas envoyée à l'API.
-- Un mot de passe actuel incorrect répond `400`, **jamais `401`** : pour le frontend, `401` signifie « session expirée » (stockage vidé, redirection vers la connexion).
+- Un mot de passe actuel incorrect répond `400`, et non `401` : pour le frontend, `401` signifie « session expirée » (stockage vidé, redirection vers la connexion).
+- Un mot de passe actuel incorrect **compte comme un échec de connexion** (même compteur `loginAttempts`, même seuil). Au 5ᵉ échec consécutif, le compte est bloqué temporairement **et toutes ses sessions sont révoquées** ; cette tentative répond `401`. Sans la révocation, le blocage n'arrêterait que les nouvelles connexions, pas la session qui devine.
 - Un changement réussi **révoque tous les tokens émis auparavant** (`tokensValidAfter`, comme le reset) : les autres appareils sont déconnectés. La réponse fournit un nouveau token (`TokenData`) pour que la session courante continue.
 - La route est soumise à une limitation de débit (voir « Limitation de débit »).
 

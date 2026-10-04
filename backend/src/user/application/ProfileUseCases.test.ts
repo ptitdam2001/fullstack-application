@@ -35,6 +35,7 @@ const makeRepo = (overrides: Partial<IUserRepository> = {}): IUserRepository => 
   resetLoginAttempts: vi.fn(),
   findAuthState: vi.fn(),
   changePassword: vi.fn(),
+  revokeTokens: vi.fn(),
   ...overrides,
 })
 

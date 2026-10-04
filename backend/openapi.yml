@@ -127,6 +127,8 @@ paths:
       description: >-
         Every token issued before the change is revoked, including the one used for this request.
         The response carries a fresh token so the caller stays signed in.
+        Wrong current passwords count like failed logins: at the lockout threshold the account is
+        temporarily locked and every session is signed out — that attempt answers 401.
       tags:
         - Authentication
       requestBody:
@@ -151,7 +153,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
         '401':
-          description: Unauthorized
+          description: >-
+            Unauthorized — also answered by the wrong current password that reaches the lockout
+            threshold: the account is locked and the session no longer exists.
           content:
             application/json:
               schema:
@@ -174,6 +178,7 @@ paths:
         - in: path
           name: id
           required: true
+          description: Opaque random identifier, as found in the `avatar` URL. It cannot be derived from another one.
           schema:
             type: string
       responses:

@@ -107,6 +107,11 @@ export class AuthUseCases {
   /**
    * Changes the password of a signed-in user. Every token issued before the change is revoked, the one
    * of this very request included, so a fresh one is returned to keep the caller signed in.
+   *
+   * Wrong current passwords count like failed logins (same counter, same threshold): whoever holds an
+   * open session must not be able to guess the password at will. At the threshold the account is locked
+   * for the usual duration AND every session is signed out — a lock alone only stops new logins, it
+   * would leave the guessing session alive.
    */
   async changePassword(userId: string, currentPassword: string, newPassword: string): Promise<LoginResult> {
     const user = await this.userRepo.findByIdWithPassword(userId)
@@ -115,6 +120,14 @@ export class AuthUseCases {
     }
     // Current password first: the rules of the new one are only discussed with someone who knows it.
     if (!(await this.authService.comparePassword(currentPassword, user.password))) {
+      const attempts = await this.userRepo.incrementLoginAttempts(userId)
+      if (attempts >= getMaxLoginAttempts()) {
+        const now = new Date()
+        await this.userRepo.lockUntil(userId, new Date(now.getTime() + getLockoutMinutes() * 60_000))
+        await this.userRepo.revokeTokens(userId, now)
+        // The session no longer exists: this is the one case where the route answers 401.
+        throw new UnauthorizedError()
+      }
       throw new WrongCurrentPasswordError()
     }
     if (!isPasswordValid(newPassword)) {

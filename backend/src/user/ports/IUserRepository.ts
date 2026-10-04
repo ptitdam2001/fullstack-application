@@ -22,4 +22,6 @@ export interface IUserRepository {
    * login counter, the temporary lock and any pending reset link.
    */
   changePassword(userId: string, hashedPassword: string, tokensValidAfter: Date): Promise<void>
+  /** Refuses every token issued before `at`: all the sessions of the user are signed out. */
+  revokeTokens(userId: string, at: Date): Promise<void>
 }

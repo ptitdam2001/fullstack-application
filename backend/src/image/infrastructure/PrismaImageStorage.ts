@@ -1,8 +1,15 @@
+import { randomBytes } from 'node:crypto'
 import { prisma } from '../../../utils/prismaClient.js'
 import type { IImageStorage } from '../ports/IImageStorage.js'
 import type { ImageContent, SavedImage, SaveImageInput } from '../domain/Image.js'
 
-const OBJECT_ID = /^[0-9a-f]{24}$/i
+// The id handed out by this storage is a random 128-bit token (base64url), not the MongoDB ObjectId.
+// GET /images/{id} is public: an ObjectId embeds a date and a counter, so one known URL would let anyone
+// walk through the pictures of every user. A random token cannot be guessed from another one.
+const PUBLIC_ID_BYTES = 16
+const PUBLIC_ID = /^[A-Za-z0-9_-]{22}$/
+
+const newPublicId = (): string => randomBytes(PUBLIC_ID_BYTES).toString('base64url')
 
 /** Relative on purpose — see IImageStorage. Served by `GET /images/{id}` (ImageHttpHandlers). */
 const toUrl = (id: string): string => `/images/${id}`
@@ -10,31 +17,31 @@ const toUrl = (id: string): string => `/images/${id}`
 /** Images stored in the `images` MongoDB collection. */
 export class PrismaImageStorage implements IImageStorage {
   async save({ data, contentType, ownerId }: SaveImageInput): Promise<SavedImage> {
-    const { id } = await prisma.image.create({
-      data: { data: new Uint8Array(data), contentType, size: data.byteLength, ownerId },
-      select: { id: true },
+    const { publicId } = await prisma.image.create({
+      data: { publicId: newPublicId(), data: new Uint8Array(data), contentType, size: data.byteLength, ownerId },
+      select: { publicId: true },
     })
-    return { id, url: toUrl(id) }
+    return { id: publicId, url: toUrl(publicId) }
   }
 
   async findById(id: string): Promise<ImageContent | null> {
-    // Prisma throws on a malformed ObjectId: an id this storage never issued is simply "not found".
-    if (!OBJECT_ID.test(id)) {
+    // An id this storage never issued is simply "not found" — the database is not even asked.
+    if (!PUBLIC_ID.test(id)) {
       return null
     }
-    return prisma.image.findUnique({ where: { id }, select: { data: true, contentType: true } })
+    return prisma.image.findUnique({ where: { publicId: id }, select: { data: true, contentType: true } })
   }
 
   async delete(id: string): Promise<void> {
-    if (!OBJECT_ID.test(id)) {
+    if (!PUBLIC_ID.test(id)) {
       return
     }
-    await prisma.image.deleteMany({ where: { id } })
+    await prisma.image.deleteMany({ where: { publicId: id } })
   }
 
   async deleteByOwner(ownerId: string, options: { exceptId?: string } = {}): Promise<void> {
     await prisma.image.deleteMany({
-      where: { ownerId, ...(options.exceptId !== undefined && { id: { not: options.exceptId } }) },
+      where: { ownerId, ...(options.exceptId !== undefined && { publicId: { not: options.exceptId } }) },
     })
   }
 }

@@ -8,6 +8,9 @@ import type { ImageContent, SavedImage, SaveImageInput } from '../domain/Image.j
  * to the clients as is. The MongoDB adapter returns a RELATIVE url served by this API (`/images/{id}`,
  * to be resolved against the API base URL); an S3 adapter would return an absolute URL.
  *
+ * The `id` is opaque and chosen by the adapter. It ends up in a public URL, so it must not be guessable
+ * from another id (no sequence, no timestamp).
+ *
  * An image is immutable: replacing a picture means saving a new one (new id, new url) and deleting the old.
  */
 export interface IImageStorage {

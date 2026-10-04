@@ -62,7 +62,8 @@ export const changeMyPassword = async (ctx: Context, req: Request, res: Response
     if (err instanceof UnauthorizedError) {
       return res.status(401).json({ message: 'Unauthorized', status: 401 })
     }
-    // 400, not 401: the session is fine, and clients treat any 401 as "session expired".
+    // 400, not 401: the session is fine, and clients treat any 401 as "session expired". The 401 above
+    // is reserved for the attempt that locks the account, which does sign every session out.
     if (err instanceof WrongCurrentPasswordError) {
       return res.status(400).json({ message: 'Mot de passe actuel incorrect', status: 400 })
     }
