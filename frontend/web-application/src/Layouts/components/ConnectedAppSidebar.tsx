@@ -2,7 +2,6 @@ import {
   Sidebar,
   SidebarContent,
   SidebarMenu,
-  SidebarFooter,
   SidebarHeader,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -10,9 +9,11 @@ import {
 } from '@repo/design-system'
 
 import { type FC } from 'react'
+import { FormattedMessage, useIntl } from 'react-intl'
 import { Link, useNavigate } from 'react-router'
 import { type LateralMenu } from '@Application/lateralMenu.config'
 import { House } from 'lucide-react'
+import { AppSidebarFooter } from './AppSidebarFooter'
 
 type ConnectedAppSidebarProps = {
   links: LateralMenu
@@ -20,6 +21,7 @@ type ConnectedAppSidebarProps = {
 
 export const ConnectedAppSidebar: FC<ConnectedAppSidebarProps> = ({ links }) => {
   const navigate = useNavigate()
+  const intl = useIntl()
 
   const handleClick = (url: string) => () => {
     navigate(url)
@@ -34,31 +36,21 @@ export const ConnectedAppSidebar: FC<ConnectedAppSidebarProps> = ({ links }) => 
       </SidebarHeader>
       <SidebarContent>
         <SidebarMenu>
-          {links.main &&
-            links.main.map(({ label, url, icon }) => (
-              <SidebarMenuItem key={url}>
-                <SidebarMenuButton tooltip={label} onClick={handleClick(url)}>
-                  {icon}
-                  <span>{label}</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
+          {links.main.map(({ labelId, url, icon }) => (
+            <SidebarMenuItem key={url}>
+              <SidebarMenuButton tooltip={intl.formatMessage({ id: labelId })} onClick={handleClick(url)}>
+                {icon}
+                <span>
+                  <FormattedMessage id={labelId} />
+                </span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          ))}
         </SidebarMenu>
       </SidebarContent>
-      <SidebarFooter>
-        {links.footer && (
-          <SidebarMenu>
-            {links.footer.map(({ label, url, icon }) => (
-              <SidebarMenuItem key={url}>
-                <SidebarMenuButton tooltip={label} onClick={handleClick(url)}>
-                  {icon}
-                  <span>{label}</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
-          </SidebarMenu>
-        )}
-      </SidebarFooter>
+
+      <AppSidebarFooter />
+
       <SidebarRail />
     </Sidebar>
   )
