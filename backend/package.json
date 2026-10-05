@@ -7,6 +7,8 @@
     "check:type": "tsc --noEmit",
     "generate:prisma": "prisma generate",
     "format:prisma": "prisma format",
+    "db:check-duplicates": "tsx scripts/check-unique-duplicates.ts",
+    "db:push": "pnpm db:check-duplicates && prisma db push --skip-generate",
     "build": "esbuild index.ts --platform=node --format=esm --bundle --packages=external --outfile=./dist/index.js",
     "start:dev": "NODE_ENV=development tsx watch index.ts",
     "start:prod": "node ./dist/index.js",
