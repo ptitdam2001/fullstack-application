@@ -1,13 +1,30 @@
-.PHONY: seed help test-backend-unit test-backend-func db-test-up db-test-down test-e2e up down stack-test-up stack-test-down test-e2e-smoke test check lint gen ds-build
+.PHONY: seed db-check-duplicates db-push help test-backend-unit test-backend-func db-test-up db-test-down test-e2e up down stack-test-up stack-test-down test-e2e-smoke test check lint gen ds-build
 
 TEST_MONGO_CONTAINER := fullstack-test-mongo
 TEST_MONGO_PORT := 27018
 
 help: ## Affiche les commandes disponibles
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' Makefile | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2}'
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' Makefile | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
 seed: ## Crée le jeu de données de test en base (idempotent)
 	cd backend && NODE_PATH=$$(pwd)/node_modules pnpm exec tsx ../scripts/seed/index.ts
+
+# `prisma db push` est la seule chose qui crée les index MongoDB déclarés dans schema.prisma
+# (@unique, @@unique, @@index). Cible : DATABASE_URL de l'environnement, sinon celle de backend/.env.
+# Jamais appelée par `make up` : sur Mongo 4.4, créer un index unique sur une collection qui
+# contient des doublons ne renvoie pas d'erreur, la construction reste bloquée côté serveur.
+# `pnpm db:push` lance donc d'abord db:check-duplicates et s'arrête avant d'écrire s'il en trouve.
+db-check-duplicates: ## Liste les doublons qui bloqueraient un index unique (lecture seule)
+	cd backend && pnpm db:check-duplicates
+
+db-push: ## Crée/met à jour les index MongoDB du schéma Prisma (contrôle des doublons puis prisma db push)
+	@cd backend && pnpm db:push || { \
+		echo ""; \
+		echo "db-push a échoué : les index du schéma ne sont pas garantis en base. Causes habituelles :"; \
+		echo "  - doublons sur un champ unique : listés ci-dessus, à fusionner ou supprimer avant de relancer"; \
+		echo "  - Mongo injoignable, replica set pas encore prêt, ou DATABASE_URL absente (backend/.env)"; \
+		exit 1; \
+	}
 
 test-backend-unit: ## Lance les tests unitaires backend (Vitest, repositories mockés)
 	cd backend && pnpm test
@@ -36,6 +53,9 @@ COMPOSE_DEV := docker compose -f deployment/docker-compose.yml
 
 up: ## Lance la stack dev via Docker (API + Mongo + Swagger)
 	$(COMPOSE_DEV) up -d --build
+	@echo ""
+	@echo "Index MongoDB : non appliqués automatiquement. Sur une base neuve ou après un changement"
+	@echo "d'index dans schema.prisma, lancer 'make db-push' (vérifie d'abord les doublons)."
 
 down: ## Arrête la stack dev
 	$(COMPOSE_DEV) down
@@ -43,10 +63,13 @@ down: ## Arrête la stack dev
 # ─── Docker test (smoke E2E) ─────────────────────────────────────────────────
 
 COMPOSE_TEST := docker compose -f deployment/docker-compose.test.yml
+# Toujours entre quotes simples à l'usage : sans elles le shell coupe l'URL au `&`, DATABASE_URL
+# n'est plus transmise et backend/.env prend le relais — la base DEV (:27017) est alors visée.
 SEED_TEST_URL := mongodb://root:example@localhost:27019/app?authSource=admin&directConnection=true
 
-stack-test-up: ## Lance la stack test isolée (build + seed)
+stack-test-up: ## Lance la stack test isolée (build + index + seed)
 	$(COMPOSE_TEST) up -d --build --wait
+	DATABASE_URL='$(SEED_TEST_URL)' $(MAKE) db-push
 	DATABASE_URL='$(SEED_TEST_URL)' $(MAKE) seed
 
 stack-test-down: ## Arrête la stack test et supprime les volumes
