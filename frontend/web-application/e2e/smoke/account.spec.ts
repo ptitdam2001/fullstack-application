@@ -12,8 +12,9 @@ import { createPng, JPEG_SIGNATURE, PNG_SIGNATURE, type FilePayload } from '../f
 const API_URL = process.env.SMOKE_API_URL ?? 'http://localhost:4001'
 
 const SEED = { email: 'coach@seed.local', password: 'Seed@1234', firstName: 'Coach', lastName: 'Seed' }
-// Seed user without any role: gets the generic sidebar (ConnectedAppSidebar)
-const NO_ROLE_USER = { email: 'user@seed.local', password: 'Seed@1234', fullName: 'User Seed' }
+// Seed users served by the generic sidebar (ConnectedAppSidebar): no role at all, and referee
+const NO_ROLE_USER = { email: 'user@seed.local', password: 'Seed@1234', fullName: 'User Seed', initials: 'US' }
+const REFEREE_USER = { email: 'referee@seed.local', password: 'Seed@1234', fullName: 'Referee Seed', initials: 'RS' }
 const SEED_FULL_NAME = `${SEED.firstName} ${SEED.lastName}`
 const NEW_PASSWORD = 'Smoke@5678'
 const MAX_AVATAR_BYTES = 100 * 1024
@@ -133,11 +134,7 @@ test.describe('smoke — account page', () => {
     await signIn(page, NO_ROLE_USER.password, NO_ROLE_USER.email)
     const account = new AccountPage(page)
 
-    // Generic sidebar: the entry is a plain « My Profile » button, not the user's name
-    await page
-      .locator('[data-slot="sidebar-footer"]')
-      .getByRole('button', { name: /my profile|mon profil/i })
-      .click()
+    await account.openFromSidebar(NO_ROLE_USER.fullName)
 
     await expect(page).toHaveURL(ACCOUNT_URL)
     await expect(account.heading).toBeVisible()
@@ -145,17 +142,25 @@ test.describe('smoke — account page', () => {
     await expect(account.avatar).toHaveText('US')
   })
 
-  // BUG (spec 24 « Section Photo » 1 et 4, « Section Profil » 4 : photo/initiales et identité dans le menu
-  // latéral, « quel que soit le profil ») : les profils Arbitre et Sans équipe ont le menu générique
-  // (ConnectedAppSidebar), sans avatar ni nom — la photo n'y apparaît jamais.
-  // Suivi : https://github.com/ptitdam2001/fullstack-application/issues/50
-  test.fixme('a user without any role sees their avatar and name in the sidebar footer', async ({ page }) => {
-    await signIn(page, NO_ROLE_USER.password, NO_ROLE_USER.email)
-    const account = new AccountPage(page)
+  // Spec 24 « Section Photo » 1 et 4, « Section Profil » 4 : photo/initiales et identité dans le menu latéral,
+  // « quel que soit le profil » — y compris les profils du menu générique (ConnectedAppSidebar).
+  // Régression de https://github.com/ptitdam2001/fullstack-application/issues/50
+  for (const [profile, user] of [
+    ['a user without any role', NO_ROLE_USER],
+    ['a referee', REFEREE_USER],
+  ] as const) {
+    test(`${profile} sees their avatar and name in the sidebar footer`, async ({ page }) => {
+      await signIn(page, user.password, user.email)
+      const account = new AccountPage(page)
+      const footer = page.locator('[data-slot="sidebar-footer"]')
 
-    await expect(account.sidebarProfileButton(NO_ROLE_USER.fullName)).toBeVisible()
-    await expect(account.sidebarAvatar).toHaveText('US')
-  })
+      await expect(footer.getByRole('button', { name: user.fullName })).toBeVisible()
+      await expect(account.sidebarAvatar).toHaveAttribute('data-has-image', 'false')
+      await expect(account.sidebarAvatar).toHaveText(user.initials)
+      // The generic « Settings » / « My Profile » entries are gone: profile and sign-out only
+      await expect(footer.getByRole('button')).toHaveCount(2)
+    })
+  }
 
   test('profile edit is persisted (survives a reload and is returned by GET /me)', async ({ page, request }) => {
     const account = await openAccount(page)
