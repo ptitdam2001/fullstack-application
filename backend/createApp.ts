@@ -28,9 +28,10 @@ import * as healthHandlers from './src/health/infrastructure/HealthHttpHandlers'
 
 import addFormats from 'ajv-formats'
 import { logger } from './config/logger'
-import { createRequestLogger } from './config/requestLogger'
+import { createRequestLogger, sanitizePath } from './config/requestLogger'
 import { applyAuthRateLimits } from './config/rateLimits'
 import { applyBodyLimits } from './config/bodyLimits'
+import { bodyParserErrorResponse, bodyParserErrorType } from './config/bodyParserErrors'
 
 /**
  * Builds and initializes the Express + OpenAPI app without binding a port.
@@ -124,7 +125,16 @@ export const createApp = async (): Promise<Application> => {
   // declares all 4 parameters — `next` is otherwise unused but mandatory for the
   // arity check, without it this never runs and errors fall through to Express's
   // default HTML error page (status 500).
-  app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
+  app.use((err: Error, req: Request, res: Response, _next: NextFunction) => {
+    const unreadableBody = bodyParserErrorType(err)
+    if (unreadableBody) {
+      // The caller's mistake, not ours: no error-level log. The request logger is mounted after the
+      // body parser and never sees these requests, so this line is their only trace: method, path,
+      // status and error type, never the error message (a parse error quotes the body).
+      const response = bodyParserErrorResponse(unreadableBody)
+      logger.warn(`${req.method} ${sanitizePath(req.originalUrl)} ${response.status} - ${unreadableBody}`)
+      return res.status(response.status).json(response)
+    }
     if (err instanceof UnauthorizedError) {
       return res.status(401).json({ status: 401, message: 'Unauthorized' })
     }
