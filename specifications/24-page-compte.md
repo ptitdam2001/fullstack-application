@@ -130,6 +130,8 @@ Décision d'architecture associée : le stockage est isolé derrière un port (`
 | Fichier dont le contenu ne correspond pas au format annoncé     | Envoi refusé, message d'erreur ; la photo précédente est conservée                             |
 | Image dépassant la taille maximale                              | Envoi refusé, message d'erreur ; la photo précédente est conservée                             |
 | Suppression de la photo alors qu'il n'y en a pas                | Sans effet                                                                                     |
+| Deux envois de photo simultanés (deux onglets, renvoi réseau)   | Les deux réussissent ; l'une des deux photos est conservée et affichée, l'autre est supprimée  |
+| Envoi et suppression de photo simultanés                        | Les deux réussissent ; le profil affiche la nouvelle photo ou aucune, jamais une photo absente |
 | Session expirée ou révoquée pendant l'utilisation de la page    | Redirection vers la page de connexion (comportement commun à toute l'application)              |
 | Autre appareil connecté au moment du changement de mot de passe | Sa session est révoquée : il est renvoyé vers la page de connexion à sa prochaine action       |
 
@@ -225,11 +227,12 @@ sequenceDiagram
         Storage->>DB: prisma.image.create(...)
         DB-->>Storage: Image
         Storage-->>UC: référence de la nouvelle image
-        UC->>UserRepo: avatar = /images/{id}
-        UserRepo->>DB: prisma.user.update(...)
-        opt une photo précédente existait
-            UC->>Storage: delete(id de l'ancienne image)
-            Storage->>DB: prisma.image.delete(...)
+        UC->>UserRepo: replaceAvatar(userId, /images/{id})
+        UserRepo->>DB: lecture de avatar, puis écriture conditionnelle (compare-and-swap)
+        UserRepo-->>UC: utilisateur à jour + avatar remplacé
+        opt un avatar a été remplacé
+            UC->>Storage: deleteByOwnerAndUrl(userId, avatar remplacé)
+            Storage->>DB: prisma.image.deleteMany({ ownerId, publicId })
         end
         UC-->>API: utilisateur mis à jour
         API-->>FE: 200 UserWithoutPassword
@@ -238,7 +241,22 @@ sequenceDiagram
     end
 ```
 
-L'ordre est volontaire : **nouvelle image, puis `User.avatar`, puis suppression des anciennes**. Il n'y a pas de transaction. Une panne en cours de route laisse au pire une image orpheline, jamais un profil qui pointe vers une image absente. La suppression vise toutes les images du propriétaire sauf la nouvelle (`deleteByOwner`), et non l'URL lue dans `User.avatar`.
+L'ordre est volontaire : **nouvelle image, puis `User.avatar`, puis suppression de l'image remplacée**. Il n'y a pas de transaction. Une panne en cours de route laisse au pire une image orpheline, jamais un profil qui pointe vers une image absente.
+
+#### Requêtes simultanées du même utilisateur
+
+Deux onglets, deux appareils ou un renvoi réseau peuvent faire exécuter en même temps plusieurs `PUT /me/avatar` et `DELETE /me/avatar` pour le même utilisateur. Règle : **quel que soit l'entrelacement, `User.avatar` désigne une image existante ou vaut `null`**.
+
+- `IUserRepository.replaceAvatar(userId, avatar)` remplace `User.avatar` de façon **atomique** et retourne la valeur remplacée. L'adaptateur Prisma procède par _compare-and-swap_ : il lit `avatar`, puis n'écrit que si la valeur n'a pas changé entre-temps (`updateMany` filtré sur la valeur lue), et recommence sinon. Une valeur donnée n'est donc retournée comme « remplacée » qu'à **une seule** requête.
+- Chaque requête supprime **uniquement l'image qu'elle a remplacée** (`IImageStorage.deleteByOwnerAndUrl`). Une image n'est donc supprimée qu'après que le profil a cessé de la désigner, et par la seule requête qui l'a retirée ; comme chaque envoi crée une nouvelle URL, une image retirée n'est jamais désignée à nouveau.
+- `removeMyAvatar` suit la même règle : remplacement par `null`, puis suppression de l'image remplacée.
+
+Deux approches sont écartées, parce qu'elles peuvent supprimer l'image que le profil désigne :
+
+- supprimer « toutes les images du propriétaire sauf la mienne » : la requête qui écrit `User.avatar` en premier supprime ensuite l'image de celle qui l'a écrit en dernier ;
+- relire `User.avatar` puis supprimer « toutes les images sauf celle-là » : une autre requête peut enregistrer son image et la poser sur le profil entre la relecture et la suppression.
+
+Conséquence assumée : il n'y a plus de balayage des images du propriétaire à chaque envoi. Une image orpheline (panne entre deux étapes, ou `User.avatar` réécrit par un Admin via `PATCH /user/{id}`) n'est supprimée qu'avec le compte.
 
 ---
 
@@ -388,26 +406,25 @@ backend/src/image/
 
 **Port — `IImageStorage`**
 
-| Méthode         | Rôle                                                                                        |
-| --------------- | ------------------------------------------------------------------------------------------- |
-| `save`          | Enregistre les octets d'une image avec son type et son propriétaire ; retourne sa référence |
-| `findById`      | Retourne l'image (octets + `contentType`) ou rien si elle n'existe pas                      |
-| `delete`        | Supprime une image                                                                          |
-| `deleteByOwner` | Supprime toutes les images d'un propriétaire, en épargnant éventuellement une (`exceptId`)  |
+| Méthode               | Rôle                                                                                        |
+| --------------------- | ------------------------------------------------------------------------------------------- |
+| `save`                | Enregistre les octets d'une image avec son type et son propriétaire ; retourne sa référence |
+| `findById`            | Retourne l'image (octets + `contentType`) ou rien si elle n'existe pas                      |
+| `delete`              | Supprime une image                                                                          |
+| `deleteByOwner`       | Supprime toutes les images d'un propriétaire                                                |
+| `deleteByOwnerAndUrl` | Supprime l'image désignée par une URL, si elle appartient au propriétaire donné             |
 
 ```typescript
 export interface IImageStorage {
   save(input: SaveImageInput): Promise<SavedImage>; // { id, url }
   findById(id: string): Promise<ImageContent | null>; // { data, contentType }
   delete(id: string): Promise<void>;
-  deleteByOwner(
-    ownerId: string,
-    options?: { exceptId?: string },
-  ): Promise<void>;
+  deleteByOwner(ownerId: string): Promise<void>;
+  deleteByOwnerAndUrl(ownerId: string, url: string): Promise<void>;
 }
 ```
 
-`deleteByOwner` est la méthode utilisée par le remplacement de photo, sa suppression et la suppression d'un compte. Le nettoyage est borné **par propriétaire** et non par URL : un Admin peut écrire une valeur arbitraire dans `User.avatar` via `PATCH /user/{id}`, et supprimer « l'image désignée par l'URL » permettrait alors d'effacer la photo de quelqu'un d'autre.
+`deleteByOwner` sert à la suppression d'un compte. `deleteByOwnerAndUrl` sert au remplacement et à la suppression de la photo (voir « Requêtes simultanées du même utilisateur »). Dans les deux cas le nettoyage reste borné **par propriétaire** : un Admin peut écrire une valeur arbitraire dans `User.avatar` via `PATCH /user/{id}`, et supprimer « l'image désignée par l'URL » sans vérifier son propriétaire permettrait alors d'effacer la photo de quelqu'un d'autre. `deleteByOwnerAndUrl` est sans effet si l'URL n'a pas été émise par le stockage ou si l'image appartient à un autre utilisateur.
 
 Le cas d'usage de lecture servi par `getImage` appelle `findById` et répond `404` si l'image est absente.
 
@@ -425,8 +442,8 @@ Emplacement :
 | Use case           | Input                                        | Output                | Description                                                                                           |
 | ------------------ | -------------------------------------------- | --------------------- | ----------------------------------------------------------------------------------------------------- |
 | `updateMyProfile`  | `userId`, `{ firstName?, lastName? }`        | `UserWithoutPassword` | Met à jour uniquement prénom et nom                                                                   |
-| `updateMyAvatar`   | `userId`, `{ contentType, data }`            | `UserWithoutPassword` | Valide l'image, l'enregistre, pose `avatar`, supprime l'image précédente                              |
-| `removeMyAvatar`   | `userId`                                     | `UserWithoutPassword` | Supprime l'image et remet `avatar` à `null`                                                           |
+| `updateMyAvatar`   | `userId`, `{ contentType, data }`            | `UserWithoutPassword` | Valide l'image, l'enregistre, pose `avatar`, supprime l'image qu'il a remplacée                       |
+| `removeMyAvatar`   | `userId`                                     | `UserWithoutPassword` | Remet `avatar` à `null`, puis supprime l'image qu'il a remplacée                                      |
 | `changeMyPassword` | `userId`, `{ currentPassword, newPassword }` | `TokenData`           | Vérifie le mot de passe actuel, enregistre le nouveau, pose `tokensValidAfter`, émet un nouveau token |
 
 Les handlers ne contiennent aucune logique métier : extraction de l'utilisateur courant, appel du cas d'usage, mapping des erreurs métier vers `400`.
