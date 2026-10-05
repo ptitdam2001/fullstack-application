@@ -28,6 +28,7 @@ const makeRepo = (overrides: Partial<IUserRepository> = {}): IUserRepository => 
   findAll: vi.fn().mockResolvedValue([mockUser]),
   count: vi.fn().mockResolvedValue(1),
   update: vi.fn().mockResolvedValue({ ...mockUser, firstName: 'Updated' }),
+  replaceAvatar: vi.fn(),
   delete: vi.fn().mockResolvedValue(undefined),
   incrementLoginAttempts: vi.fn().mockResolvedValue(1),
   lockUntil: vi.fn().mockResolvedValue(undefined),
@@ -43,6 +44,7 @@ const makeImageStorage = (): IImageStorage => ({
   findById: vi.fn(),
   delete: vi.fn().mockResolvedValue(undefined),
   deleteByOwner: vi.fn().mockResolvedValue(undefined),
+  deleteByOwnerAndUrl: vi.fn(),
 })
 
 const makeUseCases = (repo: IUserRepository = makeRepo(), imageStorage: IImageStorage = makeImageStorage()) =>

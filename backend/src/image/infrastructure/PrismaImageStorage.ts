@@ -13,6 +13,8 @@ const newPublicId = (): string => randomBytes(PUBLIC_ID_BYTES).toString('base64u
 
 /** Relative on purpose — see IImageStorage. Served by `GET /images/{id}` (ImageHttpHandlers). */
 const toUrl = (id: string): string => `/images/${id}`
+/** The reverse of `toUrl`. */
+const IMAGE_URL = /^\/images\/([A-Za-z0-9_-]{22})$/
 
 /** Images stored in the `images` MongoDB collection. */
 export class PrismaImageStorage implements IImageStorage {
@@ -39,9 +41,15 @@ export class PrismaImageStorage implements IImageStorage {
     await prisma.image.deleteMany({ where: { publicId: id } })
   }
 
-  async deleteByOwner(ownerId: string, options: { exceptId?: string } = {}): Promise<void> {
-    await prisma.image.deleteMany({
-      where: { ownerId, ...(options.exceptId !== undefined && { publicId: { not: options.exceptId } }) },
-    })
+  async deleteByOwner(ownerId: string): Promise<void> {
+    await prisma.image.deleteMany({ where: { ownerId } })
+  }
+
+  async deleteByOwnerAndUrl(ownerId: string, url: string): Promise<void> {
+    const publicId = IMAGE_URL.exec(url)?.[1]
+    if (publicId === undefined) {
+      return
+    }
+    await prisma.image.deleteMany({ where: { ownerId, publicId } })
   }
 }

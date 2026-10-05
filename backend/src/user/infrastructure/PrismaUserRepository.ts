@@ -1,5 +1,10 @@
 import { prisma } from '../../../utils/prismaClient.js'
-import type { IUserRepository, UserFilterOptions, UserListOptions } from '../ports/IUserRepository.js'
+import type {
+  AvatarReplacement,
+  IUserRepository,
+  UserFilterOptions,
+  UserListOptions,
+} from '../ports/IUserRepository.js'
 import type { AuthState, UserProfile, UserRole, UpdateUserInput } from '../domain/User.js'
 import { TeamRole } from '../../userTeam/domain/UserTeam.js'
 
@@ -71,6 +76,14 @@ const toWhere = (filters?: UserFilterOptions) => ({
   ...(filters?.isActive !== undefined && { isActive: filters.isActive }),
 })
 
+// A user created without an avatar has no `avatar` field at all, which `{ avatar: null }` alone does not match.
+const avatarIs = (avatar: string | null) =>
+  avatar === null ? { OR: [{ avatar: null }, { avatar: { isSet: false } }] } : { avatar }
+
+// A failed attempt of `replaceAvatar` means another change of the same avatar went through in between, so
+// this is only reached by more simultaneous changes of one user's avatar than any real client produces.
+const MAX_AVATAR_REPLACE_ATTEMPTS = 10
+
 export class PrismaUserRepository implements IUserRepository {
   async findById(id: string): Promise<UserProfile | null> {
     const row = await prisma.user.findUnique({ where: { id }, select })
@@ -124,6 +137,27 @@ export class PrismaUserRepository implements IUserRepository {
       select,
     })
     return toUserProfile(row)
+  }
+
+  async replaceAvatar(id: string, avatar: string | null): Promise<AvatarReplacement | null> {
+    // Compare-and-swap: the write only goes through while the avatar is still the one just read, so
+    // `previousAvatar` is exactly the value this call replaced. With a plain read then a plain update, two
+    // concurrent calls would both report the same previous value, and nobody the value of the other.
+    for (let attempt = 0; attempt < MAX_AVATAR_REPLACE_ATTEMPTS; attempt++) {
+      const current = await prisma.user.findUnique({ where: { id }, select: { avatar: true } })
+      if (!current) {
+        return null
+      }
+      const { count } = await prisma.user.updateMany({
+        where: { id, ...avatarIs(current.avatar) },
+        data: { avatar },
+      })
+      if (count === 1) {
+        const user = await this.findById(id)
+        return user && { user, previousAvatar: current.avatar }
+      }
+    }
+    throw new Error(`Avatar of user ${id} not replaced: too many concurrent changes`)
   }
 
   async delete(id: string): Promise<void> {

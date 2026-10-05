@@ -19,9 +19,15 @@ export interface IImageStorage {
   findById(id: string): Promise<ImageContent | null>
   /** No-op when the id is unknown. */
   delete(id: string): Promise<void>
+  /** Deletes every image of an owner. Only for when the owner itself goes away — see `deleteByOwnerAndUrl`. */
+  deleteByOwner(ownerId: string): Promise<void>
   /**
-   * Deletes every image of an owner, optionally sparing one. Scoped by owner rather than by url on purpose:
-   * nothing a caller passes can make it delete someone else's image.
+   * Deletes the image behind `url` (a url returned by `save`), provided it belongs to `ownerId`. No-op for a
+   * url this storage did not issue, or for the image of another owner: the url comes from data an admin can
+   * write freely (`user.avatar`), so it never decides alone what gets deleted.
+   *
+   * This is how a replaced image is dropped. Deleting "every image of the owner but the current one" is not
+   * safe: the image of a concurrent upload, just saved or just referenced, would go with the others.
    */
-  deleteByOwner(ownerId: string, options?: { exceptId?: string }): Promise<void>
+  deleteByOwnerAndUrl(ownerId: string, url: string): Promise<void>
 }
