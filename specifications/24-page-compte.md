@@ -111,7 +111,7 @@ Décision d'architecture associée : le stockage est isolé derrière un port (`
 | Modifier ses rôles ou l'état de son compte depuis la page | ❌    | ❌    | ❌      | ❌     | ❌          |
 | Modifier le compte d'un autre utilisateur                 | ✅¹   | ❌    | ❌      | ❌     | ❌          |
 
-¹ Hors page compte : via la gestion des utilisateurs (`PATCH /user/{id}`), inchangée — voir [[06-user-profiles]].
+¹ Hors page compte : via la gestion des utilisateurs (`PATCH /user/{id}` pour l'identité et le rôle admin, `DELETE /user/{id}/avatar` pour retirer une photo) — voir [[06-user-profiles]].
 
 ---
 
@@ -256,7 +256,7 @@ Deux approches sont écartées, parce qu'elles peuvent supprimer l'image que le 
 - supprimer « toutes les images du propriétaire sauf la mienne » : la requête qui écrit `User.avatar` en premier supprime ensuite l'image de celle qui l'a écrit en dernier ;
 - relire `User.avatar` puis supprimer « toutes les images sauf celle-là » : une autre requête peut enregistrer son image et la poser sur le profil entre la relecture et la suppression.
 
-Conséquence assumée : il n'y a plus de balayage des images du propriétaire à chaque envoi. Une image orpheline (panne entre deux étapes, ou `User.avatar` réécrit par un Admin via `PATCH /user/{id}`) n'est supprimée qu'avec le compte.
+Conséquence assumée : il n'y a plus de balayage des images du propriétaire à chaque envoi. Une image orpheline (panne entre deux étapes) n'est supprimée qu'avec le compte.
 
 ---
 
@@ -424,7 +424,7 @@ export interface IImageStorage {
 }
 ```
 
-`deleteByOwner` sert à la suppression d'un compte. `deleteByOwnerAndUrl` sert au remplacement et à la suppression de la photo (voir « Requêtes simultanées du même utilisateur »). Dans les deux cas le nettoyage reste borné **par propriétaire** : un Admin peut écrire une valeur arbitraire dans `User.avatar` via `PATCH /user/{id}`, et supprimer « l'image désignée par l'URL » sans vérifier son propriétaire permettrait alors d'effacer la photo de quelqu'un d'autre. `deleteByOwnerAndUrl` est sans effet si l'URL n'a pas été émise par le stockage ou si l'image appartient à un autre utilisateur.
+`deleteByOwner` sert à la suppression d'un compte. `deleteByOwnerAndUrl` sert au remplacement et à la suppression de la photo (voir « Requêtes simultanées du même utilisateur »). Dans les deux cas le nettoyage reste borné **par propriétaire** : `User.avatar` peut contenir une valeur que ce stockage n'a pas émise (URL absolue héritée de données antérieures), et supprimer « l'image désignée par l'URL » sans vérifier son propriétaire permettrait d'effacer la photo de quelqu'un d'autre si une telle valeur désignait son image. `deleteByOwnerAndUrl` est sans effet si l'URL n'a pas été émise par le stockage ou si l'image appartient à un autre utilisateur.
 
 Le cas d'usage de lecture servi par `getImage` appelle `findById` et répond `404` si l'image est absente.
 
@@ -484,7 +484,7 @@ Après `changeMyPassword`, la mutation n'invalide **aucune** requête : l'invali
 - Les routes `/me…` exigent un JWT valide et agissent sur l'utilisateur **du token**. Aucun `id` n'est accepté en entrée : pas de vérification d'ownership à écrire, pas d'accès possible au compte d'un tiers.
 - **Liste blanche de champs** : `UpdateMyProfileInput` ne déclare que `firstName` et `lastName`, avec `additionalProperties: false`. `email`, `password`, `avatar`, `isAdmin`, `isReferee`, `isActive`, `isBlocked` sont rejetés dès la validation. Le cas d'usage ne transmet au repository que ces deux champs — la protection ne repose pas sur la seule validation du schéma.
 - `User.avatar` n'est jamais fourni par le client : sa valeur est calculée par le serveur à partir de l'image enregistrée.
-- La modification d'un autre utilisateur et des rôles reste sur `PATCH /user/{id}`, réservée à l'Admin (inchangée).
+- La modification d'un autre utilisateur et des rôles reste sur `PATCH /user/{id}`, réservée à l'Admin. Cette route n'accepte pas `avatar` : un Admin ne peut que supprimer la photo d'un autre utilisateur (`DELETE /user/{id}/avatar`, même cas d'usage que `DELETE /me/avatar`) — voir [[06-user-profiles]].
 
 #### Mot de passe actuel incorrect : `400`, pas `401`
 

@@ -77,7 +77,8 @@ Officiel désigné pour un ou plusieurs matchs via `UserMatch`. Accès en lectur
 | ----------------------------------------------- | ----- | ----- | ------- | ------ | ----------- |
 | Lister les utilisateurs                         | ✅    | ❌    | ❌      | ❌     | ❌          |
 | Créer un utilisateur                            | ❌³   | ❌    | ❌      | ❌     | ❌          |
-| Modifier un utilisateur                         | ✅    | ❌    | ❌      | ❌     | ❌          |
+| Modifier un utilisateur                         | ✅⁵   | ❌    | ❌      | ❌     | ❌          |
+| Supprimer la photo d'un utilisateur             | ✅⁵   | ❌    | ❌      | ❌     | ❌          |
 | Supprimer un utilisateur                        | ✅²   | ❌    | ❌      | ❌     | ❌          |
 | Promouvoir / retirer admin                      | ✅¹   | ❌    | ❌      | ❌     | ❌          |
 | Voir son propre profil                          | ✅    | ✅    | ✅      | ✅     | ✅          |
@@ -92,6 +93,8 @@ Officiel désigné pour un ou plusieurs matchs via `UserMatch`. Accès en lectur
 ³ Aucun rôle ne crée de compte à la place de quelqu'un : un compte naît uniquement par l'inscription (`/register`), puis un admin l'active. Un mot de passe choisi par l'admin serait un secret connu d'un tiers, et l'utilisateur ne pourrait pas le changer tant qu'aucun email n'est délivré (réinitialisation indisponible). Une future « invitation » (jeton à usage unique, sur le modèle de la réinitialisation) remplacera ce besoin quand un vrai service d'email existera.
 
 ⁴ Depuis la page compte (`/app/my-profile`), via `PATCH /me`, `PUT`/`DELETE /me/avatar` et `PUT /me/password` — voir [[24-page-compte]]. Ces routes n'agissent que sur le compte de l'utilisateur connecté. Elles ne permettent de modifier ni l'**email**, ni les **rôles** et l'état du compte (`isAdmin`, `isReferee`, `isActive`, `isBlocked`) ; le changement de mot de passe exige le mot de passe actuel.
+
+⁵ Via `PATCH /user/{id}` : prénom, nom, email et `isAdmin`. Le **nom est effaçable** (`lastName: null`), comme l'utilisateur peut le faire lui-même depuis la page compte ; le prénom reste obligatoire. L'admin **ne choisit pas la photo** d'un autre utilisateur : `avatar` n'est pas un champ de cette route, sa valeur est toujours calculée par le serveur à partir d'une image envoyée par l'utilisateur lui-même (voir [[24-page-compte]]). Il peut seulement la **supprimer**, via `DELETE /user/{id}/avatar`, pour retirer une photo inappropriée sans supprimer le compte : l'image stockée est supprimée avec le pointeur.
 
 ### Championnats
 
