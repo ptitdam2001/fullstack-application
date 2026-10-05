@@ -1,14 +1,17 @@
 import { randomBytes } from 'node:crypto'
+import { TeamRole, type User } from '@prisma/client'
 import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { prisma } from '../../utils/prismaClient.js'
 import { authHeaderFor } from '../support/authenticate.js'
 import { createTestAgent } from '../support/client.js'
 import { resetDatabase } from '../support/database.js'
 import {
+  assignUserToTeam,
   createAdmin,
   createAgeCategory,
   createGroup,
   createPhase,
+  createPlayerOfTeam,
   createTeam,
   createUser,
 } from '../support/fixtures.js'
@@ -59,12 +62,9 @@ const seedMatch = (homeTeamId: string, awayTeamId: string, overrides: Record<str
   })
 
 /**
- * The shared `createChampionship` fixture (tests/support/fixtures.ts) predates the
- * Season model migration — it still writes a `season` string field that no longer
- * exists on the schema (seasonId is required instead), so it fails on every call.
- * Pre-existing, unrelated to this test file (see commit 65a572f). Bypassed here with
- * a local, schema-correct helper rather than fixed — fixing the shared fixture affects
- * 4 other test files outside this change's scope.
+ * Local duplicate of the shared `createChampionship` fixture (tests/support/fixtures.ts), written when
+ * that fixture did not handle `seasonId` yet. The fixture does now: removing this helper is tracked in
+ * https://github.com/ptitdam2001/fullstack-application/issues/42.
  */
 const seedChampionship = async (ageCategoryId: string) => {
   const suffix = randomBytes(4).toString('hex')
@@ -78,6 +78,34 @@ const seedChampionship = async (ageCategoryId: string) => {
     },
   })
 }
+
+/**
+ * One caller per profile of the permission matrix (specifications/06-user-profiles.md).
+ * Roles are resolved from the database on every request, so each profile is built from
+ * real rows: UserTeam(COACH), UserMatch (referee), Player + UserTeam(PLAYER), or nothing.
+ */
+const readerProfiles: [string, () => Promise<User>][] = [
+  ['admin', () => createAdmin()],
+  [
+    'coach',
+    async () => {
+      const coach = await createUser()
+      await assignUserToTeam(coach.id, (await createTeam()).id, TeamRole.COACH)
+      return coach
+    },
+  ],
+  [
+    'referee',
+    async () => {
+      const referee = await createUser({ isReferee: true })
+      const refereed = await seedMatch((await createTeam()).id, (await createTeam()).id)
+      await prisma.userMatch.create({ data: { userId: referee.id, matchId: refereed.id } })
+      return referee
+    },
+  ],
+  ['player', async () => createPlayerOfTeam(await createTeam())],
+  ['user without role or team', () => createUser()],
+]
 
 describe('match domain — functional API (CRUD)', () => {
   let agent: Awaited<ReturnType<typeof createTestAgent>>
@@ -177,8 +205,6 @@ describe('match domain — functional API (CRUD)', () => {
       const res = await agent.get('/matches?status=PLAYED').set(authHeaderFor(admin.id, true))
 
       expect(res.status).toBe(200)
-      // NOTE: this will fail if the handler ignores the status filter (known bug: getMatches
-      // handler reads only page/count, does not forward status/pastDue to the use case)
       expect(res.body.every((m: { status: string }) => m.status === 'PLAYED')).toBe(true)
     })
 
@@ -187,11 +213,33 @@ describe('match domain — functional API (CRUD)', () => {
       expect(res.status).toBe(401)
     })
 
-    it('403 — non-admin user', async () => {
-      const user = await createUser()
-      const res = await agent.get('/matches').set(authHeaderFor(user.id))
+    it.each(readerProfiles)('permissions: %s lists every match, with the same data as an admin', async (_, seed) => {
+      const home = await createTeam()
+      const away = await createTeam()
+      await seedMatch(home.id, away.id, { status: 'PLAYED', homeGoals: 2, awayGoals: 1 })
+      await seedMatch(away.id, home.id)
+      const caller = await seed()
 
-      expect(res.status).toBe(403)
+      const admin = await createAdmin()
+      const expected = await agent.get('/matches').set(authHeaderFor(admin.id, true))
+      const res = await agent.get('/matches').set(authHeaderFor(caller.id, caller.isAdmin))
+
+      expect(res.status).toBe(200)
+      expect(res.body.length).toBeGreaterThanOrEqual(2)
+      expect(res.body).toEqual(expected.body)
+    })
+
+    it('permissions: a non-admin gets the same filters as an admin', async () => {
+      const home = await createTeam()
+      const away = await createTeam()
+      const played = await seedMatch(home.id, away.id, { status: 'PLAYED', homeGoals: 2, awayGoals: 1 })
+      await seedMatch(home.id, away.id)
+
+      const user = await createUser()
+      const res = await agent.get('/matches?status=PLAYED').set(authHeaderFor(user.id))
+
+      expect(res.status).toBe(200)
+      expect(res.body.map((m: { id: string }) => m.id)).toEqual([played.id])
     })
   })
 
@@ -367,15 +415,16 @@ describe('match domain — functional API (CRUD)', () => {
       expect(res.status).toBe(401)
     })
 
-    it('403 — non-admin user', async () => {
+    it.each(readerProfiles)('permissions: %s reads a match', async (_, seed) => {
       const home = await createTeam()
       const away = await createTeam()
       const match = await seedMatch(home.id, away.id)
+      const caller = await seed()
 
-      const user = await createUser()
-      const res = await agent.get(`/match/${match.id}`).set(authHeaderFor(user.id))
+      const res = await agent.get(`/match/${match.id}`).set(authHeaderFor(caller.id, caller.isAdmin))
 
-      expect(res.status).toBe(403)
+      expect(res.status).toBe(200)
+      expect(res.body).toMatchObject({ id: match.id, homeTeamId: home.id, awayTeamId: away.id })
     })
 
     it('404 — unknown match id', async () => {

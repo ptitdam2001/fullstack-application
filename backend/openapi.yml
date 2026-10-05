@@ -1809,7 +1809,7 @@ paths:
   /matches:
     get:
       operationId: getMatches
-      description: 'Get list of matches (admin only)'
+      description: 'Get list of matches (any authenticated user)'
       tags:
         - Match
       parameters:
@@ -1903,7 +1903,7 @@ paths:
   /match/{id}:
     get:
       operationId: getMatch
-      description: 'Get a match (admin only)'
+      description: 'Get a match (any authenticated user)'
       tags:
         - Match
       parameters:
