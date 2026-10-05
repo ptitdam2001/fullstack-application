@@ -118,16 +118,16 @@ Officiel désigné pour un ou plusieurs matchs via `UserMatch`. Accès en lectur
 
 ### Matchs
 
-| Action                                      | Admin | Coach | Arbitre (assigné) | Joueur |
-| ------------------------------------------- | ----- | ----- | ----------------- | ------ |
-| Lister / consulter                          | ✅    | ✅    | ✅                | ✅     |
-| Créer / générer                             | ✅    | ❌    | ❌                | ❌     |
-| Modifier les métadonnées                    | ✅    | ❌    | ❌                | ❌     |
-| Saisir le score                             | ✅    | ❌    | ✅                | ❌     |
-| Valider le score                            | ✅    | ❌    | ✅                | ❌     |
-| Déclarer un forfait (pré-match, son équipe) | ✅    | ✅    | ❌                | ❌     |
-| Déclarer un forfait (pendant le match)      | ✅    | ❌    | ✅ (son match)    | ❌     |
-| Assigner un arbitre                         | ✅    | ❌    | ❌                | ❌     |
+| Action                                      | Admin | Coach | Arbitre (assigné) | Joueur | Sans équipe |
+| ------------------------------------------- | ----- | ----- | ----------------- | ------ | ----------- |
+| Lister / consulter                          | ✅    | ✅    | ✅                | ✅     | ✅          |
+| Créer / générer                             | ✅    | ❌    | ❌                | ❌     | ❌          |
+| Modifier les métadonnées                    | ✅    | ❌    | ❌                | ❌     | ❌          |
+| Saisir le score                             | ✅    | ❌    | ✅                | ❌     | ❌          |
+| Valider le score                            | ✅    | ❌    | ✅                | ❌     | ❌          |
+| Déclarer un forfait (pré-match, son équipe) | ✅    | ✅    | ❌                | ❌     | ❌          |
+| Déclarer un forfait (pendant le match)      | ✅    | ❌    | ✅ (son match)    | ❌     | ❌          |
+| Assigner un arbitre                         | ✅    | ❌    | ❌                | ❌     | ❌          |
 
 > Un arbitre ne peut saisir un score que pour les matchs où il a un enregistrement `UserMatch(userId, matchId)`.
 > Un match peut avoir plusieurs arbitres.
