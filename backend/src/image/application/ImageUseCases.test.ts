@@ -10,6 +10,7 @@ const makeStorage = (overrides: Partial<IImageStorage> = {}): IImageStorage => (
   findById: vi.fn().mockResolvedValue(image),
   delete: vi.fn(),
   deleteByOwner: vi.fn(),
+  deleteByOwnerAndUrl: vi.fn(),
   ...overrides,
 })
 

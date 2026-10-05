@@ -5,6 +5,9 @@ export type UserFilterOptions = { isActive?: boolean }
 export type UserPagination = { page: number; limit: number }
 export type UserListOptions = UserFilterOptions & { pagination?: UserPagination }
 
+/** `user` is the profile read after the change; `previousAvatar` the value the change replaced. */
+export type AvatarReplacement = { user: UserProfile; previousAvatar: string | null }
+
 export interface IUserRepository {
   findById(id: string): Promise<UserProfile | null>
   findByEmailWithPassword(email: string): Promise<(UserProfile & { password: string; lockedUntil: Date | null }) | null>
@@ -12,6 +15,14 @@ export interface IUserRepository {
   findAll(options?: UserListOptions): Promise<UserProfile[]>
   count(filters?: UserFilterOptions): Promise<number>
   update(id: string, input: UpdateUserInput): Promise<UserProfile>
+  /**
+   * Points the user at `avatar` (null: no avatar) and returns the value it replaced. Null when the user does
+   * not exist.
+   *
+   * Atomic: among concurrent calls for the same user, a given value is handed back as `previousAvatar` to
+   * exactly one of them. The caller therefore owns the cleanup of what it replaced, and nobody else does.
+   */
+  replaceAvatar(id: string, avatar: string | null): Promise<AvatarReplacement | null>
   delete(id: string): Promise<void>
   incrementLoginAttempts(userId: string): Promise<number>
   lockUntil(userId: string, until: Date): Promise<void>

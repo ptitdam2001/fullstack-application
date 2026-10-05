@@ -33,17 +33,40 @@ export class ProfileUseCases {
     // New image first, pointer second, cleanup last: a failure at any step leaves a profile whose
     // avatar still resolves.
     const saved = await this.imageStorage.save({ data, contentType: input.contentType, ownerId: userId })
-    const updated = await this.userRepo.update(userId, { avatar: saved.url })
-    await this.imageStorage.deleteByOwner(userId, { exceptId: saved.id })
-    return updated
+    const replaced = await this.userRepo.replaceAvatar(userId, saved.url)
+    if (!replaced) {
+      // The account was deleted while the picture was being stored: nothing points at it.
+      await this.imageStorage.delete(saved.id)
+      throw new UserNotFoundError()
+    }
+    await this.deleteReplacedAvatar(userId, replaced.previousAvatar)
+    return replaced.user
   }
 
   /** Idempotent: succeeds when there is no avatar. */
   async removeAvatar(userId: string): Promise<UserProfile> {
-    await this.requireUser(userId)
-    const updated = await this.userRepo.update(userId, { avatar: null })
-    await this.imageStorage.deleteByOwner(userId)
-    return updated
+    const replaced = await this.userRepo.replaceAvatar(userId, null)
+    if (!replaced) {
+      throw new UserNotFoundError()
+    }
+    await this.deleteReplacedAvatar(userId, replaced.previousAvatar)
+    return replaced.user
+  }
+
+  /**
+   * The same user can run these use cases concurrently (two tabs, a network retry). Each request deletes the
+   * one picture it took off the profile, and nothing else: a picture is deleted only after the profile stopped
+   * pointing at it, by the single request that replaced it, and it never comes back since every upload gets a
+   * new url. So the profile never points at a deleted picture, whatever the interleaving.
+   *
+   * Sweeping "every picture of the user but mine" cannot promise that — it also deletes the picture a
+   * concurrent request has just put on the profile — and re-reading the profile before sweeping only narrows
+   * the window.
+   */
+  private async deleteReplacedAvatar(userId: string, previousAvatar: string | null): Promise<void> {
+    if (previousAvatar !== null) {
+      await this.imageStorage.deleteByOwnerAndUrl(userId, previousAvatar)
+    }
   }
 
   private async requireUser(userId: string): Promise<void> {

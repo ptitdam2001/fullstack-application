@@ -237,6 +237,83 @@ describe('account page (self-service profile) — functional API', () => {
       expect((await agent.get(otherUpload.body.avatar)).status).toBe(200)
     })
 
+    it("never deletes someone else's image, even when the profile was made to point at it", async () => {
+      const user = await createUser()
+      const other = await createUser()
+      const otherUpload = await upload(other.id, PNG_BASE64)
+      // What an admin can do through PATCH /user/{id}.
+      await prisma.user.update({ where: { id: user.id }, data: { avatar: otherUpload.body.avatar } })
+
+      const replaced = await upload(user.id, fakeImage(JPEG_HEADER), 'image/jpeg')
+      const removed = await agent.delete('/me/avatar').set(authHeaderFor(user.id))
+
+      expect(replaced.status).toBe(200)
+      expect(removed.status).toBe(200)
+      expect((await agent.get(otherUpload.body.avatar)).status).toBe(200)
+    })
+
+    describe('concurrent requests of the same user (two tabs, a network retry)', () => {
+      const ROUNDS = 5
+      const PARALLEL_UPLOADS = 4
+
+      /** The avatar shown by GET /me, which must be served when there is one. */
+      const expectAvatarToResolve = async (userId: string): Promise<string | null> => {
+        const me = await agent.get('/me').set(authHeaderFor(userId))
+        expect(me.status).toBe(200)
+        const avatar: string | null = me.body.avatar ?? null
+        if (avatar !== null) {
+          expect((await agent.get(avatar)).status).toBe(200)
+        }
+        return avatar
+      }
+
+      it('two simultaneous uploads leave an avatar that is served, and no other image', async () => {
+        const user = await createUser()
+
+        for (let round = 0; round < ROUNDS; round++) {
+          const [first, second] = await Promise.all([
+            upload(user.id, PNG_BASE64),
+            upload(user.id, fakeImage(JPEG_HEADER), 'image/jpeg'),
+          ])
+
+          expect(first.status).toBe(200)
+          expect(second.status).toBe(200)
+          const avatar = await expectAvatarToResolve(user.id)
+          expect([first.body.avatar, second.body.avatar]).toContain(avatar)
+          expect(await prisma.image.count({ where: { ownerId: user.id } })).toBe(1)
+        }
+      })
+
+      it('a burst of uploads leaves an avatar that is served, and no other image', async () => {
+        const user = await createUser()
+        await upload(user.id, PNG_BASE64)
+
+        const responses = await Promise.all(
+          Array.from({ length: PARALLEL_UPLOADS }, () => upload(user.id, fakeImage(JPEG_HEADER), 'image/jpeg'))
+        )
+
+        expect(responses.map(res => res.status)).toEqual(Array(PARALLEL_UPLOADS).fill(200))
+        expect(await expectAvatarToResolve(user.id)).not.toBeNull()
+        expect(await prisma.image.count({ where: { ownerId: user.id } })).toBe(1)
+      })
+
+      it('an upload racing with a removal leaves no avatar, or one that is served', async () => {
+        const user = await createUser()
+
+        for (let round = 0; round < ROUNDS; round++) {
+          const [uploaded, removed] = await Promise.all([
+            upload(user.id, PNG_BASE64),
+            agent.delete('/me/avatar').set(authHeaderFor(user.id)),
+          ])
+
+          expect(uploaded.status).toBe(200)
+          expect(removed.status).toBe(200)
+          const avatar = await expectAvatarToResolve(user.id)
+          expect(await prisma.image.count({ where: { ownerId: user.id } })).toBe(avatar === null ? 0 : 1)
+        }
+      })
+    })
+
     it('accepts a picture of exactly the size limit (its body is above the default 100 kB JSON limit)', async () => {
       const user = await createUser()
 
