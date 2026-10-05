@@ -1,0 +1,20 @@
+meta {
+  name: Remove User Avatar
+  type: http
+  seq: 12
+}
+
+delete {
+  url: {{baseUrl}}/user/{{userId}}/avatar
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  Admin only. Removes the profile picture of a user: the pointer and the stored image.
+  Idempotent: answers 200 when the user has no picture.
+}
