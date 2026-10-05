@@ -50,7 +50,7 @@ src/<domain>/
 export const operationName = async (ctx: Context, req: Request, res: Response) => { ... }
 ```
 
-**Auth**: JWT Bearer token. `requireRoles(ctx, Role.X)` enforces role-based access — throws `ForbiddenError`/`UnauthorizedError`, never caught in try/catch. Public endpoints have `security: []` in the spec.
+**Auth**: JWT Bearer token. `requireAdmin(ctx)` / `requireAdminOrCoach(ctx)` (`src/auth/application/requireRoles.ts`) enforce role-based access, `getAuthUserId(ctx)` / `getAuthPayload(ctx)` read the caller — they throw `ForbiddenError`/`UnauthorizedError`, never caught in try/catch. Public endpoints have `security: []` in the spec.
 
 **ESM strict**: all TypeScript imports must use `.js` extensions.
 
