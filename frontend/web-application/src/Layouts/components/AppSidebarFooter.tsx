@@ -1,5 +1,5 @@
 import { AuthProvider } from '@Auth/application/AuthProvider'
-import { LOGOUT_PAGE } from '@Auth/domain/Auth'
+import { ACCOUNT_PAGE, LOGOUT_PAGE } from '@Auth/domain/Auth'
 import { UserAvatar } from '@Auth/ui/UserAvatar/UserAvatar'
 import { SidebarFooter, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@repo/design-system'
 import { logout } from '@Sdk/authentication/authentication'
@@ -18,7 +18,7 @@ export const AppSidebarFooter = () => {
         <SidebarMenuItem>
           <SidebarMenuButton
             tooltip={intl.formatMessage({ id: 'coachSidebar.myProfile' })}
-            onClick={() => navigate('/app/my-profile')}
+            onClick={() => navigate(ACCOUNT_PAGE)}
           >
             <UserAvatar user={user} className="h-5 w-5" />
 
