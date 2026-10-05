@@ -11,6 +11,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - This is a pnpm monorepo with a design-system package; rebuild the design-system (`pnpm --filter @repo/design-system build`) before consuming apps when CSS or exports change.
 - Backend uses Prisma + MongoDB; always regenerate the Prisma client (`pnpm generate:prisma`) after schema changes to avoid stale-client 500s.
+- MongoDB indexes declared in `schema.prisma` (`@unique`, `@@unique`, `@@index`) exist only once `prisma db push` has run against that database: `make db-push` (or `pnpm db:push` from `backend/`). `generate:prisma` never creates them.
 
 ## Repository Structure
 
@@ -70,6 +71,8 @@ pnpm start:dev       # Dev server with hot reload (tsx watch)
 pnpm build           # Bundle with esbuild → dist/index.js
 pnpm check:type      # TypeScript type checking
 pnpm generate:prisma # Regenerate Prisma client after schema changes
+pnpm db:push         # Create/update the MongoDB indexes of schema.prisma on DATABASE_URL (runs db:check-duplicates first)
+pnpm db:check-duplicates # Read-only: list documents that would block a unique index
 pnpm lint            # ESLint (extends @repo/eslint-config/node)
 pnpm check:sync-schema # Flag nullability drift between openapi.yml and prisma/schema.prisma
 ```
@@ -103,9 +106,11 @@ pnpm --filter @repo/design-system storybook        # Storybook dev server on por
 docker compose -f deployment/docker-compose.yml up  # API (:4000), Swagger UI (:8082), Mongo Express (:8083)
 git cz               # Commitizen for conventional commits
 make help             # List all Makefile targets
-make up               # Start dev stack (Docker)
+make up               # Start dev stack (Docker) — does NOT create the MongoDB indexes
+make db-push          # Create/update the MongoDB indexes (duplicate check, then prisma db push) on backend/.env DATABASE_URL
+make db-check-duplicates # Read-only: list documents that would block a unique index
 make test             # Run all tests (unit + func + e2e mocked)
-make stack-test-up    # Build + seed isolated test stack (:27019, :4001, :3001)
+make stack-test-up    # Build + push indexes + seed isolated test stack (:27019, :4001, :3001)
 make test-e2e-smoke   # Run Playwright smoke tests against test stack
 make stack-test-down  # Tear down test stack
 ```
@@ -129,6 +134,7 @@ Defines every route, request/response schema, and validation rule exposed by the
 Defines every collection, embedded type, relation, and index stored in MongoDB.
 
 - **Prisma client**: `pnpm generate:prisma` regenerates the typed client from this schema
+- **MongoDB indexes**: `pnpm db:push` (`make db-push`) creates the `@unique` / `@@unique` / `@@index` indexes in the target database — nothing else does (no migrations with MongoDB). Until it has run, uniqueness rests on application checks only and `findUnique` scans the collection
 - **Domain types** in `src/<domain>/domain/` must mirror the fields defined here
 - **Infrastructure repositories** in `src/<domain>/infrastructure/Prisma*Repository.ts` depend on the generated client
 
@@ -149,7 +155,8 @@ Defines every collection, embedded type, relation, and index stored in MongoDB.
 specifications/ (business rules)
   └─▶ openapi.yml (API contract)   &   prisma/schema.prisma (DB structure)
         ├─▶ pnpm gen:sdk           →  frontend/web-application/src/sdk/generated/
-        └─▶ pnpm generate:prisma  →  Prisma client (node_modules/.prisma)
+        ├─▶ pnpm generate:prisma  →  Prisma client (node_modules/.prisma)
+        └─▶ pnpm db:push          →  MongoDB indexes, per database (dev, test stack, deployment)
 ```
 
 > `pnpm generate:prisma` regenerates the Prisma **client** from `schema.prisma`. It does **not** read `openapi.yml` — the two sources must be kept in sync manually.
@@ -376,6 +383,7 @@ Recurring mistakes confirmed by session history — check these before debugging
 | 14  | **`pnpm check:type` before done**                           | After any backend change, run `pnpm check:type` from `backend/`. A change is not complete until type check passes. TypeScript errors from `as const` (readonly arrays), wrong paths, or wrong Prisma filter shapes are caught here — not at runtime.                                                                                                                                                                                                                                                            |
 | 15  | **`formState` Proxy court-circuit (react-hook-form)**       | `form.formState` est un Proxy — une propriété n'est souscrite que si elle est lue pendant le rendu. Avec `!form.formState.isValid \|\| !form.formState.isDirty`, si `isValid = false` le `\|\|` court-circuite et `isDirty` n'est jamais lu → pas de subscription → le composant ne se re-rend pas quand `isDirty` change. **Fix** : toujours extraire les deux avant le JSX : `const isValid = form.formState.isValid; const isDirty = form.formState.isDirty;` puis utiliser les variables dans l'expression. |
 | 16  | **Storybook browser plays — `getByRole` sync sur Suspense** | Les play functions (`@storybook/addon-vitest`) tournent dans Chromium. Le decorator i18n (`use(dictionaryPromise)`) suspend le composant le temps que le cache se charge — la story rend `<div />` vide. `getByRole` (sync) rate ce cas. **Fix** : utiliser `findByRole` (async, timeout 1000ms) pour la première query de chaque play function.                                                                                                                                                                |
+| 17  | **MongoDB indexes missing (`db push` never run)**           | `@unique` / `@@unique` / `@@index` in `schema.prisma` only become MongoDB indexes when `prisma db push` runs against that database. After changing one, and on any fresh database, run `make db-push` (`pnpm db:push` in `backend/`). It checks duplicates first: on Mongo 4.4 a unique index built over duplicates does not error, the build hangs server-side — never run bare `prisma db push` on a database holding data. Verify with `db.<collection>.getIndexes()`.                                       |
 
 > The post-edit hook in `.claude/hooks/post-edit-remind.sh` surfaces reminders for pitfalls 1, 5, 6, 7, 8 automatically.
 

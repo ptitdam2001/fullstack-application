@@ -17,10 +17,12 @@ Chaque script est accessible via `make <target>` depuis la racine du monorepo.
 
 ## Commandes disponibles
 
-| Commande    | Description                              |
-| ----------- | ---------------------------------------- |
-| `make seed` | Crée le jeu de données de test en base   |
-| `make help` | Affiche toutes les commandes disponibles |
+| Commande                   | Description                                                                                                                    |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `make seed`                | Crée le jeu de données de test en base                                                                                         |
+| `make db-check-duplicates` | Liste les doublons qui bloqueraient un index unique (lecture seule)                                                            |
+| `make db-push`             | Crée/met à jour les index MongoDB du schéma Prisma, après contrôle des doublons (`backend/scripts/check-unique-duplicates.ts`) |
+| `make help`                | Affiche toutes les commandes disponibles                                                                                       |
 
 ---
 

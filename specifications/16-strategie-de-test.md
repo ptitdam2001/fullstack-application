@@ -60,7 +60,7 @@ Les deux ne se remplacent pas (cf. ADR-0003) :
 | `pnpm --filter application-material test:e2e`                   | `make test-e2e`                                      | Playwright, projet `mocked` (MSW + Vite dev server)                                |
 | `pnpm exec playwright test --project=fullstack-smoke`           | `make test-e2e-smoke`                                | Playwright projet `fullstack-smoke` contre la stack Docker test                    |
 | —                                                               | `make test`                                          | Suite complète : backend (unit + func) + E2E mocké                                 |
-| —                                                               | `make stack-test-up` / `make stack-test-down`        | Up/down de la stack test isolée (front :3001 + API :4001 + Mongo :27019)           |
+| —                                                               | `make stack-test-up` / `make stack-test-down`        | Up (index + seed) / down de la stack test (front :3001, API :4001, Mongo :27019)   |
 
 ---
 
