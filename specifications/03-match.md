@@ -111,7 +111,7 @@ Chaque carte affiche :
 - **Saisir le score** (visible si `SCHEDULED`) / **Modifier le score** (si `PLAYED`/`FORFEITED`) — ouvre une saisie des deux scores, envoie `status: PLAYED` + `homeGoals`/`awayGoals` via le `PATCH /match/{id}` existant (lecture-modification-écriture : la ligne déjà affichée porte toutes les données requises par `MatchInput`, pas de fetch supplémentaire).
 - **Supprimer** — masqué/désactivé côté client si le match est `PLAYED`/`FORFEITED` (l'API autorise déjà la suppression à tout statut : hard-delete si `SCHEDULED`/`CANCELLED`, soft-delete sinon — cette restriction est une affordance d'interface, pas une règle serveur nouvelle).
 
-**Accès** : `GET /matches`, `GET /matches/count` et `GET /match/{id}` sont réservés aux administrateurs (`requireAdmin`), alignés sur les routes d'écriture déjà admin-only.
+**Accès** : `GET /matches` et `GET /match/{id}` sont ouverts à tout utilisateur authentifié (admin, coach, arbitre, joueur, utilisateur sans équipe), conformément à la ligne « Lister / consulter » de la matrice de [[06-user-profiles]] : mêmes données et mêmes filtres pour tous, sans restriction par rôle ni par équipe ; sans jeton, `401`. `GET /matches/count` (compteur du menu admin) reste réservé aux administrateurs (`requireAdmin`), comme les routes d'écriture. La page liste décrite ici, elle, reste une page de l'espace admin.
 
 **Point d'entrée** : l'item de menu latéral admin historiquement intitulé « Matchs sans score » (badge = nombre de matchs `SCHEDULED` dont la date est dépassée) est renommé « Matchs » et pointe vers cette liste ; le badge conserve la même définition (compteur inchangé).
 
