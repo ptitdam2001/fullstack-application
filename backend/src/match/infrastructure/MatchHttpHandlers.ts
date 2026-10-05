@@ -32,8 +32,9 @@ export const countMatches = async (ctx: Context, __: Request, res: Response) => 
   res.json(await useCases.count({ status: status as MatchStatus | undefined, championshipId, ageCategoryId }))
 }
 
+// Read access for every authenticated user (specifications/06-user-profiles.md › Matchs, "Lister / consulter").
+// Authentication itself is enforced by the `jwtAuth` security handler, as for the other read routes.
 export const getMatches = async (ctx: Context, _: Request, res: Response) => {
-  requireAdmin(ctx)
   const page = parsePage(ctx.request.query.page)
   const count = parsePageSize(ctx.request.query.count)
   const status = ctx.request.query.status as string | undefined
@@ -49,7 +50,6 @@ export const getMatches = async (ctx: Context, _: Request, res: Response) => {
 }
 
 export const getMatch = async (ctx: Context, _: Request, res: Response) => {
-  requireAdmin(ctx)
   try {
     res.json(await useCases.getById(ctx.request.params.id))
   } catch (err) {
