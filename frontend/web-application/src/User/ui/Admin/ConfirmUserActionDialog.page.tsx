@@ -1,9 +1,9 @@
 import { render, screen, fireEvent } from '@testing-library/react'
 import { vi } from 'vitest'
-import { ConfirmUserActionDialog, type UserAction } from './ConfirmUserActionDialog'
+import { ConfirmUserActionDialog, type ConfirmableUserAction } from './ConfirmUserActionDialog'
 
 type Props = {
-  action: UserAction
+  action: ConfirmableUserAction
   userName: string
   open: boolean
   isPending: boolean

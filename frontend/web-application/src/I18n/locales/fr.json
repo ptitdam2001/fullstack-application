@@ -337,7 +337,6 @@
     "form.firstName": "Prénom",
     "form.lastName": "Nom",
     "form.email": "Email",
-    "form.avatar": "Avatar (URL)",
     "form.isAdmin": "Administrateur",
     "form.isAdmin.selfHint": "Vous ne pouvez pas retirer votre propre rôle d'administrateur.",
     "form.submit": "Enregistrer",
@@ -359,7 +358,16 @@
     "toast.activated": "Compte activé avec succès",
     "toast.activateError": "Erreur lors de l'activation du compte",
     "toast.unblocked": "Compte débloqué avec succès",
-    "toast.unblockError": "Erreur lors du déblocage du compte"
+    "toast.unblockError": "Erreur lors du déblocage du compte",
+    "photo.alt": "Photo de {userName}",
+    "photo.hint": "La photo est choisie par l'utilisateur depuis sa page compte. Vous pouvez seulement la supprimer.",
+    "photo.none": "Aucune photo. Seul l'utilisateur peut en ajouter une, depuis sa page compte.",
+    "photo.remove": "Supprimer la photo",
+    "removeAvatar.title": "Supprimer la photo",
+    "removeAvatar.description": "Supprimer la photo de « {userName} » ? Cette action est irréversible : l'utilisateur devra en envoyer une nouvelle.",
+    "removeAvatar.confirm": "Supprimer la photo",
+    "toast.avatarRemoved": "Photo supprimée avec succès",
+    "toast.avatarRemoveError": "Erreur lors de la suppression de la photo"
   },
   "adminAreas": {
     "title": "Lieux",
