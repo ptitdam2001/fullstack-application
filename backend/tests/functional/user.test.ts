@@ -310,6 +310,32 @@ describe('user domain — functional API', () => {
       expect(res.body).toMatchObject({ id: user.id, firstName: 'Renamed' })
     })
 
+    it('règle métier: lastName null clears the last name', async () => {
+      const user = await createUser({ lastName: 'Durand' })
+      const admin = await createAdmin()
+
+      const res = await agent.patch(`/user/${user.id}`).set(authHeaderFor(admin.id, true)).send({ lastName: null })
+
+      expect(res.status).toBe(200)
+      expect(res.body.lastName ?? null).toBeNull()
+      const stored = await prisma.user.findUnique({
+        where: { id: user.id },
+        select: { lastName: true, firstName: true },
+      })
+      expect(stored).toEqual({ lastName: null, firstName: user.firstName })
+    })
+
+    it.each([[''], ['   ']])('400 — lastName %j is refused, left unchanged', async lastName => {
+      const user = await createUser({ lastName: 'Durand' })
+      const admin = await createAdmin()
+
+      const res = await agent.patch(`/user/${user.id}`).set(authHeaderFor(admin.id, true)).send({ lastName })
+
+      expect(res.status).toBe(400)
+      const stored = await prisma.user.findUnique({ where: { id: user.id }, select: { lastName: true } })
+      expect(stored?.lastName).toBe('Durand')
+    })
+
     it('admin promotes a user to admin', async () => {
       const user = await createUser()
       const admin = await createAdmin()
