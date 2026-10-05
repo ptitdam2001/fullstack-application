@@ -2917,9 +2917,11 @@ components:
     UpdateUserInput:
       properties:
         lastName:
-          nullable: false
+          nullable: true
           type: string
           minLength: 1
+          pattern: '\S'
+          description: Null clears the last name.
         firstName:
           nullable: false
           type: string
