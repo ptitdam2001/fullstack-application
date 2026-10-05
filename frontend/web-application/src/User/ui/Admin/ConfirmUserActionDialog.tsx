@@ -11,17 +11,22 @@ import {
 import { Loader2 } from 'lucide-react'
 import { FormattedMessage } from 'react-intl'
 
+/** Actions offered on a row of the users table. */
 export type UserAction = 'delete' | 'activate' | 'unblock'
 
-// Only deletion is irreversible — activate/unblock stay on the neutral variant
+/** Everything this dialog can confirm: the row actions, plus the photo removal of the edit form. */
+export type ConfirmableUserAction = UserAction | 'removeAvatar'
+
+// Deleting an account or a photo is irreversible — activate/unblock stay on the neutral variant
 const confirmVariant = {
   delete: 'destructive',
+  removeAvatar: 'destructive',
   activate: 'default',
   unblock: 'default',
-} as const satisfies Record<UserAction, 'destructive' | 'default'>
+} as const satisfies Record<ConfirmableUserAction, 'destructive' | 'default'>
 
 type ConfirmUserActionDialogProps = {
-  action: UserAction
+  action: ConfirmableUserAction
   userName: string
   open: boolean
   onOpenChange: (open: boolean) => void

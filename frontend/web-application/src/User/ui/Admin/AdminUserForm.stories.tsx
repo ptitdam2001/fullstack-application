@@ -26,6 +26,17 @@ const recordingUpdateHandler = http.patch('*/user/:id', async ({ request }) => {
   return HttpResponse.json({ ...user, ...(lastBody as object) })
 })
 
+// 1×1 transparent PNG: a photo that loads without any network call
+const PHOTO =
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='
+
+// Records whose photo was removed so the play can assert the DELETE actually went out
+let removedAvatarOf: string | undefined
+const recordingRemoveAvatarHandler = http.delete('*/user/:id/avatar', ({ params }) => {
+  removedAvatarOf = params.id as string
+  return HttpResponse.json({ ...user, avatar: null })
+})
+
 const meta = {
   component: AdminUserForm,
   title: 'User/AdminUserForm',
@@ -46,6 +57,7 @@ const meta = {
   },
   beforeEach: () => {
     lastBody = undefined
+    removedAvatarOf = undefined
   },
 } satisfies Meta<typeof AdminUserForm>
 
@@ -82,6 +94,51 @@ export const SubmitOnlyChangedFields: Story = {
 
     await waitFor(() => expect(args.onFinish).toHaveBeenCalled())
     await expect(lastBody).toEqual({ firstName: 'Janet', isAdmin: true })
+  },
+}
+
+export const ClearedLastNameIsSentAsNull: Story = {
+  name: 'Nom vidé — envoyé à null',
+  args: { user: { ...user, lastName: 'Doe' } },
+  parameters: { msw: { handlers: [recordingUpdateHandler] } },
+  play: async ({ canvasElement, args }) => {
+    const page = new AdminUserFormPage(canvasElement)
+    await page.firstNameInput()
+    await page.clearLastName()
+    await waitFor(() => expect(page.submitButton()).toBeEnabled())
+    await page.submit()
+
+    await waitFor(() => expect(args.onFinish).toHaveBeenCalled())
+    await expect(lastBody).toEqual({ lastName: null })
+  },
+}
+
+export const NoPhotoNoAvatarField: Story = {
+  name: 'Sans photo — initiales, ni champ avatar ni bouton de suppression',
+  play: async ({ canvasElement }) => {
+    const page = new AdminUserFormPage(canvasElement)
+    await page.firstNameInput()
+    await expect(page.avatar()).toHaveAttribute('data-has-image', 'false')
+    await expect(page.avatarUrlInput()).not.toBeInTheDocument()
+    await expect(page.removePhotoButton()).not.toBeInTheDocument()
+  },
+}
+
+export const RemovePhoto: Story = {
+  name: 'Photo — suppression confirmée, DELETE envoyé, bouton retiré',
+  args: { user: { ...user, avatar: PHOTO } },
+  parameters: { msw: { handlers: [recordingRemoveAvatarHandler] } },
+  play: async ({ canvasElement, args }) => {
+    const page = new AdminUserFormPage(canvasElement)
+    await page.firstNameInput()
+    await expect(page.avatar()).toHaveAttribute('data-has-image', 'true')
+    await page.removePhoto()
+
+    await waitFor(() => expect(page.removePhotoButton()).not.toBeInTheDocument())
+    await expect(removedAvatarOf).toBe(user.id)
+    await expect(page.avatar()).toHaveAttribute('data-has-image', 'false')
+    // Removing the photo is its own action: the form is neither submitted nor closed
+    await expect(args.onFinish).not.toHaveBeenCalled()
   },
 }
 

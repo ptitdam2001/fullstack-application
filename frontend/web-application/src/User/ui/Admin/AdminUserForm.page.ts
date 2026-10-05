@@ -32,6 +32,25 @@ export class AdminUserFormPage {
     return this.canvas.getByRole('button', { name: /enregistrer|save/i })
   }
 
+  removePhotoButton() {
+    return this.canvas.queryByRole('button', { name: /supprimer la photo|remove photo/i })
+  }
+
+  avatar() {
+    return this.canvas.getByTestId('user-avatar')
+  }
+
+  avatarUrlInput() {
+    return this.canvas.queryByRole('textbox', { name: /avatar/i })
+  }
+
+  // The confirmation dialog is rendered in a portal, outside the story canvas
+  confirmRemovePhotoButton() {
+    return within(document.body)
+      .getByRole('dialog')
+      .querySelector<HTMLButtonElement>('button[data-variant="destructive"]')!
+  }
+
   toast(matcher: RegExp) {
     return within(document.body).findByText(matcher)
   }
@@ -40,6 +59,19 @@ export class AdminUserFormPage {
     const input = await this.firstNameInput()
     await userEvent.clear(input)
     await userEvent.type(input, value)
+    return this
+  }
+
+  async clearLastName() {
+    await userEvent.clear(this.lastNameInput())
+    await userEvent.tab()
+    return this
+  }
+
+  async removePhoto() {
+    await userEvent.click(this.removePhotoButton()!)
+    await within(document.body).findByRole('dialog')
+    await userEvent.click(this.confirmRemovePhotoButton())
     return this
   }
 

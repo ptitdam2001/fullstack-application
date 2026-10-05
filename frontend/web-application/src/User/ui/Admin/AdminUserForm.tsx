@@ -5,12 +5,12 @@ import { FormattedMessage, useIntl } from 'react-intl'
 import { z } from 'zod'
 import { type UpdateUserInput, type User, UpdateUserBody } from '../../domain/User'
 import { useUserUpdate } from '../../application/useUserUpdate'
+import { AdminUserPhoto } from './AdminUserPhoto'
 
 // Every field is controlled, so the form holds full values. `lastName` is nullable on User:
-// '' stands for "no last name" in the form and must never reach the API (min 1 there).
+// '' stands for "no last name" in the form and is sent as null (the API refuses an empty string).
 const AdminUserFormSchema = UpdateUserBody.required().extend({
   lastName: z.string(),
-  avatar: z.string(),
 })
 
 type AdminUserFormValues = z.infer<typeof AdminUserFormSchema>
@@ -20,9 +20,9 @@ type DirtyFields = Partial<Record<keyof AdminUserFormValues, boolean>>
 const toUpdatePayload = (values: AdminUserFormValues, dirtyFields: DirtyFields): UpdateUserInput => {
   const changed = (Object.keys(values) as (keyof AdminUserFormValues)[]).filter(key => dirtyFields[key])
   const payload: UpdateUserInput = Object.fromEntries(changed.map(key => [key, values[key]]))
-  // The API cannot reset lastName to null (min 1): a cleared last name is left unchanged rather than 400.
-  if (payload.lastName === '') {
-    delete payload.lastName
+  if (typeof payload.lastName === 'string') {
+    // A cleared (or blank) last name clears it server-side: the API expects an explicit null
+    payload.lastName = payload.lastName.trim() || null
   }
   return payload
 }
@@ -46,7 +46,6 @@ export const AdminUserForm = ({ user, isSelf, onFinish, className }: Props) => {
       firstName: user.firstName,
       lastName: user.lastName ?? '',
       email: user.email,
-      avatar: user.avatar ?? '',
       isAdmin: user.isAdmin,
     },
     mode: 'all',
@@ -67,6 +66,8 @@ export const AdminUserForm = ({ user, isSelf, onFinish, className }: Props) => {
 
   return (
     <Form name="adminUserForm" onSubmit={onSubmit} className={cn('flex h-full flex-col gap-3', className)}>
+      <AdminUserPhoto user={user} />
+
       <Field name="firstName">
         {({ field, fieldState }) => (
           <TextInputField
@@ -102,20 +103,6 @@ export const AdminUserForm = ({ user, isSelf, onFinish, className }: Props) => {
             onBlur={field.onBlur}
             type="email"
             label={formatMessage({ id: 'adminUsers.form.email' })}
-            errorMessage={fieldState.error?.message}
-          />
-        )}
-      </Field>
-
-      <Field name="avatar">
-        {({ field, fieldState }) => (
-          <TextInputField
-            name={field.name}
-            value={field.value}
-            onChange={field.onChange}
-            onBlur={field.onBlur}
-            type="url"
-            label={formatMessage({ id: 'adminUsers.form.avatar' })}
             errorMessage={fieldState.error?.message}
           />
         )}

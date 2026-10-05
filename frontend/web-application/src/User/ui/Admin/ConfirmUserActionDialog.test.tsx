@@ -2,15 +2,18 @@ import { describe, expect, it } from 'vitest'
 import { ConfirmUserActionDialogPage } from './ConfirmUserActionDialog.page'
 
 describe('ConfirmUserActionDialog', () => {
-  it.each(['delete', 'activate', 'unblock'] as const)('renders the %s title, description and confirm', action => {
-    const page = new ConfirmUserActionDialogPage({ action }).render()
-    expect(page.title()).toBeInTheDocument()
-    expect(page.description()).toBeInTheDocument()
-    expect(page.confirmButton()).toBeInTheDocument()
-  })
+  it.each(['delete', 'activate', 'unblock', 'removeAvatar'] as const)(
+    'renders the %s title, description and confirm',
+    action => {
+      const page = new ConfirmUserActionDialogPage({ action }).render()
+      expect(page.title()).toBeInTheDocument()
+      expect(page.description()).toBeInTheDocument()
+      expect(page.confirmButton()).toBeInTheDocument()
+    }
+  )
 
-  it('marks the confirm button destructive for delete only', () => {
-    const page = new ConfirmUserActionDialogPage({ action: 'delete' }).render()
+  it.each(['delete', 'removeAvatar'] as const)('marks the confirm button destructive for %s', action => {
+    const page = new ConfirmUserActionDialogPage({ action }).render()
     expect(page.confirmButton()).toHaveAttribute('data-variant', 'destructive')
   })
 

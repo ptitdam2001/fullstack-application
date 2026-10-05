@@ -4,6 +4,7 @@ export {
   useGetUser,
   useUpdateUser,
   useRemoveUser,
+  useRemoveUserAvatar,
   useAdminActivateUser,
   useAdminUnblockUser,
   getGetUsersQueryKey,

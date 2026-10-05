@@ -337,7 +337,6 @@
     "form.firstName": "First name",
     "form.lastName": "Last name",
     "form.email": "Email",
-    "form.avatar": "Avatar (URL)",
     "form.isAdmin": "Administrator",
     "form.isAdmin.selfHint": "You cannot revoke your own administrator role.",
     "form.submit": "Save",
@@ -359,7 +358,16 @@
     "toast.activated": "Account activated successfully",
     "toast.activateError": "Error while activating the account",
     "toast.unblocked": "Account unblocked successfully",
-    "toast.unblockError": "Error while unblocking the account"
+    "toast.unblockError": "Error while unblocking the account",
+    "photo.alt": "Photo of {userName}",
+    "photo.hint": "The photo is chosen by the user from their account page. You can only remove it.",
+    "photo.none": "No photo. Only the user can add one, from their account page.",
+    "photo.remove": "Remove photo",
+    "removeAvatar.title": "Remove photo",
+    "removeAvatar.description": "Remove the photo of \"{userName}\"? This action cannot be undone: the user will have to upload a new one.",
+    "removeAvatar.confirm": "Remove photo",
+    "toast.avatarRemoved": "Photo removed successfully",
+    "toast.avatarRemoveError": "Error while removing the photo"
   },
   "adminAreas": {
     "title": "Areas",
