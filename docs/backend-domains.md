@@ -121,12 +121,12 @@ All domains are registered in `index.ts` and their HTTP handlers are wired into 
 
 **Location**: `src/match/`
 
-| Layer          | Files                                              | Key content                                                                                                                                     |
-| -------------- | -------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| domain         | `Match.ts`, `MatchErrors.ts`                       | `MatchStatus` enum, `MatchArea`, `Match`, `CreateMatchInput`, `UpdateMatchInput`, `MatchNotFoundError`                                          |
-| ports          | `IMatchRepository.ts`                              | CRUD + `findByGroupId()`                                                                                                                        |
-| application    | `MatchUseCases.ts`                                 | Standard CRUD use cases                                                                                                                         |
-| infrastructure | `PrismaMatchRepository.ts`, `MatchHttpHandlers.ts` | Prisma impl, handlers: `getMatches`, `getMatch`, `createMatch`, `updateMatch`, `removeMatch`, `countMatches`, `getTeamGames`, `getGamesByMonth` |
+| Layer          | Files                                              | Key content                                                                                             |
+| -------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| domain         | `Match.ts`, `MatchErrors.ts`                       | `MatchStatus` enum, `MatchArea`, `Match`, `CreateMatchInput`, `UpdateMatchInput`, `MatchNotFoundError`  |
+| ports          | `IMatchRepository.ts`                              | CRUD + `findByGroupId()`                                                                                |
+| application    | `MatchUseCases.ts`                                 | Standard CRUD use cases                                                                                 |
+| infrastructure | `PrismaMatchRepository.ts`, `MatchHttpHandlers.ts` | Prisma impl, handlers: `getMatches`, `getMatch`, `addMatch`, `editMatch`, `removeMatch`, `countMatches` |
 
 **Key types**:
 
