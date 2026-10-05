@@ -131,7 +131,6 @@ export class PrismaUserRepository implements IUserRepository {
         ...(input.firstName !== undefined && { firstName: input.firstName }),
         ...(input.lastName !== undefined && { lastName: input.lastName }),
         ...(input.email !== undefined && { email: input.email }),
-        ...(input.avatar !== undefined && { avatar: input.avatar }),
         ...(input.isAdmin !== undefined && { isAdmin: input.isAdmin }),
       },
       select,

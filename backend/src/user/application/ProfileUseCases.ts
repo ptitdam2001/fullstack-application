@@ -10,7 +10,10 @@ import { matchesImageSignature } from '../../image/domain/imageSignature.js'
 // so the text is checked before it is decoded.
 const BASE64 = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/
 
-/** What an authenticated user may do to their own account, whatever their role (spec: page compte). */
+/**
+ * What an authenticated user may do to their own account, whatever their role (spec: page compte).
+ * `removeAvatar` also serves an admin taking down the photo of another user (DELETE /user/{id}/avatar).
+ */
 export class ProfileUseCases {
   constructor(
     private readonly userRepo: IUserRepository,

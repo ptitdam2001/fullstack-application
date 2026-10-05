@@ -336,6 +336,31 @@ describe('user domain — functional API', () => {
       expect(stored?.lastName).toBe('Durand')
     })
 
+    it('400 — a blank firstName is refused, left unchanged', async () => {
+      const user = await createUser()
+      const admin = await createAdmin()
+
+      const res = await agent.patch(`/user/${user.id}`).set(authHeaderFor(admin.id, true)).send({ firstName: '   ' })
+
+      expect(res.status).toBe(400)
+      const stored = await prisma.user.findUnique({ where: { id: user.id }, select: { firstName: true } })
+      expect(stored?.firstName).toBe(user.firstName)
+    })
+
+    it('400 — avatar is not a field of this route: an admin cannot choose a photo', async () => {
+      const user = await createUser()
+      const admin = await createAdmin()
+
+      const res = await agent
+        .patch(`/user/${user.id}`)
+        .set(authHeaderFor(admin.id, true))
+        .send({ avatar: 'https://example.test/picture.png' })
+
+      expect(res.status).toBe(400)
+      const stored = await prisma.user.findUnique({ where: { id: user.id }, select: { avatar: true } })
+      expect(stored?.avatar ?? null).toBeNull()
+    })
+
     it('admin promotes a user to admin', async () => {
       const user = await createUser()
       const admin = await createAdmin()
@@ -373,6 +398,76 @@ describe('user domain — functional API', () => {
         .patch(`/user/${unknownObjectId()}`)
         .set(authHeaderFor(admin.id, true))
         .send({ firstName: 'Renamed' })
+
+      expect(res.status).toBe(404)
+    })
+  })
+
+  describe('removeUserAvatar — DELETE /user/{id}/avatar', () => {
+    const jpeg = Buffer.from([0xff, 0xd8, 0xff, 0xe0])
+    const seedAvatar = async (ownerId: string, publicId: string) => {
+      const image = await prisma.image.create({
+        data: { publicId, data: jpeg, contentType: 'image/jpeg', size: jpeg.length, ownerId },
+      })
+      await prisma.user.update({ where: { id: ownerId }, data: { avatar: `/images/${publicId}` } })
+      return image
+    }
+
+    it('401 — unauthenticated request', async () => {
+      const user = await createUser()
+
+      const res = await agent.delete(`/user/${user.id}/avatar`)
+
+      expect(res.status).toBe(401)
+    })
+
+    it('403 — non-admin user, photo left in place', async () => {
+      const user = await createUser()
+      const other = await createUser()
+      const image = await seedAvatar(user.id, 'a'.repeat(22))
+
+      const res = await agent.delete(`/user/${user.id}/avatar`).set(authHeaderFor(other.id))
+
+      expect(res.status).toBe(403)
+      expect(await prisma.image.findUnique({ where: { id: image.id } })).not.toBeNull()
+      const stored = await prisma.user.findUnique({ where: { id: user.id }, select: { avatar: true } })
+      expect(stored?.avatar).toBe(`/images/${image.publicId}`)
+    })
+
+    it('nominal: admin removes the photo of a user — pointer and stored image, and only theirs', async () => {
+      const user = await createUser()
+      const other = await createUser()
+      const admin = await createAdmin()
+      const image = await seedAvatar(user.id, 'a'.repeat(22))
+      const otherImage = await seedAvatar(other.id, 'b'.repeat(22))
+
+      const res = await agent.delete(`/user/${user.id}/avatar`).set(authHeaderFor(admin.id, true))
+
+      expect(res.status).toBe(200)
+      expect(res.body).toMatchObject({ id: user.id, email: user.email })
+      expect(res.body.avatar ?? null).toBeNull()
+      expect(res.body).not.toHaveProperty('password')
+      const stored = await prisma.user.findUnique({ where: { id: user.id }, select: { avatar: true } })
+      expect(stored?.avatar).toBeNull()
+      expect(await prisma.image.findUnique({ where: { id: image.id } })).toBeNull()
+      expect(await prisma.image.findUnique({ where: { id: otherImage.id } })).not.toBeNull()
+      expect((await agent.get(`/images/${image.publicId}`)).status).toBe(404)
+    })
+
+    it('idempotent: 200 when the user has no photo', async () => {
+      const user = await createUser()
+      const admin = await createAdmin()
+
+      const res = await agent.delete(`/user/${user.id}/avatar`).set(authHeaderFor(admin.id, true))
+
+      expect(res.status).toBe(200)
+      expect(res.body.avatar ?? null).toBeNull()
+    })
+
+    it('404 — unknown id', async () => {
+      const admin = await createAdmin()
+
+      const res = await agent.delete(`/user/${unknownObjectId()}/avatar`).set(authHeaderFor(admin.id, true))
 
       expect(res.status).toBe(404)
     })

@@ -1,6 +1,7 @@
 import type { Request, Response } from 'express'
 import type { Context } from 'openapi-backend'
 import { UserUseCases } from '../application/UserUseCases.js'
+import { ProfileUseCases } from '../application/ProfileUseCases.js'
 import { CannotSelfDeleteError, CannotSelfDemoteError, UserNotFoundError } from '../domain/UserErrors.js'
 import { PrismaUserRepository } from './PrismaUserRepository.js'
 import { PrismaImageStorage } from '../../image/infrastructure/PrismaImageStorage.js'
@@ -11,14 +12,17 @@ import { parsePage, parsePageSize } from '../../../config/pagination.js'
 import type { UserFilterOptions, UserListOptions } from '../ports/IUserRepository.js'
 
 const repo = new PrismaUserRepository()
-const useCases = new UserUseCases(repo, new PrismaImageStorage())
+const imageStorage = new PrismaImageStorage()
+const useCases = new UserUseCases(repo, imageStorage)
+// Removing a photo is the same operation whoever asks for it: the owner (DELETE /me/avatar) or an admin.
+const profileUseCases = new ProfileUseCases(repo, imageStorage)
 
 const buildFilter = (query: Context['request']['query']): UserFilterOptions => ({
   ...(query.isActive !== undefined && { isActive: query.isActive === 'true' }),
 })
 
 /** Maps GET /users query params to list options. Pagination is opt-in (see UserListOptions). */
-const toUserListOptions =(query: Context['request']['query']): UserListOptions => {
+const toUserListOptions = (query: Context['request']['query']): UserListOptions => {
   // Case 1: page or/and limit are present
   if ('page' in query || 'limit' in query) {
     const { page, limit } = query
@@ -97,6 +101,25 @@ export const updateUser = async (ctx: Context, req: Request, res: Response) => {
     }
     if (err instanceof CannotSelfDemoteError) {
       return res.status(403).json({ message: err.message, status: 403 })
+    }
+    if (err instanceof UnauthorizedError) {
+      return res.status(401).json({ message: 'Unauthorized', status: 401 })
+    }
+    if (err instanceof UserNotFoundError) {
+      return res.status(404).json({ message: 'User not found', status: 404 })
+    }
+    logger.error(err)
+    return res.status(500).json({ message: 'Error! Something went wrong.', status: 500 })
+  }
+}
+
+export const removeUserAvatar = async (ctx: Context, _: Request, res: Response) => {
+  try {
+    requireAdmin(ctx)
+    return res.status(200).json(await profileUseCases.removeAvatar(ctx.request.params.id as string))
+  } catch (err) {
+    if (err instanceof ForbiddenError) {
+      return res.status(403).json({ message: 'Forbidden', status: 403 })
     }
     if (err instanceof UnauthorizedError) {
       return res.status(401).json({ message: 'Unauthorized', status: 401 })
