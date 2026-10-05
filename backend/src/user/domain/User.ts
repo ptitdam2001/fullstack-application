@@ -26,13 +26,15 @@ export type AuthState = {
   tokensValidAfter: Date | null
 }
 
+/**
+ * Fields an admin may change on a user (PATCH /user/{id}). No `avatar`: a photo is set by its owner and
+ * goes through `IUserRepository.replaceAvatar`.
+ */
 export type UpdateUserInput = {
   firstName?: string
   /** Null clears it. */
   lastName?: string | null
   email?: string
-  /** Null clears it. */
-  avatar?: string | null
   isAdmin?: boolean
 }
 

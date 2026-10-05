@@ -98,6 +98,7 @@ Légende : ✅ couvert · ❌ test fonctionnel à écrire (S3) · 🚫 route dé
 | GET     | `/users`      | `getUsers`   | ✅ couvert (`user.test.ts`)  |
 | DELETE  | `/user/{id}`  | `removeUser` | ✅ couvert (`user.test.ts`)  |
 | PATCH   | `/user/{id}`  | `updateUser` | ✅ couvert (`user.test.ts`)  |
+| DELETE  | `/user/{id}/avatar` | `removeUserAvatar` | ✅ couvert (`user.test.ts`) |
 | GET     | `/users/{id}` | `getUser`    | ✅ couvert (`user.test.ts`)  |
 
 #### Team (12 opérations) — pilote S1

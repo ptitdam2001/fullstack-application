@@ -899,6 +899,46 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
+  /user/{id}/avatar:
+    delete:
+      operationId: removeUserAvatar
+      summary: Remove the profile picture of a user (admin only)
+      description: >-
+        Moderation: lets an admin take down a picture without deleting the account. The stored image is
+        deleted along with the pointer. Idempotent: succeeds when the user has no picture.
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Updated user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorOutput'
+        '403':
+          description: Caller is not an admin
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorOutput'
+        '404':
+          description: Unknown user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorOutput'
   /users/{id}:
     get:
       operationId: 'getUser'
@@ -2915,6 +2955,11 @@ components:
           type: string
           format: uuid
     UpdateUserInput:
+      type: object
+      additionalProperties: false
+      description: >-
+        Fields an admin may change on a user. `avatar` is not one of them: a photo is only ever set by its
+        owner (`PUT /me/avatar`) and can only be removed by an admin (`DELETE /user/{id}/avatar`).
       properties:
         lastName:
           nullable: true
@@ -2926,12 +2971,12 @@ components:
           nullable: false
           type: string
           minLength: 1
+          pattern: '\S'
+          description: At least one non-blank character.
         email:
           nullable: false
           type: string
           format: email
-        avatar:
-          type: string
         isAdmin:
           nullable: false
           type: boolean
