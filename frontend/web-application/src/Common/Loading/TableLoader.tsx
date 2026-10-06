@@ -14,7 +14,7 @@ export const TableLoader: React.FunctionComponent<TableLoaderProps> = ({ classNa
         <Skeleton
           key={`skeleton-header-${i}`}
           className={cn('h-10 rounded-md')}
-          style={{ width: 'calc(' + 1 / nbCols + '*100%)' }}
+          style={{ width: `calc(${1 / nbCols}*100%)` }}
         />
       ))}
     </div>

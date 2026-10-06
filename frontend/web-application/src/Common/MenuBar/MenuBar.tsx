@@ -13,25 +13,23 @@ type MenuBarProps = {
   rightActions?: MenuBarAction[]
 }
 
-export const MenuBar: FC<MenuBarProps> = ({ children, leftActions, rightActions }) => {
-  return (
-    <section className="MenuBar flex w-full flex-row gap-1 px-1.5 py-1">
-      {leftActions && leftActions?.length > 0 && (
-        <ul className="flex gap-0.5">
-          {leftActions.map((action, idx) => (
-            <li className="flex items-center px-1" key={isBarLink(action) ? action.url : `left-action-${idx}`}>
-              {isBarLink(action) ? <LinkAction {...action} /> : action}
-            </li>
-          ))}
-        </ul>
-      )}
+export const MenuBar: FC<MenuBarProps> = ({ children, leftActions, rightActions }) => (
+  <section className="MenuBar flex w-full flex-row gap-1 px-1.5 py-1">
+    {leftActions && leftActions?.length > 0 && (
+      <ul className="flex gap-0.5">
+        {leftActions.map((action, idx) => (
+          <li className="flex items-center px-1" key={isBarLink(action) ? action.url : `left-action-${idx}`}>
+            {isBarLink(action) ? <LinkAction {...action} /> : action}
+          </li>
+        ))}
+      </ul>
+    )}
 
-      <div className="w-full">{children}</div>
-      {rightActions && rightActions?.length > 0 && (
-        <div>
-          {rightActions.map(action => (isBarLink(action) ? <LinkAction {...action} key={action.url} /> : action))}
-        </div>
-      )}
-    </section>
-  )
-}
+    <div className="w-full">{children}</div>
+    {rightActions && rightActions?.length > 0 && (
+      <div>
+        {rightActions.map(action => (isBarLink(action) ? <LinkAction {...action} key={action.url} /> : action))}
+      </div>
+    )}
+  </section>
+)
