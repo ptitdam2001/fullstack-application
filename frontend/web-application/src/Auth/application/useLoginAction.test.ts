@@ -1,5 +1,6 @@
 import { waitFor } from '@testing-library/react'
 import { http, HttpResponse } from 'msw'
+import type * as ReactRouter from 'react-router'
 import { vi } from 'vitest'
 import { server } from '@/mocks/node'
 import { renderHookWithProviders } from '../../../tests/test-utils'
@@ -19,7 +20,7 @@ vi.mock('./AuthProvider', () => ({
 }))
 
 vi.mock('react-router', async importOriginal => {
-  const actual = await importOriginal<typeof import('react-router')>()
+  const actual = await importOriginal<typeof ReactRouter>()
   return { ...actual, useNavigate: () => mockNavigate }
 })
 

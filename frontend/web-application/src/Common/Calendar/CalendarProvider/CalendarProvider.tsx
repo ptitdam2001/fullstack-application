@@ -27,9 +27,9 @@ type CalendarProviderProps = {
 }
 
 export const CalendarProvider = {
-  Provider: ({ children }: CalendarProviderProps) => {
-    return <CalendarContext.Provider value={DEFAULT_CALENDAR_CONFIG}>{children}</CalendarContext.Provider>
-  },
+  Provider: ({ children }: CalendarProviderProps) => (
+    <CalendarContext.Provider value={DEFAULT_CALENDAR_CONFIG}>{children}</CalendarContext.Provider>
+  ),
   useCalendarValue: CalendarContext.useValue,
   useCalendarDispatch: CalendarContext.useDispatch,
 }
