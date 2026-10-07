@@ -3,11 +3,15 @@ import { FormattedMessage } from 'react-intl'
 import { Layout, Separator, TablePagination, Typography } from '@repo/design-system'
 import { ErrorBoundary } from '@Common/ErrorBoundary'
 import { TableLoader } from '@Common/Loading'
-import { type User, useUserListSuspense } from '@User'
-import { AdminUserTable } from '@User/ui/Admin/AdminUserTable'
-import { AdminUserFormSheet } from '@User/ui/Admin/AdminUserFormSheet'
-import { ConfirmUserActionDialog, type UserAction } from '@User/ui/Admin/ConfirmUserActionDialog'
-import { userFullName } from '@User/ui/Admin/userFullName'
+import {
+  type User,
+  type UserAction,
+  AdminUserFormSheet,
+  AdminUserTable,
+  ConfirmUserActionDialog,
+  userFullName,
+  useUserListSuspense,
+} from '@User'
 import { useAdminUsersPage } from './useAdminUsersPage'
 
 type AdminUserListContentProps = {
