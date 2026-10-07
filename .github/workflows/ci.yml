@@ -136,6 +136,11 @@ jobs:
       - name: Format check (web application)
         run: pnpm --filter application-material check:format
 
+      # Must run after the SDK generation: without src/sdk/generated, knip
+      # reports every SDK import as an unlisted dependency.
+      - name: Dead code check (web application)
+        run: pnpm --filter application-material check:dead-code
+
       - name: Unit tests (web application)
         run: pnpm --filter application-material test --run
 
