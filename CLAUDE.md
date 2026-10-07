@@ -235,6 +235,7 @@ src/<Feature>/
 - **Routing**: React Router v7. All routes defined in `AppRouting.tsx`.
 - **Forms**: react-hook-form + zod resolvers using generated zod schemas.
 - **i18n**: react-intl with locale files under `src/I18n/locales/`.
+- **Module barrels**: `src/<Feature>/index.ts` is the module's public API. Code in another module imports from the barrel (`@AgeCategory`, `@User`), never from a deep path (`@AgeCategory/ui/...`), and `vi.mock` targets follow the same rule. Inside a module, use relative paths, not the module's own barrel (circular imports). ESLint (`no-restricted-imports` in `frontend/web-application/eslint.config.js`) enforces this for `AgeCategory` and `User` only; the other modules are not migrated yet.
 
 > **Gotcha — port**: `config/axios-instance.ts` hardcodes `http://localhost:4000/` as the backend URL. If you change `PORT` in the backend `.env`, update the axios instance accordingly.
 
