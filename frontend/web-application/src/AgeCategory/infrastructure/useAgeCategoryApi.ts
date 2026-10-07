@@ -9,5 +9,4 @@ export {
   useRemoveAgeCategory,
   getGetAgeCategoriesQueryKey,
   getCountAgeCategoriesQueryKey,
-  getGetAgeCategoryQueryKey,
 } from '@Sdk/age-category/age-category'

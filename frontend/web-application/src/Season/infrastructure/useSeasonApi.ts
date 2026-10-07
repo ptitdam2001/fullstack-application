@@ -9,5 +9,4 @@ export {
   useRemoveSeason,
   getGetSeasonsQueryKey,
   getCountSeasonsQueryKey,
-  getGetSeasonQueryKey,
 } from '@Sdk/season/season'
