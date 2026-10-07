@@ -17,7 +17,8 @@
     "test": "vitest",
     "test:unit": "vitest --project 'unit test'",
     "test:ui": "vitest --ui --coverage",
-    "check:types": "tsc --noEmit"
+    "check:types": "tsc --noEmit",
+    "check:format": "prettier -c ."
   },
   "dependencies": {
     "@hookform/devtools": "^4.4.0",
@@ -45,6 +46,7 @@
     "eslint": "^10.9.1",
     "jsdom": "30.0.1",
     "prettier": "3.9.6",
+    "prettier-plugin-tailwindcss": "^0.8.1",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "typescript": "6.0.3",
