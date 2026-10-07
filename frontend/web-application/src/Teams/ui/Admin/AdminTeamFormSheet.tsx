@@ -11,13 +11,7 @@ type AdminTeamFormSheetProps = {
   teamId?: string
 }
 
-const EditSheetContent = ({
-  teamId,
-  onFinish,
-}: {
-  teamId: string
-  onFinish: VoidFunction
-}) => {
+const EditSheetContent = ({ teamId, onFinish }: { teamId: string; onFinish: VoidFunction }) => {
   const { data: currentTeam, isLoading, isError } = useTeamDetail(teamId)
 
   if (isError) {

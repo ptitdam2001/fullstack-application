@@ -19,7 +19,13 @@ type ConfirmDeleteDialogProps = {
   isPending: boolean
 }
 
-export const ConfirmDeleteDialog = ({ teamName, open, onOpenChange, onConfirm, isPending }: ConfirmDeleteDialogProps) => (
+export const ConfirmDeleteDialog = ({
+  teamName,
+  open,
+  onOpenChange,
+  onConfirm,
+  isPending,
+}: ConfirmDeleteDialogProps) => (
   <Dialog open={open} onOpenChange={onOpenChange}>
     <DialogPortal>
       <DialogContent>

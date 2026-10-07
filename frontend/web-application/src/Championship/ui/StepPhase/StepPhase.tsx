@@ -8,7 +8,11 @@ type StepPhaseProps = {
 }
 
 const OPTIONS = [
-  { type: PhaseType.GROUP, labelId: 'championshipWizard.phaseType.GROUP', descId: 'championshipWizard.step.phase.groupDesc' },
+  {
+    type: PhaseType.GROUP,
+    labelId: 'championshipWizard.phaseType.GROUP',
+    descId: 'championshipWizard.step.phase.groupDesc',
+  },
   {
     type: PhaseType.KNOCKOUT,
     labelId: 'championshipWizard.phaseType.KNOCKOUT',
