@@ -119,13 +119,13 @@ make stack-test-down  # Tear down test stack
 
 `.github/workflows/ci.yml` runs on every pull request and on every push to `main`, as three parallel jobs:
 
-| Job                        | Runs                                                                                                                                                                                                    |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Backend`                  | `generate:prisma`, `check:type`, `lint`, `check:format`, `test`                                                                                                                                         |
-| `Backend functional tests` | `generate:prisma`, `test:functional` (Testcontainers MongoDB)                                                                                                                                           |
-| `Frontend`                 | `gen:sdk`, design-system and form-factory builds, then web application `check:types`, `lint`, `check:format`, `check:dead-code`, `test`, then design-system and form-factory `check:types`, `test:unit` |
+| Job                        | Runs                                                                                                                                                                                                                    |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Backend`                  | `generate:prisma`, `check:type`, `lint`, `check:format`, `test`                                                                                                                                                         |
+| `Backend functional tests` | `generate:prisma`, `test:functional` (Testcontainers MongoDB)                                                                                                                                                           |
+| `Frontend`                 | `gen:sdk`, design-system and form-factory builds, then web application `check:types`, `lint`, `check:format`, `check:dead-code`, `test`, then design-system and form-factory `check:types`, `check:format`, `test:unit` |
 
-- Not covered by CI: Storybook plays (`test:stories`), Playwright e2e (`test:e2e`, smoke), and `check:format` for the design system and the form factory. Run them locally when a change touches them.
+- Not covered by CI: Storybook plays (`test:stories`) and Playwright e2e (`test:e2e`, smoke). Run them locally when a change touches them.
 - When adding a check script to a package, add the matching step to `ci.yml` in the same changeset.
 - The job names are the identifiers of the status checks: do not rename a job without updating the branch protection of `main`.
 - `schema-sync.yml` stays separate: it only runs when `openapi.yml` or `schema.prisma` changes (see [Automated guardrail](#automated-guardrail)).
