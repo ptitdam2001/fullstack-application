@@ -1,7 +1,7 @@
 import { Button, Card, Select, SelectItem, Tab, Tabs, TabList } from '@repo/design-system'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { useChampionshipList } from '@Championship/application/useChampionshipList'
-import { useAgeCategoryList } from '@AgeCategory/application/useAgeCategoryList'
+import { useAgeCategoryList } from '@AgeCategory'
 import { MatchStatus } from '../../domain/Match'
 import type { MatchListFilters } from '../../application/useMatchList'
 

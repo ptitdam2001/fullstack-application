@@ -9,8 +9,7 @@ import { TablePagination } from '@repo/design-system'
 import { useTeamList } from '@Teams/application/useTeamList'
 import { AdminTeamTable } from '@Teams/ui/Admin/AdminTeamTable'
 import { AdminTeamFormSheet } from '@Teams/ui/Admin/AdminTeamFormSheet'
-import { useGetAgeCategories } from '@AgeCategory/infrastructure/useAgeCategoryApi'
-import type { AgeCategory } from '@AgeCategory'
+import { type AgeCategory, useGetAgeCategories } from '@AgeCategory'
 
 type SheetState = { open: boolean; teamId?: string }
 

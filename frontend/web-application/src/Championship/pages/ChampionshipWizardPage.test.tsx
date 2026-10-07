@@ -1,7 +1,7 @@
 import { screen, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { Season } from '@Season/domain/Season'
-import type { AgeCategory } from '@AgeCategory/domain/AgeCategory'
+import type { AgeCategory } from '@AgeCategory'
 import type { Team } from '@Teams/domain/Team'
 import { ChampionshipWizardPagePage } from './ChampionshipWizardPage.page'
 
@@ -30,7 +30,8 @@ vi.mock('@Season/application/useSeasonList', () => ({
     totalPages: 1,
   }),
 }))
-vi.mock('@AgeCategory/application/useAgeCategoryList', () => ({
+vi.mock('@AgeCategory', async importOriginal => ({
+  ...(await importOriginal<object>()),
   useAgeCategoryList: () => ({
     query: { data: categories },
     countQuery: { data: categories.length },
