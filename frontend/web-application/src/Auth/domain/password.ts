@@ -3,7 +3,7 @@
  * at least 8 characters, 1 digit and 1 uppercase letter.
  * Single source for the strength meter and for the client-side validation.
  */
-export const PASSWORD_MIN_LENGTH = 8
+const PASSWORD_MIN_LENGTH = 8
 
 export type PasswordStrength = 0 | 1 | 2 | 3
 

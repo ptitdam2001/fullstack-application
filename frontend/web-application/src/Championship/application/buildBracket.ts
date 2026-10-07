@@ -1,9 +1,9 @@
-export type BracketEntrant = {
+type BracketEntrant = {
   teamId: string | null
   origin: { fromRound: number; fromMatch: number } | null
 }
 
-export type BracketMatchSlot = { a: BracketEntrant; b: BracketEntrant | null }
+type BracketMatchSlot = { a: BracketEntrant; b: BracketEntrant | null }
 
 export type BracketConnector = { fromRound: number; fromMatch: number; toRound: number; toMatch: number }
 

@@ -3,7 +3,7 @@ export type CoachDashboardStats = {
   upcomingMatchCount: number
 }
 
-export type FeedEventType = 'ACTIVATION_REQUEST' | 'TEAM_CREATED' | 'FORFEIT' | 'MATCH_COMPLETED'
+type FeedEventType = 'ACTIVATION_REQUEST' | 'TEAM_CREATED' | 'FORFEIT' | 'MATCH_COMPLETED'
 
 export type FeedEvent = {
   id: string
