@@ -147,6 +147,9 @@ jobs:
       - name: Type check (design system)
         run: pnpm --filter @repo/design-system check:types
 
+      - name: Format check (design system)
+        run: pnpm --filter @repo/design-system check:format
+
       # `test:unit`, not `test`: the default run also starts the storybook
       # project, which needs a Chromium that this job does not install.
       - name: Unit tests (design system)
@@ -154,6 +157,9 @@ jobs:
 
       - name: Type check (form factory)
         run: pnpm --filter @repo/form-factory check:types
+
+      - name: Format check (form factory)
+        run: pnpm --filter @repo/form-factory check:format
 
       - name: Unit tests (form factory)
         run: pnpm --filter @repo/form-factory test:unit --run
