@@ -250,9 +250,6 @@ importers:
       react-dom:
         specifier: 19.2.8
         version: 19.2.8(react@19.2.8)
-      react-hook-form:
-        specifier: 7.87.0
-        version: 7.87.0(react@19.2.8)
       react-intl:
         specifier: 10.1.26
         version: 10.1.26(@types/react@19.2.18)(react@19.2.8)
@@ -268,9 +265,6 @@ importers:
       tailwindcss:
         specifier: ^4.3.3
         version: 4.3.3
-      uuid:
-        specifier: ^14.0.2
-        version: 14.0.2
       zod:
         specifier: 4.5.4
         version: 4.5.4
@@ -5254,10 +5248,6 @@ packages:
     resolution: {integrity: sha512-Pp6GSwGP/NrPIrxVFAIkOQeyw8lFenOHijQWkUTrDvrF4ALqylP2C/KCkeS9dpUM3KvYRQhna5vt7IL95+ZQ9w==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-
-  uuid@14.0.2:
-    resolution: {integrity: sha512-xZe/16rV4aa+HGSOCiY2YeLT1OybRLrrkL/Rqaq7p7GMVXjFh+6wN4oMYgjFmnSnhY8t6Xpdl2l9qmnHYuMHwQ==}
-    hasBin: true
 
   uuid@8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
@@ -10542,8 +10532,6 @@ snapshots:
   use-sync-external-store@1.6.0(react@19.2.8):
     dependencies:
       react: 19.2.8
-
-  uuid@14.0.2: {}
 
   uuid@8.3.2: {}
 
