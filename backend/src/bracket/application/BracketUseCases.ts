@@ -32,11 +32,11 @@ export class BracketUseCases {
     }
 
     const existingMatches = await this.matchRepo.findByBracketId(bracketId)
-    await Promise.all(existingMatches.map((match) => this.matchRepo.delete(match.id)))
+    await Promise.all(existingMatches.map(match => this.matchRepo.delete(match.id)))
 
     const plans = buildBracketMatches(bracket.bracketTeams)
     return Promise.all(
-      plans.map((plan) =>
+      plans.map(plan =>
         this.matchRepo.create({
           groupId: null,
           bracketId,
@@ -70,7 +70,7 @@ export class BracketUseCases {
     const nextRound = match.round + 1
     const nextPosition = Math.ceil(match.bracketPosition / 2)
     const bracketMatches = await this.matchRepo.findByBracketId(match.bracketId)
-    const nextMatch = bracketMatches.find((m) => m.round === nextRound && m.bracketPosition === nextPosition)
+    const nextMatch = bracketMatches.find(m => m.round === nextRound && m.bracketPosition === nextPosition)
     if (!nextMatch) {
       return
     }

@@ -15,7 +15,11 @@ const select = {
 
 export class PrismaPhaseRepository implements IPhaseRepository {
   async findByChampionshipId(championshipId: string): Promise<Phase[]> {
-    return prisma.phase.findMany({ where: { championshipId, ...notDeleted }, orderBy: { order: 'asc' }, select }) as Promise<Phase[]>
+    return prisma.phase.findMany({
+      where: { championshipId, ...notDeleted },
+      orderBy: { order: 'asc' },
+      select,
+    }) as Promise<Phase[]>
   }
 
   async findById(id: string): Promise<Phase | null> {

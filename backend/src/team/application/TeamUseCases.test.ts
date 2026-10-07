@@ -90,7 +90,9 @@ describe('TeamUseCases.delete', () => {
   it('team is not findable after deletion', async () => {
     let deleted = false
     const repo = makeRepo({
-      delete: vi.fn().mockImplementation(async () => { deleted = true }),
+      delete: vi.fn().mockImplementation(async () => {
+        deleted = true
+      }),
       findById: vi.fn().mockImplementation(async () => (deleted ? null : mockTeam)),
     })
     const useCases = new TeamUseCases(repo)

@@ -37,7 +37,10 @@ export class PrismaBracketRepository implements IBracketRepository {
   async create(input: CreateBracketInput): Promise<Bracket> {
     const { bracketTeams, ...rest } = input
     const row = await prisma.bracket.create({
-      data: { ...rest, bracketTeams: { create: bracketTeams.map((bt) => ({ teamId: bt.teamId, round: bt.round, seed: bt.seed })) } },
+      data: {
+        ...rest,
+        bracketTeams: { create: bracketTeams.map(bt => ({ teamId: bt.teamId, round: bt.round, seed: bt.seed })) },
+      },
       select,
     })
     return toBracket(row)

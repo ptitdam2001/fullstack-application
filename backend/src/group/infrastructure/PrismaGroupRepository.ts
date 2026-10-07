@@ -12,10 +12,17 @@ const select = {
   groupTeams: { select: { teamId: true } },
 } as const
 
-type RawGroup = { id: string; phaseId: string; name: string; matchMode: string; updatedAt: Date; groupTeams: { teamId: string }[] }
+type RawGroup = {
+  id: string
+  phaseId: string
+  name: string
+  matchMode: string
+  updatedAt: Date
+  groupTeams: { teamId: string }[]
+}
 
 function toGroup(raw: RawGroup): Group {
-  return { ...raw, matchMode: raw.matchMode as Group['matchMode'], teamIds: raw.groupTeams.map((gt) => gt.teamId) }
+  return { ...raw, matchMode: raw.matchMode as Group['matchMode'], teamIds: raw.groupTeams.map(gt => gt.teamId) }
 }
 
 export class PrismaGroupRepository implements IGroupRepository {
@@ -32,7 +39,7 @@ export class PrismaGroupRepository implements IGroupRepository {
   async create(input: CreateGroupInput): Promise<Group> {
     const { teamIds, ...rest } = input
     const row = await prisma.group.create({
-      data: { ...rest, groupTeams: { create: teamIds.map((teamId) => ({ teamId })) } },
+      data: { ...rest, groupTeams: { create: teamIds.map(teamId => ({ teamId })) } },
       select,
     })
     return toGroup(row)
@@ -45,7 +52,7 @@ export class PrismaGroupRepository implements IGroupRepository {
       data: {
         ...rest,
         ...(teamIds !== undefined && {
-          groupTeams: { deleteMany: {}, create: teamIds.map((teamId) => ({ teamId })) },
+          groupTeams: { deleteMany: {}, create: teamIds.map(teamId => ({ teamId })) },
         }),
       },
       select,

@@ -125,9 +125,16 @@ describe('ChampionshipUseCases.count', () => {
         ),
       },
       groupRepo: {
-        findByPhaseId: vi
-          .fn()
-          .mockResolvedValue([{ id: 'group-1', phaseId: 'phase-1', name: 'A', matchMode: MatchMode.SINGLE, teamIds: [], updatedAt: new Date() }]),
+        findByPhaseId: vi.fn().mockResolvedValue([
+          {
+            id: 'group-1',
+            phaseId: 'phase-1',
+            name: 'A',
+            matchMode: MatchMode.SINGLE,
+            teamIds: [],
+            updatedAt: new Date(),
+          },
+        ]),
       },
     })
 
@@ -169,19 +176,17 @@ describe('ChampionshipUseCases.getById', () => {
   it('is draft when the phase has neither group nor bracket', async () => {
     const useCases = makeUseCases({
       phaseRepo: {
-        findByChampionshipId: vi
-          .fn()
-          .mockResolvedValue([
-            {
-              id: 'phase-1',
-              championshipId: 'championship-1',
-              type: PhaseType.GROUP,
-              order: 1,
-              name: null,
-              qualification: null,
-              updatedAt: new Date(),
-            },
-          ]),
+        findByChampionshipId: vi.fn().mockResolvedValue([
+          {
+            id: 'phase-1',
+            championshipId: 'championship-1',
+            type: PhaseType.GROUP,
+            order: 1,
+            name: null,
+            qualification: null,
+            updatedAt: new Date(),
+          },
+        ]),
       },
       groupRepo: { findByPhaseId: vi.fn().mockResolvedValue([]) },
       bracketRepo: { findByPhaseId: vi.fn().mockResolvedValue([]) },
@@ -192,33 +197,29 @@ describe('ChampionshipUseCases.getById', () => {
   it('is not draft once the phase has a group', async () => {
     const useCases = makeUseCases({
       phaseRepo: {
-        findByChampionshipId: vi
-          .fn()
-          .mockResolvedValue([
-            {
-              id: 'phase-1',
-              championshipId: 'championship-1',
-              type: PhaseType.GROUP,
-              order: 1,
-              name: null,
-              qualification: null,
-              updatedAt: new Date(),
-            },
-          ]),
+        findByChampionshipId: vi.fn().mockResolvedValue([
+          {
+            id: 'phase-1',
+            championshipId: 'championship-1',
+            type: PhaseType.GROUP,
+            order: 1,
+            name: null,
+            qualification: null,
+            updatedAt: new Date(),
+          },
+        ]),
       },
       groupRepo: {
-        findByPhaseId: vi
-          .fn()
-          .mockResolvedValue([
-            {
-              id: 'group-1',
-              phaseId: 'phase-1',
-              name: 'Poule A',
-              matchMode: MatchMode.SINGLE,
-              teamIds: [],
-              updatedAt: new Date(),
-            },
-          ]),
+        findByPhaseId: vi.fn().mockResolvedValue([
+          {
+            id: 'group-1',
+            phaseId: 'phase-1',
+            name: 'Poule A',
+            matchMode: MatchMode.SINGLE,
+            teamIds: [],
+            updatedAt: new Date(),
+          },
+        ]),
       },
     })
     expect((await useCases.getById('championship-1')).isDraft).toBe(false)
@@ -227,19 +228,17 @@ describe('ChampionshipUseCases.getById', () => {
   it('is not draft once the phase has a bracket', async () => {
     const useCases = makeUseCases({
       phaseRepo: {
-        findByChampionshipId: vi
-          .fn()
-          .mockResolvedValue([
-            {
-              id: 'phase-1',
-              championshipId: 'championship-1',
-              type: PhaseType.KNOCKOUT,
-              order: 1,
-              name: null,
-              qualification: null,
-              updatedAt: new Date(),
-            },
-          ]),
+        findByChampionshipId: vi.fn().mockResolvedValue([
+          {
+            id: 'phase-1',
+            championshipId: 'championship-1',
+            type: PhaseType.KNOCKOUT,
+            order: 1,
+            name: null,
+            qualification: null,
+            updatedAt: new Date(),
+          },
+        ]),
       },
       bracketRepo: {
         findByPhaseId: vi
@@ -265,19 +264,17 @@ describe('ChampionshipUseCases.getById', () => {
   it('counts unique teams and match progress across GROUP groups of the current phase', async () => {
     const useCases = makeUseCases({
       phaseRepo: {
-        findByChampionshipId: vi
-          .fn()
-          .mockResolvedValue([
-            {
-              id: 'phase-1',
-              championshipId: 'championship-1',
-              type: PhaseType.GROUP,
-              order: 1,
-              name: null,
-              qualification: null,
-              updatedAt: new Date(),
-            },
-          ]),
+        findByChampionshipId: vi.fn().mockResolvedValue([
+          {
+            id: 'phase-1',
+            championshipId: 'championship-1',
+            type: PhaseType.GROUP,
+            order: 1,
+            name: null,
+            qualification: null,
+            updatedAt: new Date(),
+          },
+        ]),
       },
       groupRepo: {
         findByPhaseId: vi.fn().mockResolvedValue([
@@ -300,43 +297,41 @@ describe('ChampionshipUseCases.getById', () => {
         ]),
       },
       matchRepo: {
-        findByGroupId: vi
-          .fn()
-          .mockImplementation((groupId: string) =>
-            Promise.resolve(
-              groupId === 'group-1'
-                ? [
-                    {
-                      id: 'match-1',
-                      groupId: 'group-1',
-                      status: MatchStatus.PLAYED,
-                      scheduledAt: null,
-                      area: null,
-                      homeTeamId: 't1',
-                      awayTeamId: 't2',
-                      homeGoals: 1,
-                      awayGoals: 0,
-                      forfeitedBy: null,
-                      updatedAt: new Date(),
-                    },
-                  ]
-                : [
-                    {
-                      id: 'match-2',
-                      groupId: 'group-2',
-                      status: MatchStatus.SCHEDULED,
-                      scheduledAt: null,
-                      area: null,
-                      homeTeamId: 't3',
-                      awayTeamId: 't2',
-                      homeGoals: null,
-                      awayGoals: null,
-                      forfeitedBy: null,
-                      updatedAt: new Date(),
-                    },
-                  ]
-            )
-          ),
+        findByGroupId: vi.fn().mockImplementation((groupId: string) =>
+          Promise.resolve(
+            groupId === 'group-1'
+              ? [
+                  {
+                    id: 'match-1',
+                    groupId: 'group-1',
+                    status: MatchStatus.PLAYED,
+                    scheduledAt: null,
+                    area: null,
+                    homeTeamId: 't1',
+                    awayTeamId: 't2',
+                    homeGoals: 1,
+                    awayGoals: 0,
+                    forfeitedBy: null,
+                    updatedAt: new Date(),
+                  },
+                ]
+              : [
+                  {
+                    id: 'match-2',
+                    groupId: 'group-2',
+                    status: MatchStatus.SCHEDULED,
+                    scheduledAt: null,
+                    area: null,
+                    homeTeamId: 't3',
+                    awayTeamId: 't2',
+                    homeGoals: null,
+                    awayGoals: null,
+                    forfeitedBy: null,
+                    updatedAt: new Date(),
+                  },
+                ]
+          )
+        ),
       },
     })
     const result = await useCases.getById('championship-1')
@@ -350,19 +345,17 @@ describe('ChampionshipUseCases.getById', () => {
   it('counts unique teams from bracketTeams for a KNOCKOUT current phase', async () => {
     const useCases = makeUseCases({
       phaseRepo: {
-        findByChampionshipId: vi
-          .fn()
-          .mockResolvedValue([
-            {
-              id: 'phase-1',
-              championshipId: 'championship-1',
-              type: PhaseType.KNOCKOUT,
-              order: 1,
-              name: null,
-              qualification: null,
-              updatedAt: new Date(),
-            },
-          ]),
+        findByChampionshipId: vi.fn().mockResolvedValue([
+          {
+            id: 'phase-1',
+            championshipId: 'championship-1',
+            type: PhaseType.KNOCKOUT,
+            order: 1,
+            name: null,
+            qualification: null,
+            updatedAt: new Date(),
+          },
+        ]),
       },
       bracketRepo: {
         findByPhaseId: vi.fn().mockResolvedValue([
@@ -379,23 +372,21 @@ describe('ChampionshipUseCases.getById', () => {
         ]),
       },
       matchRepo: {
-        findByBracketId: vi
-          .fn()
-          .mockResolvedValue([
-            {
-              id: 'match-1',
-              bracketId: 'bracket-1',
-              status: MatchStatus.PLAYED,
-              scheduledAt: null,
-              area: null,
-              homeTeamId: 't1',
-              awayTeamId: 't2',
-              homeGoals: 1,
-              awayGoals: 0,
-              forfeitedBy: null,
-              updatedAt: new Date(),
-            },
-          ]),
+        findByBracketId: vi.fn().mockResolvedValue([
+          {
+            id: 'match-1',
+            bracketId: 'bracket-1',
+            status: MatchStatus.PLAYED,
+            scheduledAt: null,
+            area: null,
+            homeTeamId: 't1',
+            awayTeamId: 't2',
+            homeGoals: 1,
+            awayGoals: 0,
+            forfeitedBy: null,
+            updatedAt: new Date(),
+          },
+        ]),
       },
     })
     const result = await useCases.getById('championship-1')
@@ -468,19 +459,17 @@ describe('ChampionshipUseCases.isChampionshipFinished', () => {
   it('returns true when the last KNOCKOUT phase has no SCHEDULED matches', async () => {
     const useCases = makeUseCases({
       phaseRepo: {
-        findByChampionshipId: vi
-          .fn()
-          .mockResolvedValue([
-            {
-              id: 'phase-1',
-              championshipId: 'championship-1',
-              type: PhaseType.KNOCKOUT,
-              order: 1,
-              name: null,
-              qualification: null,
-              updatedAt: new Date(),
-            },
-          ]),
+        findByChampionshipId: vi.fn().mockResolvedValue([
+          {
+            id: 'phase-1',
+            championshipId: 'championship-1',
+            type: PhaseType.KNOCKOUT,
+            order: 1,
+            name: null,
+            qualification: null,
+            updatedAt: new Date(),
+          },
+        ]),
       },
       bracketRepo: {
         findByPhaseId: vi
@@ -490,23 +479,21 @@ describe('ChampionshipUseCases.isChampionshipFinished', () => {
           ]),
       },
       matchRepo: {
-        findByBracketId: vi
-          .fn()
-          .mockResolvedValue([
-            {
-              id: 'match-1',
-              bracketId: 'bracket-1',
-              status: MatchStatus.PLAYED,
-              scheduledAt: null,
-              area: null,
-              homeTeamId: 't1',
-              awayTeamId: 't2',
-              homeGoals: 1,
-              awayGoals: 0,
-              forfeitedBy: null,
-              updatedAt: new Date(),
-            },
-          ]),
+        findByBracketId: vi.fn().mockResolvedValue([
+          {
+            id: 'match-1',
+            bracketId: 'bracket-1',
+            status: MatchStatus.PLAYED,
+            scheduledAt: null,
+            area: null,
+            homeTeamId: 't1',
+            awayTeamId: 't2',
+            homeGoals: 1,
+            awayGoals: 0,
+            forfeitedBy: null,
+            updatedAt: new Date(),
+          },
+        ]),
       },
     })
     expect(await useCases.isChampionshipFinished('championship-1')).toBe(true)
@@ -515,19 +502,17 @@ describe('ChampionshipUseCases.isChampionshipFinished', () => {
   it('returns false when the last KNOCKOUT phase still has a SCHEDULED match', async () => {
     const useCases = makeUseCases({
       phaseRepo: {
-        findByChampionshipId: vi
-          .fn()
-          .mockResolvedValue([
-            {
-              id: 'phase-1',
-              championshipId: 'championship-1',
-              type: PhaseType.KNOCKOUT,
-              order: 1,
-              name: null,
-              qualification: null,
-              updatedAt: new Date(),
-            },
-          ]),
+        findByChampionshipId: vi.fn().mockResolvedValue([
+          {
+            id: 'phase-1',
+            championshipId: 'championship-1',
+            type: PhaseType.KNOCKOUT,
+            order: 1,
+            name: null,
+            qualification: null,
+            updatedAt: new Date(),
+          },
+        ]),
       },
       bracketRepo: {
         findByPhaseId: vi
@@ -573,19 +558,17 @@ describe('ChampionshipUseCases.isChampionshipFinished', () => {
   it('returns false when the last KNOCKOUT phase has no matches yet (generateMatches never called)', async () => {
     const useCases = makeUseCases({
       phaseRepo: {
-        findByChampionshipId: vi
-          .fn()
-          .mockResolvedValue([
-            {
-              id: 'phase-1',
-              championshipId: 'championship-1',
-              type: PhaseType.KNOCKOUT,
-              order: 1,
-              name: null,
-              qualification: null,
-              updatedAt: new Date(),
-            },
-          ]),
+        findByChampionshipId: vi.fn().mockResolvedValue([
+          {
+            id: 'phase-1',
+            championshipId: 'championship-1',
+            type: PhaseType.KNOCKOUT,
+            order: 1,
+            name: null,
+            qualification: null,
+            updatedAt: new Date(),
+          },
+        ]),
       },
       bracketRepo: { findByPhaseId: vi.fn().mockResolvedValue([]) },
     })
@@ -595,19 +578,17 @@ describe('ChampionshipUseCases.isChampionshipFinished', () => {
   it('returns false when the last GROUP phase has no matches yet (generateMatches never called)', async () => {
     const useCases = makeUseCases({
       phaseRepo: {
-        findByChampionshipId: vi
-          .fn()
-          .mockResolvedValue([
-            {
-              id: 'phase-1',
-              championshipId: 'championship-1',
-              type: PhaseType.GROUP,
-              order: 1,
-              name: null,
-              qualification: null,
-              updatedAt: new Date(),
-            },
-          ]),
+        findByChampionshipId: vi.fn().mockResolvedValue([
+          {
+            id: 'phase-1',
+            championshipId: 'championship-1',
+            type: PhaseType.GROUP,
+            order: 1,
+            name: null,
+            qualification: null,
+            updatedAt: new Date(),
+          },
+        ]),
       },
       groupRepo: { findByPhaseId: vi.fn().mockResolvedValue([]) },
     })
@@ -617,52 +598,46 @@ describe('ChampionshipUseCases.isChampionshipFinished', () => {
   it('returns true when the last GROUP phase has no SCHEDULED matches', async () => {
     const useCases = makeUseCases({
       phaseRepo: {
-        findByChampionshipId: vi
-          .fn()
-          .mockResolvedValue([
-            {
-              id: 'phase-1',
-              championshipId: 'championship-1',
-              type: PhaseType.GROUP,
-              order: 1,
-              name: null,
-              qualification: null,
-              updatedAt: new Date(),
-            },
-          ]),
+        findByChampionshipId: vi.fn().mockResolvedValue([
+          {
+            id: 'phase-1',
+            championshipId: 'championship-1',
+            type: PhaseType.GROUP,
+            order: 1,
+            name: null,
+            qualification: null,
+            updatedAt: new Date(),
+          },
+        ]),
       },
       groupRepo: {
-        findByPhaseId: vi
-          .fn()
-          .mockResolvedValue([
-            {
-              id: 'group-1',
-              phaseId: 'phase-1',
-              name: 'Poule A',
-              matchMode: MatchMode.SINGLE,
-              teamIds: [],
-              updatedAt: new Date(),
-            },
-          ]),
+        findByPhaseId: vi.fn().mockResolvedValue([
+          {
+            id: 'group-1',
+            phaseId: 'phase-1',
+            name: 'Poule A',
+            matchMode: MatchMode.SINGLE,
+            teamIds: [],
+            updatedAt: new Date(),
+          },
+        ]),
       },
       matchRepo: {
-        findByGroupId: vi
-          .fn()
-          .mockResolvedValue([
-            {
-              id: 'match-1',
-              groupId: 'group-1',
-              status: MatchStatus.PLAYED,
-              scheduledAt: null,
-              area: null,
-              homeTeamId: 't1',
-              awayTeamId: 't2',
-              homeGoals: 1,
-              awayGoals: 0,
-              forfeitedBy: null,
-              updatedAt: new Date(),
-            },
-          ]),
+        findByGroupId: vi.fn().mockResolvedValue([
+          {
+            id: 'match-1',
+            groupId: 'group-1',
+            status: MatchStatus.PLAYED,
+            scheduledAt: null,
+            area: null,
+            homeTeamId: 't1',
+            awayTeamId: 't2',
+            homeGoals: 1,
+            awayGoals: 0,
+            forfeitedBy: null,
+            updatedAt: new Date(),
+          },
+        ]),
       },
     })
     expect(await useCases.isChampionshipFinished('championship-1')).toBe(true)
@@ -671,122 +646,112 @@ describe('ChampionshipUseCases.isChampionshipFinished', () => {
   it('returns false when the last GROUP phase still has a SCHEDULED match', async () => {
     const useCases = makeUseCases({
       phaseRepo: {
-        findByChampionshipId: vi
-          .fn()
-          .mockResolvedValue([
-            {
-              id: 'phase-1',
-              championshipId: 'championship-1',
-              type: PhaseType.GROUP,
-              order: 1,
-              name: null,
-              qualification: null,
-              updatedAt: new Date(),
-            },
-          ]),
+        findByChampionshipId: vi.fn().mockResolvedValue([
+          {
+            id: 'phase-1',
+            championshipId: 'championship-1',
+            type: PhaseType.GROUP,
+            order: 1,
+            name: null,
+            qualification: null,
+            updatedAt: new Date(),
+          },
+        ]),
       },
       groupRepo: {
-        findByPhaseId: vi
-          .fn()
-          .mockResolvedValue([
-            {
-              id: 'group-1',
-              phaseId: 'phase-1',
-              name: 'Poule A',
-              matchMode: MatchMode.SINGLE,
-              teamIds: [],
-              updatedAt: new Date(),
-            },
-          ]),
+        findByPhaseId: vi.fn().mockResolvedValue([
+          {
+            id: 'group-1',
+            phaseId: 'phase-1',
+            name: 'Poule A',
+            matchMode: MatchMode.SINGLE,
+            teamIds: [],
+            updatedAt: new Date(),
+          },
+        ]),
       },
       matchRepo: {
-        findByGroupId: vi
-          .fn()
-          .mockResolvedValue([
-            {
-              id: 'match-1',
-              groupId: 'group-1',
-              status: MatchStatus.SCHEDULED,
-              scheduledAt: null,
-              area: null,
-              homeTeamId: 't1',
-              awayTeamId: 't2',
-              homeGoals: null,
-              awayGoals: null,
-              forfeitedBy: null,
-              updatedAt: new Date(),
-            },
-          ]),
+        findByGroupId: vi.fn().mockResolvedValue([
+          {
+            id: 'match-1',
+            groupId: 'group-1',
+            status: MatchStatus.SCHEDULED,
+            scheduledAt: null,
+            area: null,
+            homeTeamId: 't1',
+            awayTeamId: 't2',
+            homeGoals: null,
+            awayGoals: null,
+            forfeitedBy: null,
+            updatedAt: new Date(),
+          },
+        ]),
       },
     })
     expect(await useCases.isChampionshipFinished('championship-1')).toBe(false)
   })
 
   it('only inspects the phase with the highest order', async () => {
-    const findByPhaseId = vi
-      .fn()
-      .mockImplementation((phaseId: string) =>
-        Promise.resolve(
-          phaseId === 'phase-2'
-            ? [
-                {
-                  id: 'group-2',
-                  phaseId: 'phase-2',
-                  name: 'Poule B',
-                  matchMode: MatchMode.SINGLE,
-                  teamIds: [],
-                  updatedAt: new Date(),
-                },
-              ]
-            : [
-                {
-                  id: 'group-1',
-                  phaseId: 'phase-1',
-                  name: 'Poule A',
-                  matchMode: MatchMode.SINGLE,
-                  teamIds: [],
-                  updatedAt: new Date(),
-                },
-              ]
-        )
+    const findByPhaseId = vi.fn().mockImplementation((phaseId: string) =>
+      Promise.resolve(
+        phaseId === 'phase-2'
+          ? [
+              {
+                id: 'group-2',
+                phaseId: 'phase-2',
+                name: 'Poule B',
+                matchMode: MatchMode.SINGLE,
+                teamIds: [],
+                updatedAt: new Date(),
+              },
+            ]
+          : [
+              {
+                id: 'group-1',
+                phaseId: 'phase-1',
+                name: 'Poule A',
+                matchMode: MatchMode.SINGLE,
+                teamIds: [],
+                updatedAt: new Date(),
+              },
+            ]
       )
-    const findByGroupId = vi
-      .fn()
-      .mockImplementation((groupId: string) =>
-        Promise.resolve(
-          groupId === 'group-2'
-            ? [
-                {
-                  id: 'match-2',
-                  groupId: 'group-2',
-                  status: MatchStatus.PLAYED,
-                  scheduledAt: null,
-                  area: null,
-                  homeTeamId: 't1',
-                  awayTeamId: 't2',
-                  homeGoals: 2,
-                  awayGoals: 1,
-                  forfeitedBy: null,
-                  updatedAt: new Date(),
-                },
-              ]
-            : [
-                {
-                  id: 'match-1',
-                  groupId: 'group-1',
-                  status: MatchStatus.SCHEDULED,
-                  scheduledAt: null,
-                  area: null,
-                  homeTeamId: 't1',
-                  awayTeamId: 't2',
-                  homeGoals: null,
-                  awayGoals: null,
-                  forfeitedBy: null,
-                  updatedAt: new Date(),
-                },
-              ]
-        )
+    )
+    const findByGroupId = vi.fn().mockImplementation((groupId: string) =>
+      Promise.resolve(
+        groupId === 'group-2'
+          ? [
+              {
+                id: 'match-2',
+                groupId: 'group-2',
+                status: MatchStatus.PLAYED,
+                scheduledAt: null,
+                area: null,
+                homeTeamId: 't1',
+                awayTeamId: 't2',
+                homeGoals: 2,
+                awayGoals: 1,
+                forfeitedBy: null,
+                updatedAt: new Date(),
+              },
+            ]
+          : [
+              {
+                id: 'match-1',
+                groupId: 'group-1',
+                status: MatchStatus.SCHEDULED,
+                scheduledAt: null,
+                area: null,
+                homeTeamId: 't1',
+                awayTeamId: 't2',
+                homeGoals: null,
+                awayGoals: null,
+                forfeitedBy: null,
+                updatedAt: new Date(),
+              },
+            ]
       )
+    )
     const useCases = makeUseCases({
       phaseRepo: {
         findByChampionshipId: vi.fn().mockResolvedValue([
@@ -836,52 +801,46 @@ describe('ChampionshipUseCases.hasUnfinishedChampionships', () => {
     const useCases = makeUseCases({
       repo: { findBySeasonId: vi.fn().mockResolvedValue([mockChampionship]) },
       phaseRepo: {
-        findByChampionshipId: vi
-          .fn()
-          .mockResolvedValue([
-            {
-              id: 'phase-1',
-              championshipId: 'championship-1',
-              type: PhaseType.GROUP,
-              order: 1,
-              name: null,
-              qualification: null,
-              updatedAt: new Date(),
-            },
-          ]),
+        findByChampionshipId: vi.fn().mockResolvedValue([
+          {
+            id: 'phase-1',
+            championshipId: 'championship-1',
+            type: PhaseType.GROUP,
+            order: 1,
+            name: null,
+            qualification: null,
+            updatedAt: new Date(),
+          },
+        ]),
       },
       groupRepo: {
-        findByPhaseId: vi
-          .fn()
-          .mockResolvedValue([
-            {
-              id: 'group-1',
-              phaseId: 'phase-1',
-              name: 'Poule A',
-              matchMode: MatchMode.SINGLE,
-              teamIds: [],
-              updatedAt: new Date(),
-            },
-          ]),
+        findByPhaseId: vi.fn().mockResolvedValue([
+          {
+            id: 'group-1',
+            phaseId: 'phase-1',
+            name: 'Poule A',
+            matchMode: MatchMode.SINGLE,
+            teamIds: [],
+            updatedAt: new Date(),
+          },
+        ]),
       },
       matchRepo: {
-        findByGroupId: vi
-          .fn()
-          .mockResolvedValue([
-            {
-              id: 'match-1',
-              groupId: 'group-1',
-              status: MatchStatus.PLAYED,
-              scheduledAt: null,
-              area: null,
-              homeTeamId: 't1',
-              awayTeamId: 't2',
-              homeGoals: 1,
-              awayGoals: 0,
-              forfeitedBy: null,
-              updatedAt: new Date(),
-            },
-          ]),
+        findByGroupId: vi.fn().mockResolvedValue([
+          {
+            id: 'match-1',
+            groupId: 'group-1',
+            status: MatchStatus.PLAYED,
+            scheduledAt: null,
+            area: null,
+            homeTeamId: 't1',
+            awayTeamId: 't2',
+            homeGoals: 1,
+            awayGoals: 0,
+            forfeitedBy: null,
+            updatedAt: new Date(),
+          },
+        ]),
       },
     })
     expect(await useCases.hasUnfinishedChampionships('season-1')).toBe(false)

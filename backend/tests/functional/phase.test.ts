@@ -38,7 +38,9 @@ describe('phase domain — functional API', () => {
 
     it('excludes soft-deleted phases', async () => {
       const championship = await createChampionship()
-      await prisma.phase.create({ data: { championshipId: championship.id, type: 'GROUP', order: 1, deletedAt: new Date() } })
+      await prisma.phase.create({
+        data: { championshipId: championship.id, type: 'GROUP', order: 1, deletedAt: new Date() },
+      })
 
       const res = await agent.get(`/championship/${championship.id}/phases`)
 
@@ -87,7 +89,12 @@ describe('phase domain — functional API', () => {
         .send({ championshipId: championship.id, type: 'GROUP', order: 1, name: 'Phase de poules' })
 
       expect(res.status).toBe(201)
-      expect(res.body).toMatchObject({ championshipId: championship.id, type: 'GROUP', order: 1, name: 'Phase de poules' })
+      expect(res.body).toMatchObject({
+        championshipId: championship.id,
+        type: 'GROUP',
+        order: 1,
+        name: 'Phase de poules',
+      })
 
       const stored = await prisma.phase.findUnique({ where: { id: res.body.id } })
       expect(stored).not.toBeNull()

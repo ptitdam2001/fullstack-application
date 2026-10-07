@@ -3,7 +3,9 @@ import { roundRobin } from './roundRobin.js'
 import { MatchMode } from '../domain/Group.js'
 
 function opponentsOf(teamId: string, pairs: { homeTeamId: string; awayTeamId: string }[]): string[] {
-  return pairs.filter(p => p.homeTeamId === teamId || p.awayTeamId === teamId).map(p => (p.homeTeamId === teamId ? p.awayTeamId : p.homeTeamId))
+  return pairs
+    .filter(p => p.homeTeamId === teamId || p.awayTeamId === teamId)
+    .map(p => (p.homeTeamId === teamId ? p.awayTeamId : p.homeTeamId))
 }
 
 describe('roundRobin', () => {
