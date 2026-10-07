@@ -18,7 +18,7 @@ permissions:
 
 jobs:
   backend:
-    name: Backend (types, lint, format, unit tests)
+    name: Backend
     runs-on: ubuntu-latest
     timeout-minutes: 15
     defaults:
@@ -60,7 +60,7 @@ jobs:
         run: pnpm test
 
   backend-functional:
-    name: Backend (functional tests)
+    name: Backend functional tests
     runs-on: ubuntu-latest
     timeout-minutes: 20
     defaults:
@@ -93,7 +93,7 @@ jobs:
         run: pnpm test:functional
 
   frontend:
-    name: Frontend (types, lint, format, unit tests)
+    name: Frontend
     runs-on: ubuntu-latest
     timeout-minutes: 20
     defaults:
