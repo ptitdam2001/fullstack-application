@@ -23,7 +23,14 @@ function formatDate(date: Date | undefined): string {
   return date.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' })
 }
 
-export const DatePicker = ({ value, onChange, placeholder = 'JJ/MM/AAAA', isDisabled, className, label }: DatePickerProps) => {
+export const DatePicker = ({
+  value,
+  onChange,
+  placeholder = 'JJ/MM/AAAA',
+  isDisabled,
+  className,
+  label,
+}: DatePickerProps) => {
   const [open, setOpen] = React.useState(false)
 
   return (
@@ -33,10 +40,7 @@ export const DatePicker = ({ value, onChange, placeholder = 'JJ/MM/AAAA', isDisa
         <Button
           variant="outline"
           isDisabled={isDisabled}
-          className={cn(
-            'w-full justify-start gap-2 font-normal',
-            !value && 'text-muted-foreground'
-          )}
+          className={cn('w-full justify-start gap-2 font-normal', !value && 'text-muted-foreground')}
         >
           <CalendarIcon className="size-4" />
           {value ? formatDate(value) : <span>{placeholder}</span>}

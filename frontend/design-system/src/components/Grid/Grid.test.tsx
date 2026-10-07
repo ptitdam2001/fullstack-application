@@ -12,7 +12,12 @@ const items = [
 
 const renderGrid = () =>
   render(
-    <Grid.Root aria-label="test" items={items} className="h-64" layoutOptions={{ minItemSize: { width: 100, height: 80 } }}>
+    <Grid.Root
+      aria-label="test"
+      items={items}
+      className="h-64"
+      layoutOptions={{ minItemSize: { width: 100, height: 80 } }}
+    >
       {item => <Grid.Item id={item.id}>{item.name}</Grid.Item>}
     </Grid.Root>
   )
@@ -35,7 +40,12 @@ describe('Grid.Root', () => {
 
   it('forwards className', () => {
     const { container } = render(
-      <Grid.Root aria-label="test" items={items} className="h-64 custom-class" layoutOptions={{ minItemSize: { width: 100, height: 80 } }}>
+      <Grid.Root
+        aria-label="test"
+        items={items}
+        className="custom-class h-64"
+        layoutOptions={{ minItemSize: { width: 100, height: 80 } }}
+      >
         {item => <Grid.Item id={item.id}>{item.name}</Grid.Item>}
       </Grid.Root>
     )
@@ -54,7 +64,13 @@ describe('Grid.Root', () => {
 
   it('does not apply border with variant="ghost"', () => {
     const { container } = render(
-      <Grid.Root aria-label="test" items={items} variant="ghost" className="h-64" layoutOptions={{ minItemSize: { width: 100, height: 80 } }}>
+      <Grid.Root
+        aria-label="test"
+        items={items}
+        variant="ghost"
+        className="h-64"
+        layoutOptions={{ minItemSize: { width: 100, height: 80 } }}
+      >
         {item => <Grid.Item id={item.id}>{item.name}</Grid.Item>}
       </Grid.Root>
     )
@@ -78,7 +94,9 @@ describe('Grid.Item', () => {
   it('forwards className on grid item', () => {
     const { container } = render(
       <ListBox aria-label="test">
-        <Grid.Item id="1" className="custom-item">Alpha</Grid.Item>
+        <Grid.Item id="1" className="custom-item">
+          Alpha
+        </Grid.Item>
       </ListBox>
     )
     expect(container.querySelector('[data-slot="grid-item"]')).toHaveClass('custom-item')

@@ -77,7 +77,7 @@ export const WithCustomElement: Story = {
   args: {
     content: 'Tooltip on custom element (visual only)',
     children: (
-      <div tabIndex={0} className="rounded border px-3 py-1.5 text-sm cursor-pointer">
+      <div tabIndex={0} className="cursor-pointer rounded border px-3 py-1.5 text-sm">
         Custom div (tabIndex=0)
       </div>
     ),
@@ -136,9 +136,7 @@ export const HidesOnBlur: Story = {
     await waitFor(() => expect(within(document.body).getByRole('tooltip')).toBeVisible())
     // Tab away to blur
     await userEvent.tab()
-    await waitFor(() =>
-      expect(within(document.body).queryByRole('tooltip')).not.toBeInTheDocument()
-    )
+    await waitFor(() => expect(within(document.body).queryByRole('tooltip')).not.toBeInTheDocument())
   },
 }
 
@@ -152,9 +150,7 @@ export const FocusShowsTooltip: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await userEvent.tab()
-    await waitFor(() =>
-      expect(canvas.getByRole('button', { name: /tab to me/i })).toHaveFocus()
-    )
+    await waitFor(() => expect(canvas.getByRole('button', { name: /tab to me/i })).toHaveFocus())
     await waitFor(() => expect(within(document.body).getByRole('tooltip')).toBeVisible())
   },
 }
@@ -170,9 +166,7 @@ export const DisabledShowsNothing: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await userEvent.tab()
-    await waitFor(() =>
-      expect(canvas.getByRole('button', { name: /disabled tooltip/i })).toHaveFocus()
-    )
+    await waitFor(() => expect(canvas.getByRole('button', { name: /disabled tooltip/i })).toHaveFocus())
     await expect(within(document.body).queryByRole('tooltip')).not.toBeInTheDocument()
   },
 }

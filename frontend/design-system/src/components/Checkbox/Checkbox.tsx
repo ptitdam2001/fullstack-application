@@ -9,7 +9,10 @@ export const Checkbox = ({ className, children, ...props }: CheckboxProps) => (
   <AriaCheckbox
     data-slot="checkbox"
     className={composeRenderProps(className, cls =>
-      cn('group flex cursor-pointer items-center gap-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50', cls)
+      cn(
+        'group flex cursor-pointer items-center gap-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50',
+        cls
+      )
     )}
     {...props}
   >
@@ -17,7 +20,7 @@ export const Checkbox = ({ className, children, ...props }: CheckboxProps) => (
       <>
         <span
           className={cn(
-            'flex size-4 shrink-0 items-center justify-center rounded-sm border border-input shadow-xs transition-colors',
+            'border-input flex size-4 shrink-0 items-center justify-center rounded-sm border shadow-xs transition-colors',
             'group-data-[selected]:bg-primary group-data-[selected]:border-primary group-data-[selected]:text-primary-foreground',
             'group-data-[indeterminate]:bg-primary group-data-[indeterminate]:border-primary group-data-[indeterminate]:text-primary-foreground',
             'group-data-[focus-visible]:ring-ring/50 group-data-[focus-visible]:ring-[3px]',

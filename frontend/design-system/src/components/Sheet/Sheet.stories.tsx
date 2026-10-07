@@ -29,7 +29,9 @@ const defaultChildren = (
         <p className="text-muted-foreground text-sm">Sheet content goes here.</p>
       </div>
       <SheetFooter>
-        <Button slot="close" variant="outline">Cancel</Button>
+        <Button slot="close" variant="outline">
+          Cancel
+        </Button>
         <Button slot="close">Save changes</Button>
       </SheetFooter>
     </SheetContent>

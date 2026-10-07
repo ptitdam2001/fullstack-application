@@ -7,12 +7,20 @@ import { Input } from '../Input/Input'
 
 describe('TextField', () => {
   it('sets data-slot="text-field"', () => {
-    const { container } = render(<TextField><Input /></TextField>)
+    const { container } = render(
+      <TextField>
+        <Input />
+      </TextField>
+    )
     expect(container.firstChild).toHaveAttribute('data-slot', 'text-field')
   })
 
   it('forwards className', () => {
-    const { container } = render(<TextField className="extra"><Input /></TextField>)
+    const { container } = render(
+      <TextField className="extra">
+        <Input />
+      </TextField>
+    )
     expect(container.firstChild).toHaveClass('extra')
   })
 

@@ -74,7 +74,9 @@ describe('Radio', () => {
   it('is disabled when isDisabled', () => {
     render(
       <RadioGroup>
-        <Radio value="d" isDisabled>Disabled</Radio>
+        <Radio value="d" isDisabled>
+          Disabled
+        </Radio>
       </RadioGroup>
     )
     expect(screen.getByRole('radio')).toBeDisabled()

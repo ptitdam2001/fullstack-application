@@ -11,28 +11,14 @@ type NumberFieldProps = Omit<AriaNumberFieldProps, 'children'> & {
 }
 
 export const NumberField = ({ label, className, ...props }: NumberFieldProps) => (
-  <AriaNumberField
-    data-slot="number-field"
-    className={cn('flex flex-col gap-1.5', className)}
-    {...props}
-  >
+  <AriaNumberField data-slot="number-field" className={cn('flex flex-col gap-1.5', className)} {...props}>
     {label && <Label className="text-sm font-medium">{label}</Label>}
     <Group className="flex">
-      <Button
-        slot="decrement"
-        variant="outline"
-        size="icon"
-        className="h-9 w-9 shrink-0 rounded-r-none border-r-0"
-      >
+      <Button slot="decrement" variant="outline" size="icon" className="h-9 w-9 shrink-0 rounded-r-none border-r-0">
         <MinusIcon className="size-4" />
       </Button>
-      <Input className="h-9 rounded-none border-x-0 text-center [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none" />
-      <Button
-        slot="increment"
-        variant="outline"
-        size="icon"
-        className="h-9 w-9 shrink-0 rounded-l-none border-l-0"
-      >
+      <Input className="h-9 [appearance:textfield] rounded-none border-x-0 text-center [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none" />
+      <Button slot="increment" variant="outline" size="icon" className="h-9 w-9 shrink-0 rounded-l-none border-l-0">
         <PlusIcon className="size-4" />
       </Button>
     </Group>

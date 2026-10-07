@@ -26,11 +26,7 @@ export function Select<T extends object>({
   ...props
 }: SelectProps<T>) {
   return (
-    <AriaSelect
-      data-slot="select"
-      className={cn('flex flex-col gap-1.5', className)}
-      {...props}
-    >
+    <AriaSelect data-slot="select" className={cn('flex flex-col gap-1.5', className)} {...props}>
       {label && <Label className="text-sm font-medium">{label}</Label>}
       <Button variant="outline" className="w-full justify-between">
         <SelectValue />
@@ -43,11 +39,7 @@ export function Select<T extends object>({
       )}
       <FieldError>{errorMessage}</FieldError>
       <Popover className="bg-popover text-popover-foreground entering:animate-in entering:fade-in-0 entering:zoom-in-95 exiting:animate-out exiting:fade-out-0 exiting:zoom-out-95 placement-bottom:slide-in-from-top-2 placement-top:slide-in-from-bottom-2 z-50 min-w-(--trigger-width) overflow-hidden rounded-md border shadow-md">
-        <ListBox
-          data-slot="select-listbox"
-          items={items}
-          className="max-h-60 overflow-y-auto p-1 outline-none"
-        >
+        <ListBox data-slot="select-listbox" items={items} className="max-h-60 overflow-y-auto p-1 outline-none">
           {children}
         </ListBox>
       </Popover>

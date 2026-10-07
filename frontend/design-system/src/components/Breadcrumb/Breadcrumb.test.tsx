@@ -86,7 +86,6 @@ describe('BreadcrumbLink', () => {
     const { getByText } = render(<BreadcrumbLink href="/home">Home</BreadcrumbLink>)
     expect(getByText('Home')).toBeInTheDocument()
   })
-
 })
 
 // ─── BreadcrumbPage ───────────────────────────────────────────────────────────

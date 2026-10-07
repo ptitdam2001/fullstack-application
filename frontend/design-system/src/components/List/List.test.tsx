@@ -12,7 +12,7 @@ const items = [
 const renderList = () =>
   render(
     <List.Root aria-label="test" items={items} className="h-64">
-      {(item) => <List.Item id={item.id}>{item.name}</List.Item>}
+      {item => <List.Item id={item.id}>{item.name}</List.Item>}
     </List.Root>
   )
 
@@ -26,8 +26,8 @@ describe('List.Root', () => {
 
   it('forwards className', () => {
     const { container } = render(
-      <List.Root aria-label="test" items={items} className="h-64 custom-class">
-        {(item) => <List.Item id={item.id}>{item.name}</List.Item>}
+      <List.Root aria-label="test" items={items} className="custom-class h-64">
+        {item => <List.Item id={item.id}>{item.name}</List.Item>}
       </List.Root>
     )
     expect(container.querySelector('[data-slot="list"]')).toHaveClass('custom-class')
@@ -46,7 +46,7 @@ describe('List.Root', () => {
   it('does not apply border with variant="ghost"', () => {
     const { container } = render(
       <List.Root aria-label="test" items={items} variant="ghost" className="h-64">
-        {(item) => <List.Item id={item.id}>{item.name}</List.Item>}
+        {item => <List.Item id={item.id}>{item.name}</List.Item>}
       </List.Root>
     )
     expect(container.querySelector('[data-slot="list"]')).not.toHaveClass('border')
@@ -70,7 +70,7 @@ describe('List.Item', () => {
   it('forwards className on list item', () => {
     const { container } = render(
       <List.Root aria-label="test" items={[{ id: '1', name: 'Cat' }]} className="h-64">
-        {(item) => (
+        {item => (
           <List.Item id={item.id} className="custom-item">
             {item.name}
           </List.Item>

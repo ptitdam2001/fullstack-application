@@ -31,24 +31,40 @@ describe('Alert', () => {
 
 describe('AlertTitle', () => {
   it('sets data-slot="alert-title"', () => {
-    const { container } = render(<Alert><AlertTitle>Title</AlertTitle></Alert>)
+    const { container } = render(
+      <Alert>
+        <AlertTitle>Title</AlertTitle>
+      </Alert>
+    )
     expect(container.querySelector('[data-slot="alert-title"]')).toBeInTheDocument()
   })
 
   it('renders title text', () => {
-    render(<Alert><AlertTitle>Erreur de connexion</AlertTitle></Alert>)
+    render(
+      <Alert>
+        <AlertTitle>Erreur de connexion</AlertTitle>
+      </Alert>
+    )
     expect(screen.getByText('Erreur de connexion')).toBeInTheDocument()
   })
 })
 
 describe('AlertDescription', () => {
   it('sets data-slot="alert-description"', () => {
-    const { container } = render(<Alert><AlertDescription>Desc</AlertDescription></Alert>)
+    const { container } = render(
+      <Alert>
+        <AlertDescription>Desc</AlertDescription>
+      </Alert>
+    )
     expect(container.querySelector('[data-slot="alert-description"]')).toBeInTheDocument()
   })
 
   it('renders description text', () => {
-    render(<Alert><AlertDescription>Détails de l&apos;erreur</AlertDescription></Alert>)
+    render(
+      <Alert>
+        <AlertDescription>Détails de l&apos;erreur</AlertDescription>
+      </Alert>
+    )
     expect(screen.getByText("Détails de l'erreur")).toBeInTheDocument()
   })
 })

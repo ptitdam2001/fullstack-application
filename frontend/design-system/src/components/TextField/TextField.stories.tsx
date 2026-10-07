@@ -53,7 +53,7 @@ export const Invalid: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    expect(canvas.getByText('Format d\'email invalide')).toBeInTheDocument()
+    expect(canvas.getByText("Format d'email invalide")).toBeInTheDocument()
     expect(canvas.getByRole('textbox')).toHaveAttribute('aria-invalid', 'true')
   },
 }

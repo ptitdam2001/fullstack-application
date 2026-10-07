@@ -29,7 +29,15 @@ const DataStateSync = () => {
   return <span ref={ref} data-state-sync="" aria-hidden style={{ display: 'none' }} />
 }
 
-export const Collapsible = ({ open, defaultOpen, onOpenChange, disabled, className, children, ...props }: CollapsibleProps) => (
+export const Collapsible = ({
+  open,
+  defaultOpen,
+  onOpenChange,
+  disabled,
+  className,
+  children,
+  ...props
+}: CollapsibleProps) => (
   <Disclosure
     data-slot="collapsible"
     isExpanded={open}

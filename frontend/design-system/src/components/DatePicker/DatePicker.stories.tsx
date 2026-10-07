@@ -23,15 +23,7 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   render: args => {
     const [date, setDate] = useState<Date | undefined>()
-    return (
-      <DatePicker
-        {...args}
-        label="Date du match"
-        value={date}
-        onChange={setDate}
-        className="w-64"
-      />
-    )
+    return <DatePicker {...args} label="Date du match" value={date} onChange={setDate} className="w-64" />
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
@@ -57,15 +49,7 @@ export const Default: Story = {
 export const WithValue: Story = {
   render: args => {
     const [date, setDate] = useState<Date | undefined>(new Date(2024, 5, 15))
-    return (
-      <DatePicker
-        {...args}
-        label="Date de naissance"
-        value={date}
-        onChange={setDate}
-        className="w-64"
-      />
-    )
+    return <DatePicker {...args} label="Date de naissance" value={date} onChange={setDate} className="w-64" />
   },
 }
 

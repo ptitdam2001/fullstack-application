@@ -43,7 +43,11 @@ describe('Combobox', () => {
   })
 
   it('input has placeholder', () => {
-    render(<Combobox placeholder="Chercher..."><ComboboxItem id="a">A</ComboboxItem></Combobox>)
+    render(
+      <Combobox placeholder="Chercher...">
+        <ComboboxItem id="a">A</ComboboxItem>
+      </Combobox>
+    )
     expect(screen.getByPlaceholderText('Chercher...')).toBeInTheDocument()
   })
 })

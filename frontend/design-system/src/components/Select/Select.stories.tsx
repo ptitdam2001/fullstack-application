@@ -8,7 +8,7 @@ import { SelectSection } from './SelectSection'
 const meta = {
   component: Select,
   decorators: [
-    (Story) => (
+    Story => (
       <div className="flex min-h-48 items-start justify-center pt-8">
         <Story />
       </div>
@@ -21,7 +21,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
-  render: (args) => (
+  render: args => (
     <Select {...args} label="Catégorie d'âge" placeholder="Choisir...">
       <SelectItem id="u11">U11</SelectItem>
       <SelectItem id="u13">U13</SelectItem>
@@ -43,7 +43,7 @@ export const Default: Story = {
 }
 
 export const WithDescription: Story = {
-  render: (args) => (
+  render: args => (
     <Select
       {...args}
       label="Catégorie d'âge"
@@ -58,7 +58,7 @@ export const WithDescription: Story = {
 }
 
 export const WithSections: Story = {
-  render: (args) => (
+  render: args => (
     <Select {...args} label="Catégorie" placeholder="Choisir...">
       <SelectSection header="Jeunes">
         <SelectItem id="u11">U11</SelectItem>
@@ -74,7 +74,7 @@ export const WithSections: Story = {
 }
 
 export const Disabled: Story = {
-  render: (args) => (
+  render: args => (
     <Select {...args} label="Catégorie" placeholder="Désactivé" isDisabled>
       <SelectItem id="u13">U13</SelectItem>
     </Select>
@@ -82,7 +82,7 @@ export const Disabled: Story = {
 }
 
 export const KeyboardNavigation: Story = {
-  render: (args) => (
+  render: args => (
     <Select {...args} label="Catégorie d'âge" placeholder="Choisir...">
       <SelectItem id="u11">U11</SelectItem>
       <SelectItem id="u13">U13</SelectItem>
