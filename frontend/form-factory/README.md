@@ -97,8 +97,8 @@ function createFormFactory<TSchema extends ZodType<FieldValues, FieldValues>>(co
 
 **Parameters:**
 
-| Param | Type | Description |
-|---|---|---|
+| Param           | Type                                | Description                                                                                                                       |
+| --------------- | ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
 | `config.schema` | `ZodType<FieldValues, FieldValues>` | Zod schema. Both input and output must extend `FieldValues`. Schemas with `.transform()` that change the shape are not supported. |
 
 **Returns:** a `FormFactory` object with a single method: `useForm`.
@@ -120,12 +120,12 @@ factory.useForm(options?: Omit<UseFormProps<TValues>, 'resolver'>): {
 
 **Parameters:** all [react-hook-form `useForm` options](https://react-hook-form.com/docs/useform) except `resolver` (pre-wired to `zodResolver`).
 
-| Return value | Description |
-|---|---|
-| `form` | Full react-hook-form return — `formState`, `watch`, `setValue`, `setError`, `reset`, etc. |
-| `Field` | Headless render-prop component. Type-safe: `name` is constrained to the schema's keys. |
-| `FieldArray` | Headless render-prop component for array fields. |
-| `Form` | Headless `<form>` wrapper. `onSubmit` is required and typed `SubmitHandler<TValues>` — `handleSubmit` is called internally. DevTools auto-mounted in DEV. |
+| Return value | Description                                                                                                                                               |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `form`       | Full react-hook-form return — `formState`, `watch`, `setValue`, `setError`, `reset`, etc.                                                                 |
+| `Field`      | Headless render-prop component. Type-safe: `name` is constrained to the schema's keys.                                                                    |
+| `FieldArray` | Headless render-prop component for array fields.                                                                                                          |
+| `Form`       | Headless `<form>` wrapper. `onSubmit` is required and typed `SubmitHandler<TValues>` — `handleSubmit` is called internally. DevTools auto-mounted in DEV. |
 
 ---
 
@@ -139,10 +139,10 @@ factory.useForm(options?: Omit<UseFormProps<TValues>, 'resolver'>): {
 
 **Props:**
 
-| Prop | Type | Description |
-|---|---|---|
-| `onSubmit` | `SubmitHandler<TValues>` | **Required.** Called with validated form data. `handleSubmit` is wired internally. |
-| `...rest` | `React.HTMLProps<HTMLFormElement>` minus `onSubmit` | Any standard `<form>` attribute (`className`, `name`, `id`, …) |
+| Prop       | Type                                                | Description                                                                        |
+| ---------- | --------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `onSubmit` | `SubmitHandler<TValues>`                            | **Required.** Called with validated form data. `handleSubmit` is wired internally. |
+| `...rest`  | `React.HTMLProps<HTMLFormElement>` minus `onSubmit` | Any standard `<form>` attribute (`className`, `name`, `id`, …)                     |
 
 **DevTools:** when `import.meta.env.DEV` is `true`, `@hookform/devtools` is rendered automatically. Dead-code-eliminated in production builds by Vite.
 
@@ -160,10 +160,10 @@ factory.useForm(options?: Omit<UseFormProps<TValues>, 'resolver'>): {
 
 **Render prop args:**
 
-| Prop | Type | Description |
-|---|---|---|
-| `field` | `ControllerRenderProps` | Spread onto an input: `value`, `onChange`, `onBlur`, `ref`, `name` |
-| `fieldState` | `ControllerFieldState` | `invalid`, `error`, `isDirty`, `isTouched` |
+| Prop         | Type                    | Description                                                        |
+| ------------ | ----------------------- | ------------------------------------------------------------------ |
+| `field`      | `ControllerRenderProps` | Spread onto an input: `value`, `onChange`, `onBlur`, `ref`, `name` |
+| `fieldState` | `ControllerFieldState`  | `invalid`, `error`, `isDirty`, `isTouched`                         |
 
 **Important:** `Field` has a stable reference (created once with `useRef`). It is safe to use as a JSX element — React will not unmount/remount it between renders.
 
@@ -183,17 +183,17 @@ For dynamic lists of fields backed by an array in the schema.
 
 **Render prop args:** the full return value of react-hook-form's [`useFieldArray`](https://react-hook-form.com/docs/usefieldarray).
 
-| Key props | Description |
-|---|---|
-| `fields` | Array of items, each with a stable `id` (used as `key`) |
-| `append(value)` | Add an item at the end |
-| `prepend(value)` | Add an item at the beginning |
-| `remove(index)` | Remove by index |
-| `insert(index, value)` | Insert at position |
-| `swap(indexA, indexB)` | Swap two items |
-| `move(from, to)` | Move item to position |
-| `replace(values)` | Replace the entire array |
-| `update(index, value)` | Update one item |
+| Key props              | Description                                             |
+| ---------------------- | ------------------------------------------------------- |
+| `fields`               | Array of items, each with a stable `id` (used as `key`) |
+| `append(value)`        | Add an item at the end                                  |
+| `prepend(value)`       | Add an item at the beginning                            |
+| `remove(index)`        | Remove by index                                         |
+| `insert(index, value)` | Insert at position                                      |
+| `swap(indexA, indexB)` | Swap two items                                          |
+| `move(from, to)`       | Move item to position                                   |
+| `replace(values)`      | Replace the entire array                                |
+| `update(index, value)` | Update one item                                         |
 
 ---
 
@@ -240,10 +240,14 @@ function TeamForm() {
                 <Field name={`players.${index}.name` as const}>
                   {({ field }) => <input placeholder="Player name" {...field} />}
                 </Field>
-                <button type="button" onClick={() => remove(index)}>Remove</button>
+                <button type="button" onClick={() => remove(index)}>
+                  Remove
+                </button>
               </div>
             ))}
-            <button type="button" onClick={() => append({ name: '' })}>Add player</button>
+            <button type="button" onClick={() => append({ name: '' })}>
+              Add player
+            </button>
           </>
         )}
       </FieldArray>
@@ -281,11 +285,7 @@ function RegisterForm() {
     await register({ email: data.email, password: data.password })
   }
 
-  return (
-    <Form onSubmit={onSubmit}>
-      {/* fields */}
-    </Form>
-  )
+  return <Form onSubmit={onSubmit}>{/* fields */}</Form>
 }
 ```
 
@@ -308,10 +308,7 @@ const password = form.watch('password') ?? ''
 ### Conditional submit button (CRUD)
 
 ```tsx
-<button
-  type="submit"
-  disabled={!form.formState.isValid || !form.formState.isDirty || isPending}
->
+<button type="submit" disabled={!form.formState.isValid || !form.formState.isDirty || isPending}>
   Save
 </button>
 ```
@@ -325,7 +322,7 @@ The factory is UI-agnostic. Plug any DS component into the render prop:
 ```tsx
 import { Input, TextField, FieldError } from '@repo/design-system'
 
-<Field name="email">
+;<Field name="email">
   {({ field, fieldState }) => (
     <TextField isInvalid={fieldState.invalid}>
       <Input type="email" {...field} />
@@ -338,16 +335,22 @@ import { Input, TextField, FieldError } from '@repo/design-system'
 ```tsx
 import { Select, Button, SelectValue, SelectContent, SelectItem } from '@repo/design-system'
 
-<Field name="teamId">
+;<Field name="teamId">
   {({ field, fieldState }) => (
     <Select
       selectedKey={field.value ?? null}
-      onSelectionChange={(key) => field.onChange(key !== null ? String(key) : '')}
+      onSelectionChange={key => field.onChange(key !== null ? String(key) : '')}
       isInvalid={fieldState.invalid}
     >
-      <Button><SelectValue /></Button>
+      <Button>
+        <SelectValue />
+      </Button>
       <SelectContent>
-        {teams.map((t) => <SelectItem key={t.id} id={t.id}>{t.name}</SelectItem>)}
+        {teams.map(t => (
+          <SelectItem key={t.id} id={t.id}>
+            {t.name}
+          </SelectItem>
+        ))}
       </SelectContent>
     </Select>
   )}

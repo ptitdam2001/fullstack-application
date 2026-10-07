@@ -67,12 +67,8 @@ describe('createFormFactory — Field', () => {
       const { form, Field } = loginFactory.useForm()
       return (
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <Field name="email">
-            {({ field }) => <input data-testid="email" {...field} />}
-          </Field>
-          <Field name="password">
-            {({ field }) => <input data-testid="password" type="password" {...field} />}
-          </Field>
+          <Field name="email">{({ field }) => <input data-testid="email" {...field} />}</Field>
+          <Field name="password">{({ field }) => <input data-testid="password" type="password" {...field} />}</Field>
           <button type="submit">Submit</button>
         </form>
       )
@@ -99,9 +95,7 @@ describe('createFormFactory — Field', () => {
               </>
             )}
           </Field>
-          <Field name="password">
-            {({ field }) => <input data-testid="password" {...field} />}
-          </Field>
+          <Field name="password">{({ field }) => <input data-testid="password" {...field} />}</Field>
           <button type="submit">Submit</button>
         </form>
       )
@@ -127,9 +121,7 @@ describe('createFormFactory — Field', () => {
               </>
             )}
           </Field>
-          <Field name="email">
-            {({ field }) => <input data-testid="email" {...field} />}
-          </Field>
+          <Field name="email">{({ field }) => <input data-testid="email" {...field} />}</Field>
           <button type="submit">Submit</button>
         </form>
       )
@@ -151,7 +143,7 @@ describe('createFormFactory — Field', () => {
       fieldRefs.push(Field)
       return (
         <div>
-          <button onClick={() => setCount((c) => c + 1)}>Re-render {count}</button>
+          <button onClick={() => setCount(c => c + 1)}>Re-render {count}</button>
         </div>
       )
     }
@@ -161,7 +153,7 @@ describe('createFormFactory — Field', () => {
       screen.getByRole('button').click()
     })
     expect(fieldRefs.length).toBeGreaterThanOrEqual(2)
-    expect(fieldRefs.every((ref) => ref === fieldRefs[0])).toBe(true)
+    expect(fieldRefs.every(ref => ref === fieldRefs[0])).toBe(true)
   })
 
   it('two factories are independent and do not share state', async () => {
@@ -177,9 +169,7 @@ describe('createFormFactory — Field', () => {
       const { form, Field } = factoryA.useForm()
       return (
         <form data-testid="form-a" onSubmit={form.handleSubmit(submitA)}>
-          <Field name="name">
-            {({ field }) => <input data-testid="name" {...field} />}
-          </Field>
+          <Field name="name">{({ field }) => <input data-testid="name" {...field} />}</Field>
           <button type="submit">Submit A</button>
         </form>
       )
@@ -189,9 +179,7 @@ describe('createFormFactory — Field', () => {
       const { form, Field } = factoryB.useForm()
       return (
         <form data-testid="form-b" onSubmit={form.handleSubmit(submitB)}>
-          <Field name="age">
-            {({ field }) => <input data-testid="age" type="number" {...field} valueAsNumber />}
-          </Field>
+          <Field name="age">{({ field }) => <input data-testid="age" type="number" {...field} valueAsNumber />}</Field>
           <button type="submit">Submit B</button>
         </form>
       )
@@ -201,7 +189,7 @@ describe('createFormFactory — Field', () => {
       <>
         <FixtureA />
         <FixtureB />
-      </>,
+      </>
     )
 
     await userEvent.type(screen.getByTestId('name'), 'Alice')
@@ -223,7 +211,9 @@ describe('createFormFactory — FieldArray', () => {
             <>
               <span data-testid="count">{fields.length}</span>
               {fields.map((item, i) => (
-                <button key={item.id} onClick={() => remove(i)}>remove {i}</button>
+                <button key={item.id} onClick={() => remove(i)}>
+                  remove {i}
+                </button>
               ))}
               <button onClick={() => append({ name: '' })}>append</button>
             </>
@@ -279,7 +269,7 @@ describe('createFormFactory — FieldArray', () => {
       return (
         <FieldArray name="players">
           {({ fields }) => {
-            fields.forEach((f) => ids.push(f.id))
+            fields.forEach(f => ids.push(f.id))
             return <span data-testid="count">{fields.length}</span>
           }}
         </FieldArray>
@@ -288,7 +278,7 @@ describe('createFormFactory — FieldArray', () => {
     render(<Fixture />)
     expect(screen.getByTestId('count').textContent).toBe('2')
     const firstRenderIds = [...ids]
-    expect(firstRenderIds.every((id) => typeof id === 'string' && id.length > 0)).toBe(true)
+    expect(firstRenderIds.every(id => typeof id === 'string' && id.length > 0)).toBe(true)
   })
 
   it('FieldArray has stable reference between re-renders', () => {
@@ -298,7 +288,7 @@ describe('createFormFactory — FieldArray', () => {
       const [count, setCount] = React.useState(0)
       const { FieldArray } = playersFactory.useForm()
       arrayRefs.push(FieldArray)
-      return <button onClick={() => setCount((c) => c + 1)}>Re-render {count}</button>
+      return <button onClick={() => setCount(c => c + 1)}>Re-render {count}</button>
     }
     render(<Fixture />)
     act(() => {
@@ -306,7 +296,7 @@ describe('createFormFactory — FieldArray', () => {
       screen.getByRole('button').click()
     })
     expect(arrayRefs.length).toBeGreaterThanOrEqual(2)
-    expect(arrayRefs.every((ref) => ref === arrayRefs[0])).toBe(true)
+    expect(arrayRefs.every(ref => ref === arrayRefs[0])).toBe(true)
   })
 
   it('Field nested inside FieldArray with indexed name', async () => {
