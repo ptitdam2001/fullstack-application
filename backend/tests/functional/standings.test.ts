@@ -28,7 +28,14 @@ describe('standings domain — functional API', () => {
       const teamB = await createTeam()
       const group = await createGroup(phase.id, { teamIds: [teamA.id, teamB.id] })
       await prisma.match.create({
-        data: { groupId: group.id, status: 'PLAYED', homeTeamId: teamA.id, awayTeamId: teamB.id, homeGoals: 2, awayGoals: 1 },
+        data: {
+          groupId: group.id,
+          status: 'PLAYED',
+          homeTeamId: teamA.id,
+          awayTeamId: teamB.id,
+          homeGoals: 2,
+          awayGoals: 1,
+        },
       })
 
       const res = await agent.get(`/group/${group.id}/standings`)
@@ -80,7 +87,14 @@ describe('standings domain — functional API', () => {
       const teamB = await createTeam()
       const group = await createGroup(phase.id, { teamIds: [teamA.id, teamB.id] })
       await prisma.match.create({
-        data: { groupId: group.id, status: 'CANCELLED', homeTeamId: teamA.id, awayTeamId: teamB.id, homeGoals: 2, awayGoals: 1 },
+        data: {
+          groupId: group.id,
+          status: 'CANCELLED',
+          homeTeamId: teamA.id,
+          awayTeamId: teamB.id,
+          homeGoals: 2,
+          awayGoals: 1,
+        },
       })
 
       const res = await agent.get(`/group/${group.id}/standings`)
@@ -97,7 +111,13 @@ describe('standings domain — functional API', () => {
       const teamB = await createTeam()
       const group = await createGroup(phase.id, { teamIds: [teamA.id, teamB.id] })
       await prisma.match.create({
-        data: { groupId: group.id, status: 'FORFEITED', homeTeamId: teamA.id, awayTeamId: teamB.id, forfeitedBy: teamA.id },
+        data: {
+          groupId: group.id,
+          status: 'FORFEITED',
+          homeTeamId: teamA.id,
+          awayTeamId: teamB.id,
+          forfeitedBy: teamA.id,
+        },
       })
 
       const res = await agent.get(`/group/${group.id}/standings`)
@@ -119,9 +139,30 @@ describe('standings domain — functional API', () => {
       // A beats B 3-0 (head-to-head), C beats A, B beats C → A, B and C all reach 3pts
       await prisma.match.createMany({
         data: [
-          { groupId: group.id, status: 'PLAYED', homeTeamId: teamA.id, awayTeamId: teamB.id, homeGoals: 3, awayGoals: 0 },
-          { groupId: group.id, status: 'PLAYED', homeTeamId: teamC.id, awayTeamId: teamA.id, homeGoals: 1, awayGoals: 0 },
-          { groupId: group.id, status: 'PLAYED', homeTeamId: teamB.id, awayTeamId: teamC.id, homeGoals: 1, awayGoals: 0 },
+          {
+            groupId: group.id,
+            status: 'PLAYED',
+            homeTeamId: teamA.id,
+            awayTeamId: teamB.id,
+            homeGoals: 3,
+            awayGoals: 0,
+          },
+          {
+            groupId: group.id,
+            status: 'PLAYED',
+            homeTeamId: teamC.id,
+            awayTeamId: teamA.id,
+            homeGoals: 1,
+            awayGoals: 0,
+          },
+          {
+            groupId: group.id,
+            status: 'PLAYED',
+            homeTeamId: teamB.id,
+            awayTeamId: teamC.id,
+            homeGoals: 1,
+            awayGoals: 0,
+          },
         ],
       })
 

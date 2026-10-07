@@ -39,7 +39,11 @@ export class PrismaRegistrationRepository implements IRegistrationRepository {
     return prisma.user.findFirst({ where: { resetToken: token }, select })
   }
 
-  async create(input: CreateRegistrationInput, activationToken: string, activationTokenExpiry: Date): Promise<RegistrationUser> {
+  async create(
+    input: CreateRegistrationInput,
+    activationToken: string,
+    activationTokenExpiry: Date
+  ): Promise<RegistrationUser> {
     return prisma.user.create({
       data: {
         firstName: input.firstName,

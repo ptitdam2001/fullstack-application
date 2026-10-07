@@ -95,7 +95,8 @@ function buildStatsMap(teamIds: string[], matches: Match[], pointsConfig: Points
 
 function headToHeadStats(teamIds: string[], matches: Match[], pointsConfig: PointsConfig): Map<string, TeamStats> {
   const relevantMatches = matches.filter(
-    m => m.homeTeamId !== null && m.awayTeamId !== null && teamIds.includes(m.homeTeamId) && teamIds.includes(m.awayTeamId)
+    m =>
+      m.homeTeamId !== null && m.awayTeamId !== null && teamIds.includes(m.homeTeamId) && teamIds.includes(m.awayTeamId)
   )
   return buildStatsMap(teamIds, relevantMatches, pointsConfig)
 }

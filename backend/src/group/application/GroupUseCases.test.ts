@@ -122,7 +122,9 @@ describe('GroupUseCases.delete', () => {
 describe('GroupUseCases.generateMatches', () => {
   it('throws GroupNotFoundError when not found', async () => {
     const repo = makeRepo({ findById: vi.fn().mockResolvedValue(null) })
-    await expect(new GroupUseCases(repo, makeMatchRepo()).generateMatches('unknown')).rejects.toThrow(GroupNotFoundError)
+    await expect(new GroupUseCases(repo, makeMatchRepo()).generateMatches('unknown')).rejects.toThrow(
+      GroupNotFoundError
+    )
   })
 
   it('throws GroupLockedError when a match already has a score', async () => {

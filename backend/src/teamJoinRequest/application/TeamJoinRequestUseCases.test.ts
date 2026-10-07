@@ -1,7 +1,11 @@
 import { describe, it, expect, vi } from 'vitest'
 import { TeamJoinRequestUseCases } from './TeamJoinRequestUseCases.js'
 import type { ITeamJoinRequestRepository } from '../ports/ITeamJoinRequestRepository.js'
-import { JoinRequestNotFoundError, JoinRequestNotPendingError, AlreadyMemberError } from '../domain/TeamJoinRequestErrors.js'
+import {
+  JoinRequestNotFoundError,
+  JoinRequestNotPendingError,
+  AlreadyMemberError,
+} from '../domain/TeamJoinRequestErrors.js'
 import { JoinRequestStatus } from '../domain/TeamJoinRequest.js'
 import { TeamRole } from '../../userTeam/domain/UserTeam.js'
 
@@ -38,16 +42,16 @@ describe('TeamJoinRequestUseCases.createRequest', () => {
 
   it('throws AlreadyMemberError when existing request is APPROVED', async () => {
     await expect(
-      make({ findByUserAndTeam: vi.fn().mockResolvedValue({ ...mockRequest, status: JoinRequestStatus.APPROVED }) }).createRequest(
-        'user-1',
-        'team-1',
-        TeamRole.PLAYER
-      )
+      make({
+        findByUserAndTeam: vi.fn().mockResolvedValue({ ...mockRequest, status: JoinRequestStatus.APPROVED }),
+      }).createRequest('user-1', 'team-1', TeamRole.PLAYER)
     ).rejects.toThrow(AlreadyMemberError)
   })
 
   it('re-submits (upsert) when existing request is REFUSED', async () => {
-    const repo = makeRepo({ findByUserAndTeam: vi.fn().mockResolvedValue({ ...mockRequest, status: JoinRequestStatus.REFUSED }) })
+    const repo = makeRepo({
+      findByUserAndTeam: vi.fn().mockResolvedValue({ ...mockRequest, status: JoinRequestStatus.REFUSED }),
+    })
     await make(repo).createRequest('user-1', 'team-1', TeamRole.COACH)
     expect(repo.upsert).toHaveBeenCalledWith('user-1', 'team-1', TeamRole.COACH)
   })
@@ -90,18 +94,14 @@ describe('TeamJoinRequestUseCases.updateRequest', () => {
   })
 
   it('throws JoinRequestNotFoundError when teamId does not match', async () => {
-    await expect(
-      make().updateRequest('req-1', 'wrong-team', 'approve')
-    ).rejects.toThrow(JoinRequestNotFoundError)
+    await expect(make().updateRequest('req-1', 'wrong-team', 'approve')).rejects.toThrow(JoinRequestNotFoundError)
   })
 
   it('throws JoinRequestNotPendingError when request is already APPROVED', async () => {
     await expect(
-      make({ findById: vi.fn().mockResolvedValue({ ...mockRequest, status: JoinRequestStatus.APPROVED }) }).updateRequest(
-        'req-1',
-        'team-1',
-        'approve'
-      )
+      make({
+        findById: vi.fn().mockResolvedValue({ ...mockRequest, status: JoinRequestStatus.APPROVED }),
+      }).updateRequest('req-1', 'team-1', 'approve')
     ).rejects.toThrow(JoinRequestNotPendingError)
   })
 })

@@ -1,4 +1,10 @@
-import type { Team, CreateTeamInput, UpdateTeamInput, CreateTeamWithCoachInput, TeamCurrentGroup } from '../domain/Team.js'
+import type {
+  Team,
+  CreateTeamInput,
+  UpdateTeamInput,
+  CreateTeamWithCoachInput,
+  TeamCurrentGroup,
+} from '../domain/Team.js'
 import type { Player } from '../../player/domain/Player.js'
 import type { UserTeam } from '../../userTeam/domain/UserTeam.js'
 

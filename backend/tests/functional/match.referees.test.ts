@@ -121,9 +121,7 @@ describe('match/referees domain — functional API (UserMatch)', () => {
       const away = await createTeam()
       const match = await seedMatch(home.id, away.id)
       const referee = await createUser()
-      const res = await agent
-        .post(`/match/${match.id}/referee/${referee.id}`)
-        .set(authHeaderFor(user.id))
+      const res = await agent.post(`/match/${match.id}/referee/${referee.id}`).set(authHeaderFor(user.id))
 
       expect(res.status).toBe(403)
     })
@@ -135,9 +133,7 @@ describe('match/referees domain — functional API (UserMatch)', () => {
       const match = await seedMatch(home.id, away.id)
       const referee = await createUser()
 
-      const res = await agent
-        .post(`/match/${match.id}/referee/${referee.id}`)
-        .set(authHeaderFor(admin.id, true))
+      const res = await agent.post(`/match/${match.id}/referee/${referee.id}`).set(authHeaderFor(admin.id, true))
 
       expect(res.status).toBe(201)
       expect(res.body).toMatchObject({
@@ -201,9 +197,7 @@ describe('match/referees domain — functional API (UserMatch)', () => {
       const match = await seedMatch(home.id, away.id)
       const referee = await createUser()
       await prisma.userMatch.create({ data: { userId: referee.id, matchId: match.id } })
-      const res = await agent
-        .delete(`/match/${match.id}/referee/${referee.id}`)
-        .set(authHeaderFor(user.id))
+      const res = await agent.delete(`/match/${match.id}/referee/${referee.id}`).set(authHeaderFor(user.id))
 
       expect(res.status).toBe(403)
     })
@@ -216,9 +210,7 @@ describe('match/referees domain — functional API (UserMatch)', () => {
       const referee = await createUser()
       await prisma.userMatch.create({ data: { userId: referee.id, matchId: match.id } })
 
-      const res = await agent
-        .delete(`/match/${match.id}/referee/${referee.id}`)
-        .set(authHeaderFor(admin.id, true))
+      const res = await agent.delete(`/match/${match.id}/referee/${referee.id}`).set(authHeaderFor(admin.id, true))
 
       expect(res.status).toBe(204)
       const persisted = await prisma.userMatch.findFirst({ where: { userId: referee.id, matchId: match.id } })
@@ -232,9 +224,7 @@ describe('match/referees domain — functional API (UserMatch)', () => {
       const match = await seedMatch(home.id, away.id)
       const referee = await createUser()
 
-      const res = await agent
-        .delete(`/match/${match.id}/referee/${referee.id}`)
-        .set(authHeaderFor(admin.id, true))
+      const res = await agent.delete(`/match/${match.id}/referee/${referee.id}`).set(authHeaderFor(admin.id, true))
 
       expect(res.status).toBe(404)
       expect(res.body).toMatchObject({ status: 404 })

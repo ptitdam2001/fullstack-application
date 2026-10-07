@@ -33,7 +33,7 @@ const makeMatchRepo = (overrides: Partial<IMatchRepository> = {}): IMatchReposit
   findById: vi.fn().mockResolvedValue(null),
   findByGroupId: vi.fn().mockResolvedValue([]),
   findByBracketId: vi.fn().mockResolvedValue([]),
-  create: vi.fn().mockImplementation((input) => Promise.resolve({ id: 'match-new', updatedAt: new Date(), ...input })),
+  create: vi.fn().mockImplementation(input => Promise.resolve({ id: 'match-new', updatedAt: new Date(), ...input })),
   update: vi.fn().mockImplementation((id, input) => Promise.resolve({ id, ...input })),
   delete: vi.fn().mockResolvedValue(undefined),
   softDelete: vi.fn().mockResolvedValue(undefined),
@@ -126,7 +126,14 @@ describe('BracketUseCases.advanceWinner', () => {
   })
 
   it('advances the winner into the home slot of an odd-position match', async () => {
-    const nextMatch = { ...baseMatch, id: 'match-round2', round: 2, bracketPosition: 1, homeTeamId: null, awayTeamId: null }
+    const nextMatch = {
+      ...baseMatch,
+      id: 'match-round2',
+      round: 2,
+      bracketPosition: 1,
+      homeTeamId: null,
+      awayTeamId: null,
+    }
     const matchRepo = makeMatchRepo({ findByBracketId: vi.fn().mockResolvedValue([baseMatch, nextMatch]) })
     await new BracketUseCases(makeRepo(), matchRepo).advanceWinner(baseMatch)
     expect(matchRepo.update).toHaveBeenCalledWith('match-round2', { homeTeamId: 'team-1' })
@@ -134,15 +141,35 @@ describe('BracketUseCases.advanceWinner', () => {
 
   it('advances the winner into the away slot of an even-position match', async () => {
     const evenMatch = { ...baseMatch, bracketPosition: 2 }
-    const nextMatch = { ...baseMatch, id: 'match-round2', round: 2, bracketPosition: 1, homeTeamId: null, awayTeamId: null }
+    const nextMatch = {
+      ...baseMatch,
+      id: 'match-round2',
+      round: 2,
+      bracketPosition: 1,
+      homeTeamId: null,
+      awayTeamId: null,
+    }
     const matchRepo = makeMatchRepo({ findByBracketId: vi.fn().mockResolvedValue([evenMatch, nextMatch]) })
     await new BracketUseCases(makeRepo(), matchRepo).advanceWinner(evenMatch)
     expect(matchRepo.update).toHaveBeenCalledWith('match-round2', { awayTeamId: 'team-1' })
   })
 
   it('advances the non-forfeiting team on a FORFEITED match', async () => {
-    const forfeited = { ...baseMatch, status: MatchStatus.FORFEITED, forfeitedBy: 'team-1', homeGoals: null, awayGoals: null }
-    const nextMatch = { ...baseMatch, id: 'match-round2', round: 2, bracketPosition: 1, homeTeamId: null, awayTeamId: null }
+    const forfeited = {
+      ...baseMatch,
+      status: MatchStatus.FORFEITED,
+      forfeitedBy: 'team-1',
+      homeGoals: null,
+      awayGoals: null,
+    }
+    const nextMatch = {
+      ...baseMatch,
+      id: 'match-round2',
+      round: 2,
+      bracketPosition: 1,
+      homeTeamId: null,
+      awayTeamId: null,
+    }
     const matchRepo = makeMatchRepo({ findByBracketId: vi.fn().mockResolvedValue([forfeited, nextMatch]) })
     await new BracketUseCases(makeRepo(), matchRepo).advanceWinner(forfeited)
     expect(matchRepo.update).toHaveBeenCalledWith('match-round2', { homeTeamId: 'team-2' })

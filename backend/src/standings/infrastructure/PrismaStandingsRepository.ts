@@ -30,7 +30,7 @@ export class PrismaStandingsRepository implements IStandingsRepository {
     ])
 
     return {
-      teamIds: groupTeams.map((gt) => gt.teamId),
+      teamIds: groupTeams.map(gt => gt.teamId),
       pointsConfig: group.phase.championship.pointsConfig,
     }
   }

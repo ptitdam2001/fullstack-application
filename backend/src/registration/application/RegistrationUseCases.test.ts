@@ -57,11 +57,8 @@ const makeAuthService = (overrides: Partial<IAuthService> = {}): IAuthService =>
   ...overrides,
 })
 
-const make = (
-  repo?: Partial<IRegistrationRepository>,
-  email?: Partial<IEmailService>,
-  auth?: Partial<IAuthService>
-) => new RegistrationUseCases(makeRepo(repo), makeEmailService(email), makeAuthService(auth))
+const make = (repo?: Partial<IRegistrationRepository>, email?: Partial<IEmailService>, auth?: Partial<IAuthService>) =>
+  new RegistrationUseCases(makeRepo(repo), makeEmailService(email), makeAuthService(auth))
 
 describe('RegistrationUseCases.register', () => {
   it('creates user and sends activation email on success', async () => {
@@ -105,7 +102,11 @@ describe('RegistrationUseCases.register', () => {
       password: 'Password1',
     })
     expect(authService.hashPassword).toHaveBeenCalledWith('Password1')
-    expect(repo.create).toHaveBeenCalledWith(expect.objectContaining({ password: 'hashed' }), expect.any(String), expect.any(Date))
+    expect(repo.create).toHaveBeenCalledWith(
+      expect.objectContaining({ password: 'hashed' }),
+      expect.any(String),
+      expect.any(Date)
+    )
   })
 })
 
@@ -124,7 +125,9 @@ describe('RegistrationUseCases.activateAccount', () => {
 
   it('throws InvalidTokenError when token is expired', async () => {
     await expect(
-      make({ findByActivationToken: vi.fn().mockResolvedValue({ ...mockUser, activationTokenExpiry: past }) }).activateAccount('expired-token')
+      make({
+        findByActivationToken: vi.fn().mockResolvedValue({ ...mockUser, activationTokenExpiry: past }),
+      }).activateAccount('expired-token')
     ).rejects.toThrow(InvalidTokenError)
   })
 
@@ -147,7 +150,9 @@ describe('RegistrationUseCases.resendActivation', () => {
   it('does nothing and does not throw when user not found', async () => {
     const repo = makeRepo({ findByEmail: vi.fn().mockResolvedValue(null) })
     const emailService = makeEmailService()
-    await expect(new RegistrationUseCases(repo, emailService, makeAuthService()).resendActivation('unknown@example.com')).resolves.toBeUndefined()
+    await expect(
+      new RegistrationUseCases(repo, emailService, makeAuthService()).resendActivation('unknown@example.com')
+    ).resolves.toBeUndefined()
     expect(emailService.sendActivationEmail).not.toHaveBeenCalled()
   })
 
@@ -171,7 +176,9 @@ describe('RegistrationUseCases.forgotPassword', () => {
   it('does nothing and does not throw when user not found', async () => {
     const repo = makeRepo({ findByEmail: vi.fn().mockResolvedValue(null) })
     const emailService = makeEmailService()
-    await expect(new RegistrationUseCases(repo, emailService, makeAuthService()).forgotPassword('unknown@example.com')).resolves.toBeUndefined()
+    await expect(
+      new RegistrationUseCases(repo, emailService, makeAuthService()).forgotPassword('unknown@example.com')
+    ).resolves.toBeUndefined()
     expect(emailService.sendPasswordResetEmail).not.toHaveBeenCalled()
   })
 })

@@ -32,7 +32,7 @@ export function buildBracketMatches(bracketTeams: BracketTeamEntry[]): BracketMa
   }
 
   const matches: BracketMatchPlan[] = []
-  let slots: (string | null)[] = round1.map((entry) => entry.teamId)
+  let slots: (string | null)[] = round1.map(entry => entry.teamId)
   let round = 1
 
   while (slots.length > 1) {
@@ -46,7 +46,7 @@ export function buildBracketMatches(bracketTeams: BracketTeamEntry[]): BracketMa
     round += 1
     const byeEntrants = sortBySeed(entriesByRound.get(round) ?? [])
     const winnerSlots: (string | null)[] = new Array<null>(matchCount).fill(null)
-    slots = [...winnerSlots, ...byeEntrants.map((entry) => entry.teamId)]
+    slots = [...winnerSlots, ...byeEntrants.map(entry => entry.teamId)]
   }
 
   return matches

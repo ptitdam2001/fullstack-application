@@ -1,7 +1,11 @@
 import type { ITeamJoinRequestRepository } from '../ports/ITeamJoinRequestRepository.js'
 import type { TeamJoinRequest, JoinRequestStatus } from '../domain/TeamJoinRequest.js'
 import type { TeamRole } from '../../userTeam/domain/UserTeam.js'
-import { AlreadyMemberError, JoinRequestNotFoundError, JoinRequestNotPendingError } from '../domain/TeamJoinRequestErrors.js'
+import {
+  AlreadyMemberError,
+  JoinRequestNotFoundError,
+  JoinRequestNotPendingError,
+} from '../domain/TeamJoinRequestErrors.js'
 
 export class TeamJoinRequestUseCases {
   constructor(private readonly repo: ITeamJoinRequestRepository) {}
@@ -18,11 +22,7 @@ export class TeamJoinRequestUseCases {
     return this.repo.findByTeam(teamId, status)
   }
 
-  async updateRequest(
-    requestId: string,
-    teamId: string,
-    action: 'approve' | 'refuse'
-  ): Promise<TeamJoinRequest> {
+  async updateRequest(requestId: string, teamId: string, action: 'approve' | 'refuse'): Promise<TeamJoinRequest> {
     const request = await this.repo.findById(requestId)
     if (!request || request.teamId !== teamId) {
       throw new JoinRequestNotFoundError()

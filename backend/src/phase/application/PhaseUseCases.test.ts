@@ -113,12 +113,14 @@ const makeChampionshipRepo = (overrides: Partial<IChampionshipRepository> = {}):
   ...overrides,
 })
 
-const makeUseCases = (overrides: {
-  phaseRepo?: Partial<IPhaseRepository>
-  groupRepo?: Partial<IGroupRepository>
-  matchRepo?: Partial<IMatchRepository>
-  championshipRepo?: Partial<IChampionshipRepository>
-} = {}) =>
+const makeUseCases = (
+  overrides: {
+    phaseRepo?: Partial<IPhaseRepository>
+    groupRepo?: Partial<IGroupRepository>
+    matchRepo?: Partial<IMatchRepository>
+    championshipRepo?: Partial<IChampionshipRepository>
+  } = {}
+) =>
   new PhaseUseCases(
     makeRepo(overrides.phaseRepo),
     makeGroupRepo(overrides.groupRepo),
@@ -148,14 +150,26 @@ describe('PhaseUseCases.getById', () => {
 describe('PhaseUseCases.create', () => {
   it('creates a phase', async () => {
     const useCases = makeUseCases()
-    const input = { championshipId: 'champ-1', type: PhaseType.GROUP, order: 2, name: 'Phase éliminatoire', qualification: null }
+    const input = {
+      championshipId: 'champ-1',
+      type: PhaseType.GROUP,
+      order: 2,
+      name: 'Phase éliminatoire',
+      qualification: null,
+    }
     await useCases.create(input)
   })
 
   it('throws PhaseDuplicateOrderError when order already exists in championship', async () => {
     const phaseRepo = makeRepo()
     const useCases = makeUseCases({ phaseRepo })
-    const input = { championshipId: 'champ-1', type: PhaseType.KNOCKOUT, order: 1, name: 'Phase éliminatoire', qualification: null }
+    const input = {
+      championshipId: 'champ-1',
+      type: PhaseType.KNOCKOUT,
+      order: 1,
+      name: 'Phase éliminatoire',
+      qualification: null,
+    }
     await expect(useCases.create(input)).rejects.toThrow(PhaseDuplicateOrderError)
     expect(phaseRepo.create).not.toHaveBeenCalled()
   })
@@ -163,7 +177,13 @@ describe('PhaseUseCases.create', () => {
   it('allows same order in different championships', async () => {
     const phaseRepo = makeRepo({ findByChampionshipId: vi.fn().mockResolvedValue([]) })
     const useCases = makeUseCases({ phaseRepo })
-    const input = { championshipId: 'champ-2', type: PhaseType.GROUP, order: 1, name: 'Phase de poules', qualification: null }
+    const input = {
+      championshipId: 'champ-2',
+      type: PhaseType.GROUP,
+      order: 1,
+      name: 'Phase de poules',
+      qualification: null,
+    }
     await useCases.create(input)
     expect(phaseRepo.create).toHaveBeenCalledWith(input)
   })
@@ -171,7 +191,13 @@ describe('PhaseUseCases.create', () => {
   it('creates order > 1 when previous phase is finished', async () => {
     const phaseRepo = makeRepo({ isFinished: vi.fn().mockResolvedValue(true) })
     const useCases = makeUseCases({ phaseRepo })
-    const input = { championshipId: 'champ-1', type: PhaseType.KNOCKOUT, order: 2, name: 'Phase finale', qualification: null }
+    const input = {
+      championshipId: 'champ-1',
+      type: PhaseType.KNOCKOUT,
+      order: 2,
+      name: 'Phase finale',
+      qualification: null,
+    }
     await useCases.create(input)
     expect(phaseRepo.isFinished).toHaveBeenCalledWith('phase-1')
     expect(phaseRepo.create).toHaveBeenCalledWith(input)
@@ -180,7 +206,13 @@ describe('PhaseUseCases.create', () => {
   it('throws PreviousPhaseNotFinishedError when previous phase is not finished', async () => {
     const phaseRepo = makeRepo({ isFinished: vi.fn().mockResolvedValue(false) })
     const useCases = makeUseCases({ phaseRepo })
-    const input = { championshipId: 'champ-1', type: PhaseType.KNOCKOUT, order: 2, name: 'Phase finale', qualification: null }
+    const input = {
+      championshipId: 'champ-1',
+      type: PhaseType.KNOCKOUT,
+      order: 2,
+      name: 'Phase finale',
+      qualification: null,
+    }
     await expect(useCases.create(input)).rejects.toThrow(PreviousPhaseNotFinishedError)
     expect(phaseRepo.create).not.toHaveBeenCalled()
   })
@@ -188,7 +220,13 @@ describe('PhaseUseCases.create', () => {
   it('throws PreviousPhaseNotFinishedError when previous phase does not exist', async () => {
     const phaseRepo = makeRepo({ findByChampionshipId: vi.fn().mockResolvedValue([]) })
     const useCases = makeUseCases({ phaseRepo })
-    const input = { championshipId: 'champ-1', type: PhaseType.KNOCKOUT, order: 3, name: 'Phase finale', qualification: null }
+    const input = {
+      championshipId: 'champ-1',
+      type: PhaseType.KNOCKOUT,
+      order: 3,
+      name: 'Phase finale',
+      qualification: null,
+    }
     await expect(useCases.create(input)).rejects.toThrow(PreviousPhaseNotFinishedError)
     expect(phaseRepo.create).not.toHaveBeenCalled()
   })
@@ -255,7 +293,9 @@ describe('PhaseUseCases.getQualifiedTeams', () => {
   })
 
   it('returns an empty list when the phase has no qualification config', async () => {
-    const useCases = makeUseCases({ phaseRepo: { findById: vi.fn().mockResolvedValue({ ...mockPhase, qualification: null }) } })
+    const useCases = makeUseCases({
+      phaseRepo: { findById: vi.fn().mockResolvedValue({ ...mockPhase, qualification: null }) },
+    })
     const result = await useCases.getQualifiedTeams('phase-1')
     expect(result).toEqual([])
   })

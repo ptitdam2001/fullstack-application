@@ -102,12 +102,24 @@ describe('UserTeamUseCases.getMyTeams', () => {
   })
 
   it('returns teams of all roles (COACH and PLAYER)', async () => {
-    const coachEntry: UserTeamWithTeam = { id: 'ut-coach', userId: 'user-1', teamId: 'team-1', role: TeamRole.COACH, team: mockTeam }
-    const playerEntry: UserTeamWithTeam = { id: 'ut-player', userId: 'user-1', teamId: 'team-2', role: TeamRole.PLAYER, team: { id: 'team-2', name: 'OL B', color: null } }
+    const coachEntry: UserTeamWithTeam = {
+      id: 'ut-coach',
+      userId: 'user-1',
+      teamId: 'team-1',
+      role: TeamRole.COACH,
+      team: mockTeam,
+    }
+    const playerEntry: UserTeamWithTeam = {
+      id: 'ut-player',
+      userId: 'user-1',
+      teamId: 'team-2',
+      role: TeamRole.PLAYER,
+      team: { id: 'team-2', name: 'OL B', color: null },
+    }
     const repo = makeRepo({ findByUser: vi.fn().mockResolvedValue([coachEntry, playerEntry]) })
     const result = await new UserTeamUseCases(repo).getMyTeams('user-1')
     expect(result).toHaveLength(2)
-    expect(result.map((r) => r.role)).toContain(TeamRole.COACH)
-    expect(result.map((r) => r.role)).toContain(TeamRole.PLAYER)
+    expect(result.map(r => r.role)).toContain(TeamRole.COACH)
+    expect(result.map(r => r.role)).toContain(TeamRole.PLAYER)
   })
 })

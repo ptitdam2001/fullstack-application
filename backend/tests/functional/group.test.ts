@@ -4,7 +4,14 @@ import { prisma } from '../../utils/prismaClient.js'
 import { authHeaderFor } from '../support/authenticate.js'
 import { createTestAgent } from '../support/client.js'
 import { resetDatabase } from '../support/database.js'
-import { createAdmin, createChampionship, createGroup, createPhase, createTeam, createUser } from '../support/fixtures.js'
+import {
+  createAdmin,
+  createChampionship,
+  createGroup,
+  createPhase,
+  createTeam,
+  createUser,
+} from '../support/fixtures.js'
 
 /** MongoDB rejects non-ObjectId strings on @db.ObjectId fields with a 500.
  *  Use a well-formed but absent ObjectId for "unknown id" cases. */
@@ -33,14 +40,21 @@ describe('group domain — functional API', () => {
 
       expect(res.status).toBe(200)
       expect(res.body).toEqual([
-        expect.objectContaining({ id: group.id, name: 'Poule A', matchMode: 'SINGLE', teamIds: expect.arrayContaining([teamA.id, teamB.id]) }),
+        expect.objectContaining({
+          id: group.id,
+          name: 'Poule A',
+          matchMode: 'SINGLE',
+          teamIds: expect.arrayContaining([teamA.id, teamB.id]),
+        }),
       ])
     })
 
     it('excludes soft-deleted groups', async () => {
       const championship = await createChampionship()
       const phase = await createPhase(championship.id)
-      await prisma.group.create({ data: { phaseId: phase.id, name: 'Deleted', matchMode: 'SINGLE', deletedAt: new Date() } })
+      await prisma.group.create({
+        data: { phaseId: phase.id, name: 'Deleted', matchMode: 'SINGLE', deletedAt: new Date() },
+      })
 
       const res = await agent.get(`/phase/${phase.id}/groups`)
 
@@ -64,7 +78,9 @@ describe('group domain — functional API', () => {
       const championship = await createChampionship()
       const phase = await createPhase(championship.id)
 
-      const res = await agent.post('/group').send({ phaseId: phase.id, name: 'Poule A', matchMode: 'SINGLE', teamIds: [] })
+      const res = await agent
+        .post('/group')
+        .send({ phaseId: phase.id, name: 'Poule A', matchMode: 'SINGLE', teamIds: [] })
 
       expect(res.status).toBe(401)
     })

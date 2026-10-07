@@ -6,7 +6,11 @@ export interface IRegistrationRepository {
   findByEmail(email: string): Promise<RegistrationUser | null>
   findByActivationToken(token: string): Promise<RegistrationUser | null>
   findByResetToken(token: string): Promise<RegistrationUser | null>
-  create(input: CreateRegistrationInput, activationToken: string, activationTokenExpiry: Date): Promise<RegistrationUser>
+  create(
+    input: CreateRegistrationInput,
+    activationToken: string,
+    activationTokenExpiry: Date
+  ): Promise<RegistrationUser>
   createWithJoinRequest(
     input: CreateRegistrationInput,
     activationToken: string,
