@@ -1,7 +1,6 @@
 export {
   useGetUsersSuspense,
   useCountUsersSuspense,
-  useGetUser,
   useUpdateUser,
   useRemoveUser,
   useRemoveUserAvatar,

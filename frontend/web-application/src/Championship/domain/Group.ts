@@ -1,2 +1,2 @@
-export type { Group, GroupInput } from '@Sdk/model'
+export type { Group } from '@Sdk/model'
 export { MatchMode } from '@Sdk/model'

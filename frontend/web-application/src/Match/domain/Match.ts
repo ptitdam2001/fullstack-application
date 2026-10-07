@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export type { Match, MatchInput, MatchArea, MatchTeamSummary } from '@Sdk/model'
+export type { Match, MatchInput, MatchTeamSummary } from '@Sdk/model'
 export { MatchStatus } from '@Sdk/model'
 
 export const ScoreEntrySchema = z.object({

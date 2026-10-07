@@ -1,1 +1,1 @@
-export type { StandingRow, GroupStandings } from '@Sdk/model'
+export type { StandingRow } from '@Sdk/model'

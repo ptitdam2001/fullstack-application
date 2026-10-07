@@ -1,1 +1,1 @@
-export type { Bracket, BracketInput, BracketTeamEntry } from '@Sdk/model'
+export type { BracketTeamEntry } from '@Sdk/model'

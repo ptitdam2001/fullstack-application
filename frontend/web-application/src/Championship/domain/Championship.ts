@@ -1,1 +1,1 @@
-export type { Championship, ChampionshipInput, PointsConfig } from '@Sdk/model'
+export type { Championship, PointsConfig } from '@Sdk/model'

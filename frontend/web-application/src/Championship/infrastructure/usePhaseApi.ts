@@ -1,6 +1,1 @@
-export {
-  useCreatePhase,
-  useGetChampionshipPhases,
-  useGetChampionshipPhasesSuspense,
-  getGetChampionshipPhasesQueryKey,
-} from '@Sdk/phase/phase'
+export { useCreatePhase, useGetChampionshipPhases, useGetChampionshipPhasesSuspense } from '@Sdk/phase/phase'
