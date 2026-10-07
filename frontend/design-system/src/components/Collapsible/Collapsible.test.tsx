@@ -69,14 +69,18 @@ describe('CollapsibleTrigger', () => {
     const { getByRole, getByText } = render(<CollapsibleComposed />)
     // DisclosurePanel always in DOM; use visibility
     expect(getByText('Content')).not.toBeVisible()
-    act(() => { fireEvent.click(getByRole('button')) })
+    act(() => {
+      fireEvent.click(getByRole('button'))
+    })
     expect(getByText('Content')).toBeVisible()
   })
 
   it('calls onOpenChange when toggled', () => {
     const handler = vi.fn()
     const { getByRole } = render(<CollapsibleComposed onOpenChange={handler} />)
-    act(() => { fireEvent.click(getByRole('button')) })
+    act(() => {
+      fireEvent.click(getByRole('button'))
+    })
     expect(handler).toHaveBeenCalledWith(true)
   })
 })

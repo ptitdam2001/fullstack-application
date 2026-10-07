@@ -61,7 +61,9 @@ describe('TableBody', () => {
   it('sets data-slot="table-body"', () => {
     const { container } = render(
       <Table aria-label="test">
-        <TableHeader><TableHead>Col</TableHead></TableHeader>
+        <TableHeader>
+          <TableHead>Col</TableHead>
+        </TableHeader>
         <TableBody />
       </Table>
     )
@@ -73,7 +75,9 @@ describe('TableRow', () => {
   it('sets data-slot="table-row"', () => {
     const { container } = render(
       <Table aria-label="test">
-        <TableHeader><TableHead>Col</TableHead></TableHeader>
+        <TableHeader>
+          <TableHead>Col</TableHead>
+        </TableHeader>
         <TableBody>
           <TableRow>
             <TableCell>Val</TableCell>
@@ -103,9 +107,13 @@ describe('TableCell', () => {
   it('sets data-slot="table-cell"', () => {
     const { container } = render(
       <Table aria-label="test">
-        <TableHeader><TableHead>Col</TableHead></TableHeader>
+        <TableHeader>
+          <TableHead>Col</TableHead>
+        </TableHeader>
         <TableBody>
-          <TableRow><TableCell>Val</TableCell></TableRow>
+          <TableRow>
+            <TableCell>Val</TableCell>
+          </TableRow>
         </TableBody>
       </Table>
     )
@@ -115,9 +123,13 @@ describe('TableCell', () => {
   it('renders cell content', () => {
     render(
       <Table aria-label="test">
-        <TableHeader><TableHead>Col</TableHead></TableHeader>
+        <TableHeader>
+          <TableHead>Col</TableHead>
+        </TableHeader>
         <TableBody>
-          <TableRow><TableCell>Équipe A</TableCell></TableRow>
+          <TableRow>
+            <TableCell>Équipe A</TableCell>
+          </TableRow>
         </TableBody>
       </Table>
     )
@@ -127,12 +139,20 @@ describe('TableCell', () => {
 
 describe('TableCaption', () => {
   it('sets data-slot="table-caption"', () => {
-    const { container } = render(<table><TableCaption>Cap</TableCaption></table>)
+    const { container } = render(
+      <table>
+        <TableCaption>Cap</TableCaption>
+      </table>
+    )
     expect(container.querySelector('[data-slot="table-caption"]')).toBeInTheDocument()
   })
 
   it('renders caption text', () => {
-    render(<table><TableCaption>Classement général</TableCaption></table>)
+    render(
+      <table>
+        <TableCaption>Classement général</TableCaption>
+      </table>
+    )
     expect(screen.getByText('Classement général')).toBeInTheDocument()
   })
 })

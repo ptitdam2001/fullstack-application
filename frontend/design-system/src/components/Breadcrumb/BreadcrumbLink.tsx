@@ -4,11 +4,7 @@ import { cn } from '../../utils/cn'
 
 function BreadcrumbLink({ className, ...props }: LinkProps) {
   return (
-    <Link
-      data-slot="breadcrumb-link"
-      className={cn('hover:text-foreground transition-colors', className)}
-      {...props}
-    />
+    <Link data-slot="breadcrumb-link" className={cn('hover:text-foreground transition-colors', className)} {...props} />
   )
 }
 

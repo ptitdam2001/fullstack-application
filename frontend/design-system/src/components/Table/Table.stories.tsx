@@ -44,7 +44,7 @@ export const Standings: Story = {
       <TableBody items={standings}>
         {row => (
           <TableRow id={String(row.rank)}>
-            <TableCell className="text-center text-muted-foreground">{row.rank}</TableCell>
+            <TableCell className="text-muted-foreground text-center">{row.rank}</TableCell>
             <TableCell className="font-medium">{row.team}</TableCell>
             <TableCell className="text-center">{row.played}</TableCell>
             <TableCell className="text-center">{row.won}</TableCell>
@@ -76,21 +76,27 @@ export const MatchList: Story = {
           <TableCell>Équipe A</TableCell>
           <TableCell className="text-center font-mono">3 — 1</TableCell>
           <TableCell>Équipe B</TableCell>
-          <TableCell><Badge variant="outline">Terminé</Badge></TableCell>
+          <TableCell>
+            <Badge variant="outline">Terminé</Badge>
+          </TableCell>
         </TableRow>
         <TableRow id="m2">
           <TableCell>19/04/2025</TableCell>
           <TableCell>Équipe C</TableCell>
           <TableCell className="text-center font-mono">— </TableCell>
           <TableCell>Équipe D</TableCell>
-          <TableCell><Badge>À venir</Badge></TableCell>
+          <TableCell>
+            <Badge>À venir</Badge>
+          </TableCell>
         </TableRow>
         <TableRow id="m3">
           <TableCell>26/04/2025</TableCell>
           <TableCell>Équipe E</TableCell>
           <TableCell className="text-center font-mono">0 — 4</TableCell>
           <TableCell>Équipe A</TableCell>
-          <TableCell><Badge variant="outline">Terminé</Badge></TableCell>
+          <TableCell>
+            <Badge variant="outline">Terminé</Badge>
+          </TableCell>
         </TableRow>
       </TableBody>
     </Table>

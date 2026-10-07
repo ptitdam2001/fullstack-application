@@ -23,7 +23,7 @@ export const ColorSlider = ({ label, className, ...props }: ColorSliderProps) =>
     )}
   >
     {label && <Label>{label}</Label>}
-    <SliderOutput className="text-muted-foreground group-data-[orientation=vertical]:hidden text-sm font-medium" />
+    <SliderOutput className="text-muted-foreground text-sm font-medium group-data-[orientation=vertical]:hidden" />
     <SliderTrack
       className={renderProps =>
         cn(ColorSliderTrackVariants({ orientation: renderProps.orientation, isDisabled: renderProps.isDisabled }))

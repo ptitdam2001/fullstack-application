@@ -156,9 +156,7 @@ export const DashboardLayout: Story = {
               Le footer ci-dessous est scopé à cette colonne, pas à la page entière.
             </p>
           </Layout.Content>
-          <Layout.Footer className="border-t px-4 py-2 text-xs">
-            Dernière mise à jour : il y a 5 min
-          </Layout.Footer>
+          <Layout.Footer className="border-t px-4 py-2 text-xs">Dernière mise à jour : il y a 5 min</Layout.Footer>
         </div>
       </div>
     </Layout.Root>
@@ -303,9 +301,7 @@ export const AuthPageLayout: Story = {
         </div>
       </Layout.Content>
 
-      <Layout.Footer className="border-t px-6 py-2 text-center text-xs">
-        © 2025 MyApp — CGU
-      </Layout.Footer>
+      <Layout.Footer className="border-t px-6 py-2 text-center text-xs">© 2025 MyApp — CGU</Layout.Footer>
     </Layout.Root>
   ),
 }

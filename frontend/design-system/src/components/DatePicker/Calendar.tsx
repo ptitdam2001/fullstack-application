@@ -32,10 +32,7 @@ export const Calendar = ({ className, classNames, showOutsideDays = true, ...pro
       weekday: 'text-muted-foreground w-8 rounded-md text-center text-[0.8rem] font-normal',
       week: 'mt-2 flex w-full',
       day: 'relative flex size-8 items-center justify-center p-0 text-center text-sm focus-within:z-20',
-      day_button: cn(
-        ButtonVariants({ variant: 'ghost' }),
-        'size-8 p-0 font-normal aria-selected:opacity-100'
-      ),
+      day_button: cn(ButtonVariants({ variant: 'ghost' }), 'size-8 p-0 font-normal aria-selected:opacity-100'),
       selected:
         'bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground rounded-md',
       today: 'bg-accent text-accent-foreground rounded-md',

@@ -20,7 +20,15 @@ type Story = StoryObj<typeof meta>
 
 const ControlledRender = () => {
   const [value, setValue] = useState('#7f00ff')
-  return <ColorArea colorSpace="hsb" xChannel="saturation" yChannel="brightness" value={value} onChange={c => setValue(c.toString('hex'))} />
+  return (
+    <ColorArea
+      colorSpace="hsb"
+      xChannel="saturation"
+      yChannel="brightness"
+      value={value}
+      onChange={c => setValue(c.toString('hex'))}
+    />
+  )
 }
 
 export const Default: Story = {

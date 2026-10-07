@@ -10,11 +10,7 @@ type RadioGroupProps = Omit<AriaRadioGroupProps, 'children'> & {
 }
 
 export const RadioGroup = ({ className, label, children, ...props }: RadioGroupProps) => (
-  <AriaRadioGroup
-    data-slot="radio-group"
-    className={cn('flex flex-col gap-2', className)}
-    {...props}
-  >
+  <AriaRadioGroup data-slot="radio-group" className={cn('flex flex-col gap-2', className)} {...props}>
     {label && <Label className="text-sm font-medium">{label}</Label>}
     {children}
   </AriaRadioGroup>

@@ -14,7 +14,16 @@ type TooltipProps = {
   className?: string
 }
 
-function Tooltip({ children, content, position, delay = 700, closeDelay = 300, disabled, offset = 0, className }: TooltipProps) {
+function Tooltip({
+  children,
+  content,
+  position,
+  delay = 700,
+  closeDelay = 300,
+  disabled,
+  offset = 0,
+  className,
+}: TooltipProps) {
   return (
     <AriaTooltipTrigger delay={delay} closeDelay={closeDelay} isDisabled={disabled}>
       {children}

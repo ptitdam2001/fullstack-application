@@ -42,5 +42,4 @@ describe('Badge', () => {
     const { container } = render(<Badge variant="outline" />)
     expect(container.firstChild).toHaveClass('text-foreground')
   })
-
 })

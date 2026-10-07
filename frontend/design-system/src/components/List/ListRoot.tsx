@@ -21,7 +21,7 @@ export const ListRoot = <T extends object>({
       data-slot="list"
       className={cn(
         listVariants({ variant }),
-        'scrollbar-thin scrollbar-track-background scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800 dark:scrollbar-thumb-gray-500 block p-0',
+        'scrollbar-track-background block scrollbar-thin scrollbar-thumb-gray-600 p-0 dark:scrollbar-thumb-gray-500 dark:scrollbar-track-gray-800',
         className
       )}
       {...props}

@@ -31,7 +31,9 @@ export const Default: Story = {
             <p className="text-muted-foreground text-sm">Dialog body content goes here.</p>
           </div>
           <DialogFooter>
-            <Button variant="outline" slot="close">Cancel</Button>
+            <Button variant="outline" slot="close">
+              Cancel
+            </Button>
             <Button slot="close">Save</Button>
           </DialogFooter>
         </DialogContent>

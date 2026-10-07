@@ -65,7 +65,9 @@ export const DisabledItem: Story = {
   render: () => (
     <RadioGroup label="Statut">
       <Radio value="active">Actif</Radio>
-      <Radio value="inactive" isDisabled>Inactif (désactivé)</Radio>
+      <Radio value="inactive" isDisabled>
+        Inactif (désactivé)
+      </Radio>
       <Radio value="pending">En attente</Radio>
     </RadioGroup>
   ),

@@ -8,9 +8,7 @@ import { PopoverTrigger } from './PopoverTrigger'
 function Fixture({ open }: { open?: boolean }) {
   return (
     <Popover open={open}>
-      <PopoverTrigger>
-        {(triggerProps) => <button {...triggerProps}>Open</button>}
-      </PopoverTrigger>
+      <PopoverTrigger>{triggerProps => <button {...triggerProps}>Open</button>}</PopoverTrigger>
       <PopoverContent>Popover content</PopoverContent>
     </Popover>
   )
@@ -43,9 +41,7 @@ describe('PopoverContent', () => {
   it('forwards className', () => {
     render(
       <Popover open={true}>
-        <PopoverTrigger>
-          {(triggerProps) => <button {...triggerProps}>Open</button>}
-        </PopoverTrigger>
+        <PopoverTrigger>{triggerProps => <button {...triggerProps}>Open</button>}</PopoverTrigger>
         <PopoverContent className="custom-class">Content</PopoverContent>
       </Popover>
     )

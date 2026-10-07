@@ -28,7 +28,7 @@ describe('Toast.Provider', () => {
     render(
       <Toast.Provider>
         <span>hello</span>
-      </Toast.Provider>,
+      </Toast.Provider>
     )
     expect(screen.getByText('hello')).toBeInTheDocument()
   })
@@ -37,7 +37,7 @@ describe('Toast.Provider', () => {
     render(
       <Toast.Provider>
         <span />
-      </Toast.Provider>,
+      </Toast.Provider>
     )
     expect(screen.getByTestId('toaster')).toBeInTheDocument()
   })

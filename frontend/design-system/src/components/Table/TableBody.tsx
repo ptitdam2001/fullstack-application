@@ -3,9 +3,5 @@ import { TableBody as AriaTableBody, type TableBodyProps } from 'react-aria-comp
 import { cn } from '../../utils/cn'
 
 export const TableBody = <T extends object>({ className, ...props }: TableBodyProps<T>) => (
-  <AriaTableBody
-    data-slot="table-body"
-    className={cn('[&_tr:last-child]:border-0', className)}
-    {...props}
-  />
+  <AriaTableBody data-slot="table-body" className={cn('[&_tr:last-child]:border-0', className)} {...props} />
 )
