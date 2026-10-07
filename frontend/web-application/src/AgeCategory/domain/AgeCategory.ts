@@ -1,1 +1,1 @@
-export type { AgeCategory, AgeCategoryInput, Genre } from '@Sdk/model'
+export type { AgeCategory, AgeCategoryInput } from '@Sdk/model'
