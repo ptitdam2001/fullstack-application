@@ -13,7 +13,8 @@ vi.mock('@Championship/application/useChampionshipList', () => ({
   })),
 }))
 
-vi.mock('@AgeCategory/application/useAgeCategoryList', () => ({
+vi.mock('@AgeCategory', async importOriginal => ({
+  ...(await importOriginal<object>()),
   useAgeCategoryList: vi.fn(() => ({
     query: {
       data: [

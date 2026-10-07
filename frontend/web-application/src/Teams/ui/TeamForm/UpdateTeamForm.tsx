@@ -6,7 +6,7 @@ import { Button, Toast } from '@repo/design-system'
 import { Loader2 } from 'lucide-react'
 import type { CreateTeamMutationBody, Team, TeamWithoutId } from '../../domain/Team'
 import { useTeamForm } from '../../application/useTeamForm'
-import { AgeCategorySelect } from '@AgeCategory/ui/AgeCategorySelect/AgeCategorySelect'
+import { AgeCategorySelect } from '@AgeCategory'
 import { useIntl } from 'react-intl'
 
 const initialValues: TeamWithoutId = {

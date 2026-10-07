@@ -1,6 +1,6 @@
 import { FormattedMessage } from 'react-intl'
 import { Typography, cn } from '@repo/design-system'
-import type { AgeCategory } from '@AgeCategory/domain/AgeCategory'
+import type { AgeCategory } from '@AgeCategory'
 
 type StepCategoryProps = {
   categories: AgeCategory[]

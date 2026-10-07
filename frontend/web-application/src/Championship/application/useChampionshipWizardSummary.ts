@@ -1,6 +1,6 @@
 import type { IntlShape } from 'react-intl'
 import type { Season } from '@Season/domain/Season'
-import type { AgeCategory } from '@AgeCategory/domain/AgeCategory'
+import type { AgeCategory } from '@AgeCategory'
 import { PhaseType } from '../domain/Phase'
 import type { ChampionshipWizard, ChampionshipWizardGroup } from './useChampionshipWizard'
 
