@@ -64,6 +64,20 @@ Les deux ne se remplacent pas (cf. ADR-0003) :
 
 ---
 
+## Intégration continue
+
+Le workflow `.github/workflows/ci.yml` s'exécute sur chaque pull request et sur chaque push sur `main`, en trois jobs parallèles :
+
+| Job                        | Niveau de la pyramide couvert                                                                            |
+| -------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `Backend`                  | Tests unitaires backend, plus type-check, lint et format                                                 |
+| `Backend functional tests` | Tests fonctionnels backend (Testcontainers Mongo)                                                        |
+| `Frontend`                 | Tests unitaires web-application, design-system et form-factory, plus type-check, lint, format, code mort |
+
+Hors CI pour l'instant, à lancer en local : les plays Storybook (`test:stories`), les E2E Playwright mockés (`make test-e2e`) et le smoke full-stack (`make test-e2e-smoke`). Ils demandent Chromium, et la stack Docker de test pour le smoke.
+
+---
+
 ## Matrice de couverture API
 
 Dérivée des **76 opérations** (58 paths) de `backend/openapi.yml`. Sert de checklist pour la Session 3 (un fichier de test fonctionnel par domaine, cf. convention de nommage et seuil de split ci-dessus).
