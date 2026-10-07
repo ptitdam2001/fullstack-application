@@ -4,7 +4,7 @@ import type { AgeCategory } from '@AgeCategory/domain/AgeCategory'
 import { PhaseType } from '../domain/Phase'
 import type { ChampionshipWizard, ChampionshipWizardGroup } from './useChampionshipWizard'
 
-export const formatTeamsValue = (
+const formatTeamsValue = (
   intl: IntlShape,
   phaseType: PhaseType | null,
   groups: ChampionshipWizardGroup[],

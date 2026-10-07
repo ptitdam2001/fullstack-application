@@ -13,7 +13,7 @@ export const buildMatch = (overrides: Partial<Match>): Match => ({
   ...overrides,
 })
 
-export const defaultRounds: Match[][] = [
+const defaultRounds: Match[][] = [
   [
     buildMatch({
       id: 'sf1',
@@ -33,7 +33,7 @@ export const defaultRounds: Match[][] = [
   [buildMatch({ id: 'final', round: 2, bracketPosition: 1 })],
 ]
 
-export const defaultConnectors: BracketConnector[] = [
+const defaultConnectors: BracketConnector[] = [
   { fromRound: 0, fromMatch: 0, toRound: 1, toMatch: 0 },
   { fromRound: 0, fromMatch: 1, toRound: 1, toMatch: 0 },
 ]
