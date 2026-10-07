@@ -21,10 +21,7 @@ import { type ZodType, type z } from 'zod'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
-export type FieldRenderProps<
-  TValues extends FieldValues,
-  TName extends FieldPath<TValues>,
-> = {
+export type FieldRenderProps<TValues extends FieldValues, TName extends FieldPath<TValues>> = {
   field: ControllerRenderProps<TValues, TName>
   fieldState: ControllerFieldState
 }
