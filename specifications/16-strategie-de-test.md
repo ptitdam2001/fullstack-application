@@ -51,16 +51,16 @@ Les deux ne se remplacent pas (cf. ADR-0003) :
 
 ## Commandes
 
-| Commande                                                        | Cible Makefile                                       | Action                                                                             |
-| --------------------------------------------------------------- | ---------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| `pnpm --filter openapi-express-ts test`                         | `make test-backend-unit`                             | Tests unitaires backend (Vitest, repositories mockés)                              |
-| `pnpm --filter openapi-express-ts test:functional`              | `make test-backend-func`                             | Tests fonctionnels backend (Vitest + supertest + Mongo replica via Testcontainers) |
-| —                                                               | `make db-test-up` / `make db-test-down`              | Démarre/arrête un Mongo replica de test isolé (debug local hors Testcontainers)    |
-| `pnpm --filter application-material test`                       | —                                                    | Tests unitaires frontend (Vitest, jsdom)                                           |
-| `pnpm --filter application-material test:e2e`                   | `make test-e2e`                                      | Playwright, projet `mocked` (MSW + Vite dev server)                                |
-| `pnpm exec playwright test --project=fullstack-smoke`           | `make test-e2e-smoke`                                | Playwright projet `fullstack-smoke` contre la stack Docker test                    |
-| —                                                               | `make test`                                          | Suite complète : backend (unit + func) + E2E mocké                                 |
-| —                                                               | `make stack-test-up` / `make stack-test-down`        | Up (index + seed) / down de la stack test (front :3001, API :4001, Mongo :27019)   |
+| Commande                                              | Cible Makefile                                | Action                                                                             |
+| ----------------------------------------------------- | --------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `pnpm --filter openapi-express-ts test`               | `make test-backend-unit`                      | Tests unitaires backend (Vitest, repositories mockés)                              |
+| `pnpm --filter openapi-express-ts test:functional`    | `make test-backend-func`                      | Tests fonctionnels backend (Vitest + supertest + Mongo replica via Testcontainers) |
+| —                                                     | `make db-test-up` / `make db-test-down`       | Démarre/arrête un Mongo replica de test isolé (debug local hors Testcontainers)    |
+| `pnpm --filter application-material test`             | —                                             | Tests unitaires frontend (Vitest, jsdom)                                           |
+| `pnpm --filter application-material test:e2e`         | `make test-e2e`                               | Playwright, projet `mocked` (MSW + Vite dev server)                                |
+| `pnpm exec playwright test --project=fullstack-smoke` | `make test-e2e-smoke`                         | Playwright projet `fullstack-smoke` contre la stack Docker test                    |
+| —                                                     | `make test`                                   | Suite complète : backend (unit + func) + E2E mocké                                 |
+| —                                                     | `make stack-test-up` / `make stack-test-down` | Up (index + seed) / down de la stack test (front :3001, API :4001, Mongo :27019)   |
 
 ---
 
@@ -72,16 +72,16 @@ Légende : ✅ couvert · ❌ test fonctionnel à écrire (S3) · 🚫 route dé
 
 #### Auth (3 opérations)
 
-| Méthode | Path      | operationId | Statut           |
-| ------- | --------- | ----------- | ---------------- |
+| Méthode | Path      | operationId | Statut                      |
+| ------- | --------- | ----------- | --------------------------- |
 | GET     | `/me`     | `me`        | ✅ couvert (`auth.test.ts`) |
 | POST    | `/login`  | `login`     | ✅ couvert (`auth.test.ts`) |
 | POST    | `/logout` | `logout`    | ✅ couvert (`auth.test.ts`) |
 
 #### Registration (8 opérations)
 
-| Méthode | Path                       | operationId         | Statut           |
-| ------- | -------------------------- | ------------------- | ---------------- |
+| Méthode | Path                       | operationId         | Statut                              |
+| ------- | -------------------------- | ------------------- | ----------------------------------- |
 | POST    | `/register`                | `register`          | ✅ couvert (`registration.test.ts`) |
 | POST    | `/forgot-password`         | `forgotPassword`    | ✅ couvert (`registration.test.ts`) |
 | POST    | `/activate`                | `activateAccount`   | ✅ couvert (`registration.test.ts`) |
@@ -93,13 +93,13 @@ Légende : ✅ couvert · ❌ test fonctionnel à écrire (S3) · 🚫 route dé
 
 #### User (5 opérations)
 
-| Méthode | Path          | operationId  | Statut                     |
-| ------- | ------------- | ------------ | --------------------------- |
-| GET     | `/users`      | `getUsers`   | ✅ couvert (`user.test.ts`)  |
-| DELETE  | `/user/{id}`  | `removeUser` | ✅ couvert (`user.test.ts`)  |
-| PATCH   | `/user/{id}`  | `updateUser` | ✅ couvert (`user.test.ts`)  |
+| Méthode | Path                | operationId        | Statut                      |
+| ------- | ------------------- | ------------------ | --------------------------- |
+| GET     | `/users`            | `getUsers`         | ✅ couvert (`user.test.ts`) |
+| DELETE  | `/user/{id}`        | `removeUser`       | ✅ couvert (`user.test.ts`) |
+| PATCH   | `/user/{id}`        | `updateUser`       | ✅ couvert (`user.test.ts`) |
 | DELETE  | `/user/{id}/avatar` | `removeUserAvatar` | ✅ couvert (`user.test.ts`) |
-| GET     | `/users/{id}` | `getUser`    | ✅ couvert (`user.test.ts`)  |
+| GET     | `/users/{id}`       | `getUser`          | ✅ couvert (`user.test.ts`) |
 
 #### Team (12 opérations) — pilote S1
 
@@ -120,18 +120,18 @@ Légende : ✅ couvert · ❌ test fonctionnel à écrire (S3) · 🚫 route dé
 
 #### UserTeam (5 opérations)
 
-| Méthode | Path                            | operationId      | Statut                      |
-| ------- | ------------------------------- | ---------------- | --------------------------- |
+| Méthode | Path                            | operationId      | Statut                                     |
+| ------- | ------------------------------- | ---------------- | ------------------------------------------ |
 | GET     | `/me/teams`                     | `getMyTeams`     | ✅ couvert (`userTeam.getMyTeams.test.ts`) |
-| GET     | `/team/{teamId}/coaches`        | `getTeamCoaches` | ✅ couvert (`team.test.ts`) |
-| POST    | `/team/{teamId}/coach/{userId}` | `assignCoach`    | ✅ couvert (`team.test.ts`) |
-| DELETE  | `/team/{teamId}/coach/{userId}` | `removeCoach`    | ✅ couvert (`team.test.ts`) |
-| GET     | `/user/{userId}/coach-teams`    | `getCoachTeams`  | ✅ couvert (`team.test.ts`) |
+| GET     | `/team/{teamId}/coaches`        | `getTeamCoaches` | ✅ couvert (`team.test.ts`)                |
+| POST    | `/team/{teamId}/coach/{userId}` | `assignCoach`    | ✅ couvert (`team.test.ts`)                |
+| DELETE  | `/team/{teamId}/coach/{userId}` | `removeCoach`    | ✅ couvert (`team.test.ts`)                |
+| GET     | `/user/{userId}/coach-teams`    | `getCoachTeams`  | ✅ couvert (`team.test.ts`)                |
 
 #### UserMatch (4 opérations)
 
-| Méthode | Path                                | operationId        | Statut           |
-| ------- | ----------------------------------- | ------------------ | ---------------- |
+| Méthode | Path                                | operationId        | Statut                                |
+| ------- | ----------------------------------- | ------------------ | ------------------------------------- |
 | GET     | `/match/{matchId}/referees`         | `getMatchReferees` | ✅ couvert (`match.referees.test.ts`) |
 | POST    | `/match/{matchId}/referee/{userId}` | `assignReferee`    | ✅ couvert (`match.referees.test.ts`) |
 | DELETE  | `/match/{matchId}/referee/{userId}` | `removeReferee`    | ✅ couvert (`match.referees.test.ts`) |
@@ -151,7 +151,7 @@ Légende : ✅ couvert · ❌ test fonctionnel à écrire (S3) · 🚫 route dé
 #### Phase (5 opérations)
 
 | Méthode | Path                                    | operationId             | Statut                       |
-| ------- | --------------------------------------- | ----------------------- | ----------------------------- |
+| ------- | --------------------------------------- | ----------------------- | ---------------------------- |
 | GET     | `/championship/{championshipId}/phases` | `getChampionshipPhases` | ✅ couvert (`phase.test.ts`) |
 | POST    | `/phase`                                | `createPhase`           | ✅ couvert (`phase.test.ts`) |
 | GET     | `/phase/{id}`                           | `getPhase`              | ✅ couvert (`phase.test.ts`) |
@@ -160,8 +160,8 @@ Légende : ✅ couvert · ❌ test fonctionnel à écrire (S3) · 🚫 route dé
 
 #### Group (5 opérations)
 
-| Méthode | Path                      | operationId      | Statut                    |
-| ------- | ------------------------- | ---------------- | --------------------------- |
+| Méthode | Path                      | operationId      | Statut                       |
+| ------- | ------------------------- | ---------------- | ---------------------------- |
 | GET     | `/phase/{phaseId}/groups` | `getPhaseGroups` | ✅ couvert (`group.test.ts`) |
 | POST    | `/group`                  | `createGroup`    | ✅ couvert (`group.test.ts`) |
 | GET     | `/group/{id}`             | `getGroup`       | ✅ couvert (`group.test.ts`) |
@@ -170,14 +170,14 @@ Légende : ✅ couvert · ❌ test fonctionnel à écrire (S3) · 🚫 route dé
 
 #### Standings (1 opération)
 
-| Méthode | Path                         | operationId         | Statut                                                                                                                 |
-| ------- | ---------------------------- | ------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| GET     | `/group/{groupId}/standings` | `getGroupStandings` | ✅ couvert (`standings.test.ts`)                                                                                        |
+| Méthode | Path                         | operationId         | Statut                           |
+| ------- | ---------------------------- | ------------------- | -------------------------------- |
+| GET     | `/group/{groupId}/standings` | `getGroupStandings` | ✅ couvert (`standings.test.ts`) |
 
 #### Match (6 opérations)
 
-| Méthode | Path             | operationId    | Statut                                                                              |
-| ------- | ---------------- | -------------- | ----------------------------------------------------------------------------------- |
+| Méthode | Path             | operationId    | Statut                            |
+| ------- | ---------------- | -------------- | --------------------------------- |
 | GET     | `/matches`       | `getMatches`   | ✅ couvert (`match.crud.test.ts`) |
 | GET     | `/matches/count` | `countMatches` | ✅ couvert (`match.crud.test.ts`) |
 | POST    | `/match`         | `addMatch`     | ✅ couvert (`match.crud.test.ts`) |
@@ -187,8 +187,8 @@ Légende : ✅ couvert · ❌ test fonctionnel à écrire (S3) · 🚫 route dé
 
 #### TeamJoinRequest (3 opérations)
 
-| Méthode | Path                                        | operationId             | Statut           |
-| ------- | ------------------------------------------- | ----------------------- | ---------------- |
+| Méthode | Path                                        | operationId             | Statut                                 |
+| ------- | ------------------------------------------- | ----------------------- | -------------------------------------- |
 | POST    | `/teams/{teamId}/join-requests`             | `createTeamJoinRequest` | ✅ couvert (`teamJoinRequest.test.ts`) |
 | GET     | `/teams/{teamId}/join-requests`             | `getTeamJoinRequests`   | ✅ couvert (`teamJoinRequest.test.ts`) |
 | PATCH   | `/teams/{teamId}/join-requests/{requestId}` | `updateTeamJoinRequest` | ✅ couvert (`teamJoinRequest.test.ts`) |
@@ -228,26 +228,26 @@ Dérivée des parcours décrits dans `specifications/profiles/{admin,coach,arbit
 
 Légende — Type prévu : **mocked** (Playwright + MSW, Session 4) · **smoke** (vraie stack, Session 5, réservé aux 1-2 parcours les plus critiques).
 
-| Parcours                                                                | Profil(s) concerné(s)            | Pages / routes                                                                 | Type prévu         | Statut                                                                      |
-| ----------------------------------------------------------------------- | -------------------------------- | ------------------------------------------------------------------------------ | ------------------ | --------------------------------------------------------------------------- |
-| Connexion + redirection post-login                                      | Tous                             | `/login` → `/dashboard`, guard `CheckAuthentication`                           | mocked             | ✅ mocked (S4) + ✅ smoke (S5 `auth.spec.ts`)                              |
-| Inscription + activation de compte                                      | Visiteur → Joueur/Coach          | `/register` → email → `/activate`                                              | mocked             | ❌ à écrire (S4)                                                            |
-| Mot de passe oublié / réinitialisation                                  | Tous                             | `/forgot-password` → `/reset-password`                                         | mocked             | ❌ à écrire (S4)                                                            |
-| Tableau de bord (contenu par profil)                                    | Admin / Coach / Arbitre / Joueur | `/dashboard` (KPI admin, agenda coach, mes matchs arbitre, mes équipes joueur) | mocked             | ❌ à écrire (S4)                                                            |
-| Liste + détail championnats                                             | Tous (lecture)                   | `/championships`, `/championships/{id}`                                        | mocked             | ❌ à écrire (S4)                                                            |
-| Création / modification / suppression championnat                       | Admin (exclusif)                 | `/championships` → formulaire création/édition                                 | mocked             | ❌ à écrire                                                                 |
-| Liste + détail équipes                                                  | Tous (lecture)                   | `/teams`, `/teams/{id}`                                                        | mocked             | ✅ mocked (S4) + ✅ smoke (S5 `teams.spec.ts`)                             |
-| Création d'équipe (auto-affectation coach)                              | Tout utilisateur authentifié     | `/teams` → formulaire création → `UserTeam(COACH)` créé                        | **smoke** + mocked | ✅ smoke (S5 `teams.spec.ts`) — persistance réelle vérifiée                |
-| Gestion des joueurs d'une équipe (ajout/retrait, édition infos)         | Coach (sa propre équipe), Admin  | `/teams/{id}` → joueurs, formulaire édition                                    | mocked             | ❌ à écrire                                                                 |
-| Demande pour rejoindre une équipe                                       | Joueur / Coach                   | `/teams/{teamId}/join-requests`                                                | mocked             | ❌ à écrire                                                                 |
-| Liste + détail matchs                                                   | Tous (lecture)                   | `/matches`, `/matches/{id}`                                                    | mocked             | ❌ à écrire (S4)                                                            |
-| Saisie / validation de score                                            | Arbitre (ses matchs assignés)    | `/my-matches/{id}` → formulaire score                                          | mocked             | ❌ à écrire                                                                 |
-| Déclaration de forfait (avant match)                                    | Coach (son équipe) / Admin       | `/matches/{id}` → formulaire forfait                                           | mocked             | ❌ à écrire                                                                 |
-| Déclaration de forfait (pendant match)                                  | Arbitre (match `IN_PROGRESS`)    | `/my-matches/{id}` → formulaire forfait                                        | mocked             | ❌ à écrire                                                                 |
-| Mes matchs (vue arbitre)                                                | Arbitre (exclusif)               | `/my-matches`                                                                  | mocked             | ❌ à écrire                                                                 |
-| Consultation des classements                                            | Tous (lecture)                   | `/championships/{id}` → classements de groupe                                  | mocked             | ❌ à écrire                                                                 |
-| Gestion des utilisateurs (CRUD, activation, déblocage, promotion admin) | Admin (exclusif)                 | `/users`, `/users/{id}` → formulaires                                          | mocked             | ❌ à écrire                                                                 |
-| Assignation coach / arbitre                                             | Admin (exclusif)                 | `/teams/{id}` (coach), `/matches/{id}` (arbitre)                               | mocked             | ❌ à écrire                                                                 |
-| Consultation / édition du profil                                        | Tous                             | `/app/my-profile` (page compte : photo, profil, mot de passe)                  | **smoke** + mocked | ✅ mocked (`account.spec.ts`) + ✅ smoke (`smoke/account.spec.ts`)         |
+| Parcours                                                                | Profil(s) concerné(s)            | Pages / routes                                                                 | Type prévu         | Statut                                                             |
+| ----------------------------------------------------------------------- | -------------------------------- | ------------------------------------------------------------------------------ | ------------------ | ------------------------------------------------------------------ |
+| Connexion + redirection post-login                                      | Tous                             | `/login` → `/dashboard`, guard `CheckAuthentication`                           | mocked             | ✅ mocked (S4) + ✅ smoke (S5 `auth.spec.ts`)                      |
+| Inscription + activation de compte                                      | Visiteur → Joueur/Coach          | `/register` → email → `/activate`                                              | mocked             | ❌ à écrire (S4)                                                   |
+| Mot de passe oublié / réinitialisation                                  | Tous                             | `/forgot-password` → `/reset-password`                                         | mocked             | ❌ à écrire (S4)                                                   |
+| Tableau de bord (contenu par profil)                                    | Admin / Coach / Arbitre / Joueur | `/dashboard` (KPI admin, agenda coach, mes matchs arbitre, mes équipes joueur) | mocked             | ❌ à écrire (S4)                                                   |
+| Liste + détail championnats                                             | Tous (lecture)                   | `/championships`, `/championships/{id}`                                        | mocked             | ❌ à écrire (S4)                                                   |
+| Création / modification / suppression championnat                       | Admin (exclusif)                 | `/championships` → formulaire création/édition                                 | mocked             | ❌ à écrire                                                        |
+| Liste + détail équipes                                                  | Tous (lecture)                   | `/teams`, `/teams/{id}`                                                        | mocked             | ✅ mocked (S4) + ✅ smoke (S5 `teams.spec.ts`)                     |
+| Création d'équipe (auto-affectation coach)                              | Tout utilisateur authentifié     | `/teams` → formulaire création → `UserTeam(COACH)` créé                        | **smoke** + mocked | ✅ smoke (S5 `teams.spec.ts`) — persistance réelle vérifiée        |
+| Gestion des joueurs d'une équipe (ajout/retrait, édition infos)         | Coach (sa propre équipe), Admin  | `/teams/{id}` → joueurs, formulaire édition                                    | mocked             | ❌ à écrire                                                        |
+| Demande pour rejoindre une équipe                                       | Joueur / Coach                   | `/teams/{teamId}/join-requests`                                                | mocked             | ❌ à écrire                                                        |
+| Liste + détail matchs                                                   | Tous (lecture)                   | `/matches`, `/matches/{id}`                                                    | mocked             | ❌ à écrire (S4)                                                   |
+| Saisie / validation de score                                            | Arbitre (ses matchs assignés)    | `/my-matches/{id}` → formulaire score                                          | mocked             | ❌ à écrire                                                        |
+| Déclaration de forfait (avant match)                                    | Coach (son équipe) / Admin       | `/matches/{id}` → formulaire forfait                                           | mocked             | ❌ à écrire                                                        |
+| Déclaration de forfait (pendant match)                                  | Arbitre (match `IN_PROGRESS`)    | `/my-matches/{id}` → formulaire forfait                                        | mocked             | ❌ à écrire                                                        |
+| Mes matchs (vue arbitre)                                                | Arbitre (exclusif)               | `/my-matches`                                                                  | mocked             | ❌ à écrire                                                        |
+| Consultation des classements                                            | Tous (lecture)                   | `/championships/{id}` → classements de groupe                                  | mocked             | ❌ à écrire                                                        |
+| Gestion des utilisateurs (CRUD, activation, déblocage, promotion admin) | Admin (exclusif)                 | `/users`, `/users/{id}` → formulaires                                          | mocked             | ❌ à écrire                                                        |
+| Assignation coach / arbitre                                             | Admin (exclusif)                 | `/teams/{id}` (coach), `/matches/{id}` (arbitre)                               | mocked             | ❌ à écrire                                                        |
+| Consultation / édition du profil                                        | Tous                             | `/app/my-profile` (page compte : photo, profil, mot de passe)                  | **smoke** + mocked | ✅ mocked (`account.spec.ts`) + ✅ smoke (`smoke/account.spec.ts`) |
 
 **Bilan S5** : 3 / 19 parcours couverts (connexion, liste équipes, création équipe). Smoke full-stack opérationnel via `make stack-test-up && make test-e2e-smoke`. Navigation smoke vérifie le chargement de 5 pages principales (`navigation.spec.ts`).
