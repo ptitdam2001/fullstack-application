@@ -19,33 +19,27 @@ export const buildFeedEvents = ({
 }): FeedEvent[] => {
   const now = new Date().toISOString()
   const events: FeedEvent[] = [
-    ...(inactiveUsers ?? []).map(
-      (u): FeedEvent => ({
-        id: `activation-${u.id}`,
-        type: 'ACTIVATION_REQUEST',
-        date: u.createdAt ?? now,
-        href: `/app/users/${u.id}`,
-        actionLabel: 'adminDashboard.feed.activate',
-        firstName: u.firstName,
-        lastName: u.lastName ?? '',
-      })
-    ),
-    ...(forfeitedMatches ?? []).map(
-      (m): FeedEvent => ({
-        id: `forfeit-${m.id}`,
-        type: 'FORFEIT',
-        date: m.scheduledAt ?? now,
-        href: `/app/games/${m.id}`,
-      })
-    ),
-    ...(playedMatches ?? []).map(
-      (m): FeedEvent => ({
-        id: `played-${m.id}`,
-        type: 'MATCH_COMPLETED',
-        date: m.scheduledAt ?? now,
-        href: `/app/games/${m.id}`,
-      })
-    ),
+    ...(inactiveUsers ?? []).map((u): FeedEvent => ({
+      id: `activation-${u.id}`,
+      type: 'ACTIVATION_REQUEST',
+      date: u.createdAt ?? now,
+      href: `/app/users/${u.id}`,
+      actionLabel: 'adminDashboard.feed.activate',
+      firstName: u.firstName,
+      lastName: u.lastName ?? '',
+    })),
+    ...(forfeitedMatches ?? []).map((m): FeedEvent => ({
+      id: `forfeit-${m.id}`,
+      type: 'FORFEIT',
+      date: m.scheduledAt ?? now,
+      href: `/app/games/${m.id}`,
+    })),
+    ...(playedMatches ?? []).map((m): FeedEvent => ({
+      id: `played-${m.id}`,
+      type: 'MATCH_COMPLETED',
+      date: m.scheduledAt ?? now,
+      href: `/app/games/${m.id}`,
+    })),
   ]
 
   return events.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 20)

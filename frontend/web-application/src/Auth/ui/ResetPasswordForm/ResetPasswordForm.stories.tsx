@@ -49,7 +49,9 @@ export const SubmitTooManyRequests: Story = {
   parameters: {
     msw: {
       handlers: [
-        http.post('*/reset-password', () => HttpResponse.json({ status: 429, message: 'Too many requests' }, { status: 429 })),
+        http.post('*/reset-password', () =>
+          HttpResponse.json({ status: 429, message: 'Too many requests' }, { status: 429 })
+        ),
       ],
     },
   },

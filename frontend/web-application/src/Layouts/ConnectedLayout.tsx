@@ -16,7 +16,7 @@ export const ConnectedLayout = () => {
   return (
     <SidebarProvider
       className={cn(
-        'scrollbar-track-background scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800 dark:scrollbar-thumb-gray-500 h-svh',
+        'scrollbar-track-background h-svh scrollbar-thumb-gray-600 dark:scrollbar-thumb-gray-500 dark:scrollbar-track-gray-800',
         { dark: currentTheme && ['dark', 'system'].includes(currentTheme) }
       )}
     >

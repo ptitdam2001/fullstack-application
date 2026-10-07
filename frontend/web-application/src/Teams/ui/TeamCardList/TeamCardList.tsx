@@ -18,7 +18,9 @@ export const TeamCardList = ({ teams }: Props) => {
             <div className="min-w-0 flex-1 overflow-hidden">
               <Card.Title className="truncate">{team.name}</Card.Title>
               {(team.areas ?? []).length > 0 && (
-                <p className="text-muted-foreground mt-1 truncate text-sm">{(team.areas ?? []).map(a => a.city).join(' · ')}</p>
+                <p className="text-muted-foreground mt-1 truncate text-sm">
+                  {(team.areas ?? []).map(a => a.city).join(' · ')}
+                </p>
               )}
             </div>
             <div className="flex shrink-0 items-center gap-1 px-6">

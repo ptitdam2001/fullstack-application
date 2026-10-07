@@ -28,7 +28,7 @@ export const TeamPage = () => {
       <Card.Container className="w-1/3 gap-y-1.5 py-2">
         <Card.Title className="px-2 text-lg">Players</Card.Title>
         <Card.Content className="px-0">
-          <PlayerList teamId={teamId} className="scrollbar-thin h-[80vh] overflow-auto" />
+          <PlayerList teamId={teamId} className="h-[80vh] scrollbar-thin overflow-auto" />
         </Card.Content>
       </Card.Container>
     </article>

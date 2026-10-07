@@ -69,11 +69,7 @@ export const AgeCategoryForm = ({ defaultValues, ageCategoryId, onFinish }: AgeC
         )}
       </Field>
       <div className="flex flex-row-reverse pt-2">
-        <Button
-          type="submit"
-          variant="outline"
-          isDisabled={!isValid || !isDirty || isPending}
-        >
+        <Button type="submit" variant="outline" isDisabled={!isValid || !isDirty || isPending}>
           {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
           <FormattedMessage
             id={ageCategoryId ? 'adminAgeCategories.action.update' : 'adminAgeCategories.action.create'}

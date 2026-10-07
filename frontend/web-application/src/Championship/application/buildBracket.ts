@@ -29,10 +29,20 @@ export const buildBracket = (teamIds: string[]): BracketPreview => {
       matches.push({ a, b })
 
       if (a.origin) {
-        connectors.push({ fromRound: a.origin.fromRound, fromMatch: a.origin.fromMatch, toRound: round, toMatch: matchIndex })
+        connectors.push({
+          fromRound: a.origin.fromRound,
+          fromMatch: a.origin.fromMatch,
+          toRound: round,
+          toMatch: matchIndex,
+        })
       }
       if (b?.origin) {
-        connectors.push({ fromRound: b.origin.fromRound, fromMatch: b.origin.fromMatch, toRound: round, toMatch: matchIndex })
+        connectors.push({
+          fromRound: b.origin.fromRound,
+          fromMatch: b.origin.fromMatch,
+          toRound: round,
+          toMatch: matchIndex,
+        })
       }
 
       nextEntrants.push(

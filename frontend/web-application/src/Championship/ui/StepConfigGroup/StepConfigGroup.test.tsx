@@ -39,7 +39,14 @@ describe('StepConfigGroup', () => {
   it('calls onSetMatchMode when switching to home-and-away', () => {
     const onSetMatchMode = vi.fn()
     render(
-      <StepConfigGroup teams={teams} groups={groups} points={points} maxRank={2} {...noop} onSetMatchMode={onSetMatchMode} />
+      <StepConfigGroup
+        teams={teams}
+        groups={groups}
+        points={points}
+        maxRank={2}
+        {...noop}
+        onSetMatchMode={onSetMatchMode}
+      />
     )
     fireEvent.click(screen.getAllByText('championshipWizard.step.configGroup.matchMode.homeAndAway')[0])
     expect(onSetMatchMode).toHaveBeenCalledWith('g1', MatchMode.HOME_AND_AWAY)
@@ -54,7 +61,9 @@ describe('StepConfigGroup', () => {
 
   it('calls onGenerate when clicking the generate button', () => {
     const onGenerate = vi.fn()
-    render(<StepConfigGroup teams={teams} groups={groups} points={points} maxRank={2} {...noop} onGenerate={onGenerate} />)
+    render(
+      <StepConfigGroup teams={teams} groups={groups} points={points} maxRank={2} {...noop} onGenerate={onGenerate} />
+    )
     fireEvent.click(screen.getAllByText('championshipWizard.step.configGroup.generate')[0])
     expect(onGenerate).toHaveBeenCalledWith('g1')
   })
@@ -82,7 +91,14 @@ describe('StepConfigGroup', () => {
   it('calls onStepPoints when clicking the win stepper buttons', () => {
     const onStepPoints = vi.fn()
     render(
-      <StepConfigGroup teams={teams} groups={groups} points={points} maxRank={2} {...noop} onStepPoints={onStepPoints} />
+      <StepConfigGroup
+        teams={teams}
+        groups={groups}
+        points={points}
+        maxRank={2}
+        {...noop}
+        onStepPoints={onStepPoints}
+      />
     )
     fireEvent.click(screen.getAllByLabelText('championshipWizard.step.configGroup.stepper.increment')[0])
     expect(onStepPoints).toHaveBeenCalledWith('win', 1)

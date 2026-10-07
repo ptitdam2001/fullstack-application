@@ -33,7 +33,7 @@ export const AdminTeamDeletePage = () => {
     <ConfirmDeleteDialog
       teamName={team?.name ?? ''}
       open={open}
-      onOpenChange={(newValue) => {
+      onOpenChange={newValue => {
         setOpen(newValue)
         if (newValue === false) {
           navigate(-1)

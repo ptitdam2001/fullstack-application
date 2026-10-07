@@ -4,7 +4,7 @@
 /* Scan design-system source for Tailwind classes */
 @source '../node_modules/@repo/design-system/src';
 
-@plugin "tailwind-scrollbar";
+@plugin 'tailwind-scrollbar';
 
 :root {
   font-family: 'DM Sans', system-ui, Avenir, Helvetica, Arial, sans-serif;

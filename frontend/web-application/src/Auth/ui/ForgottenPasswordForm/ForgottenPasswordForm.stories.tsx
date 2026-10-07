@@ -45,7 +45,9 @@ export const SubmitTooManyRequests: Story = {
   parameters: {
     msw: {
       handlers: [
-        http.post('*/forgot-password', () => HttpResponse.json({ status: 429, message: 'Too many requests' }, { status: 429 })),
+        http.post('*/forgot-password', () =>
+          HttpResponse.json({ status: 429, message: 'Too many requests' }, { status: 429 })
+        ),
       ],
     },
   },
@@ -64,7 +66,9 @@ export const ResendTooManyRequests: Story = {
     msw: {
       handlers: [
         getForgotPasswordMockHandler(),
-        http.post('*/resend-activation', () => HttpResponse.json({ status: 429, message: 'Too many requests' }, { status: 429 })),
+        http.post('*/resend-activation', () =>
+          HttpResponse.json({ status: 429, message: 'Too many requests' }, { status: 429 })
+        ),
       ],
     },
   },
