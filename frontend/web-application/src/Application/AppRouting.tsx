@@ -1,15 +1,5 @@
-import { useEffect } from 'react'
 import { FormattedMessage } from 'react-intl'
-import {
-  createBrowserRouter,
-  createRoutesFromElements,
-  Navigate,
-  Outlet,
-  Route,
-  RouterProvider,
-  useNavigate,
-} from 'react-router'
-import { setNavigateFn } from '@Common/navigation'
+import { createBrowserRouter, createRoutesFromElements, Navigate, Outlet, Route, RouterProvider } from 'react-router'
 
 import { AnonymousLayout, ConnectedLayout, RootLayout } from '@Layouts/'
 import { Dashboard } from './pages/Dashboard'
@@ -42,17 +32,9 @@ import {
   AdminMatchesPage,
 } from '@Admin'
 
-const AppLayout = () => {
-  const navigate = useNavigate()
-  useEffect(() => {
-    setNavigateFn((path, options) => navigate(path, { replace: options?.replace }))
-  }, [navigate])
-  return <Outlet />
-}
-
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route element={<AppLayout />}>
+    <Route>
       <Route path="/" element={<RootLayout />} />
 
       <Route
