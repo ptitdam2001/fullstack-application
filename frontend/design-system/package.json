@@ -22,7 +22,8 @@
     "test:unit": "vitest --project 'unit test'",
     "test:stories": "vitest --project storybook",
     "test:ui": "vitest --ui --coverage",
-    "check:types": "tsc --noEmit"
+    "check:types": "tsc --noEmit",
+    "check:format": "prettier -c ."
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",
