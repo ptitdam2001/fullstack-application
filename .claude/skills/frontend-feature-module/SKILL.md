@@ -50,6 +50,7 @@ export type FeatureWithDetails = FeatureType & {
 ```
 
 **Règles** :
+
 - Aucun import de hooks ou de logique — types purs uniquement
 - Les Zod schemas (`*.zod`) **doivent** être exportés ici — jamais importés directement depuis `@Sdk` dans `ui/`
 - C'est le seul endroit où `@Sdk` est autorisé en dehors de `infrastructure/`
@@ -130,19 +131,14 @@ Toujours créer un hook dédié plutôt que d'appeler l'infrastructure depuis le
 // src/Feature/application/useFeatureBreadcrumb.ts
 import { useGetFeature } from '../infrastructure/useFeatureApi'
 
-export const useFeatureBreadcrumb = (featureId: string) =>
-  useGetFeature(featureId, { query: { enabled: !!featureId } })
+export const useFeatureBreadcrumb = (featureId: string) => useGetFeature(featureId, { query: { enabled: !!featureId } })
 ```
 
 ### Hook de formulaire (create + update)
 
 ```ts
 // src/Feature/application/useFeatureForm.ts
-import {
-  useCreateFeature,
-  useUpdateFeature,
-  getGetFeaturesQueryKey,
-} from '../infrastructure/useFeatureApi'
+import { useCreateFeature, useUpdateFeature, getGetFeaturesQueryKey } from '../infrastructure/useFeatureApi'
 import type { CreateFeatureMutationBody, UpdateFeatureMutationBody } from '../domain/Feature'
 
 export const useFeatureForm = () => {
@@ -339,6 +335,7 @@ export const FeatureList = ({ viewMode }: Props) => {
 ```
 
 **Règles** :
+
 - **Jamais** d'import depuis `@Sdk` dans `ui/` — ni types, ni hooks, ni Zod schemas
 - Les Zod schemas viennent de `../../domain/Feature`, pas de `@Sdk/feature/feature.zod`
 - `useNavigate` est toléré pour le routing
@@ -645,7 +642,7 @@ const meta = {
   component: FeatureForm,
   title: 'Feature/FeatureForm',
   args: {
-    onFinish: fn(),   // ← spy sur le callback → assertable dans play
+    onFinish: fn(), // ← spy sur le callback → assertable dans play
   },
   parameters: {
     msw: { handlers: [getCreateFeatureMockHandler(), getUpdateFeatureMockHandler()] },
@@ -730,8 +727,8 @@ const meta = {
     name: 'Alpha',
     open: true,
     isPending: false,
-    onConfirm: fn(),     // ← spy
-    onOpenChange: fn(),  // ← spy
+    onConfirm: fn(), // ← spy
+    onOpenChange: fn(), // ← spy
   },
 } satisfies Meta<typeof ConfirmDeleteFeatureDialog>
 
@@ -770,13 +767,13 @@ export const Pending: Story = {
 
 ### Règles stories
 
-| Règle | Raison |
-|---|---|
-| `fn()` sur tous les callbacks (onFinish, onConfirm, onOpenChange) | Assertable dans play, visible dans Storybook Actions |
-| Textes de play en **traductions réelles** (FR) | IntlProvider actif — les clés i18n ne sont pas rendues |
-| `await waitFor(...)` autour des assertions asynchrones | MSW a un délai → résultats pas immédiats |
-| Un play par comportement observable | Clarté + isolation des échecs |
-| Handlers MSW dans `parameters.msw.handlers` | Évite les vraies requêtes réseau |
+| Règle                                                             | Raison                                                 |
+| ----------------------------------------------------------------- | ------------------------------------------------------ |
+| `fn()` sur tous les callbacks (onFinish, onConfirm, onOpenChange) | Assertable dans play, visible dans Storybook Actions   |
+| Textes de play en **traductions réelles** (FR)                    | IntlProvider actif — les clés i18n ne sont pas rendues |
+| `await waitFor(...)` autour des assertions asynchrones            | MSW a un délai → résultats pas immédiats               |
+| Un play par comportement observable                               | Clarté + isolation des échecs                          |
+| Handlers MSW dans `parameters.msw.handlers`                       | Évite les vraies requêtes réseau                       |
 
 ---
 
@@ -788,7 +785,7 @@ Ajouter dans `src/Application/AppRouting.tsx` :
 import { FeatureBreadcrumb } from '@Feature/ui/FeatureBreadcrumb/FeatureBreadcrumb'
 import { FeaturePage, FeatureCreatePage, FeatureEditPage } from '@Feature/pages'
 
-<Route path="features" handle={{ breadcrumb: 'Features' }}>
+;<Route path="features" handle={{ breadcrumb: 'Features' }}>
   <Route index element={<FeaturePage />}>
     <Route path="create" element={<FeatureCreatePage />} />
     <Route path=":featureId/edit" element={<FeatureEditPage />} />
@@ -801,6 +798,7 @@ import { FeaturePage, FeatureCreatePage, FeatureEditPage } from '@Feature/pages'
 ```
 
 Ajouter l'alias dans `vite.config.ts` si le module est nouveau :
+
 ```ts
 { find: '@Feature', replacement: resolve(__dirname, 'src/Feature') }
 ```
@@ -829,19 +827,19 @@ export * from './pages'
 
 Avant de committer, vérifier chaque point :
 
-| Règle | Vérification |
-|---|---|
-| `ui/` n'importe jamais `@Sdk` | `grep -r "@Sdk" src/Feature/ui/` → zéro résultat |
-| Zod schemas dans `domain/`, pas dans `ui/` | `grep -r "\.zod" src/Feature/ui/` → zéro résultat |
-| `application/` n'importe jamais `@Sdk` | `grep -r "@Sdk" src/Feature/application/` → zéro résultat |
-| `ui/` appelle uniquement `application/` (jamais `infrastructure/`) | `grep -r "infrastructure" src/Feature/ui/` → zéro résultat |
-| Breadcrumb a son hook `application/` | `useFeatureBreadcrumb.ts` existe |
-| Chaque composant `ui/` dans son propre dossier | `src/Feature/ui/FeatureCard/FeatureCard.tsx` etc. |
-| `Grid.Root` / `List.Root` ont `h-full` dans le contexte `Layout.Content` | Vérifier className |
-| Tests UI sans QueryClientProvider | `grep -r "QueryClient" src/Feature/ui/` → zéro résultat |
-| Chaque composant interactif a une story avec play | `grep -r "play:" src/Feature/ui/` → résultats pour chaque Form/Dialog |
-| `fn()` sur tous les callbacks dans les stories | Callbacks assertables → visibles dans Storybook Actions |
-| Stories passent en mode storybook Vitest | `pnpm vitest run --project storybook src/Feature` → zéro échec |
+| Règle                                                                    | Vérification                                                          |
+| ------------------------------------------------------------------------ | --------------------------------------------------------------------- |
+| `ui/` n'importe jamais `@Sdk`                                            | `grep -r "@Sdk" src/Feature/ui/` → zéro résultat                      |
+| Zod schemas dans `domain/`, pas dans `ui/`                               | `grep -r "\.zod" src/Feature/ui/` → zéro résultat                     |
+| `application/` n'importe jamais `@Sdk`                                   | `grep -r "@Sdk" src/Feature/application/` → zéro résultat             |
+| `ui/` appelle uniquement `application/` (jamais `infrastructure/`)       | `grep -r "infrastructure" src/Feature/ui/` → zéro résultat            |
+| Breadcrumb a son hook `application/`                                     | `useFeatureBreadcrumb.ts` existe                                      |
+| Chaque composant `ui/` dans son propre dossier                           | `src/Feature/ui/FeatureCard/FeatureCard.tsx` etc.                     |
+| `Grid.Root` / `List.Root` ont `h-full` dans le contexte `Layout.Content` | Vérifier className                                                    |
+| Tests UI sans QueryClientProvider                                        | `grep -r "QueryClient" src/Feature/ui/` → zéro résultat               |
+| Chaque composant interactif a une story avec play                        | `grep -r "play:" src/Feature/ui/` → résultats pour chaque Form/Dialog |
+| `fn()` sur tous les callbacks dans les stories                           | Callbacks assertables → visibles dans Storybook Actions               |
+| Stories passent en mode storybook Vitest                                 | `pnpm vitest run --project storybook src/Feature` → zéro échec        |
 
 ---
 
@@ -854,6 +852,7 @@ pnpm --filter application-material storybook     # Stories s'ouvrent, plays réu
 ```
 
 Vérifier manuellement :
+
 - Navigation vers la page liste fonctionne
 - Vue grille et vue liste switchent correctement
 - Modal create/edit s'ouvre via Outlet

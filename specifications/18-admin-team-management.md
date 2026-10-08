@@ -146,15 +146,15 @@ export const useTeamDelete = () => {
     mutation: {
       meta: { invalidates: [getGetTeamsQueryKey(), getCountTeamsQueryKey()] },
     },
-  });
+  })
 
   return {
     deleteTeam: (teamId: string) => deleteMutation.mutateAsync({ id: teamId }),
     isPending: deleteMutation.isPending,
     isSuccess: deleteMutation.isSuccess,
     isError: deleteMutation.isError,
-  };
-};
+  }
+}
 ```
 
 ### Composants réutilisés
@@ -174,28 +174,12 @@ export const useTeamDelete = () => {
 ### Routing
 
 ```tsx
-<Route path="admin" handle={{ breadcrumb: "Administration" }}>
+<Route path="admin" handle={{ breadcrumb: 'Administration' }}>
   {/* ... autres routes admin ... */}
-  <Route
-    path="teams"
-    element={<AdminTeamsPage />}
-    handle={{ breadcrumb: "Équipes" }}
-  >
-    <Route
-      path="create"
-      element={<AdminTeamCreatePage />}
-      handle={{ breadcrumb: "Créer" }}
-    />
-    <Route
-      path=":teamId/edit"
-      element={<AdminTeamEditPage />}
-      handle={{ breadcrumb: "Modifier" }}
-    />
-    <Route
-      path=":teamId/delete"
-      element={<AdminTeamDeletePage />}
-      handle={{ breadcrumb: "Supprimer" }}
-    />
+  <Route path="teams" element={<AdminTeamsPage />} handle={{ breadcrumb: 'Équipes' }}>
+    <Route path="create" element={<AdminTeamCreatePage />} handle={{ breadcrumb: 'Créer' }} />
+    <Route path=":teamId/edit" element={<AdminTeamEditPage />} handle={{ breadcrumb: 'Modifier' }} />
+    <Route path=":teamId/delete" element={<AdminTeamDeletePage />} handle={{ breadcrumb: 'Supprimer' }} />
   </Route>
 </Route>
 ```

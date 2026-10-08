@@ -28,6 +28,7 @@ Pose les questions suivantes dans cet ordre. Si l'utilisateur a déjà fourni un
 
 **Q2 — Acteurs**
 "Qui bénéficie de cette fonctionnalité, et qui peut l'utiliser ? (plusieurs réponses possibles)
+
 - Admin (gestionnaire de la plateforme)
 - Coach (responsable d'une équipe)
 - Arbitre (officiel d'un match)
@@ -38,6 +39,7 @@ Pose les questions suivantes dans cet ordre. Si l'utilisateur a déjà fourni un
 "Comment ça marche ? Décris les comportements attendus, les conditions, et ce qui ne devrait pas être possible."
 
 Si les règles sont vagues, relance avec des questions métier :
+
 - "Que se passe-t-il si [situation limite observée] ?"
 - "Y a-t-il des cas où ça ne devrait pas fonctionner ?"
 - "Est-ce que quelqu'un d'autre peut annuler ou modifier cette action ?"
@@ -47,6 +49,7 @@ Attends les réponses aux trois questions avant de passer à l'étape suivante.
 ### Étape 2 — Lecture du contexte
 
 Avant de rédiger, lis systématiquement :
+
 - `specifications/01-domain-glossary.md` — termes canoniques du domaine à réutiliser
 - Les autres fichiers `specifications/0*.md` — pour trouver le prochain numéro et valider le style
 
@@ -65,12 +68,12 @@ Génère le document en suivant cette structure. Adapte les sections selon le co
 
 ## Acteurs concernés
 
-| Rôle | Implication |
-|------|-------------|
-| Admin | [accès ou action] |
-| Coach | [accès ou action] |
-| Arbitre | [accès ou action] |
-| Joueur | [accès ou action] |
+| Rôle        | Implication       |
+| ----------- | ----------------- |
+| Admin       | [accès ou action] |
+| Coach       | [accès ou action] |
+| Arbitre     | [accès ou action] |
+| Joueur      | [accès ou action] |
 | Sans équipe | [accès ou action] |
 
 > N'inclure que les rôles avec une implication réelle.
@@ -91,10 +94,10 @@ Génère le document en suivant cette structure. Adapte les sections selon le co
 
 ## Matrice de permissions
 
-| Action | Admin | Coach | Arbitre | Joueur | Sans équipe |
-|--------|-------|-------|---------|--------|-------------|
-| [Action 1] | ✅ | ❌ | ❌ | ❌ | ❌ |
-| [Action 2] | ✅ | ✅ | ❌ | ❌ | ❌ |
+| Action     | Admin | Coach | Arbitre | Joueur | Sans équipe |
+| ---------- | ----- | ----- | ------- | ------ | ----------- |
+| [Action 1] | ✅    | ❌    | ❌      | ❌     | ❌          |
+| [Action 2] | ✅    | ✅    | ❌      | ❌     | ❌          |
 
 ---
 
@@ -121,6 +124,7 @@ Crée le fichier dans `specifications/` à la racine du projet (remonte depuis l
 ### Étape 5 — Confirmation
 
 Après création, affiche :
+
 - Chemin du fichier créé
 - Résumé en 2–3 bullets de ce qui a été documenté
 - "Y a-t-il des règles ou cas limites à ajouter ?"

@@ -470,23 +470,23 @@ model Match {
 
 ```typescript
 // domain/Bracket.ts
-export type BracketTeamEntry = { teamId: string; round: number; seed: number };
+export type BracketTeamEntry = { teamId: string; round: number; seed: number }
 export type Bracket = {
-  id: string;
-  phaseId: string;
-  name: string;
-  bracketTeams: BracketTeamEntry[];
-  updatedAt: Date;
-};
-export type CreateBracketInput = Omit<Bracket, "id" | "updatedAt">;
+  id: string
+  phaseId: string
+  name: string
+  bracketTeams: BracketTeamEntry[]
+  updatedAt: Date
+}
+export type CreateBracketInput = Omit<Bracket, 'id' | 'updatedAt'>
 ```
 
 ```typescript
 // ports/IBracketRepository.ts
 export interface IBracketRepository {
-  findById(id: string): Promise<Bracket | null>;
-  create(input: CreateBracketInput): Promise<Bracket>;
-  hasPlayedMatches(id: string): Promise<boolean>; // guard verrouillage, mirror Group/Championship
+  findById(id: string): Promise<Bracket | null>
+  create(input: CreateBracketInput): Promise<Bracket>
+  hasPlayedMatches(id: string): Promise<boolean> // guard verrouillage, mirror Group/Championship
 }
 ```
 

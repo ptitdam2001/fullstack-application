@@ -22,6 +22,7 @@ Sinon, lister `specifications/*.md` et demander : "Quelle spec fonctionnelle veu
 ### Étape 2 — Lecture du contexte avant l'interview
 
 Lire systématiquement :
+
 - La spec fonctionnelle ciblée (contenu complet)
 - `specifications/07-technical-choices.md` — stack de référence
 - `specifications/08-architecture-hexagonale.md` — patterns hexagonaux attendus
@@ -52,6 +53,7 @@ Pose les questions dans cet ordre. Skip si l'utilisateur a déjà fourni l'infor
 "Y a-t-il des points de sécurité à couvrir ? (autorisation fine, ownership, données sensibles, rate limiting, injection)"
 
 Relances si réponse incomplète :
+
 - "Nullable ou required dans Prisma ?"
 - "Le endpoint est protégé par quel middleware d'auth ?"
 - "Le use case est idempotent ?"
@@ -63,7 +65,7 @@ Attends les réponses avant de rédiger.
 
 Appende à la fin du fichier de spec fonctionnelle :
 
-```markdown
+````markdown
 ---
 
 ## Spécification technique
@@ -87,6 +89,7 @@ sequenceDiagram
     UC-->>API: result
     API-->>FE: 201 Created
 ```
+````
 
 [Adapter selon le workflow réel. Supprimer les participants non impliqués. Ajouter les étapes de validation, auth check, etc. si pertinent.]
 
@@ -96,11 +99,12 @@ sequenceDiagram
 
 ### Contrat API
 
-| Méthode | Route | OperationId | Auth requise | Description |
-|---------|-------|-------------|--------------|-------------|
-| POST | `/resource` | `createResource` | JWT | ... |
+| Méthode | Route       | OperationId      | Auth requise | Description |
+| ------- | ----------- | ---------------- | ------------ | ----------- |
+| POST    | `/resource` | `createResource` | JWT          | ...         |
 
 **Payload — `createResource`**
+
 ```json
 {
   "field": "type"
@@ -108,6 +112,7 @@ sequenceDiagram
 ```
 
 **Réponse — 201**
+
 ```json
 {
   "id": "string",
@@ -134,7 +139,7 @@ interface XxxRepository {
 #### Use cases (`src/<domain>/application/`)
 
 | Use case | Input | Output | Description |
-|----------|-------|--------|-------------|
+| -------- | ----- | ------ | ----------- |
 
 #### Handler HTTP (`src/<domain>/infrastructure/`)
 
@@ -155,6 +160,7 @@ interface XxxRepository {
 - [Concurrence / race conditions]
 - [Transactions requises]
 - [Erreurs à gérer explicitement]
+
 ```
 
 ### Étape 5 — Confirmation
@@ -174,3 +180,4 @@ Après écriture :
 - **Hexagonal** : le domain ne connaît pas Prisma. Le handler ne contient pas de logique. Les ports sont des interfaces TypeScript pures.
 - **Diagramme** : si la feature implique plusieurs flux (happy path + erreur), faire deux diagrammes séparés plutôt qu'un seul surchargé.
 - **Sécurité** : ne pas laisser la section vide — même "aucun point particulier" doit être explicite avec la justification.
+```

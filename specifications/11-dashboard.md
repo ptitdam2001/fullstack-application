@@ -101,33 +101,33 @@ Tous les widgets du dashboard utilisant `refetchInterval` référencent cette co
 
 ```typescript
 // config/dashboard.config.ts
-export const DASHBOARD_POLLING_INTERVAL_MS = 30_000;
+export const DASHBOARD_POLLING_INTERVAL_MS = 30_000
 ```
 
 ### Structure Dashboard.tsx
 
 ```tsx
 export const Dashboard = () => {
-  const { user } = AuthProvider.useAuthValue();
+  const { user } = AuthProvider.useAuthValue()
 
   if (!user) {
-    return <PageLoader />;
+    return <PageLoader />
   }
   if (user.isAdmin) {
-    return <AdminDashboard />;
+    return <AdminDashboard />
   }
-  return <DashboardTabs roles={user.roles ?? []} />;
-};
+  return <DashboardTabs roles={user.roles ?? []} />
+}
 ```
 
 ### Structure DashboardTabs
 
 ```typescript
 // Onglets construits dynamiquement selon les rôles présents
-const ROLE_TAB_ORDER = ["COACH", "PLAYER", "REFEREE"] as const;
+const ROLE_TAB_ORDER = ['COACH', 'PLAYER', 'REFEREE'] as const
 
 // Filtre les rôles actifs en maintenant l'ordre fixe
-const activeTabs = ROLE_TAB_ORDER.filter((role) => roles.includes(role));
+const activeTabs = ROLE_TAB_ORDER.filter(role => roles.includes(role))
 ```
 
 ### Données d'authentification

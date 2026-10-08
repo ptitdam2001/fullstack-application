@@ -26,11 +26,11 @@ Si le joueur n'est membre d'aucune équipe, afficher un état vide :
 
 Une carte par équipe dans laquelle le joueur est inscrit. Contenu :
 
-| Donnée           | Source                       | Affichage                          |
-| ---------------- | ---------------------------- | ---------------------------------- |
-| Couleur          | `Team.color`                 | Point coloré (dot)                 |
-| Nom de l'équipe  | `Team.name`                  | Lien cliquable → `/app/team/:id`   |
-| Groupe / Poule   | `TeamCurrentGroup.groupName` | Texte secondaire, en haut à droite |
+| Donnée          | Source                       | Affichage                          |
+| --------------- | ---------------------------- | ---------------------------------- |
+| Couleur         | `Team.color`                 | Point coloré (dot)                 |
+| Nom de l'équipe | `Team.name`                  | Lien cliquable → `/app/team/:id`   |
+| Groupe / Poule  | `TeamCurrentGroup.groupName` | Texte secondaire, en haut à droite |
 
 Si l'équipe n'est inscrite dans aucun championnat, la carte reste visible sans mention de groupe.
 
@@ -236,11 +236,7 @@ src/Dashboard/
 // usePlayerDashboard.ts — version enrichie
 export const filterRecentResults = (matches: Match[], teamId: string, now = new Date()): Match[] =>
   matches
-    .filter(
-      (m) =>
-        m.status === MatchStatus.PLAYED &&
-        (m.homeTeamId === teamId || m.awayTeamId === teamId),
-    )
+    .filter(m => m.status === MatchStatus.PLAYED && (m.homeTeamId === teamId || m.awayTeamId === teamId))
     .sort((a, b) => new Date(b.scheduledAt!).getTime() - new Date(a.scheduledAt!).getTime())
     .slice(0, 5)
 
@@ -249,7 +245,7 @@ export const usePlayerDashboard = () => {
 
   // Remplace useGetTeams() — endpoint dédié, filtre PLAYER côté frontend
   const { data: myTeams = [] } = useGetMyTeams({ query: { refetchInterval } })
-  const playerTeams = myTeams.filter((ut) => ut.role === 'PLAYER').map((ut) => ut.team)
+  const playerTeams = myTeams.filter(ut => ut.role === 'PLAYER').map(ut => ut.team)
 
   // Pour résoudre les noms d'adversaires
   const { data: allTeams = [] } = useGetTeams(undefined, { query: { refetchInterval } })
@@ -271,7 +267,7 @@ export const usePlayerDashboard = () => {
 
 ```typescript
 // Hook orval généré dans src/sdk/generated/
-useGetMyTeams()   // GET /me/teams → UserTeamWithTeam[]
+useGetMyTeams() // GET /me/teams → UserTeamWithTeam[]
 ```
 
 Après modification de `openapi.yml` : `pnpm --filter application-material gen:sdk`.
@@ -284,13 +280,13 @@ Après modification de `openapi.yml` : `pnpm --filter application-material gen:s
 
 Fichier : `backend/src/auth/application/AuthUseCases.test.ts` (ou nouveau fichier dédié selon domaine).
 
-| Cas de test | Description |
-|-------------|-------------|
-| Retourne [] si le user n'a aucune équipe | `UserTeam.findMany` retourne `[]` |
-| Retourne les équipes COACH et PLAYER du user | Filter correct par `userId` |
-| Exclut les UserTeam soft-deletés | `deletedAt != null` exclus via `notDeleted` |
-| Inclut les données `team` (join) | `team.name`, `team.color` présents dans la réponse |
-| Retourne 401 si non authentifié | Middleware auth bloque avant le handler |
+| Cas de test                                  | Description                                        |
+| -------------------------------------------- | -------------------------------------------------- |
+| Retourne [] si le user n'a aucune équipe     | `UserTeam.findMany` retourne `[]`                  |
+| Retourne les équipes COACH et PLAYER du user | Filter correct par `userId`                        |
+| Exclut les UserTeam soft-deletés             | `deletedAt != null` exclus via `notDeleted`        |
+| Inclut les données `team` (join)             | `team.name`, `team.color` présents dans la réponse |
+| Retourne 401 si non authentifié              | Middleware auth bloque avant le handler            |
 
 ---
 
@@ -298,14 +294,14 @@ Fichier : `backend/src/auth/application/AuthUseCases.test.ts` (ou nouveau fichie
 
 Fichier : `src/Dashboard/application/usePlayerDashboard.test.ts` (étendre le fichier existant).
 
-| Cas de test | Description |
-|-------------|-------------|
-| Retourne [] si aucun match | Pas de crash |
-| Exclut les matchs non-PLAYED | `SCHEDULED`, `CANCELLED`, `FORFEITED` ignorés |
-| Inclut uniquement les matchs de l'équipe | `homeTeamId` ou `awayTeamId` correspond |
-| Tri décroissant par `scheduledAt` | Plus récent en premier |
-| Limite à 5 résultats | 6e match non retourné |
-| Exclut les matchs sans `scheduledAt` | Pas de crash sur `null` |
+| Cas de test                              | Description                                   |
+| ---------------------------------------- | --------------------------------------------- |
+| Retourne [] si aucun match               | Pas de crash                                  |
+| Exclut les matchs non-PLAYED             | `SCHEDULED`, `CANCELLED`, `FORFEITED` ignorés |
+| Inclut uniquement les matchs de l'équipe | `homeTeamId` ou `awayTeamId` correspond       |
+| Tri décroissant par `scheduledAt`        | Plus récent en premier                        |
+| Limite à 5 résultats                     | 6e match non retourné                         |
+| Exclut les matchs sans `scheduledAt`     | Pas de crash sur `null`                       |
 
 ---
 
@@ -313,38 +309,38 @@ Fichier : `src/Dashboard/application/usePlayerDashboard.test.ts` (étendre le fi
 
 #### `playerSidebar.*`
 
-| Clé | FR | EN |
-|-----|----|----|
-| `playerSidebar.globalView` | Vue globale | Overview |
-| `playerSidebar.dashboard` | Tableau de bord | Dashboard |
-| `playerSidebar.myTeam` | Mon équipe | My team |
-| `playerSidebar.noTeam` | Aucune équipe | No team |
-| `playerSidebar.season` | Saison | Season |
-| `playerSidebar.calendar` | Calendrier | Calendar |
-| `playerSidebar.games` | Matchs | Matches |
-| `playerSidebar.myProfile` | Mon profil | My profile |
+| Clé                        | FR              | EN         |
+| -------------------------- | --------------- | ---------- |
+| `playerSidebar.globalView` | Vue globale     | Overview   |
+| `playerSidebar.dashboard`  | Tableau de bord | Dashboard  |
+| `playerSidebar.myTeam`     | Mon équipe      | My team    |
+| `playerSidebar.noTeam`     | Aucune équipe   | No team    |
+| `playerSidebar.season`     | Saison          | Season     |
+| `playerSidebar.calendar`   | Calendrier      | Calendar   |
+| `playerSidebar.games`      | Matchs          | Matches    |
+| `playerSidebar.myProfile`  | Mon profil      | My profile |
 
 #### `playerDashboard.*`
 
-| Clé | FR | EN |
-|-----|----|----|
-| `playerDashboard.noTeam` | Vous n'êtes encore membre d'aucune équipe. | You are not a member of any team yet. |
-| `playerDashboard.notEnrolled` | Équipe non inscrite à un championnat. | Team not enrolled in a championship. |
-| `playerDashboard.upcomingMatches.title` | Prochains matchs | Upcoming matches |
-| `playerDashboard.upcomingMatches.empty` | Aucun match à venir | No upcoming matches |
-| `playerDashboard.recentResults.title` | Derniers résultats | Recent results |
-| `playerDashboard.recentResults.empty` | Aucun résultat récent | No recent results |
-| `playerDashboard.recentResults.win` | V | W |
-| `playerDashboard.recentResults.draw` | N | D |
-| `playerDashboard.recentResults.loss` | D | L |
-| `playerDashboard.standings.title` | Classement | Standings |
-| `playerDashboard.standings.rank` | # | # |
-| `playerDashboard.standings.team` | Équipe | Team |
-| `playerDashboard.standings.played` | J | P |
-| `playerDashboard.standings.won` | V | W |
-| `playerDashboard.standings.drawn` | N | D |
-| `playerDashboard.standings.lost` | D | L |
-| `playerDashboard.standings.points` | Pts | Pts |
+| Clé                                     | FR                                         | EN                                    |
+| --------------------------------------- | ------------------------------------------ | ------------------------------------- |
+| `playerDashboard.noTeam`                | Vous n'êtes encore membre d'aucune équipe. | You are not a member of any team yet. |
+| `playerDashboard.notEnrolled`           | Équipe non inscrite à un championnat.      | Team not enrolled in a championship.  |
+| `playerDashboard.upcomingMatches.title` | Prochains matchs                           | Upcoming matches                      |
+| `playerDashboard.upcomingMatches.empty` | Aucun match à venir                        | No upcoming matches                   |
+| `playerDashboard.recentResults.title`   | Derniers résultats                         | Recent results                        |
+| `playerDashboard.recentResults.empty`   | Aucun résultat récent                      | No recent results                     |
+| `playerDashboard.recentResults.win`     | V                                          | W                                     |
+| `playerDashboard.recentResults.draw`    | N                                          | D                                     |
+| `playerDashboard.recentResults.loss`    | D                                          | L                                     |
+| `playerDashboard.standings.title`       | Classement                                 | Standings                             |
+| `playerDashboard.standings.rank`        | #                                          | #                                     |
+| `playerDashboard.standings.team`        | Équipe                                     | Team                                  |
+| `playerDashboard.standings.played`      | J                                          | P                                     |
+| `playerDashboard.standings.won`         | V                                          | W                                     |
+| `playerDashboard.standings.drawn`       | N                                          | D                                     |
+| `playerDashboard.standings.lost`        | D                                          | L                                     |
+| `playerDashboard.standings.points`      | Pts                                        | Pts                                   |
 
 ---
 
@@ -363,11 +359,11 @@ specifications/14-dashboard-player.md
 
 ## Vérification
 
-| Étape | Commande |
-|-------|----------|
-| Types backend | `pnpm check:type` (depuis `backend/`) |
-| Tests backend | `pnpm vitest run` (depuis `backend/`) |
-| SDK régénéré | `pnpm --filter application-material gen:sdk` |
-| Tests frontend | `pnpm --filter application-material test` |
-| Lint | `npx eslint src/Dashboard src/I18n` (depuis `frontend/web-application/`) |
-| Visuel | App avec `VITE_MOCKED_BACKEND=false` — vérifier PlayerTab + PlayerAppSidebar |
+| Étape          | Commande                                                                     |
+| -------------- | ---------------------------------------------------------------------------- |
+| Types backend  | `pnpm check:type` (depuis `backend/`)                                        |
+| Tests backend  | `pnpm vitest run` (depuis `backend/`)                                        |
+| SDK régénéré   | `pnpm --filter application-material gen:sdk`                                 |
+| Tests frontend | `pnpm --filter application-material test`                                    |
+| Lint           | `npx eslint src/Dashboard src/I18n` (depuis `frontend/web-application/`)     |
+| Visuel         | App avec `VITE_MOCKED_BACKEND=false` — vérifier PlayerTab + PlayerAppSidebar |

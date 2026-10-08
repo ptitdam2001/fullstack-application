@@ -46,9 +46,9 @@ Le développeur ne manipule jamais `Controller`, `useForm`, ni `zodResolver` dir
 
 ### `createFormFactory(config)`
 
-| Paramètre       | Type                          | Description                        |
-| --------------- | ----------------------------- | ---------------------------------- |
-| `config.schema` | `ZodType<FieldValues>`        | Schéma Zod statique du formulaire  |
+| Paramètre       | Type                   | Description                       |
+| --------------- | ---------------------- | --------------------------------- |
+| `config.schema` | `ZodType<FieldValues>` | Schéma Zod statique du formulaire |
 
 Retourne un objet `{ useForm }`.
 
@@ -58,12 +58,12 @@ Options : tout `UseFormProps` de react-hook-form sauf `resolver` (géré par la 
 
 Retourne `{ form, Field, FieldArray, Form }` :
 
-| Retour       | Type                              | Description                                                           |
-| ------------ | --------------------------------- | --------------------------------------------------------------------- |
+| Retour       | Type                              | Description                                                          |
+| ------------ | --------------------------------- | -------------------------------------------------------------------- |
 | `form`       | `UseFormReturn<z.output<Schema>>` | API react-hook-form complète : `handleSubmit`, `watch`, `formState`… |
-| `Field`      | `FieldComponent<TValues>`         | Wrapper typé de `Controller` — render prop `children`                 |
-| `FieldArray` | `FieldArrayComponent<TValues>`    | Wrapper typé de `useFieldArray` — render prop `children`              |
-| `Form`       | `FormComponent`                   | `<form>` headless + DevTools auto en mode DEV                         |
+| `Field`      | `FieldComponent<TValues>`         | Wrapper typé de `Controller` — render prop `children`                |
+| `FieldArray` | `FieldArrayComponent<TValues>`    | Wrapper typé de `useFieldArray` — render prop `children`             |
+| `Form`       | `FormComponent`                   | `<form>` headless + DevTools auto en mode DEV                        |
 
 ### `Form` — DevTools intégré
 
@@ -75,11 +75,11 @@ Aucun prop supplémentaire requis — `<Form onSubmit={...} className={...}>` su
 
 ## Schémas Zod supportés
 
-| Cas | Pattern |
-|-----|---------|
-| Schéma SDK direct | `createFormFactory({ schema: LoginBody })` |
+| Cas                               | Pattern                                                          |
+| --------------------------------- | ---------------------------------------------------------------- |
+| Schéma SDK direct                 | `createFormFactory({ schema: LoginBody })`                       |
 | Schéma étendu avec champs UI-only | `BaseSchema.extend({ confirmPassword: z.string() }).refine(...)` |
-| Schéma créé manuellement | `z.object({ name: z.string().min(1), ... })` |
+| Schéma créé manuellement          | `z.object({ name: z.string().min(1), ... })`                     |
 
 **Contrainte :** le schéma doit être **statique** (défini à la compilation). Un schéma sélectionné dynamiquement selon une prop runtime (ex. create vs update avec des shapes différentes) est incompatible avec le pattern factory — utiliser `useForm` de react-hook-form directement dans ce cas.
 
@@ -101,7 +101,12 @@ export const SigninForm = () => {
   const { form, Field, Form } = signinFormFactory.useForm({ mode: 'onBlur' })
 
   return (
-    <Form onSubmit={form.handleSubmit(async data => { /* ... */ })} className="flex flex-col">
+    <Form
+      onSubmit={form.handleSubmit(async data => {
+        /* ... */
+      })}
+      className="flex flex-col"
+    >
       <Field name="email">
         {({ field, fieldState }) => (
           <ControlledTextInput
@@ -124,27 +129,27 @@ export const SigninForm = () => {
 
 ## Modes de validation disponibles
 
-| Mode | Déclenchement | Cas d'usage recommandé |
-|------|--------------|------------------------|
-| `onBlur` | Au blur du champ | Auth, inscription — retour sans interrompre la saisie |
-| `onChange` | À chaque frappe | Indicateurs temps-réel (force mot de passe) |
-| `onSubmit` | À la soumission | Formulaires courts et simples |
-| `onTouched` | Blur puis onChange | Compromis entre onBlur et onChange |
-| `all` | onBlur + onChange | CRUD avec bouton Submit conditionnel (`isValid && isDirty`) |
+| Mode        | Déclenchement      | Cas d'usage recommandé                                      |
+| ----------- | ------------------ | ----------------------------------------------------------- |
+| `onBlur`    | Au blur du champ   | Auth, inscription — retour sans interrompre la saisie       |
+| `onChange`  | À chaque frappe    | Indicateurs temps-réel (force mot de passe)                 |
+| `onSubmit`  | À la soumission    | Formulaires courts et simples                               |
+| `onTouched` | Blur puis onChange | Compromis entre onBlur et onChange                          |
+| `all`       | onBlur + onChange  | CRUD avec bouton Submit conditionnel (`isValid && isDirty`) |
 
 ---
 
 ## Formulaires migrés
 
-| Formulaire | Fichier | Mode |
-|-----------|---------|------|
-| `SigninForm` | `Auth/ui/SigninForm/SigninForm.tsx` | `onBlur` |
-| `RegisterForm` | `Auth/ui/RegisterForm/RegisterForm.tsx` | `onBlur` |
+| Formulaire              | Fichier                                                   | Mode     |
+| ----------------------- | --------------------------------------------------------- | -------- |
+| `SigninForm`            | `Auth/ui/SigninForm/SigninForm.tsx`                       | `onBlur` |
+| `RegisterForm`          | `Auth/ui/RegisterForm/RegisterForm.tsx`                   | `onBlur` |
 | `ForgottenPasswordForm` | `Auth/ui/ForgottenPasswordForm/ForgottenPasswordForm.tsx` | `onBlur` |
-| `ResetPasswordForm` | `Auth/ui/ResetPasswordForm/ResetPasswordForm.tsx` | `onBlur` |
-| `AreaForm` | `Settings/ui/AreaForm.tsx` | `all` |
-| `CreateTeamForm` | `Teams/ui/TeamForm/CreateTeamForm.tsx` | `all` |
-| `UpdateTeamForm` | `Teams/ui/TeamForm/UpdateTeamForm.tsx` | `all` |
+| `ResetPasswordForm`     | `Auth/ui/ResetPasswordForm/ResetPasswordForm.tsx`         | `onBlur` |
+| `AreaForm`              | `Settings/ui/AreaForm.tsx`                                | `all`    |
+| `CreateTeamForm`        | `Teams/ui/TeamForm/CreateTeamForm.tsx`                    | `all`    |
+| `UpdateTeamForm`        | `Teams/ui/TeamForm/UpdateTeamForm.tsx`                    | `all`    |
 
 `TeamForm` conserve un rôle de dispatcher (`teamId` → `UpdateTeamForm`, sinon → `CreateTeamForm`) car create et update ont des schémas de shapes différentes.
 
@@ -165,9 +170,9 @@ Les tests unitaires de la factory se trouvent dans `frontend/form-factory/src/cr
 
 ## Dépendances
 
-| Package | Rôle |
-|---------|------|
-| `react-hook-form` | Gestion d'état des formulaires (encapsulé) |
-| `@hookform/resolvers` | Pont entre react-hook-form et Zod |
-| `@hookform/devtools` | DevTools de débogage (actif uniquement en DEV) |
-| `zod` | Validation et inférence de types |
+| Package               | Rôle                                           |
+| --------------------- | ---------------------------------------------- |
+| `react-hook-form`     | Gestion d'état des formulaires (encapsulé)     |
+| `@hookform/resolvers` | Pont entre react-hook-form et Zod              |
+| `@hookform/devtools`  | DevTools de débogage (actif uniquement en DEV) |
+| `zod`                 | Validation et inférence de types               |

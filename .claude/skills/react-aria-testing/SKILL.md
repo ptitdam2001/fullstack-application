@@ -21,21 +21,25 @@ react-aria uses its own `useHover` hook internally. In jsdom, `userEvent.hover()
 
 ## Correct interaction patterns
 
-| Goal | Wrong | Correct |
-|------|-------|---------|
-| Test tooltip trigger | `userEvent.hover(trigger)` | `userEvent.tab()` — focus via keyboard |
-| Test button press | `userEvent.click(btn)` | `userEvent.click(btn)` ✅ (click works fine) |
-| Test keyboard nav | `fireEvent.keyDown` | `userEvent.keyboard('{ArrowDown}')` |
-| Test focus state | `userEvent.hover` | `userEvent.tab()` or `element.focus()` |
-| Test dropdown open | `userEvent.hover(trigger)` | `userEvent.click(trigger)` or `userEvent.tab()` + Enter |
+| Goal                 | Wrong                      | Correct                                                 |
+| -------------------- | -------------------------- | ------------------------------------------------------- |
+| Test tooltip trigger | `userEvent.hover(trigger)` | `userEvent.tab()` — focus via keyboard                  |
+| Test button press    | `userEvent.click(btn)`     | `userEvent.click(btn)` ✅ (click works fine)            |
+| Test keyboard nav    | `fireEvent.keyDown`        | `userEvent.keyboard('{ArrowDown}')`                     |
+| Test focus state     | `userEvent.hover`          | `userEvent.tab()` or `element.focus()`                  |
+| Test dropdown open   | `userEvent.hover(trigger)` | `userEvent.click(trigger)` or `userEvent.tab()` + Enter |
 
 ### Tooltip — correct test pattern
 
 ```tsx
 it('shows tooltip on focus', async () => {
   const user = userEvent.setup()
-  render(<Tooltip content="Hello"><Button>trigger</Button></Tooltip>)
-  
+  render(
+    <Tooltip content="Hello">
+      <Button>trigger</Button>
+    </Tooltip>
+  )
+
   await user.tab() // focuses the Button (react-aria registers focus listeners)
   expect(screen.getByRole('tooltip')).toBeInTheDocument()
 })
@@ -58,17 +62,18 @@ play: async ({ canvasElement }) => {
 
 react-aria sets state via data attributes, not CSS classes:
 
-| State | Attribute | Tailwind v4 selector |
-|-------|-----------|----------------------|
-| Hovered | `data-hovered` | `data-hovered:bg-accent` |
-| Focused | `data-focused` | `data-focused:ring-2` |
-| Selected | `data-selected` | `data-selected:font-bold` |
+| State    | Attribute       | Tailwind v4 selector       |
+| -------- | --------------- | -------------------------- |
+| Hovered  | `data-hovered`  | `data-hovered:bg-accent`   |
+| Focused  | `data-focused`  | `data-focused:ring-2`      |
+| Selected | `data-selected` | `data-selected:font-bold`  |
 | Disabled | `data-disabled` | `data-disabled:opacity-50` |
-| Pressed | `data-pressed` | `data-pressed:scale-95` |
+| Pressed  | `data-pressed`  | `data-pressed:scale-95`    |
 
 **Tailwind v3 syntax `data-[hovered]:` does NOT work in v4** — use `data-hovered:` without brackets.
 
 To assert state in tests:
+
 ```tsx
 expect(element).toHaveAttribute('data-hovered', 'true')
 ```
@@ -104,13 +109,15 @@ Play functions run in a real browser. Deux règles critiques qui n'existent pas 
 Le decorator `intlDecorator` utilise `use(dictionaryPromise)` (React Suspense). La story peut rendre `<div />` vide le temps que le cache i18n se charge. `getByRole` (sync) rate ce cas.
 
 **❌** :
+
 ```tsx
-const input = canvas.getByRole('textbox', { name: /label/i })  // peut trouver <div /> vide
+const input = canvas.getByRole('textbox', { name: /label/i }) // peut trouver <div /> vide
 ```
 
 **✅** :
+
 ```tsx
-const input = await canvas.findByRole('textbox', { name: /label/i })  // attend la résolution Suspense
+const input = await canvas.findByRole('textbox', { name: /label/i }) // attend la résolution Suspense
 ```
 
 Utiliser `findByRole` pour la **première** query de la play function. Les queries suivantes peuvent rester sync si le composant est déjà monté.
@@ -120,6 +127,7 @@ Utiliser `findByRole` pour la **première** query de la play function. Les queri
 react-aria `Select` rend ses options dans `document.body` via un portal. `canvas.getByRole('option')` ne les trouvera pas.
 
 **Pattern correct** :
+
 ```tsx
 // Ouvrir
 await userEvent.click(canvas.getByRole('button', { name: /genre/i }))

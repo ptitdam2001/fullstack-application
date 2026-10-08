@@ -2,10 +2,10 @@
 
 ## URLs
 
-| Page         | URL          |
-| ------------ | ------------ |
-| Liste        | `/teams`     |
-| Détail       | `/teams/:id` |
+| Page   | URL          |
+| ------ | ------------ |
+| Liste  | `/teams`     |
+| Détail | `/teams/:id` |
 
 ## Accès
 

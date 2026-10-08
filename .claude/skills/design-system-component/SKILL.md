@@ -17,27 +17,27 @@ Demander ou déduire : **quel composant créer ?**
 
 Classer en trois catégories :
 
-| Type | Exemples | Stratégie |
-|---|---|---|
-| **Simple** | Button, Input, Badge, Label, Separator | HTML natif + CVA + `data-slot` |
-| **Composé** | Dialog, DropdownMenu, Select, Combobox, Tooltip, Tabs | Primitifs react-aria-components |
-| **Complexe** | Sidebar, Calendar | Context + Provider + ~N sous-composants |
+| Type         | Exemples                                              | Stratégie                               |
+| ------------ | ----------------------------------------------------- | --------------------------------------- |
+| **Simple**   | Button, Input, Badge, Label, Separator                | HTML natif + CVA + `data-slot`          |
+| **Composé**  | Dialog, DropdownMenu, Select, Combobox, Tooltip, Tabs | Primitifs react-aria-components         |
+| **Complexe** | Sidebar, Calendar                                     | Context + Provider + ~N sous-composants |
 
 Pour un composant **composé**, identifier le primitif react-aria à utiliser :
 
-| Pattern UI | Primitifs react-aria-components |
-|---|---|
-| Modal / Dialog | `DialogTrigger` + `Dialog` + `Modal` + `ModalOverlay` |
-| Menu déroulant | `MenuTrigger` + `Menu` + `Popover` + `MenuItem` |
-| Select | `Select` + `SelectValue` + `Popover` + `ListBox` + `ListBoxItem` |
-| Combobox | `ComboBox` + `Input` + `Popover` + `ListBox` + `ListBoxItem` |
-| Tooltip | `TooltipTrigger` + `Tooltip` |
-| Tabs | `Tabs` + `TabList` + `Tab` + `TabPanel` |
-| Popover standalone | `DialogTrigger` + `Dialog` + `Popover` |
-| Checkbox | `Checkbox` |
-| Radio | `RadioGroup` + `Radio` |
-| Switch | `Switch` |
-| Slider | `Slider` + `SliderTrack` + `SliderThumb` |
+| Pattern UI         | Primitifs react-aria-components                                  |
+| ------------------ | ---------------------------------------------------------------- |
+| Modal / Dialog     | `DialogTrigger` + `Dialog` + `Modal` + `ModalOverlay`            |
+| Menu déroulant     | `MenuTrigger` + `Menu` + `Popover` + `MenuItem`                  |
+| Select             | `Select` + `SelectValue` + `Popover` + `ListBox` + `ListBoxItem` |
+| Combobox           | `ComboBox` + `Input` + `Popover` + `ListBox` + `ListBoxItem`     |
+| Tooltip            | `TooltipTrigger` + `Tooltip`                                     |
+| Tabs               | `Tabs` + `TabList` + `Tab` + `TabPanel`                          |
+| Popover standalone | `DialogTrigger` + `Dialog` + `Popover`                           |
+| Checkbox           | `Checkbox`                                                       |
+| Radio              | `RadioGroup` + `Radio`                                           |
+| Switch             | `Switch`                                                         |
+| Slider             | `Slider` + `SliderTrack` + `SliderThumb`                         |
 
 Consulter la doc react-aria-components pour le primitif ciblé avant d'implémenter.
 
@@ -48,6 +48,7 @@ Consulter la doc react-aria-components pour le primitif ciblé avant d'implémen
 Dossier : `src/components/NomComposant/`
 
 **Composant simple** :
+
 ```
 src/components/NomComposant/
 ├── NomComposant.tsx          # Wrapper HTML
@@ -57,6 +58,7 @@ src/components/NomComposant/
 ```
 
 **Composant composé** :
+
 ```
 src/components/NomComposant/
 ├── NomComposant.tsx          # Root (wraps AriaTrigger)
@@ -100,6 +102,7 @@ src/components/NomComposant/
    ```
 
 ### Composant simple (exemple : Badge)
+
 ```tsx
 import { cn } from '../../utils/cn'
 import { BadgeVariants } from './BadgeVariants'
@@ -108,11 +111,7 @@ import type { VariantProps } from 'class-variance-authority'
 type BadgeProps = React.ComponentProps<'span'> & VariantProps<typeof BadgeVariants>
 
 export const Badge = ({ className, variant, ...props }: BadgeProps) => (
-  <span
-    data-slot="badge"
-    className={cn(BadgeVariants({ variant }), className)}
-    {...props}
-  />
+  <span data-slot="badge" className={cn(BadgeVariants({ variant }), className)} {...props} />
 )
 ```
 
@@ -132,13 +131,14 @@ export const BadgeVariants = cva(
       },
     },
     defaultVariants: { variant: 'default' },
-  },
+  }
 )
 ```
 
 ### INTERDIT — `asChild` / `Slot`
 
 `Slot.tsx` a été supprimé du design system. N'utilise **jamais** `asChild` ou `Slot`.
+
 - Navigation polymorphe → `onPress + useNavigate` ou `Link` react-aria avec styles `ButtonVariants`
 - Trigger de Dialog/Menu → utilise directement `Button` (react-aria expose `ButtonContext` aux enfants)
 
@@ -179,7 +179,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
-  args: { /* props minimaux */ },
+  args: {/* props minimaux */},
 }
 
 export const Destructive: Story = {
@@ -197,19 +197,20 @@ export const Interaction: Story = {
 ```
 
 **Règles stories — NON NÉGOCIABLES** :
+
 - `play` function **obligatoire** pour tout composant avec état ou événement (click, focus, open/close, keyboard)
 - Une story sans `play` = story incomplète pour un composant interactif
 - `fn()` pour mocker les callbacks dans `args`
 
 **Interactions react-aria dans les plays** :
 
-| Comportement à tester | Pattern correct |
-|-----------------------|-----------------|
-| Tooltip (trigger focus) | `await userEvent.tab()` — PAS `hover()` |
-| Button click | `await userEvent.click(btn)` ✅ |
-| Menu / Dialog open | `await userEvent.click(trigger)` |
-| Keyboard nav in list | `await userEvent.keyboard('{ArrowDown}')` |
-| Close on Escape | `await userEvent.keyboard('{Escape}')` |
+| Comportement à tester   | Pattern correct                           |
+| ----------------------- | ----------------------------------------- |
+| Tooltip (trigger focus) | `await userEvent.tab()` — PAS `hover()`   |
+| Button click            | `await userEvent.click(btn)` ✅           |
+| Menu / Dialog open      | `await userEvent.click(trigger)`          |
+| Keyboard nav in list    | `await userEvent.keyboard('{ArrowDown}')` |
+| Close on Escape         | `await userEvent.keyboard('{Escape}')`    |
 
 **`userEvent.hover()` ne fonctionne PAS avec react-aria** — useHover interne ignore l'événement jsdom (currentTarget=null). Utilise `userEvent.tab()` pour tester les états focus-triggered.
 
@@ -249,6 +250,7 @@ describe('NomComposant', () => {
 ```
 
 **Ce qu'il faut tester** :
+
 - `data-slot` présent avec la bonne valeur
 - `className` forwarding (classes custom appliquées)
 - Rendu des enfants

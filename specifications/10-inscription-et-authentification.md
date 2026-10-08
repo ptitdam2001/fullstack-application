@@ -66,10 +66,10 @@ Un lien / formulaire permet de **renvoyer l'email d'activation** à l'adresse en
 
 ### Cas : mauvais mot de passe — blocage progressif
 
-| Tentatives échouées consécutives | Comportement                                                   |
-| ------------------- | -------------------------------------------------------------- |
-| 1 à 4               | Message d'erreur générique ("email ou mot de passe incorrect") |
-| 5                   | Compte **bloqué temporairement** — connexion impossible ; la 5ᵉ tentative reçoit encore le message générique, le blocage est signalé par un message spécifique dès qu'un mot de passe **correct** est saisi |
+| Tentatives échouées consécutives | Comportement                                                                                                                                                                                                |
+| -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 à 4                            | Message d'erreur générique ("email ou mot de passe incorrect")                                                                                                                                              |
+| 5                                | Compte **bloqué temporairement** — connexion impossible ; la 5ᵉ tentative reçoit encore le message générique, le blocage est signalé par un message spécifique dès qu'un mot de passe **correct** est saisi |
 
 Une connexion réussie remet le compteur à zéro : seuls 5 échecs **consécutifs** bloquent le compte.
 
@@ -696,33 +696,25 @@ backend/src/registration/
 
 ```typescript
 interface IRegistrationRepository {
-  existsByEmail(email: string): Promise<boolean>;
-  findByEmail(email: string): Promise<User | null>;
-  findByActivationToken(token: string): Promise<User | null>;
-  findByResetToken(token: string): Promise<User | null>;
-  create(
-    input: CreateUserInput,
-    activationToken: string,
-    activationTokenExpiry: Date,
-  ): Promise<User>;
+  existsByEmail(email: string): Promise<boolean>
+  findByEmail(email: string): Promise<User | null>
+  findByActivationToken(token: string): Promise<User | null>
+  findByResetToken(token: string): Promise<User | null>
+  create(input: CreateUserInput, activationToken: string, activationTokenExpiry: Date): Promise<User>
   createWithJoinRequest(
     input: CreateUserInput,
     activationToken: string,
     activationTokenExpiry: Date,
     teamId: string,
-    requestedRole: TeamRole,
-  ): Promise<User>;
-  activateAccount(userId: string): Promise<void>;
-  setActivationToken(
-    userId: string,
-    token: string,
-    expiry: Date,
-  ): Promise<void>;
-  setResetToken(userId: string, token: string, expiry: Date): Promise<void>;
-  resetPassword(userId: string, hashedPassword: string): Promise<void>;
-  declareReferee(userId: string): Promise<void>;
-  adminActivateUser(userId: string): Promise<void>;
-  adminUnblockUser(userId: string): Promise<void>;
+    requestedRole: TeamRole
+  ): Promise<User>
+  activateAccount(userId: string): Promise<void>
+  setActivationToken(userId: string, token: string, expiry: Date): Promise<void>
+  setResetToken(userId: string, token: string, expiry: Date): Promise<void>
+  resetPassword(userId: string, hashedPassword: string): Promise<void>
+  declareReferee(userId: string): Promise<void>
+  adminActivateUser(userId: string): Promise<void>
+  adminUnblockUser(userId: string): Promise<void>
 }
 ```
 
@@ -730,8 +722,8 @@ interface IRegistrationRepository {
 
 ```typescript
 interface IEmailService {
-  sendActivationEmail(to: string, token: string): Promise<void>;
-  sendPasswordResetEmail(to: string, token: string): Promise<void>;
+  sendActivationEmail(to: string, token: string): Promise<void>
+  sendPasswordResetEmail(to: string, token: string): Promise<void>
 }
 ```
 
@@ -769,27 +761,12 @@ backend/src/teamJoinRequest/
 
 ```typescript
 interface ITeamJoinRequestRepository {
-  findById(id: string): Promise<TeamJoinRequest | null>;
-  findByUserAndTeam(
-    userId: string,
-    teamId: string,
-  ): Promise<TeamJoinRequest | null>;
-  findByTeam(
-    teamId: string,
-    status?: JoinRequestStatus,
-  ): Promise<TeamJoinRequest[]>;
-  upsert(
-    userId: string,
-    teamId: string,
-    requestedRole: TeamRole,
-  ): Promise<TeamJoinRequest>;
-  approve(
-    requestId: string,
-    userId: string,
-    teamId: string,
-    requestedRole: TeamRole,
-  ): Promise<TeamJoinRequest>;
-  refuse(requestId: string): Promise<TeamJoinRequest>;
+  findById(id: string): Promise<TeamJoinRequest | null>
+  findByUserAndTeam(userId: string, teamId: string): Promise<TeamJoinRequest | null>
+  findByTeam(teamId: string, status?: JoinRequestStatus): Promise<TeamJoinRequest[]>
+  upsert(userId: string, teamId: string, requestedRole: TeamRole): Promise<TeamJoinRequest>
+  approve(requestId: string, userId: string, teamId: string, requestedRole: TeamRole): Promise<TeamJoinRequest>
+  refuse(requestId: string): Promise<TeamJoinRequest>
 }
 ```
 
@@ -800,11 +777,11 @@ interface ITeamJoinRequestRepository {
 
 **Use cases — `TeamJoinRequestUseCases`**
 
-| Use case          | Input                                       | Output              | Description                                                          |
-| ----------------- | ------------------------------------------- | ------------------- | -------------------------------------------------------------------- |
-| `createRequest`   | `{ userId, teamId, requestedRole }`         | `TeamJoinRequest`   | Upsert demande PENDING (erreur si APPROVED existant)                 |
-| `getTeamRequests` | `{ teamId, status? }`                       | `TeamJoinRequest[]` | Liste filtrée par statut                                             |
-| `updateRequest`   | `{ requestId, teamId, action }`             | `TeamJoinRequest`   | Approuve ou refuse selon `requestedRole` (guard: PENDING uniquement) |
+| Use case          | Input                               | Output              | Description                                                          |
+| ----------------- | ----------------------------------- | ------------------- | -------------------------------------------------------------------- |
+| `createRequest`   | `{ userId, teamId, requestedRole }` | `TeamJoinRequest`   | Upsert demande PENDING (erreur si APPROVED existant)                 |
+| `getTeamRequests` | `{ teamId, status? }`               | `TeamJoinRequest[]` | Liste filtrée par statut                                             |
+| `updateRequest`   | `{ requestId, teamId, action }`     | `TeamJoinRequest`   | Approuve ou refuse selon `requestedRole` (guard: PENDING uniquement) |
 
 #### Extension domaine `team` — `createTeamWithCoach`
 
@@ -813,10 +790,7 @@ Nouveau use case dans `TeamUseCases`. Ajout sur `ITeamRepository` :
 ```typescript
 interface ITeamRepository {
   // ... méthodes existantes ...
-  createWithCoach(
-    input: CreateTeamInput,
-    coachUserId: string,
-  ): Promise<{ team: Team; userTeam: UserTeam }>;
+  createWithCoach(input: CreateTeamInput, coachUserId: string): Promise<{ team: Team; userTeam: UserTeam }>
 }
 ```
 
@@ -827,9 +801,9 @@ Trois nouvelles méthodes requises sur `IUserRepository` :
 ```typescript
 interface IUserRepository {
   // ... méthodes existantes ...
-  incrementLoginAttempts(userId: string): Promise<number>; // retourne le nouveau compteur
-  lockUntil(userId: string, until: Date): Promise<void>; // blocage temporaire (lockedUntil = until)
-  resetLoginAttempts(userId: string): Promise<void>; // loginAttempts = 0 et lockedUntil = null ; appelé à la connexion réussie si le compteur > 0, et quand un blocage a expiré
+  incrementLoginAttempts(userId: string): Promise<number> // retourne le nouveau compteur
+  lockUntil(userId: string, until: Date): Promise<void> // blocage temporaire (lockedUntil = until)
+  resetLoginAttempts(userId: string): Promise<void> // loginAttempts = 0 et lockedUntil = null ; appelé à la connexion réussie si le compteur > 0, et quand un blocage a expiré
 }
 ```
 
@@ -844,14 +818,10 @@ Un compte est **bloqué** quand `isBlocked` ou `lockedUntil > now`. L'API contin
 **Génération de tokens**
 
 ```typescript
-const token = crypto.randomUUID();
-const ACTIVATION_EXPIRY_HOURS = parseInt(
-  process.env.ACTIVATION_TOKEN_EXPIRY_HOURS ?? "48",
-);
-const activationTokenExpiry = new Date(
-  Date.now() + ACTIVATION_EXPIRY_HOURS * 3_600_000,
-);
-const resetTokenExpiry = new Date(Date.now() + 7 * 24 * 3_600_000); // 7 jours — non configurable
+const token = crypto.randomUUID()
+const ACTIVATION_EXPIRY_HOURS = parseInt(process.env.ACTIVATION_TOKEN_EXPIRY_HOURS ?? '48')
+const activationTokenExpiry = new Date(Date.now() + ACTIVATION_EXPIRY_HOURS * 3_600_000)
+const resetTokenExpiry = new Date(Date.now() + 7 * 24 * 3_600_000) // 7 jours — non configurable
 ```
 
 **Blocage progressif**
@@ -878,9 +848,9 @@ Seuls les échecs consécutifs comptent : un mot de passe correct efface les éc
 // Re-soumettre après refus = mettre à jour l'enregistrement existant
 prisma.teamJoinRequest.upsert({
   where: { userId_teamId: { userId, teamId } },
-  create: { userId, teamId, status: "PENDING" },
-  update: { status: "PENDING", updatedAt: new Date() },
-});
+  create: { userId, teamId, status: 'PENDING' },
+  update: { status: 'PENDING', updatedAt: new Date() },
+})
 ```
 
 Le use case vérifie d'abord : si statut existant = `APPROVED` → `AlreadyMemberError` (409), pas d'upsert.
@@ -892,21 +862,21 @@ Le use case vérifie d'abord : si statut existant = `APPROVED` → `AlreadyMembe
 await prisma.$transaction([
   prisma.teamJoinRequest.update({
     where: { id: requestId },
-    data: { status: "APPROVED" },
+    data: { status: 'APPROVED' },
   }),
-  prisma.userTeam.create({ data: { userId, teamId, role: "PLAYER" } }),
+  prisma.userTeam.create({ data: { userId, teamId, role: 'PLAYER' } }),
   prisma.player.create({ data: { userId, teamId } }),
-]);
+])
 
 // requestedRole = COACH
 await prisma.$transaction([
   prisma.teamJoinRequest.update({
     where: { id: requestId },
-    data: { status: "APPROVED" },
+    data: { status: 'APPROVED' },
   }),
-  prisma.userTeam.create({ data: { userId, teamId, role: "COACH" } }),
+  prisma.userTeam.create({ data: { userId, teamId, role: 'COACH' } }),
   // pas de player.create — un coach n'est pas automatiquement joueur
-]);
+])
 ```
 
 **Variable d'environnement**
@@ -930,19 +900,18 @@ await prisma.$transaction([
 - **Routes admin** : `requireAdmin(ctx)` sur `adminActivateUser` et `adminUnblockUser`
 - **Routes coach/admin** : `GET /teams/{teamId}/join-requests` et `PATCH .../join-requests/{requestId}` — vérifier que l'appelant est `COACH` de l'équipe (`IUserTeamRepository.hasRole()`) ou `isAdmin`
 
-
 ### Limitation de débit
 
 Les routes publiques de la section authentification, ainsi que la route authentifiée de changement de mot de passe, sont limitées pour freiner le brute force, l'inondation d'emails et l'énumération. Un dépassement répond `429` avec le corps `{ "status": 429, "message": "..." }` et les en-têtes standard `RateLimit` (draft-8) ; la requête n'est pas traitée.
 
-| Route(s)                                    | Clé de limitation        | Limite par défaut | Fenêtre | Variable d'environnement |
-| ------------------------------------------- | ------------------------ | ----------------- | ------- | ------------------------ |
-| `POST /login`                               | IP                       | 10                | 15 min  | `LOGIN_RATE_LIMIT`       |
-| `POST /register`                            | IP                       | 5                 | 1 h     | `REGISTER_RATE_LIMIT`    |
+| Route(s)                                           | Clé de limitation | Limite par défaut | Fenêtre | Variable d'environnement |
+| -------------------------------------------------- | ----------------- | ----------------- | ------- | ------------------------ |
+| `POST /login`                                      | IP                | 10                | 15 min  | `LOGIN_RATE_LIMIT`       |
+| `POST /register`                                   | IP                | 5                 | 1 h     | `REGISTER_RATE_LIMIT`    |
 | `POST /forgot-password`, `POST /resend-activation` | IP                | 5                 | 1 h     | `EMAIL_RATE_LIMIT`       |
 | `POST /forgot-password`, `POST /resend-activation` | adresse email     | 5                 | 1 h     | `EMAIL_RATE_LIMIT`       |
-| `POST /activate`, `POST /reset-password`    | IP                       | 10                | 15 min  | `TOKEN_RATE_LIMIT`       |
-| `PUT /me/password`                          | IP                       | 10                | 15 min  | `LOGIN_RATE_LIMIT`       |
+| `POST /activate`, `POST /reset-password`           | IP                | 10                | 15 min  | `TOKEN_RATE_LIMIT`       |
+| `PUT /me/password`                                 | IP                | 10                | 15 min  | `LOGIN_RATE_LIMIT`       |
 
 Règles :
 

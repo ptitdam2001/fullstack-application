@@ -2,11 +2,11 @@
 
 ## URLs
 
-| Page             | URL                        |
-| ---------------- | -------------------------- |
-| Liste            | `/matches`                 |
-| Détail           | `/matches/:id`             |
-| Modifier         | `/matches/:id/edit`        |
+| Page     | URL                 |
+| -------- | ------------------- |
+| Liste    | `/matches`          |
+| Détail   | `/matches/:id`      |
+| Modifier | `/matches/:id/edit` |
 
 ## Liste des matchs
 

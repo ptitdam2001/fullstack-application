@@ -2,14 +2,14 @@
 
 ## URLs
 
-| Page                   | URL                              |
-| ---------------------- | -------------------------------- |
-| Liste                  | `/championships`                 |
-| Détail                 | `/championships/:id`             |
-| Créer                  | `/championships/new`             |
-| Modifier               | `/championships/:id/edit`        |
-| Phases                 | `/championships/:id/phases`      |
-| Classement d'une poule | `/championships/:id/standings`   |
+| Page                   | URL                            |
+| ---------------------- | ------------------------------ |
+| Liste                  | `/championships`               |
+| Détail                 | `/championships/:id`           |
+| Créer                  | `/championships/new`           |
+| Modifier               | `/championships/:id/edit`      |
+| Phases                 | `/championships/:id/phases`    |
+| Classement d'une poule | `/championships/:id/standings` |
 
 ## Liste des championnats
 

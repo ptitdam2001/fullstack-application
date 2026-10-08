@@ -23,12 +23,12 @@ Playwright 1.58.2 est déjà déclaré dans `package.json` (sans config active).
 
 ## Storybook vs Playwright — complémentarité (rappel ADR-0001)
 
-| Critère              | Storybook (play functions)               | Playwright                                                    |
-| -------------------- | ---------------------------------------- | ------------------------------------------------------------- |
-| Granularité          | Composant isolé                          | Application assemblée (routing, guards, état global)          |
-| Couvre               | États visuels, interactions kbd/souris   | Routing, guards auth, persistance JWT, navigation inter-pages |
-| Ne couvre pas        | Navigation, auth, appels réseau réels    | Micro-interactions d'un composant (trop coûteux à isoler)     |
-| Environnement        | jsdom / browser via Vitest               | Vrai navigateur Chromium headless                             |
+| Critère       | Storybook (play functions)             | Playwright                                                    |
+| ------------- | -------------------------------------- | ------------------------------------------------------------- |
+| Granularité   | Composant isolé                        | Application assemblée (routing, guards, état global)          |
+| Couvre        | États visuels, interactions kbd/souris | Routing, guards auth, persistance JWT, navigation inter-pages |
+| Ne couvre pas | Navigation, auth, appels réseau réels  | Micro-interactions d'un composant (trop coûteux à isoler)     |
+| Environnement | jsdom / browser via Vitest             | Vrai navigateur Chromium headless                             |
 
 Les deux outils sont complémentaires et non substituables.
 

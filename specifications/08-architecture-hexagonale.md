@@ -39,27 +39,27 @@ backend/src/<domain>/
 
 Un domaine correspond à un dossier `backend/src/<domain>/`. Ses ports sont les interfaces de son dossier `ports/`.
 
-| Domaine           | Description                                                        | Port(s)                                                                                                                                                                                    |
-| ----------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `ageCategory`     | Catégories d'âge gérées par l'admin                                | [`IAgeCategoryRepository`](../backend/src/ageCategory/ports/IAgeCategoryRepository.ts)                                                                                                     |
-| `area`            | Lieux de match                                                     | [`IAreaRepository`](../backend/src/area/ports/IAreaRepository.ts)                                                                                                                          |
-| `auth`            | Login, JWT, me                                                     | [`IAuthService`](../backend/src/auth/ports/IAuthService.ts) _(port de service)_                                                                                                            |
-| `bracket`         | Tableaux à élimination d'une phase                                 | [`IBracketRepository`](../backend/src/bracket/ports/IBracketRepository.ts)                                                                                                                 |
-| `championship`    | CRUD championnats                                                  | [`IChampionshipRepository`](../backend/src/championship/ports/IChampionshipRepository.ts)                                                                                                  |
-| `group`           | Groupes (poules) d'une phase                                       | [`IGroupRepository`](../backend/src/group/ports/IGroupRepository.ts)                                                                                                                       |
-| `health`          | État de santé de l'API                                             | — _(aucune dépendance externe)_                                                                                                                                                            |
-| `image`           | Stockage des images (photo de profil), voir [[24-page-compte]]     | [`IImageStorage`](../backend/src/image/ports/IImageStorage.ts) _(port de service)_                                                                                                         |
-| `match`           | CRUD matchs + scores                                               | [`IMatchRepository`](../backend/src/match/ports/IMatchRepository.ts)                                                                                                                       |
-| `phase`           | Phases d'un championnat                                            | [`IPhaseRepository`](../backend/src/phase/ports/IPhaseRepository.ts)                                                                                                                       |
-| `player`          | Profils joueurs (maillot, poste)                                   | [`IPlayerRepository`](../backend/src/player/ports/IPlayerRepository.ts)                                                                                                                    |
-| `registration`    | Inscription, activation du compte, réinitialisation du mot de passe | [`IRegistrationRepository`](../backend/src/registration/ports/IRegistrationRepository.ts), [`IEmailService`](../backend/src/registration/ports/IEmailService.ts) _(port de service)_       |
-| `season`          | Saisons                                                            | [`ISeasonRepository`](../backend/src/season/ports/ISeasonRepository.ts)                                                                                                                    |
-| `standings`       | Classement d'un groupe                                             | [`IStandingsRepository`](../backend/src/standings/ports/IStandingsRepository.ts)                                                                                                           |
-| `team`            | CRUD équipes + joueurs + calendrier                                | [`ITeamRepository`](../backend/src/team/ports/ITeamRepository.ts)                                                                                                                          |
-| `teamJoinRequest` | Demandes pour rejoindre une équipe                                 | [`ITeamJoinRequestRepository`](../backend/src/teamJoinRequest/ports/ITeamJoinRequestRepository.ts)                                                                                         |
-| `user`            | Gestion des utilisateurs, état d'authentification du compte        | [`IUserRepository`](../backend/src/user/ports/IUserRepository.ts)                                                                                                                          |
-| `userMatch`       | Assignation arbitres User ↔ Match                                  | [`IUserMatchRepository`](../backend/src/userMatch/ports/IUserMatchRepository.ts)                                                                                                           |
-| `userTeam`        | Appartenance User ↔ Team avec rôle (COACH ou PLAYER)               | [`IUserTeamRepository`](../backend/src/userTeam/ports/IUserTeamRepository.ts)                                                                                                              |
+| Domaine           | Description                                                         | Port(s)                                                                                                                                                                              |
+| ----------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `ageCategory`     | Catégories d'âge gérées par l'admin                                 | [`IAgeCategoryRepository`](../backend/src/ageCategory/ports/IAgeCategoryRepository.ts)                                                                                               |
+| `area`            | Lieux de match                                                      | [`IAreaRepository`](../backend/src/area/ports/IAreaRepository.ts)                                                                                                                    |
+| `auth`            | Login, JWT, me                                                      | [`IAuthService`](../backend/src/auth/ports/IAuthService.ts) _(port de service)_                                                                                                      |
+| `bracket`         | Tableaux à élimination d'une phase                                  | [`IBracketRepository`](../backend/src/bracket/ports/IBracketRepository.ts)                                                                                                           |
+| `championship`    | CRUD championnats                                                   | [`IChampionshipRepository`](../backend/src/championship/ports/IChampionshipRepository.ts)                                                                                            |
+| `group`           | Groupes (poules) d'une phase                                        | [`IGroupRepository`](../backend/src/group/ports/IGroupRepository.ts)                                                                                                                 |
+| `health`          | État de santé de l'API                                              | — _(aucune dépendance externe)_                                                                                                                                                      |
+| `image`           | Stockage des images (photo de profil), voir [[24-page-compte]]      | [`IImageStorage`](../backend/src/image/ports/IImageStorage.ts) _(port de service)_                                                                                                   |
+| `match`           | CRUD matchs + scores                                                | [`IMatchRepository`](../backend/src/match/ports/IMatchRepository.ts)                                                                                                                 |
+| `phase`           | Phases d'un championnat                                             | [`IPhaseRepository`](../backend/src/phase/ports/IPhaseRepository.ts)                                                                                                                 |
+| `player`          | Profils joueurs (maillot, poste)                                    | [`IPlayerRepository`](../backend/src/player/ports/IPlayerRepository.ts)                                                                                                              |
+| `registration`    | Inscription, activation du compte, réinitialisation du mot de passe | [`IRegistrationRepository`](../backend/src/registration/ports/IRegistrationRepository.ts), [`IEmailService`](../backend/src/registration/ports/IEmailService.ts) _(port de service)_ |
+| `season`          | Saisons                                                             | [`ISeasonRepository`](../backend/src/season/ports/ISeasonRepository.ts)                                                                                                              |
+| `standings`       | Classement d'un groupe                                              | [`IStandingsRepository`](../backend/src/standings/ports/IStandingsRepository.ts)                                                                                                     |
+| `team`            | CRUD équipes + joueurs + calendrier                                 | [`ITeamRepository`](../backend/src/team/ports/ITeamRepository.ts)                                                                                                                    |
+| `teamJoinRequest` | Demandes pour rejoindre une équipe                                  | [`ITeamJoinRequestRepository`](../backend/src/teamJoinRequest/ports/ITeamJoinRequestRepository.ts)                                                                                   |
+| `user`            | Gestion des utilisateurs, état d'authentification du compte         | [`IUserRepository`](../backend/src/user/ports/IUserRepository.ts)                                                                                                                    |
+| `userMatch`       | Assignation arbitres User ↔ Match                                   | [`IUserMatchRepository`](../backend/src/userMatch/ports/IUserMatchRepository.ts)                                                                                                     |
+| `userTeam`        | Appartenance User ↔ Team avec rôle (COACH ou PLAYER)                | [`IUserTeamRepository`](../backend/src/userTeam/ports/IUserTeamRepository.ts)                                                                                                        |
 
 ### Contrats des ports
 
@@ -129,8 +129,8 @@ Les hooks orval sont régénérés depuis `openapi.yml`. La couche `infrastructu
 
 ```ts
 // src/Teams/infrastructure/teamRepository.ts
-export { useGetTeams as useTeamListQuery } from "@Sdk"
-export { useCreateTeam as useCreateTeamMutation } from "@Sdk"
+export { useGetTeams as useTeamListQuery } from '@Sdk'
+export { useCreateTeam as useCreateTeamMutation } from '@Sdk'
 ```
 
 Si orval renomme un hook, seul ce fichier change.
@@ -141,7 +141,7 @@ Re-exporte les types SDK sous des noms métier stables et ajoute les types déri
 
 ```ts
 // src/Teams/domain/Team.ts
-export type { Team } from "@Sdk"
+export type { Team } from '@Sdk'
 export type TeamId = string
 ```
 

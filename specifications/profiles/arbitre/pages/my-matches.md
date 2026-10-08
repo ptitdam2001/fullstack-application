@@ -2,10 +2,10 @@
 
 ## URLs
 
-| Page         | URL                |
-| ------------ | ------------------ |
-| Liste        | `/my-matches`      |
-| Détail       | `/my-matches/:id`  |
+| Page   | URL               |
+| ------ | ----------------- |
+| Liste  | `/my-matches`     |
+| Détail | `/my-matches/:id` |
 
 ## Liste — Mes matchs
 

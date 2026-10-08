@@ -12,18 +12,18 @@ L'application est un monorepo structuré en trois parties :
 
 ## Backend
 
-| Dimension               | Choix                                 | Justification                                                                                     |
-| ----------------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| Runtime                 | Node.js + TypeScript (strict)         | Typage fort partageable avec le frontend via le contrat OpenAPI                                   |
-| Framework HTTP          | Express v5                            | Léger, mature, compatible avec `openapi-backend`                                                  |
-| Contrat API             | OpenAPI 3.1 (`backend/openapi.yml`)   | Source de vérité unique pour les routes, schémas, et la génération du SDK frontend                |
-| Validation des requêtes | `openapi-backend`                     | Valide automatiquement les payloads entrants contre la spec OpenAPI                               |
-| Base de données         | MongoDB                               | Schéma flexible adapté au domaine sportif (configurations de points variables, phases dynamiques) |
-| ORM                     | Prisma                                | Typage TypeScript des requêtes, migrations, génération du client Prisma                           |
+| Dimension               | Choix                                 | Justification                                                                                                |
+| ----------------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| Runtime                 | Node.js + TypeScript (strict)         | Typage fort partageable avec le frontend via le contrat OpenAPI                                              |
+| Framework HTTP          | Express v5                            | Léger, mature, compatible avec `openapi-backend`                                                             |
+| Contrat API             | OpenAPI 3.1 (`backend/openapi.yml`)   | Source de vérité unique pour les routes, schémas, et la génération du SDK frontend                           |
+| Validation des requêtes | `openapi-backend`                     | Valide automatiquement les payloads entrants contre la spec OpenAPI                                          |
+| Base de données         | MongoDB                               | Schéma flexible adapté au domaine sportif (configurations de points variables, phases dynamiques)            |
+| ORM                     | Prisma                                | Typage TypeScript des requêtes, migrations, génération du client Prisma                                      |
 | Authentification        | JWT (access token) + bcrypt           | Identité vérifiable sans session serveur ; droits et état du compte relus en base à chaque requête (spec 08) |
-| Tests                   | Vitest (unitaires sur use cases)      | Les use cases de la couche application peuvent être testés sans infrastructure                    |
-| Linting                 | ESLint via `@repo/eslint-config/node` | Config partagée avec le frontend                                                                  |
-| Formatage               | Prettier via `@repo/prettier-config`  | Config partagée avec le frontend                                                                  |
+| Tests                   | Vitest (unitaires sur use cases)      | Les use cases de la couche application peuvent être testés sans infrastructure                               |
+| Linting                 | ESLint via `@repo/eslint-config/node` | Config partagée avec le frontend                                                                             |
+| Formatage               | Prettier via `@repo/prettier-config`  | Config partagée avec le frontend                                                                             |
 
 ### Workflow API
 
@@ -61,19 +61,19 @@ Le design system contient des composants React **sans logique métier** (boutons
 
 ### Application (`application-material`)
 
-| Dimension            | Choix                                  | Justification                                                                     |
-| -------------------- | -------------------------------------- | --------------------------------------------------------------------------------- |
-| Framework            | React 19 + TypeScript + Vite           | Écosystème standard, HMR rapide                                                   |
-| Routing              | React Router v7                        | File-based routing, loaders/actions, compatible SSR futur                         |
-| Server state         | TanStack Query v5                      | Cache, invalidation, états de chargement/erreur gérés automatiquement             |
-| SDK API              | orval                                  | Génère hooks TanStack Query + types TypeScript + schémas Zod depuis `openapi.yml` |
+| Dimension            | Choix                                   | Justification                                                                                                                                           |
+| -------------------- | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Framework            | React 19 + TypeScript + Vite            | Écosystème standard, HMR rapide                                                                                                                         |
+| Routing              | React Router v7                         | File-based routing, loaders/actions, compatible SSR futur                                                                                               |
+| Server state         | TanStack Query v5                       | Cache, invalidation, états de chargement/erreur gérés automatiquement                                                                                   |
+| SDK API              | orval                                   | Génère hooks TanStack Query + types TypeScript + schémas Zod depuis `openapi.yml`                                                                       |
 | Formulaires          | `@repo/form-factory` (factory headless) | Encapsule `useForm + zodResolver + Controller`. API : `Field`, `FieldArray`, `Form` avec DevTools auto en DEV. Voir `specifications/15-form-factory.md` |
-| Internationalisation | react-intl                             | Gestion des messages, pluriels, formats de dates                                  |
-| Mocking (dev)        | MSW (Mock Service Worker)              | Intercepte les requêtes au niveau réseau, identique en dev et en test             |
-| Tests unitaires      | Vitest + React Testing Library + jsdom | Cohérence avec le design system                                                   |
-| Tests E2E            | Playwright                             | Tests de parcours complets en navigateur réel                                     |
-| Linting              | ESLint via `@repo/eslint-config/react` | Config partagée avec le design system                                             |
-| Formatage            | Prettier via `@repo/prettier-config`   | Config partagée avec le reste du projet                                           |
+| Internationalisation | react-intl                              | Gestion des messages, pluriels, formats de dates                                                                                                        |
+| Mocking (dev)        | MSW (Mock Service Worker)               | Intercepte les requêtes au niveau réseau, identique en dev et en test                                                                                   |
+| Tests unitaires      | Vitest + React Testing Library + jsdom  | Cohérence avec le design system                                                                                                                         |
+| Tests E2E            | Playwright                              | Tests de parcours complets en navigateur réel                                                                                                           |
+| Linting              | ESLint via `@repo/eslint-config/react`  | Config partagée avec le design system                                                                                                                   |
+| Formatage            | Prettier via `@repo/prettier-config`    | Config partagée avec le reste du projet                                                                                                                 |
 
 ---
 
@@ -100,8 +100,8 @@ Chaque package consomme la config via :
 
 ```js
 // eslint.config.js
-import config from "@repo/eslint-config/node"; // ou /react
-export default config;
+import config from '@repo/eslint-config/node' // ou /react
+export default config
 ```
 
 ---
