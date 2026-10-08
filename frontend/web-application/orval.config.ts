@@ -22,7 +22,7 @@ export default {
         operations: {
           countTeams: {
             mock: {
-              data: faker.number.int({ min: 10, max: 250 }),
+              data: () => faker.number.int({ min: 10, max: 250 }),
             },
           },
           getTeamPlayers: {
