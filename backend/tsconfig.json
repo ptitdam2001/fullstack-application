@@ -108,5 +108,6 @@
     "skipLibCheck": true /* Skip type checking all .d.ts files. */,
     "ignoreDeprecations": "6.0"
   },
-  "include": ["src/**/*.ts", "index.ts", "index.d.ts"]
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules", "dist"]
 }
