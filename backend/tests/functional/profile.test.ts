@@ -1,3 +1,4 @@
+import type { Stream } from 'node:stream'
 import jwt from 'jsonwebtoken'
 import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { prisma } from '../../utils/prismaClient.js'
@@ -30,7 +31,7 @@ const imageIdOf = (avatar: string): string => {
   return match[1]
 }
 
-const binaryParser = (res: NodeJS.ReadableStream, callback: (err: Error | null, body: Buffer) => void): void => {
+const binaryParser = (res: Stream, callback: (err: Error | null, body: Buffer) => void): void => {
   const chunks: Buffer[] = []
   res.on('data', (chunk: Buffer) => chunks.push(chunk))
   res.on('end', () => callback(null, Buffer.concat(chunks)))
