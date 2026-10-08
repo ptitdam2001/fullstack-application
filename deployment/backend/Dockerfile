@@ -1,11 +1,13 @@
 # ── Stage 1: Builder ──────────────────────────────────────────────────────────
 FROM node:22-alpine AS builder
 
-RUN corepack enable && corepack prepare pnpm@12.6.0 --activate
-
 WORKDIR /app/backend
 # pnpm-workspace.yaml holds allowBuilds: without it pnpm skips native builds (bcrypt)
 COPY backend/package.json backend/pnpm-lock.yaml backend/pnpm-workspace.yaml ./
+
+# pnpm version: the packageManager field of backend/package.json
+RUN corepack enable && \
+    corepack prepare "$(node -p "require('./package.json').packageManager")" --activate
 
 # Tooling packages referenced via file: in devDependencies
 COPY tooling/eslint-config/ /app/tooling/eslint-config/
@@ -25,11 +27,13 @@ RUN pnpm build
 # ── Stage 2: Production ───────────────────────────────────────────────────────
 FROM node:22-alpine AS production
 
-RUN corepack enable && corepack prepare pnpm@12.6.0 --activate
-
 WORKDIR /app/backend
 # pnpm-workspace.yaml holds allowBuilds: without it pnpm skips native builds (bcrypt)
 COPY backend/package.json backend/pnpm-lock.yaml backend/pnpm-workspace.yaml ./
+
+# pnpm version: the packageManager field of backend/package.json
+RUN corepack enable && \
+    corepack prepare "$(node -p "require('./package.json').packageManager")" --activate
 
 COPY tooling/eslint-config/ /app/tooling/eslint-config/
 COPY tooling/prettier-config/ /app/tooling/prettier-config/
