@@ -51,9 +51,11 @@ docker compose -f deployment/docker-compose.yml up --build
 
 **`api`** — OpenAPI-first Express backend (Node 22, Alpine). Built with esbuild, Prisma ORM connects to MongoDB. `DATABASE_URL` is overridden to target the `mongodb` container.
 
-**`mongodb`** — Single-node replica set (`prismagraphql/mongo-single-replica`), required by Prisma for transaction support.
+**`mongodb`** — Single-node replica set (`prismagraphql/mongo-single-replica`), required by Prisma for transaction support. Its healthcheck passes once the replica set is initiated and the node is primary: the image restarts `mongod` to initiate it, and until then the port answers but a write fails with `node is not in primary or recovering state`. `api` and `db-viewer` start only after that (`depends_on` with `condition: service_healthy`).
 
 **`db-viewer`** — Mongo Express, a web-based MongoDB admin UI. No authentication required in dev (`ME_CONFIG_BASICAUTH=false`).
+
+`make up` runs the same stack detached with `--wait`: it returns once `mongodb` and `api` are healthy, so a command chained after it (`make up && make db-push`) finds a database that accepts writes. It fails when a container exits at start-up — for instance `api` with the `JWT_SECRET` placeholder of `.env.sample`; read the cause with `docker compose -f deployment/docker-compose.yml logs api`.
 
 ### MongoDB indexes
 

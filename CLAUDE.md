@@ -107,7 +107,7 @@ docker compose -f deployment/docker-compose.yml up  # API (:4000), Swagger UI (:
 git cz               # Commitizen for conventional commits
 pnpm check:format    # Prettier check of the Markdown files outside backend/ and frontend/
 make help             # List all Makefile targets
-make up               # Start dev stack (Docker) — does NOT create the MongoDB indexes
+make up               # Start dev stack (Docker), waits until Mongo is primary and the API healthy — does NOT create the MongoDB indexes
 make db-push          # Create/update the MongoDB indexes (duplicate check, then prisma db push) on backend/.env DATABASE_URL
 make db-check-duplicates # Read-only: list documents that would block a unique index
 make test             # Run all tests (unit + func + e2e mocked)
