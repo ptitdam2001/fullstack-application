@@ -1,6 +1,12 @@
 staged=$(git diff --cached --name-only)
 
 if echo "$staged" | grep -qE '^backend/(openapi\.yml|prisma/schema\.prisma)$'; then
+  if [ ! -x backend/node_modules/.bin/tsx ]; then
+    echo 'pre-commit: tsx is not installed, the openapi.yml / schema.prisma sync cannot be checked.' >&2
+    echo 'pre-commit: run "pnpm install" in backend/, then commit again.' >&2
+    exit 1
+  fi
+
   (cd backend && pnpm check:sync-schema)
 fi
 
