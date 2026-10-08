@@ -3,8 +3,6 @@ interface ImportMetaEnv {
   readonly VITE_MOCKED_BACKEND: string
 
   readonly VITE_BACKEND_BASEURL: string
-
-  readonly VITE_CLIENT_STORAGE: string
 }
 
 interface ImportMeta {
