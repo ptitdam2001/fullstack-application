@@ -16,7 +16,7 @@ if [ -n "$(staged_markdown)" ]; then
     exit 1
   fi
 
-  if ! staged_markdown -z | xargs -0 node_modules/.bin/prettier --check; then
+  if ! staged_markdown -z | xargs -0 node_modules/.bin/prettier --check --; then
     echo 'pre-commit: fix the files above with "npx prettier --write <file>", stage them, then commit again.' >&2
     exit 1
   fi
