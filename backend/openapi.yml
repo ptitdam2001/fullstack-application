@@ -304,14 +304,14 @@ paths:
           $ref: '#/components/responses/PayloadTooLarge'
         '415':
           $ref: '#/components/responses/UnsupportedMediaType'
-        '500':
-          description: Internal error
+        '429':
+          description: Too many registration attempts — rate limit reached for this IP
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
-        '429':
-          description: Too many registration attempts — rate limit reached for this IP
+        '500':
+          description: Internal error
           content:
             application/json:
               schema:
@@ -337,14 +337,14 @@ paths:
           $ref: '#/components/responses/PayloadTooLarge'
         '415':
           $ref: '#/components/responses/UnsupportedMediaType'
-        '500':
-          description: ''
+        '429':
+          description: Too many requests — rate limit reached for this IP or this email address
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
-        '429':
-          description: Too many requests — rate limit reached for this IP or this email address
+        '500':
+          description: ''
           content:
             application/json:
               schema:
@@ -686,18 +686,18 @@ paths:
           schema:
             type: string
       responses:
-        '404':
-          description: 'team or user are not found'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorOutput'
         '200':
           description: Successful
           content:
             application/json:
               schema:
                 type: boolean
+        '404':
+          description: 'team or user are not found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorOutput'
   /team/{teamId}/coaches:
     get:
       operationId: getTeamCoaches
