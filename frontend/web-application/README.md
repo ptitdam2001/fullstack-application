@@ -21,12 +21,12 @@ VITE_CLIENT_STORAGE=default_application_database
 
 Note: All environment variables must be prefixed with `VITE_` to be exposed to the client-side code in Vite applications.
 
-### Docker build & run
+### Docker build
 
-You must create a docker image before using it, to make it, tape the next command:
+The image is built by `deployment/frontend/Dockerfile`, from the repository root (the build context must hold `frontend/`, `tooling/` and `backend/openapi.yml`):
 
 ```bash
-docker build --pull --rm -f 'Dockerfile' -t 'frontend:latest' '.'
+docker build -f deployment/frontend/Dockerfile --build-arg VITE_BACKEND_BASEURL=http://localhost:4000/ -t frontend:latest .
 ```
 
-This command builds a Docker image for the frontend application using the specified `Dockerfile`. The `--pull` flag ensures the latest base images are used, `--rm` removes intermediate containers after a successful build, `-f 'Dockerfile'` specifies the Dockerfile to use, `-t 'frontend:latest'` tags the resulting image as `frontend:latest`, and `'.'` sets the build context to the current directory.
+`VITE_BACKEND_BASEURL` is inlined at build time. The pnpm version comes from the `packageManager` field of the root `package.json`.
