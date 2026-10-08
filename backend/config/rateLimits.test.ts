@@ -1,6 +1,7 @@
 import express, { type Express } from 'express'
 import request from 'supertest'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { listenOnLoopback } from '../tests/support/loopbackServer'
 import { applyAuthRateLimits } from './rateLimits'
 
 // Mini app: 200 on every rate-limited route. `trust proxy` = 1 hop lets a test pick the client IP
@@ -25,8 +26,11 @@ const buildApp = (env: Record<string, string> = {}): Express => {
   return app
 }
 
-const post = (app: Express, path: string, body: object, ip = '10.0.0.1') =>
-  request(app).post(path).set('X-Forwarded-For', ip).send(body)
+const post = async (app: Express, path: string, body: object, ip = '10.0.0.1') =>
+  request(await listenOnLoopback(app))
+    .post(path)
+    .set('X-Forwarded-For', ip)
+    .send(body)
 
 const statuses = async (calls: Array<() => Promise<{ status: number }>>): Promise<number[]> => {
   const result: number[] = []
@@ -165,8 +169,11 @@ describe('applyAuthRateLimits (spec 10, Limitation de débit)', () => {
   })
 
   describe('PUT /me/password', () => {
-    const put = (app: Express, ip = '10.0.0.1') =>
-      request(app).put('/me/password').set('X-Forwarded-For', ip).send({ currentPassword: 'a', newPassword: 'b' })
+    const put = async (app: Express, ip = '10.0.0.1') =>
+      request(await listenOnLoopback(app))
+        .put('/me/password')
+        .set('X-Forwarded-For', ip)
+        .send({ currentPassword: 'a', newPassword: 'b' })
 
     it('limits per IP, with the login limit', async () => {
       const app = buildApp({ LOGIN_RATE_LIMIT: '2' })
@@ -199,7 +206,9 @@ describe('applyAuthRateLimits (spec 10, Limitation de débit)', () => {
     app.get('/teams', (_req, res) => {
       res.sendStatus(200)
     })
-    const results = await statuses(Array.from({ length: 3 }, () => () => request(app).get('/teams')))
+    const results = await statuses(
+      Array.from({ length: 3 }, () => async () => request(await listenOnLoopback(app)).get('/teams'))
+    )
     expect(results).toEqual([200, 200, 200])
   })
 })

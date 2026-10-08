@@ -1,6 +1,7 @@
 import express from 'express'
 import request from 'supertest'
 import { describe, expect, it } from 'vitest'
+import { listenOnLoopback } from '../tests/support/loopbackServer'
 import { createRequestLogger, sanitizePath } from './requestLogger'
 
 const OBJECT_ID = '64b7f3c2a1d4e5f607182930'
@@ -27,7 +28,7 @@ describe('createRequestLogger (spec 10, Sécurité › Logs)', () => {
     app.use(createRequestLogger({ write: line => lines.push(line) }))
     app.get('/users/:id', (_req, res) => res.status(200).json({ ok: true }))
 
-    await request(app)
+    await request(await listenOnLoopback(app))
       .get(`/users/${OBJECT_ID}?email=alice@example.com`)
       .set('User-Agent', 'SecretBrowser/9.9')
       .set('Referer', 'https://intranet.example/private')
