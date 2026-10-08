@@ -35,122 +35,44 @@ backend/src/<domain>/
     └── <Entity>HttpHandlers.ts      # Adaptateur HTTP Express
 ```
 
-### Domaines implémentés
+### Domaines et ports
 
-| Domaine      | Description                                              |
-| ------------ | -------------------------------------------------------- |
-| `auth`       | Login, JWT, me                                           |
-| `user`       | CRUD utilisateurs                                        |
-| `team`       | CRUD équipes + joueurs + calendrier                      |
-| `player`     | Profils joueurs (maillot, poste)                         |
-| `match`      | CRUD matchs + scores                                     |
-| `championship` | CRUD championnats                                      |
-| `userTeam`   | Appartenance User ↔ Team avec rôle (COACH ou PLAYER)     |
-| `userMatch`  | Assignation arbitres User ↔ Match                        |
+Un domaine correspond à un dossier `backend/src/<domain>/`. Ses ports sont les interfaces de son dossier `ports/`.
 
-### Contrats d'interfaces par domaine
+| Domaine           | Description                                                        | Port(s)                                                                                                                                                                                    |
+| ----------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `ageCategory`     | Catégories d'âge gérées par l'admin                                | [`IAgeCategoryRepository`](../backend/src/ageCategory/ports/IAgeCategoryRepository.ts)                                                                                                     |
+| `area`            | Lieux de match                                                     | [`IAreaRepository`](../backend/src/area/ports/IAreaRepository.ts)                                                                                                                          |
+| `auth`            | Login, JWT, me                                                     | [`IAuthService`](../backend/src/auth/ports/IAuthService.ts) _(port de service)_                                                                                                            |
+| `bracket`         | Tableaux à élimination d'une phase                                 | [`IBracketRepository`](../backend/src/bracket/ports/IBracketRepository.ts)                                                                                                                 |
+| `championship`    | CRUD championnats                                                  | [`IChampionshipRepository`](../backend/src/championship/ports/IChampionshipRepository.ts)                                                                                                  |
+| `group`           | Groupes (poules) d'une phase                                       | [`IGroupRepository`](../backend/src/group/ports/IGroupRepository.ts)                                                                                                                       |
+| `health`          | État de santé de l'API                                             | — _(aucune dépendance externe)_                                                                                                                                                            |
+| `image`           | Stockage des images (photo de profil), voir [[24-page-compte]]     | [`IImageStorage`](../backend/src/image/ports/IImageStorage.ts) _(port de service)_                                                                                                         |
+| `match`           | CRUD matchs + scores                                               | [`IMatchRepository`](../backend/src/match/ports/IMatchRepository.ts)                                                                                                                       |
+| `phase`           | Phases d'un championnat                                            | [`IPhaseRepository`](../backend/src/phase/ports/IPhaseRepository.ts)                                                                                                                       |
+| `player`          | Profils joueurs (maillot, poste)                                   | [`IPlayerRepository`](../backend/src/player/ports/IPlayerRepository.ts)                                                                                                                    |
+| `registration`    | Inscription, activation du compte, réinitialisation du mot de passe | [`IRegistrationRepository`](../backend/src/registration/ports/IRegistrationRepository.ts), [`IEmailService`](../backend/src/registration/ports/IEmailService.ts) _(port de service)_       |
+| `season`          | Saisons                                                            | [`ISeasonRepository`](../backend/src/season/ports/ISeasonRepository.ts)                                                                                                                    |
+| `standings`       | Classement d'un groupe                                             | [`IStandingsRepository`](../backend/src/standings/ports/IStandingsRepository.ts)                                                                                                           |
+| `team`            | CRUD équipes + joueurs + calendrier                                | [`ITeamRepository`](../backend/src/team/ports/ITeamRepository.ts)                                                                                                                          |
+| `teamJoinRequest` | Demandes pour rejoindre une équipe                                 | [`ITeamJoinRequestRepository`](../backend/src/teamJoinRequest/ports/ITeamJoinRequestRepository.ts)                                                                                         |
+| `user`            | Gestion des utilisateurs, état d'authentification du compte        | [`IUserRepository`](../backend/src/user/ports/IUserRepository.ts)                                                                                                                          |
+| `userMatch`       | Assignation arbitres User ↔ Match                                  | [`IUserMatchRepository`](../backend/src/userMatch/ports/IUserMatchRepository.ts)                                                                                                           |
+| `userTeam`        | Appartenance User ↔ Team avec rôle (COACH ou PLAYER)               | [`IUserTeamRepository`](../backend/src/userTeam/ports/IUserTeamRepository.ts)                                                                                                              |
 
-#### `IUserRepository`
+### Contrats des ports
 
-```ts
-interface IUserRepository {
-  findById(id: string): Promise<UserProfile | null>
-  findByEmailWithPassword(email: string): Promise<(UserProfile & { password: string }) | null>
-  findAll(): Promise<UserProfile[]>
-  create(input: CreateUserInput): Promise<UserProfile>
-  update(id: string, input: UpdateUserInput): Promise<UserProfile>
-  delete(id: string): Promise<void>
-}
-```
+**Le fichier `ports/` de chaque domaine est la source de vérité de son contrat.** Cette spécification ne recopie pas les signatures : une copie cesse d'être exacte dès que le port évolue. Pour connaître les méthodes d'un port, lire le fichier lié dans le tableau ci-dessus. Les règles qu'une signature ne dit pas (atomicité, cas « introuvable », ce que l'appelant doit nettoyer) sont écrites en commentaire sur la méthode, dans ce même fichier.
 
-#### `IAuthService` _(port de service)_
+Quand un domaine est ajouté, supprimé ou qu'un port change de nom, mettre à jour le tableau dans le même changeset.
 
-```ts
-interface IAuthService {
-  generateToken(userId: string, isAdmin: boolean): string
-  verifyToken(token: string): TokenPayload
-  hashPassword(password: string): Promise<string>
-  comparePassword(password: string, hash: string): Promise<boolean>
-}
-```
+Conventions communes à tous les ports :
 
-#### `ITeamRepository`
-
-```ts
-interface ITeamRepository {
-  count(): Promise<number>
-  findAll(params: PaginationParams): Promise<Team[]>
-  findById(id: string): Promise<Team | null>
-  create(input: CreateTeamInput): Promise<Team>
-  update(id: string, input: UpdateTeamInput): Promise<Team>
-  delete(id: string): Promise<void>
-  findPlayers(teamId: string, options: PaginationOptions): Promise<Player[]>
-  findCalendar(teamId: string, options: CalendarOptions): Promise<Match[]>
-}
-```
-
-#### `IPlayerRepository`
-
-```ts
-interface IPlayerRepository {
-  findById(id: string): Promise<Player | null>
-  findByUserAndTeam(userId: string, teamId: string): Promise<Player | null>
-  findByUserId(userId: string): Promise<Player[]>
-  create(input: CreatePlayerInput): Promise<Player>
-  update(id: string, input: UpdatePlayerInput): Promise<Player>
-  delete(id: string): Promise<void>
-}
-```
-
-#### `IUserTeamRepository`
-
-```ts
-interface IUserTeamRepository {
-  assign(userId: string, teamId: string, role: TeamRole): Promise<UserTeam>
-  remove(userId: string, teamId: string, role: TeamRole): Promise<void>
-  findByTeamAndRole(teamId: string, role: TeamRole): Promise<UserTeam[]>
-  findByUserAndRole(userId: string, role: TeamRole): Promise<UserTeam[]>
-  hasRole(userId: string, teamId: string, role: TeamRole): Promise<boolean>
-}
-```
-
-#### `IUserMatchRepository`
-
-```ts
-interface IUserMatchRepository {
-  assign(userId: string, matchId: string): Promise<UserMatch>
-  remove(userId: string, matchId: string): Promise<void>
-  findByMatch(matchId: string): Promise<UserMatch[]>
-  findByUser(userId: string): Promise<UserMatch[]>
-  isReferee(userId: string, matchId: string): Promise<boolean>
-}
-```
-
-#### `IMatchRepository`
-
-```ts
-interface IMatchRepository {
-  count(): Promise<number>
-  findAll(options: PaginationOptions): Promise<Match[]>
-  findById(id: string): Promise<Match | null>
-  create(input: CreateMatchInput): Promise<Match>
-  update(id: string, input: UpdateMatchInput): Promise<Match>
-  delete(id: string): Promise<void>
-}
-```
-
-#### `IChampionshipRepository`
-
-```ts
-interface IChampionshipRepository {
-  count(): Promise<number>
-  findAll(options: PaginationOptions): Promise<Championship[]>
-  findById(id: string): Promise<Championship | null>
-  create(input: CreateChampionshipInput): Promise<Championship>
-  update(id: string, input: UpdateChampionshipInput): Promise<Championship>
-  delete(id: string): Promise<void>
-}
-```
+- Un port n'expose que des types du dossier `domain/` et les types d'options qu'il déclare lui-même (filtres, pagination), jamais un type Prisma ou Express.
+- Les types `Create<X>Input` et `Update<X>Input` excluent `createdAt`, `updatedAt` et `deletedAt` : ces champs sont gérés par la persistance et par le cas d'usage de suppression.
+- `softDelete(id)` marque l'entité comme supprimée (`deletedAt`) ; `delete(id)` la retire définitivement. Un port n'expose que les opérations dont ses cas d'usage ont besoin.
+- Une recherche par identifiant retourne `null` quand l'entité n'existe pas ; c'est le cas d'usage qui lève l'erreur de domaine.
 
 ### Authentification et guards
 
