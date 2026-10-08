@@ -97,7 +97,7 @@
     "storybook": "$storybook"
   },
   "engines": {
-    "node": ">=10",
-    "pnpm": ">=3"
+    "node": ">=22",
+    "pnpm": "^12.6.0"
   }
 }
