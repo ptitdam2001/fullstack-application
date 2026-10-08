@@ -15,6 +15,7 @@ pnpm format:prisma   # Format prisma/schema.prisma
 pnpm db:push         # Create/update the MongoDB indexes of schema.prisma on DATABASE_URL (runs db:check-duplicates first)
 pnpm db:check-duplicates # Read-only: list documents that would block a unique index
 pnpm check:sync-schema # Flag nullability drift between openapi.yml and prisma/schema.prisma
+pnpm lint            # ESLint — TypeScript files, and the status codes of openapi.yml (quoted, ascending)
 ```
 
 ## Database indexes
