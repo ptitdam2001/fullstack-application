@@ -1,1 +1,8 @@
-exec < /dev/tty && npx cz --hook || true
+# $2 is the source of the message: empty for a plain "git commit" only.
+[ -z "${2:-}" ] || exit 0
+
+# No terminal (agent, script, graphical client): nothing to prompt on.
+(exec < /dev/tty) 2> /dev/null || exit 0
+
+exec < /dev/tty
+npx cz --hook || true
