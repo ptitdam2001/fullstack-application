@@ -1,6 +1,5 @@
-import supertest from 'supertest'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { createApp } from '../../createApp'
+import { createTestAgent } from '../support/client.js'
 import { resetDatabase } from '../support/database.js'
 
 // Wiring check on the real app (spec 10, Limitation de débit): the limiter behaviour itself
@@ -32,7 +31,7 @@ describe('rate limiting — functional API', () => {
 
   it.each(routes)('%s answers 429 once its limit is reached', async (_label, path, body, envName) => {
     vi.stubEnv(envName, '1')
-    const agent = supertest(await createApp())
+    const agent = await createTestAgent()
 
     const first = await agent.post(path).send(body)
     const second = await agent.post(path).send(body)
@@ -45,7 +44,7 @@ describe('rate limiting — functional API', () => {
   // Mounted ahead of authentication: the limit holds whether or not the caller is signed in.
   it('PUT /me/password answers 429 once its limit is reached', async () => {
     vi.stubEnv('LOGIN_RATE_LIMIT', '1')
-    const agent = supertest(await createApp())
+    const agent = await createTestAgent()
     const body = { currentPassword: 'Whatever123', newPassword: 'Password123' }
 
     const first = await agent.put('/me/password').send(body)
@@ -59,7 +58,7 @@ describe('rate limiting — functional API', () => {
   it('does not rate limit an unrelated route', async () => {
     vi.stubEnv('TOKEN_RATE_LIMIT', '1')
     vi.stubEnv('EMAIL_RATE_LIMIT', '1')
-    const agent = supertest(await createApp())
+    const agent = await createTestAgent()
 
     const results = [await agent.get('/health'), await agent.get('/health'), await agent.get('/health')]
 
