@@ -42,13 +42,23 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserWithoutPassword'
         '400':
-          description: The payload breaks the schema (unknown field, empty or blank first name, empty or blank last name)
+          description: >-
+            The payload breaks the schema (unknown field, empty or blank first name, empty or blank last name),
+            or the request body cannot be read (see `#/components/responses/BadRequest`).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorOutput'
         '401':
           description: Unauthorized
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
   /me/teams:
     get:
       operationId: getMyTeams
@@ -91,7 +101,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserWithoutPassword'
         '400':
-          description: The payload is not a JPEG, PNG or WebP image, or it exceeds the size limit
+          description: >-
+            The payload is not a JPEG, PNG or WebP image, or it exceeds the size limit (this route answers 400,
+            not 413, to a body above its limit), or the request body cannot be read
+            (see `#/components/responses/BadRequest`).
           content:
             application/json:
               schema:
@@ -102,6 +115,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
     delete:
       operationId: removeMyAvatar
       summary: Remove the profile picture of the current authenticated user (any role)
@@ -148,6 +163,7 @@ paths:
           description: >-
             The current password is wrong, or the new one breaks the password rules.
             Deliberately not a 401, which means "session expired" to the clients.
+            Also answered when the request body cannot be read (see `#/components/responses/BadRequest`).
           content:
             application/json:
               schema:
@@ -160,6 +176,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
         '429':
           description: Too many attempts — rate limit reached
           content:
@@ -221,12 +241,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TokenData'
+        '400':
+          $ref: '#/components/responses/BadRequest'
         404:
           description: ''
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
         '429':
           description: Too many login attempts — rate limit reached for this IP (see specifications/10, Limitation de débit)
           content:
@@ -266,12 +292,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserWithoutPassword'
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '409':
           description: Email already in use
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
         '500':
           description: Internal error
           content:
@@ -299,6 +331,12 @@ paths:
       responses:
         '200':
           description: 'successful'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
         '500':
           description: ''
           content:
@@ -385,12 +423,18 @@ paths:
             application/json:
               schema:
                 type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
         404:
           description: 'User or team does not exist'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
 
   /teams:
     get:
@@ -453,6 +497,12 @@ paths:
             application/json:
               schema:
                 type: 'string'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
   /team/{id}:
     delete:
       operationId: 'removeTeam'
@@ -519,6 +569,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Team'
+        '400':
+          $ref: '#/components/responses/BadRequest'
         403:
           description: 'Forbidden — requires Admin or Coach role on this team'
           content:
@@ -531,6 +583,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
 
   /team/{teamId}/players:
     get:
@@ -887,6 +943,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '403':
           description: 'Not an admin, or an admin revoking their own admin role'
           content:
@@ -899,6 +957,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
   /user/{id}/avatar:
     delete:
       operationId: removeUserAvatar
@@ -1013,6 +1075,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Area'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
         500:
           description: 'Error during creation'
           content:
@@ -1103,12 +1171,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Area'
+        '400':
+          $ref: '#/components/responses/BadRequest'
         404:
           description: 'Not found'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
         500:
           description: 'Error during creation'
           content:
@@ -1240,6 +1314,12 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Game'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
         500:
           description: 'Internal error'
           content:
@@ -1272,12 +1352,18 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Game'
+        '400':
+          $ref: '#/components/responses/BadRequest'
         404:
           description: 'Not found game'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
         500:
           description: 'Internal error'
           content:
@@ -1375,6 +1461,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Championship'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
 
   /championship/{id}:
     get:
@@ -1425,12 +1517,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Championship'
+        '400':
+          $ref: '#/components/responses/BadRequest'
         404:
           description: 'Not found'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
     delete:
       operationId: removeChampionship
       description: 'Delete a championship'
@@ -1493,12 +1591,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Phase'
+        '400':
+          $ref: '#/components/responses/BadRequest'
         409:
           description: 'A phase with this order already exists in the championship'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
 
   /phase/{id}:
     get:
@@ -1549,12 +1653,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Phase'
+        '400':
+          $ref: '#/components/responses/BadRequest'
         404:
           description: 'Not found'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
     delete:
       operationId: removePhase
       description: 'Delete a phase'
@@ -1617,6 +1727,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Group'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
 
   /group/{id}:
     get:
@@ -1667,12 +1783,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Group'
+        '400':
+          $ref: '#/components/responses/BadRequest'
         404:
           description: 'Not found'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
     delete:
       operationId: removeGroup
       description: 'Delete a group (poule)'
@@ -1773,6 +1895,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Bracket'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
 
   /bracket/{id}/generate-matches:
     post:
@@ -1939,6 +2067,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Match'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
 
   /match/{id}:
     get:
@@ -1988,12 +2122,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Match'
+        '400':
+          $ref: '#/components/responses/BadRequest'
         404:
           description: 'Not found'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
     delete:
       operationId: removeMatch
       description: 'Delete a match'
@@ -2031,11 +2171,17 @@ paths:
         '200':
           description: Account activated successfully
         '400':
-          description: Invalid or expired token
+          description: >-
+            Invalid or expired token, or the payload breaks the schema, or the request body cannot be read
+            (see `#/components/responses/BadRequest`).
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
         '429':
           description: Too many requests — rate limit reached for this IP
           content:
@@ -2058,6 +2204,12 @@ paths:
       responses:
         '200':
           description: Email sent (always 200 for anti-enumeration)
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
         '429':
           description: Too many requests — rate limit reached for this IP or this email address
           content:
@@ -2081,11 +2233,17 @@ paths:
         '200':
           description: Password reset successfully
         '400':
-          description: Invalid or expired token
+          description: >-
+            Invalid or expired token, or the payload breaks the schema, or the request body cannot be read
+            (see `#/components/responses/BadRequest`).
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
         '429':
           description: Too many requests — rate limit reached for this IP
           content:
@@ -2169,11 +2327,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/TeamWithCoachResult'
         '400':
-          description: Validation error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorOutput'
+          $ref: '#/components/responses/BadRequest'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
 
   /teams/{teamId}/join-requests:
     post:
@@ -2199,12 +2357,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TeamJoinRequest'
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '409':
           description: Already a member
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
     get:
       operationId: getTeamJoinRequests
       description: Restricted to an admin or a coach of the team.
@@ -2272,6 +2436,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TeamJoinRequest'
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '401':
           description: Unauthorized
           content:
@@ -2290,6 +2456,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
 
   /teams/{teamId}/current-group:
     get:
@@ -2376,6 +2546,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AgeCategory'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
 
   /age-category/{id}:
     get:
@@ -2425,12 +2601,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AgeCategory'
+        '400':
+          $ref: '#/components/responses/BadRequest'
         404:
           description: Not found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
     delete:
       operationId: removeAgeCategory
       description: Soft-delete an age category
@@ -2509,12 +2691,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Season'
+        '400':
+          $ref: '#/components/responses/BadRequest'
         409:
           description: 'A season with this label already exists'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
 
   /season/{id}:
     get:
@@ -2564,12 +2752,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Season'
+        '400':
+          $ref: '#/components/responses/BadRequest'
         404:
           description: Not found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
     delete:
       operationId: removeSeason
       description: Archive (soft-delete) a season
@@ -2620,6 +2814,31 @@ components:
       type: 'http'
       scheme: 'bearer'
       bearerFormat: 'JWT'
+  # Answers to a request body the server cannot use, shared by every operation that has a `requestBody`.
+  # 413 and 415 come from the body parser, ahead of authentication and validation
+  # (see `backend/config/bodyParserErrors.ts`).
+  responses:
+    BadRequest:
+      description: >-
+        The request body cannot be read (malformed JSON, corrupt gzip or deflate body, body that does not
+        match its `Content-Length`, aborted request), or the payload breaks the schema of the operation.
+        In the second case `errors` lists the validation errors.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorOutput'
+    PayloadTooLarge:
+      description: The request body is larger than the limit of the JSON parser (100 kB)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorOutput'
+    UnsupportedMediaType:
+      description: The request body uses a charset or a content encoding the server does not support
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorOutput'
   schemas:
     HealthStatus:
       type: object
@@ -3230,6 +3449,12 @@ components:
         message:
           nullable: false
           type: 'string'
+        errors:
+          description: Validation errors, only on a 400 answered to a payload that breaks the schema
+          type: array
+          items:
+            type: object
+            additionalProperties: true
 
     MatchArea:
       type: object
