@@ -30,6 +30,8 @@ With MongoDB there are no migrations: the indexes declared in `prisma/schema.pri
 
 **OpenAPI-first**: Routes, validation, and request/response schemas are defined in `openapi.yml`. The [openapi-backend](https://github.com/anttiviljami/openapi-backend) library validates all incoming requests against the spec and routes them by `operationId`.
 
+**Error format**: every error answer has the `ErrorOutput` shape of `openapi.yml`, `{ status, message }`, including the answers `openapi-backend` gives before any handler (`createApp.ts`). An operation with a `requestBody` must reference `#/components/responses/BadRequest`, `PayloadTooLarge` and `UnsupportedMediaType` (400, 413, 415): `config/openapiBodyResponses.test.ts` fails otherwise.
+
 **Hexagonal architecture** (Ports & Adapters) — one folder per domain under `src/`:
 
 ```text

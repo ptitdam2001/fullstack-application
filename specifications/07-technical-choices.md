@@ -35,6 +35,24 @@ openapi.yml  →  openapi-backend (validation runtime)
 
 > Toute modification d'un endpoint commence par `openapi.yml`. Le backend et le frontend se mettent ensuite à jour en conséquence.
 
+### Format des erreurs
+
+Toute réponse d'erreur de l'API a la forme `ErrorOutput` : `{ status, message }`, où `status` est le statut HTTP de la réponse. Cela vaut pour les handlers, pour le gestionnaire d'erreurs global et pour les réponses que `openapi-backend` donne avant tout handler (`backend/createApp.ts`).
+
+| Statut | Cas                                                                                                        |
+| ------ | ---------------------------------------------------------------------------------------------------------- |
+| `400`  | Corps illisible (JSON mal formé, corps gzip/deflate corrompu, longueur incohérente) ou payload hors schéma |
+| `401`  | Jeton absent ou refusé                                                                                     |
+| `404`  | Chemin hors contrat                                                                                        |
+| `405`  | Méthode non déclarée sur le chemin                                                                         |
+| `413`  | Corps au-delà de la limite du parseur JSON (100 kB). `PUT /me/avatar` a sa propre limite et répond `400`   |
+| `415`  | Charset ou encodage de contenu non supporté                                                                |
+| `501`  | Opération du contrat sans handler enregistré                                                               |
+
+- Un payload hors schéma ajoute le champ `errors` : la liste des erreurs de validation.
+- Les corps illisibles sont reconnus par `backend/config/bodyParserErrors.ts`. Le statut et le message viennent de cette table, jamais de l'erreur.
+- `400`, `413` et `415` sont déclarés une fois dans `components/responses` (`BadRequest`, `PayloadTooLarge`, `UnsupportedMediaType`). Toute opération qui a un `requestBody` les référence ; `backend/config/openapiBodyResponses.test.ts` le vérifie.
+
 ---
 
 ## Frontend — deux packages distincts

@@ -94,20 +94,13 @@ export const createApp = async (): Promise<Application> => {
       ...seasonHandlers,
       ...bracketHandlers,
       ...healthHandlers,
-      validationFail: (c, _: Request, res: Response) => res.status(400).json({ err: c.validation.errors }),
-      notFound: (c, _: Request, res: Response) =>
-        res.status(404).json({
-          err: 'not found',
-          operation: c.operation?.operationId,
-          status: 404,
-          path: c.operation?.path,
-          method: c.operation?.method,
-        }),
-      methodNotAllowed: (_, _1, res: Response) => res.status(405).json({ status: 405, err: 'Method not allowed' }),
-      notImplemented: (_, _1, res: Response) =>
-        res.status(404).json({ status: 501, err: 'No handler registered for operation' }),
-      unauthorizedHandler: (_, _0, res: Response) =>
-        res.status(401).json({ status: 401, err: 'Please authenticate first' }),
+      // Every answer below has the `ErrorOutput` shape of openapi.yml, like the error handler further down.
+      validationFail: (c, _: Request, res: Response) =>
+        res.status(400).json({ status: 400, message: 'Invalid request', errors: c.validation.errors ?? [] }),
+      notFound: (_, _1, res: Response) => res.status(404).json({ status: 404, message: 'Not found' }),
+      methodNotAllowed: (_, _1, res: Response) => res.status(405).json({ status: 405, message: 'Method not allowed' }),
+      notImplemented: (_, _1, res: Response) => res.status(501).json({ status: 501, message: 'Not implemented' }),
+      unauthorizedHandler: (_, _0, res: Response) => res.status(401).json({ status: 401, message: 'Unauthorized' }),
     },
   })
 
