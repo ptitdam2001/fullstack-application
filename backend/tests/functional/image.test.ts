@@ -1,20 +1,12 @@
 import { randomBytes } from 'node:crypto'
-import type { Stream } from 'node:stream'
 import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { prisma } from '../../utils/prismaClient.js'
-import { createTestAgent } from '../support/client.js'
+import { binaryParser, createTestAgent } from '../support/client.js'
 import { resetDatabase } from '../support/database.js'
 import { createUser } from '../support/fixtures.js'
 
 /** Same shape as the ids the storage issues: 128 random bits, base64url. */
 const newPublicId = (): string => randomBytes(16).toString('base64url')
-
-// supertest only buffers bodies it knows how to parse: collect image bodies as raw bytes.
-const binaryParser = (res: Stream, callback: (err: Error | null, body: Buffer) => void): void => {
-  const chunks: Buffer[] = []
-  res.on('data', (chunk: Buffer) => chunks.push(chunk))
-  res.on('end', () => callback(null, Buffer.concat(chunks)))
-}
 
 describe('image domain — functional API', () => {
   let agent: Awaited<ReturnType<typeof createTestAgent>>

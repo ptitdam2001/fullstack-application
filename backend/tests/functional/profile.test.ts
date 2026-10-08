@@ -1,9 +1,8 @@
-import type { Stream } from 'node:stream'
 import jwt from 'jsonwebtoken'
 import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { prisma } from '../../utils/prismaClient.js'
 import { authHeaderFor } from '../support/authenticate.js'
-import { createTestAgent } from '../support/client.js'
+import { binaryParser, createTestAgent } from '../support/client.js'
 import { resetDatabase } from '../support/database.js'
 import { createAdmin, createUser, FIXTURE_PASSWORD } from '../support/fixtures.js'
 import { MAX_AVATAR_BYTES } from '../../src/user/domain/Avatar.js'
@@ -29,12 +28,6 @@ const imageIdOf = (avatar: string): string => {
     throw new Error(`Not an image url: ${avatar}`)
   }
   return match[1]
-}
-
-const binaryParser = (res: Stream, callback: (err: Error | null, body: Buffer) => void): void => {
-  const chunks: Buffer[] = []
-  res.on('data', (chunk: Buffer) => chunks.push(chunk))
-  res.on('end', () => callback(null, Buffer.concat(chunks)))
 }
 
 /** A token issued a minute ago — `authHeaderFor` tokens are issued "now", too close to tell before from after. */
