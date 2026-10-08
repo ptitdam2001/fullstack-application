@@ -57,6 +57,26 @@ docker compose -f deployment/docker-compose.yml up --build
 
 `make up` runs the same stack detached with `--wait`: it returns once `mongodb` and `api` are healthy, so a command chained after it (`make up && make db-push`) finds a database that accepts writes. It fails when a container exits at start-up — for instance `api` with the `JWT_SECRET` placeholder of `.env.sample`; read the cause with `docker compose -f deployment/docker-compose.yml logs api`.
 
+### `mongodb` exits with code 127 after a recreation
+
+Compose recreates the `mongodb` container whenever its definition changes in `docker-compose.yml` (or with `--force-recreate`) and gives the new container the data volumes of the old one. The image then stops at start-up:
+
+```text
+Initializing replica set...
+/usr/local/bin/docker-entrypoint.sh: line 407: -u: command not found
+```
+
+The entrypoint of `prismagraphql/mongo-single-replica` only knows how to initiate the replica set on an empty data directory, and the marker telling it the work is already done (`/var/tmp/.initialized`) lives in the container, not in the volume. The data is intact. Put the marker back in the stopped container, then start the stack again:
+
+```bash
+touch .initialized
+docker cp .initialized "$(docker compose -f deployment/docker-compose.yml ps -a -q mongodb)":/var/tmp/.initialized
+rm .initialized
+make up
+```
+
+Do not run `docker compose down -v` or `docker compose rm -v` to get out of this state: both delete the volumes, and the database with them.
+
 ### MongoDB indexes
 
 Starting the stack (`make up` or the `docker compose` command above) does **not** create the indexes declared in `backend/prisma/schema.prisma` (`@unique`, `@@unique`, `@@index`). With MongoDB only `prisma db push` creates them, and without them nothing in the database enforces `users.email` or `images.publicId` uniqueness.
