@@ -781,11 +781,12 @@ export const Pending: Story = {
 
 Ajouter dans `src/Application/AppRouting.tsx` :
 
+<!-- prettier-ignore -->
 ```tsx
 import { FeatureBreadcrumb } from '@Feature/ui/FeatureBreadcrumb/FeatureBreadcrumb'
 import { FeaturePage, FeatureCreatePage, FeatureEditPage } from '@Feature/pages'
 
-;<Route path="features" handle={{ breadcrumb: 'Features' }}>
+<Route path="features" handle={{ breadcrumb: 'Features' }}>
   <Route index element={<FeaturePage />}>
     <Route path="create" element={<FeatureCreatePage />} />
     <Route path=":featureId/edit" element={<FeatureEditPage />} />
