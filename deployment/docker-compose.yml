@@ -25,6 +25,21 @@ services:
       INIT_WAIT_SEC: 3
     ports:
       - "127.0.0.1:27017:27017"
+    # Healthy = replica set initiated and this node is primary. A plain ping already answers while
+    # the image is still restarting mongod (INIT_WAIT_SEC), and the first write from the API then
+    # fails with "node is not in primary or recovering state". Same check as docker-compose.test.yml.
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mongo",
+          "--quiet",
+          "--eval",
+          "quit(db.isMaster().setName && db.isMaster().ismaster ? 0 : 1)",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
   # TODO(pre-prod): no auth on this UI (ME_CONFIG_BASICAUTH: "false") — fine on localhost only.
   # Before deploying this compose file to a remote server: set ME_CONFIG_BASICAUTH: "true" +
   # ME_CONFIG_BASICAUTH_USERNAME/PASSWORD, or bind the port to "127.0.0.1:8083:8081".
@@ -40,7 +55,8 @@ services:
       ME_CONFIG_MONGODB_URL: mongodb://root:example@mongodb:27017/app?authSource=admin&directConnection=true
       ME_CONFIG_BASICAUTH: "false"
     depends_on:
-      - mongodb
+      mongodb:
+        condition: service_healthy
   api:
     build:
       context: ..
@@ -51,4 +67,5 @@ services:
     environment:
       DATABASE_URL: mongodb://root:example@mongodb:27017/app?authSource=admin&directConnection=true
     depends_on:
-      - mongodb
+      mongodb:
+        condition: service_healthy
