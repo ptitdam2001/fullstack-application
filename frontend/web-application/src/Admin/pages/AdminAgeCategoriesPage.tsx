@@ -5,12 +5,14 @@ import { CirclePlus } from 'lucide-react'
 import { ErrorBoundary } from '@Common/ErrorBoundary'
 import { TableLoader } from '@Common/Loading'
 import { TablePagination } from '@repo/design-system'
-import { useAgeCategoryListSuspense } from '@AgeCategory/application/useAgeCategoryList'
-import { useAgeCategoryDelete } from '@AgeCategory/application/useAgeCategoryDelete'
-import { AdminAgeCategoryTable } from '@AgeCategory/ui/Admin/AdminAgeCategoryTable'
-import { AdminAgeCategoryFormSheet } from '@AgeCategory/ui/Admin/AdminAgeCategoryFormSheet'
-import { ConfirmDeleteAgeCategoryDialog } from '@AgeCategory/ui/Admin/ConfirmDeleteAgeCategoryDialog'
-import type { AgeCategory } from '@AgeCategory/domain/AgeCategory'
+import {
+  type AgeCategory,
+  AdminAgeCategoryFormSheet,
+  AdminAgeCategoryTable,
+  ConfirmDeleteAgeCategoryDialog,
+  useAgeCategoryDelete,
+  useAgeCategoryListSuspense,
+} from '@AgeCategory'
 
 type SheetState = { open: boolean; ageCategoryId?: string }
 type DeleteState = { open: boolean; ageCategory?: AgeCategory }

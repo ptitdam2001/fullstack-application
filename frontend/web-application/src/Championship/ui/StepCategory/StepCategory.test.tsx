@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
-import type { AgeCategory } from '@AgeCategory/domain/AgeCategory'
+import type { AgeCategory } from '@AgeCategory'
 import { StepCategory } from './StepCategory'
 
 const categories: AgeCategory[] = [

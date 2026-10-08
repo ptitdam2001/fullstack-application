@@ -2,8 +2,7 @@ import { useState } from 'react'
 import { useIntl } from 'react-intl'
 import { Toast } from '@repo/design-system'
 import { AuthProvider } from '@Auth/application/AuthProvider'
-import { type User, useUserDelete, useUserStatusActions } from '@User'
-import type { UserAction } from '@User/ui/Admin/ConfirmUserActionDialog'
+import { type User, type UserAction, useUserDelete, useUserStatusActions } from '@User'
 
 type SheetState = { open: boolean; user?: User }
 type ConfirmState = { open: boolean; action?: UserAction; user?: User }

@@ -7,7 +7,7 @@ import { ErrorBoundary } from '@Common/ErrorBoundary'
 import { TableLoader } from '@Common/Loading'
 import { useChampionshipListSuspense } from '@Championship/application/useChampionshipList'
 import { useSeasonList } from '@Season/application/useSeasonList'
-import { useAgeCategoryList } from '@AgeCategory/application/useAgeCategoryList'
+import { useAgeCategoryList } from '@AgeCategory'
 import { AdminChampionshipTable, type ChampionshipRow } from '@Championship/ui/Admin/AdminChampionshipTable'
 
 const AdminChampionshipListContent = () => {

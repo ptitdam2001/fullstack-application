@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { fn, within, userEvent, expect } from 'storybook/test'
-import type { AgeCategory } from '@AgeCategory/domain/AgeCategory'
+import type { AgeCategory } from '@AgeCategory'
 import { StepCategory } from './StepCategory'
 
 const categories: AgeCategory[] = [
