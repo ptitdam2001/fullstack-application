@@ -243,7 +243,7 @@ paths:
                 $ref: '#/components/schemas/TokenData'
         '400':
           $ref: '#/components/responses/BadRequest'
-        404:
+        '404':
           description: ''
           content:
             application/json:
@@ -265,9 +265,9 @@ paths:
       tags:
         - Authentication
       responses:
-        200:
+        '200':
           description: succesful current user's Logout
-        500:
+        '500':
           description: 'Internal error'
           content:
             application/json:
@@ -417,7 +417,7 @@ paths:
             schema:
               $ref: '#/components/schemas/Player'
       responses:
-        200:
+        '200':
           description: 'successful'
           content:
             application/json:
@@ -425,7 +425,7 @@ paths:
                 type: string
         '400':
           $ref: '#/components/responses/BadRequest'
-        404:
+        '404':
           description: 'User or team does not exist'
           content:
             application/json:
@@ -455,7 +455,7 @@ paths:
             type: integer
           description: The numbers of items to return
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
@@ -472,7 +472,7 @@ paths:
       security: []
       parameters: []
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
@@ -491,7 +491,7 @@ paths:
             schema:
               $ref: '#/components/schemas/TeamWithoutId'
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
@@ -516,7 +516,7 @@ paths:
           schema:
             type: 'string'
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
@@ -534,13 +534,13 @@ paths:
           schema:
             type: 'string'
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Team'
-        404:
+        '404':
           description: ''
           content:
             application/json:
@@ -563,7 +563,7 @@ paths:
             schema:
               $ref: '#/components/schemas/Team'
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
@@ -571,13 +571,13 @@ paths:
                 $ref: '#/components/schemas/Team'
         '400':
           $ref: '#/components/responses/BadRequest'
-        403:
+        '403':
           description: 'Forbidden — requires Admin or Coach role on this team'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
-        404:
+        '404':
           description: 'Team not found'
           content:
             application/json:
@@ -609,7 +609,7 @@ paths:
           schema:
             type: 'integer'
       responses:
-        200:
+        '200':
           description: 'list of player about current team'
           content:
             application/json:
@@ -617,7 +617,7 @@ paths:
                 type: 'array'
                 items:
                   $ref: '#/components/schemas/Player'
-        404:
+        '404':
           description: 'not found team'
           content:
             application/json:
@@ -654,7 +654,7 @@ paths:
             type: 'string'
             format: date-time
       responses:
-        200:
+        '200':
           description: 'games of given team'
           content:
             application/json:
@@ -662,7 +662,7 @@ paths:
                 type: 'array'
                 items:
                   $ref: '#/components/schemas/Game'
-        404:
+        '404':
           description: 'not found team'
           content:
             application/json:
@@ -686,13 +686,13 @@ paths:
           schema:
             type: string
       responses:
-        404:
+        '404':
           description: 'team or user are not found'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
-        200:
+        '200':
           description: Successful
           content:
             application/json:
@@ -711,7 +711,7 @@ paths:
           schema:
             type: string
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
@@ -737,13 +737,13 @@ paths:
           schema:
             type: string
       responses:
-        201:
+        '201':
           description: ''
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserTeam'
-        409:
+        '409':
           description: 'Coach already assigned to this team'
           content:
             application/json:
@@ -766,9 +766,9 @@ paths:
           schema:
             type: string
       responses:
-        204:
+        '204':
           description: 'Removed'
-        404:
+        '404':
           description: 'Assignment not found'
           content:
             application/json:
@@ -787,7 +787,7 @@ paths:
           schema:
             type: string
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
@@ -808,7 +808,7 @@ paths:
           schema:
             type: string
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
@@ -834,13 +834,13 @@ paths:
           schema:
             type: string
       responses:
-        201:
+        '201':
           description: ''
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserMatch'
-        409:
+        '409':
           description: 'Referee already assigned to this match'
           content:
             application/json:
@@ -863,9 +863,9 @@ paths:
           schema:
             type: string
       responses:
-        204:
+        '204':
           description: 'Removed'
-        404:
+        '404':
           description: 'Assignment not found'
           content:
             application/json:
@@ -884,7 +884,7 @@ paths:
           schema:
             type: string
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
@@ -906,15 +906,15 @@ paths:
             type: 'string'
 
       responses:
-        204:
+        '204':
           description: 'User deleted'
-        403:
+        '403':
           description: 'Caller is not an admin, or is trying to delete their own account'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
-        404:
+        '404':
           description: ''
           content:
             application/json:
@@ -1014,19 +1014,19 @@ paths:
           schema:
             type: 'string'
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-        403:
+        '403':
           description: 'Bad Request'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
-        404:
+        '404':
           description: 'Not found user'
           content:
             application/json:
@@ -1050,7 +1050,7 @@ paths:
             type: integer
           description: The numbers of items to return
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
@@ -1069,7 +1069,7 @@ paths:
             schema:
               $ref: '#/components/schemas/AreaWithoutId'
       responses:
-        200:
+        '200':
           description: 'successful'
           content:
             application/json:
@@ -1081,7 +1081,7 @@ paths:
           $ref: '#/components/responses/PayloadTooLarge'
         '415':
           $ref: '#/components/responses/UnsupportedMediaType'
-        500:
+        '500':
           description: 'Error during creation'
           content:
             application/json:
@@ -1095,7 +1095,7 @@ paths:
         - Area
       parameters: []
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
@@ -1115,13 +1115,13 @@ paths:
           schema:
             type: 'string'
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Area'
-        404:
+        '404':
           description: 'Not found area'
           content:
             application/json:
@@ -1140,9 +1140,9 @@ paths:
           schema:
             type: 'string'
       responses:
-        200:
+        '200':
           description: ''
-        404:
+        '404':
           description: 'Not found'
           content:
             application/json:
@@ -1165,7 +1165,7 @@ paths:
             schema:
               $ref: '#/components/schemas/AreaWithoutId'
       responses:
-        200:
+        '200':
           description: 'successful'
           content:
             application/json:
@@ -1173,7 +1173,7 @@ paths:
                 $ref: '#/components/schemas/Area'
         '400':
           $ref: '#/components/responses/BadRequest'
-        404:
+        '404':
           description: 'Not found'
           content:
             application/json:
@@ -1183,7 +1183,7 @@ paths:
           $ref: '#/components/responses/PayloadTooLarge'
         '415':
           $ref: '#/components/responses/UnsupportedMediaType'
-        500:
+        '500':
           description: 'Error during creation'
           content:
             application/json:
@@ -1207,7 +1207,7 @@ paths:
           schema:
             type: integer
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
@@ -1233,7 +1233,7 @@ paths:
             type: integer
           description: The numbers of items to return
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
@@ -1249,7 +1249,7 @@ paths:
         - Games
       parameters: []
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
@@ -1279,7 +1279,7 @@ paths:
             type: integer
           description: The numbers of items to return
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
@@ -1287,7 +1287,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Game'
-        404:
+        '404':
           description: 'Team not found'
           content:
             application/json:
@@ -1306,7 +1306,7 @@ paths:
             schema:
               $ref: '#/components/schemas/Game'
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
@@ -1320,7 +1320,7 @@ paths:
           $ref: '#/components/responses/PayloadTooLarge'
         '415':
           $ref: '#/components/responses/UnsupportedMediaType'
-        500:
+        '500':
           description: 'Internal error'
           content:
             application/json:
@@ -1344,7 +1344,7 @@ paths:
             schema:
               $ref: '#/components/schemas/Game'
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
@@ -1354,7 +1354,7 @@ paths:
                   $ref: '#/components/schemas/Game'
         '400':
           $ref: '#/components/responses/BadRequest'
-        404:
+        '404':
           description: 'Not found game'
           content:
             application/json:
@@ -1364,7 +1364,7 @@ paths:
           $ref: '#/components/responses/PayloadTooLarge'
         '415':
           $ref: '#/components/responses/UnsupportedMediaType'
-        500:
+        '500':
           description: 'Internal error'
           content:
             application/json:
@@ -1382,15 +1382,15 @@ paths:
           schema:
             type: 'string'
       responses:
-        200:
+        '200':
           description: ''
-        404:
+        '404':
           description: 'Not found game'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
-        500:
+        '500':
           description: 'Internal error'
           content:
             application/json:
@@ -1414,7 +1414,7 @@ paths:
           schema:
             type: integer
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
@@ -1436,7 +1436,7 @@ paths:
           schema:
             type: boolean
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
@@ -1455,7 +1455,7 @@ paths:
             schema:
               $ref: '#/components/schemas/ChampionshipInput'
       responses:
-        201:
+        '201':
           description: ''
           content:
             application/json:
@@ -1482,13 +1482,13 @@ paths:
           schema:
             type: string
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Championship'
-        404:
+        '404':
           description: 'Not found'
           content:
             application/json:
@@ -1511,7 +1511,7 @@ paths:
             schema:
               $ref: '#/components/schemas/ChampionshipInput'
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
@@ -1519,7 +1519,7 @@ paths:
                 $ref: '#/components/schemas/Championship'
         '400':
           $ref: '#/components/responses/BadRequest'
-        404:
+        '404':
           description: 'Not found'
           content:
             application/json:
@@ -1541,9 +1541,9 @@ paths:
           schema:
             type: string
       responses:
-        204:
+        '204':
           description: 'Deleted'
-        404:
+        '404':
           description: 'Not found'
           content:
             application/json:
@@ -1564,7 +1564,7 @@ paths:
           schema:
             type: string
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
@@ -1585,7 +1585,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PhaseInput'
       responses:
-        201:
+        '201':
           description: ''
           content:
             application/json:
@@ -1593,7 +1593,7 @@ paths:
                 $ref: '#/components/schemas/Phase'
         '400':
           $ref: '#/components/responses/BadRequest'
-        409:
+        '409':
           description: 'A phase with this order already exists in the championship'
           content:
             application/json:
@@ -1618,13 +1618,13 @@ paths:
           schema:
             type: string
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Phase'
-        404:
+        '404':
           description: 'Not found'
           content:
             application/json:
@@ -1647,7 +1647,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PhaseInput'
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
@@ -1655,7 +1655,7 @@ paths:
                 $ref: '#/components/schemas/Phase'
         '400':
           $ref: '#/components/responses/BadRequest'
-        404:
+        '404':
           description: 'Not found'
           content:
             application/json:
@@ -1677,9 +1677,9 @@ paths:
           schema:
             type: string
       responses:
-        204:
+        '204':
           description: 'Deleted'
-        404:
+        '404':
           description: 'Not found'
           content:
             application/json:
@@ -1700,7 +1700,7 @@ paths:
           schema:
             type: string
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
@@ -1721,7 +1721,7 @@ paths:
             schema:
               $ref: '#/components/schemas/GroupInput'
       responses:
-        201:
+        '201':
           description: ''
           content:
             application/json:
@@ -1748,13 +1748,13 @@ paths:
           schema:
             type: string
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Group'
-        404:
+        '404':
           description: 'Not found'
           content:
             application/json:
@@ -1777,7 +1777,7 @@ paths:
             schema:
               $ref: '#/components/schemas/GroupInput'
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
@@ -1785,7 +1785,7 @@ paths:
                 $ref: '#/components/schemas/Group'
         '400':
           $ref: '#/components/responses/BadRequest'
-        404:
+        '404':
           description: 'Not found'
           content:
             application/json:
@@ -1807,9 +1807,9 @@ paths:
           schema:
             type: string
       responses:
-        204:
+        '204':
           description: 'Deleted'
-        404:
+        '404':
           description: 'Not found'
           content:
             application/json:
@@ -1830,13 +1830,13 @@ paths:
           schema:
             type: string
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/GroupStandings'
-        404:
+        '404':
           description: 'Not found'
           content:
             application/json:
@@ -1856,7 +1856,7 @@ paths:
           schema:
             type: string
       responses:
-        201:
+        '201':
           description: ''
           content:
             application/json:
@@ -1864,13 +1864,13 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Match'
-        404:
+        '404':
           description: 'Not found'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
-        409:
+        '409':
           description: 'Group is locked — a match already has a score'
           content:
             application/json:
@@ -1889,7 +1889,7 @@ paths:
             schema:
               $ref: '#/components/schemas/BracketInput'
       responses:
-        201:
+        '201':
           description: ''
           content:
             application/json:
@@ -1915,7 +1915,7 @@ paths:
           schema:
             type: string
       responses:
-        201:
+        '201':
           description: ''
           content:
             application/json:
@@ -1923,19 +1923,19 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Match'
-        400:
+        '400':
           description: 'Invalid bracket shape (round 1 empty/odd, or an intermediate round has an odd slot count)'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
-        404:
+        '404':
           description: 'Not found'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
-        409:
+        '409':
           description: 'Bracket is locked — a match already has a score'
           content:
             application/json:
@@ -1955,19 +1955,19 @@ paths:
           schema:
             type: string
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/PhaseQualifiedTeams'
-        404:
+        '404':
           description: 'Not found'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
-        409:
+        '409':
           description: 'Phase is not finished yet'
           content:
             application/json:
@@ -2010,7 +2010,7 @@ paths:
             type: string
           description: Filter by age category id (resolved via the match's group/bracket → phase → championship)
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
@@ -2042,7 +2042,7 @@ paths:
       tags:
         - Match
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
@@ -2061,7 +2061,7 @@ paths:
             schema:
               $ref: '#/components/schemas/MatchInput'
       responses:
-        201:
+        '201':
           description: ''
           content:
             application/json:
@@ -2087,13 +2087,13 @@ paths:
           schema:
             type: string
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Match'
-        404:
+        '404':
           description: 'Not found'
           content:
             application/json:
@@ -2116,7 +2116,7 @@ paths:
             schema:
               $ref: '#/components/schemas/MatchInput'
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
@@ -2124,7 +2124,7 @@ paths:
                 $ref: '#/components/schemas/Match'
         '400':
           $ref: '#/components/responses/BadRequest'
-        404:
+        '404':
           description: 'Not found'
           content:
             application/json:
@@ -2146,9 +2146,9 @@ paths:
           schema:
             type: string
       responses:
-        204:
+        '204':
           description: 'Deleted'
-        404:
+        '404':
           description: 'Not found'
           content:
             application/json:
@@ -2505,7 +2505,7 @@ paths:
           schema:
             type: integer
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
@@ -2521,7 +2521,7 @@ paths:
       tags:
         - AgeCategory
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
@@ -2540,7 +2540,7 @@ paths:
             schema:
               $ref: '#/components/schemas/AgeCategoryInput'
       responses:
-        201:
+        '201':
           description: ''
           content:
             application/json:
@@ -2566,13 +2566,13 @@ paths:
           schema:
             type: string
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/AgeCategory'
-        404:
+        '404':
           description: Not found
           content:
             application/json:
@@ -2595,7 +2595,7 @@ paths:
             schema:
               $ref: '#/components/schemas/AgeCategoryInput'
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
@@ -2603,7 +2603,7 @@ paths:
                 $ref: '#/components/schemas/AgeCategory'
         '400':
           $ref: '#/components/responses/BadRequest'
-        404:
+        '404':
           description: Not found
           content:
             application/json:
@@ -2625,9 +2625,9 @@ paths:
           schema:
             type: string
       responses:
-        204:
+        '204':
           description: Deleted
-        404:
+        '404':
           description: Not found
           content:
             application/json:
@@ -2650,7 +2650,7 @@ paths:
           schema:
             type: integer
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
@@ -2666,7 +2666,7 @@ paths:
       tags:
         - Season
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
@@ -2685,7 +2685,7 @@ paths:
             schema:
               $ref: '#/components/schemas/SeasonInput'
       responses:
-        201:
+        '201':
           description: ''
           content:
             application/json:
@@ -2693,7 +2693,7 @@ paths:
                 $ref: '#/components/schemas/Season'
         '400':
           $ref: '#/components/responses/BadRequest'
-        409:
+        '409':
           description: 'A season with this label already exists'
           content:
             application/json:
@@ -2717,13 +2717,13 @@ paths:
           schema:
             type: string
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Season'
-        404:
+        '404':
           description: Not found
           content:
             application/json:
@@ -2746,7 +2746,7 @@ paths:
             schema:
               $ref: '#/components/schemas/SeasonInput'
       responses:
-        200:
+        '200':
           description: ''
           content:
             application/json:
@@ -2754,7 +2754,7 @@ paths:
                 $ref: '#/components/schemas/Season'
         '400':
           $ref: '#/components/responses/BadRequest'
-        404:
+        '404':
           description: Not found
           content:
             application/json:
@@ -2776,15 +2776,15 @@ paths:
           schema:
             type: string
       responses:
-        204:
+        '204':
           description: Archived
-        404:
+        '404':
           description: Not found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorOutput'
-        409:
+        '409':
           description: 'Season has an unfinished linked championship'
           content:
             application/json:
