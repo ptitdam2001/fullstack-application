@@ -167,32 +167,28 @@ src/Dashboard/ui/
 // Onglet Joueur
 // src/Dashboard/application/usePlayerDashboard.ts
 export const usePlayerDashboard = (userId: string) => {
-  const { data: teams } = useGetTeams(); // filtrer par userId côté client
-  const { data: matches } = useGetMatches(); // filtrer par teamId côté client
+  const { data: teams } = useGetTeams() // filtrer par userId côté client
+  const { data: matches } = useGetMatches() // filtrer par teamId côté client
   // standings : useGetGroupStandings(groupId) par équipe
 
-  return { playerTeams, upcomingMatches, standings };
-};
+  return { playerTeams, upcomingMatches, standings }
+}
 
 // Onglet Arbitre
 // src/Dashboard/application/useRefereeDashboard.ts
 export const useRefereeDashboard = (userId: string) => {
   const { data: refereeMatches } = useGetUserMatches(userId, {
     query: { refetchInterval: DASHBOARD_POLLING_INTERVAL_MS },
-  });
+  })
 
   const urgentMatches =
-    refereeMatches?.filter(
-      (m) => m.status === "SCHEDULED" && dayjs(m.scheduledAt).isBefore(dayjs()),
-    ) ?? [];
+    refereeMatches?.filter(m => m.status === 'SCHEDULED' && dayjs(m.scheduledAt).isBefore(dayjs())) ?? []
 
   const upcomingMatches =
-    refereeMatches?.filter(
-      (m) => m.status === "SCHEDULED" && dayjs(m.scheduledAt).isAfter(dayjs()),
-    ) ?? [];
+    refereeMatches?.filter(m => m.status === 'SCHEDULED' && dayjs(m.scheduledAt).isAfter(dayjs())) ?? []
 
-  return { urgentMatches, upcomingMatches };
-};
+  return { urgentMatches, upcomingMatches }
+}
 ```
 
 ### SDK utilisé
@@ -211,17 +207,17 @@ Utiliser le composant `Tabs` du design system (`@repo/design-system`) qui expose
 
 ```typescript
 const ROLE_TABS: Array<{
-  role: Role;
-  label: string;
-  component: React.ComponentType;
+  role: Role
+  label: string
+  component: React.ComponentType
 }> = [
-  { role: "COACH", label: "Coach", component: CoachTab },
-  { role: "PLAYER", label: "Joueur", component: PlayerTab },
-  { role: "REFEREE", label: "Arbitre", component: RefereeTab },
-];
+  { role: 'COACH', label: 'Coach', component: CoachTab },
+  { role: 'PLAYER', label: 'Joueur', component: PlayerTab },
+  { role: 'REFEREE', label: 'Arbitre', component: RefereeTab },
+]
 
 // Filtrer selon les rôles actifs de l'utilisateur
-const activeTabs = ROLE_TABS.filter((t) => roles.includes(t.role));
+const activeTabs = ROLE_TABS.filter(t => roles.includes(t.role))
 ```
 
 ### Classement — Endpoint dédié (V1)

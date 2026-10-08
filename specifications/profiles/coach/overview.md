@@ -10,26 +10,26 @@ Responsable d'une ou plusieurs équipes. Identifié par un enregistrement `UserT
 
 ## Navigation disponible
 
-| Entrée              | URL               |
-| ------------------- | ----------------- |
-| Tableau de bord     | `/dashboard`      |
-| Championnats        | `/championships`  |
-| Équipes             | `/teams`          |
-| Matchs              | `/matches`        |
-| Mon profil          | `/profile`        |
+| Entrée          | URL              |
+| --------------- | ---------------- |
+| Tableau de bord | `/dashboard`     |
+| Championnats    | `/championships` |
+| Équipes         | `/teams`         |
+| Matchs          | `/matches`       |
+| Mon profil      | `/profile`       |
 
 ## Accès global
 
-| Domaine              | Lecture | Création | Modification            | Suppression |
-| -------------------- | :-----: | :------: | :---------------------: | :---------: |
-| Championnats         | ✅      | ❌       | ❌                      | ❌          |
-| Équipes (autres)     | ✅      | ❌       | ❌                      | ❌          |
-| Ses équipes          | ✅      | ✅ (devient coach) | ✅ (infos + joueurs) | ❌       |
-| Matchs               | ✅      | ❌       | ❌                      | ❌          |
-| Forfait (son équipe) | —       | ✅       | —                       | —           |
-| Scores               | ✅      | ❌       | ❌                      | —           |
-| Utilisateurs         | ❌      | ❌       | ❌                      | ❌          |
-| Classements          | ✅      | —        | —                       | —           |
+| Domaine              | Lecture |      Création      |     Modification     | Suppression |
+| -------------------- | :-----: | :----------------: | :------------------: | :---------: |
+| Championnats         |   ✅    |         ❌         |          ❌          |     ❌      |
+| Équipes (autres)     |   ✅    |         ❌         |          ❌          |     ❌      |
+| Ses équipes          |   ✅    | ✅ (devient coach) | ✅ (infos + joueurs) |     ❌      |
+| Matchs               |   ✅    |         ❌         |          ❌          |     ❌      |
+| Forfait (son équipe) |    —    |         ✅         |          —           |      —      |
+| Scores               |   ✅    |         ❌         |          ❌          |      —      |
+| Utilisateurs         |   ❌    |         ❌         |          ❌          |     ❌      |
+| Classements          |   ✅    |         —          |          —           |      —      |
 
 ## Règles contextuelles
 

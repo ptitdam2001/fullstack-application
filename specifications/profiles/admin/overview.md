@@ -10,28 +10,28 @@ Gestionnaire de la plateforme. Accès complet en lecture et en écriture sur tou
 
 ## Navigation disponible
 
-| Entrée              | URL               |
-| ------------------- | ----------------- |
-| Tableau de bord     | `/dashboard`      |
-| Championnats        | `/championships`  |
-| Équipes             | `/teams`          |
-| Matchs              | `/matches`        |
-| Utilisateurs        | `/users`          |
-| Mon profil          | `/profile`        |
+| Entrée          | URL              |
+| --------------- | ---------------- |
+| Tableau de bord | `/dashboard`     |
+| Championnats    | `/championships` |
+| Équipes         | `/teams`         |
+| Matchs          | `/matches`       |
+| Utilisateurs    | `/users`         |
+| Mon profil      | `/profile`       |
 
 ## Accès global
 
 > Détail complet dans `06-user-profiles.md` — matrice de permissions.
 
-| Domaine        | Lecture | Création | Modification | Suppression |
-| -------------- | :-----: | :------: | :----------: | :---------: |
-| Championnats   | ✅      | ✅       | ✅           | ✅          |
-| Équipes        | ✅      | ✅       | ✅           | ✅          |
-| Joueurs        | ✅      | ✅       | ✅           | ✅          |
-| Matchs         | ✅      | ✅       | ✅           | ✅          |
-| Scores         | ✅      | ✅       | ✅           | —           |
-| Utilisateurs   | ✅      | ✅       | ✅           | ✅          |
-| Classements    | ✅      | —        | —            | —           |
+| Domaine      | Lecture | Création | Modification | Suppression |
+| ------------ | :-----: | :------: | :----------: | :---------: |
+| Championnats |   ✅    |    ✅    |      ✅      |     ✅      |
+| Équipes      |   ✅    |    ✅    |      ✅      |     ✅      |
+| Joueurs      |   ✅    |    ✅    |      ✅      |     ✅      |
+| Matchs       |   ✅    |    ✅    |      ✅      |     ✅      |
+| Scores       |   ✅    |    ✅    |      ✅      |      —      |
+| Utilisateurs |   ✅    |    ✅    |      ✅      |     ✅      |
+| Classements  |   ✅    |    —     |      —       |      —      |
 
 ## Actions exclusives Admin
 

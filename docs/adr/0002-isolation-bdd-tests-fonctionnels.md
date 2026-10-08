@@ -12,11 +12,11 @@ Contrainte technique majeure : **Prisma + MongoDB exige un replica set pour exé
 
 Trois options d'isolation ont été comparées :
 
-| Option | Replica set | Dépendance | Portabilité moteur |
-|---|---|---|---|
-| **Testcontainers** | ✅ (image réelle) | Docker actif pendant les tests | Changer de moteur = changer l'image dans 1 helper |
-| **mongodb-memory-server** | ✅ (mode `replSet`) | Aucune (binaire téléchargé) | Package Mongo-only, verrouillé |
-| **docker-compose.test.yml** | ✅ (même image) | Docker + reset manuel | Override compose à dupliquer par moteur |
+| Option                      | Replica set         | Dépendance                     | Portabilité moteur                                |
+| --------------------------- | ------------------- | ------------------------------ | ------------------------------------------------- |
+| **Testcontainers**          | ✅ (image réelle)   | Docker actif pendant les tests | Changer de moteur = changer l'image dans 1 helper |
+| **mongodb-memory-server**   | ✅ (mode `replSet`) | Aucune (binaire téléchargé)    | Package Mongo-only, verrouillé                    |
+| **docker-compose.test.yml** | ✅ (même image)     | Docker + reset manuel          | Override compose à dupliquer par moteur           |
 
 ## Decision
 
@@ -31,7 +31,7 @@ Pourquoi pas les autres options :
 - **mongodb-memory-server** : démarrage plus rapide et zéro dépendance Docker (atout réel pour l'itération locale), mais verrouille définitivement le bootstrap à MongoDB et introduit un risque de dérive de version par rapport à l'image `4.4.3-bionic` utilisée en dev/prod — deux « vérités » sur la version du moteur.
 - **docker-compose.test.yml** : viable et réutilise la même image, mais le reset entre suites de tests est plus grossier (redémarrage de service ou `down && up`) qu'un `deleteMany` ciblé, et l'isolation entre fichiers de test est moins fine qu'avec testcontainers piloté depuis Vitest.
 
-> Note : un `docker-compose.test.yml` reste prévu (Session 5) — mais pour un usage différent : faire tourner la **stack complète** (front + API + Mongo) pour les tests E2E *smoke full-stack*, pas pour isoler la BDD des tests fonctionnels backend.
+> Note : un `docker-compose.test.yml` reste prévu (Session 5) — mais pour un usage différent : faire tourner la **stack complète** (front + API + Mongo) pour les tests E2E _smoke full-stack_, pas pour isoler la BDD des tests fonctionnels backend.
 
 ## Consequences
 

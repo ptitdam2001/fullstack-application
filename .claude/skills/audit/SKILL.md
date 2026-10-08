@@ -16,6 +16,7 @@ Work through each section below. Read every file cited before drawing conclusion
 ## Section 1 — Authentication flows
 
 **Files to read:**
+
 - `src/auth/infrastructure/JwtAuthService.ts`
 - `src/auth/application/AuthUseCases.ts`
 - `src/auth/infrastructure/AuthHttpHandlers.ts`
@@ -40,6 +41,7 @@ Work through each section below. Read every file cited before drawing conclusion
 ## Section 2 — Role and permission checks
 
 **Files to read:**
+
 - `src/auth/application/requireRoles.ts`
 - Every `src/*/infrastructure/*HttpHandlers.ts`
 - `openapi.yml` (the `security` key per operation)
@@ -61,6 +63,7 @@ Work through each section below. Read every file cited before drawing conclusion
 ## Section 3 — Input validation
 
 **Files to read:**
+
 - `index.ts` (the `customizeAjv` and `validationFail` handler)
 - `openapi.yml` (schema definitions in `components/schemas`)
 - Each `*HttpHandlers.ts` that reads `req.body` or `ctx.request.params`
@@ -86,6 +89,7 @@ Work through each section below. Read every file cited before drawing conclusion
 ## Section 4 — Prisma query safety
 
 **Files to read:**
+
 - Every `src/*/infrastructure/Prisma*Repository.ts`
 - `utils/prismaClient.ts`
 
@@ -120,6 +124,7 @@ Work through each section below. Read every file cited before drawing conclusion
 ## Section 5 — Secrets and environment handling
 
 **Files to read:**
+
 - `backend/.env.sample`
 - `backend/.env` (if readable — do not print its contents; note any weak values)
 - `JwtAuthService.ts`
@@ -149,6 +154,7 @@ Work through each section below. Read every file cited before drawing conclusion
 ## Section 6 — Error leakage
 
 **Files to read:**
+
 - `index.ts` (the global error handler and `notFound`/`validationFail` handlers)
 - Every `*HttpHandlers.ts`
 
@@ -220,6 +226,7 @@ Ordered by impact. List at most 5 actions.
 ```
 
 **Rules for the report:**
+
 - Every row must cite a real file path and a line number (or range).
 - "Fix" must be a concrete code change, not generic advice like "add validation".
 - If a section is clean, list it under "No issues found" rather than omitting it.

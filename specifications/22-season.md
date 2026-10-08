@@ -181,28 +181,28 @@ model Season {
 
 ```typescript
 export type Season = {
-  id: string;
-  label: string;
-  startDate: Date | null;
-  endDate: Date | null;
-  createdAt: Date;
-  updatedAt: Date;
-};
+  id: string
+  label: string
+  startDate: Date | null
+  endDate: Date | null
+  createdAt: Date
+  updatedAt: Date
+}
 
-export type CreateSeasonInput = Omit<Season, "id" | "createdAt" | "updatedAt">;
-export type UpdateSeasonInput = Partial<CreateSeasonInput>;
+export type CreateSeasonInput = Omit<Season, 'id' | 'createdAt' | 'updatedAt'>
+export type UpdateSeasonInput = Partial<CreateSeasonInput>
 ```
 
 #### Port (`src/season/ports/ISeasonRepository.ts`)
 
 ```typescript
 export interface ISeasonRepository {
-  count(): Promise<number>;
-  findAll(options: PaginationOptions): Promise<Season[]>;
-  findById(id: string): Promise<Season | null>;
-  create(input: CreateSeasonInput): Promise<Season>;
-  update(id: string, input: UpdateSeasonInput): Promise<Season>;
-  softDelete(id: string): Promise<void>;
+  count(): Promise<number>
+  findAll(options: PaginationOptions): Promise<Season[]>
+  findById(id: string): Promise<Season | null>
+  create(input: CreateSeasonInput): Promise<Season>
+  update(id: string, input: UpdateSeasonInput): Promise<Season>
+  softDelete(id: string): Promise<void>
 }
 ```
 

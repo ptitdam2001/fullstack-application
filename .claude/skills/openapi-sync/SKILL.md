@@ -16,6 +16,7 @@ pnpm --filter application-material gen:sdk
 ```
 
 This runs `orval` and regenerates:
+
 - `frontend/web-application/src/sdk/generated/` — typed axios+react-query hooks
 - `frontend/web-application/src/sdk/generated/*.zod.ts` — Zod schemas
 
@@ -27,12 +28,12 @@ This runs `orval` and regenerates:
 
 The Bruno collection at `backend/bruno/` must mirror the OpenAPI spec.
 
-| Change in openapi.yml | Bruno action |
-|-----------------------|--------------|
-| New route added | Create `backend/bruno/<domain>/<operation>.bru` |
-| Route removed | Delete the corresponding `.bru` file |
-| New path parameter | Update `{{paramName}}` in the `.bru` file |
-| New body field | Update the `body:json` block in the `.bru` file |
+| Change in openapi.yml   | Bruno action                                                   |
+| ----------------------- | -------------------------------------------------------------- |
+| New route added         | Create `backend/bruno/<domain>/<operation>.bru`                |
+| Route removed           | Delete the corresponding `.bru` file                           |
+| New path parameter      | Update `{{paramName}}` in the `.bru` file                      |
+| New body field          | Update the `body:json` block in the `.bru` file                |
 | New env variable needed | Add to `backend/bruno/environments/local.bru` inside `vars {}` |
 
 ---
@@ -41,10 +42,10 @@ The Bruno collection at `backend/bruno/` must mirror the OpenAPI spec.
 
 OpenAPI `required` arrays and Prisma `schema.prisma` nullability must agree. Check the changed schema against the rule:
 
-| Field nullable? | Prisma | OpenAPI |
-|-----------------|--------|---------|
-| Yes | `Type?` | NOT in `required` |
-| No | `Type` | IN `required` |
+| Field nullable? | Prisma  | OpenAPI           |
+| --------------- | ------- | ----------------- |
+| Yes             | `Type?` | NOT in `required` |
+| No              | `Type`  | IN `required`     |
 
 A mismatch causes runtime validation errors (`400` from openapi-backend) or missing required fields in the Prisma create/update.
 

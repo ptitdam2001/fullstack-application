@@ -10,24 +10,24 @@ Participant inscrit dans une équipe via `UserTeam(PLAYER, teamId)`. Possède un
 
 ## Navigation disponible
 
-| Entrée              | URL               |
-| ------------------- | ----------------- |
-| Tableau de bord     | `/dashboard`      |
-| Championnats        | `/championships`  |
-| Équipes             | `/teams`          |
-| Matchs              | `/matches`        |
-| Mon profil          | `/profile`        |
+| Entrée          | URL              |
+| --------------- | ---------------- |
+| Tableau de bord | `/dashboard`     |
+| Championnats    | `/championships` |
+| Équipes         | `/teams`         |
+| Matchs          | `/matches`       |
+| Mon profil      | `/profile`       |
 
 ## Accès global
 
-| Domaine        | Lecture | Création | Modification | Suppression |
-| -------------- | :-----: | :------: | :----------: | :---------: |
-| Championnats   | ✅      | ❌       | ❌           | ❌          |
-| Équipes        | ✅      | ❌       | ❌           | ❌          |
-| Matchs         | ✅      | ❌       | ❌           | ❌          |
-| Scores         | ✅      | ❌       | ❌           | —           |
-| Utilisateurs   | ❌      | ❌       | ❌           | ❌          |
-| Classements    | ✅      | —        | —            | —           |
+| Domaine      | Lecture | Création | Modification | Suppression |
+| ------------ | :-----: | :------: | :----------: | :---------: |
+| Championnats |   ✅    |    ❌    |      ❌      |     ❌      |
+| Équipes      |   ✅    |    ❌    |      ❌      |     ❌      |
+| Matchs       |   ✅    |    ❌    |      ❌      |     ❌      |
+| Scores       |   ✅    |    ❌    |      ❌      |      —      |
+| Utilisateurs |   ❌    |    ❌    |      ❌      |     ❌      |
+| Classements  |   ✅    |    —     |      —       |      —      |
 
 ## Règles contextuelles
 

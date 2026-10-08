@@ -16,13 +16,13 @@ Project root: `/Users/suhard/Documents/Development/fullstack-application/`
 
 The harness is fully wired (Session 1 of the testing initiative):
 
-| File | Role |
-|------|------|
-| `backend/tests/support/database.ts` | globalSetup: starts Testcontainers Mongo replica, exposes `DATABASE_URL`, runs `prisma db push`. Also exports `resetDatabase()` — `deleteMany` on all collections between tests. |
-| `backend/tests/support/client.ts` | `createTestAgent()` — returns a supertest agent mounted on `createApp()` (no port binding). |
-| `backend/tests/support/authenticate.ts` | `authHeaderFor(userId, isAdmin?)` — forges a valid JWT header for a given user. |
-| `backend/tests/support/fixtures.ts` | Entity factories: `createAdmin()`, `createUser()`, `createTeam()`, etc. Extend when the domain needs new fixtures. |
-| `backend/vitest.functional.config.ts` | Vitest config: includes `tests/functional/**/*.test.ts`, `globalSetup`, `testTimeout: 30000`, `fileParallelism: false` (test files run one after the other, each in its own fork). |
+| File                                    | Role                                                                                                                                                                               |
+| --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `backend/tests/support/database.ts`     | globalSetup: starts Testcontainers Mongo replica, exposes `DATABASE_URL`, runs `prisma db push`. Also exports `resetDatabase()` — `deleteMany` on all collections between tests.   |
+| `backend/tests/support/client.ts`       | `createTestAgent()` — returns a supertest agent mounted on `createApp()` (no port binding).                                                                                        |
+| `backend/tests/support/authenticate.ts` | `authHeaderFor(userId, isAdmin?)` — forges a valid JWT header for a given user.                                                                                                    |
+| `backend/tests/support/fixtures.ts`     | Entity factories: `createAdmin()`, `createUser()`, `createTeam()`, etc. Extend when the domain needs new fixtures.                                                                 |
+| `backend/vitest.functional.config.ts`   | Vitest config: includes `tests/functional/**/*.test.ts`, `globalSetup`, `testTimeout: 30000`, `fileParallelism: false` (test files run one after the other, each in its own fork). |
 
 Run with: `pnpm --filter openapi-express-ts test:functional` or `make test-backend-func`
 
@@ -31,6 +31,7 @@ Run with: `pnpm --filter openapi-express-ts test:functional` or `make test-backe
 ## Step 1 — Gather domain info
 
 Ask:
+
 1. **Domaine** — which domain to test? (e.g. `match`, `championship`, `auth`)
 2. **Routes** — all routes, or a specific subset? (default: all routes in the domain's matrix from `specifications/16-strategie-de-test.md`)
 3. **Split?** — if the domain has more than ~10 operations or complex business rules (forfeit, standings calculation, transactions), propose splitting into `<domaine>.crud.test.ts` + `<domaine>.<concern>.test.ts`. Ask the user to confirm.
@@ -90,16 +91,26 @@ describe('<domaine> domain — functional API', () => {
       // assert: status + body shape + side effects
     })
 
-    it('401 — unauthenticated request', async () => { /* omit auth header */ })
+    it('401 — unauthenticated request', async () => {
+      /* omit auth header */
+    })
 
-    it('403 — insufficient role', async () => { /* use wrong role fixture */ })
+    it('403 — insufficient role', async () => {
+      /* use wrong role fixture */
+    })
 
-    it('400 — validation: missing required field', async () => { /* bad body */ })
+    it('400 — validation: missing required field', async () => {
+      /* bad body */
+    })
 
-    it('404 — unknown id', async () => { /* unknownObjectId() */ })
+    it('404 — unknown id', async () => {
+      /* unknownObjectId() */
+    })
 
     // business rules from spec (one it() per rule)
-    it('règle métier: <rule from specifications/>', async () => { /* ... */ })
+    it('règle métier: <rule from specifications/>', async () => {
+      /* ... */
+    })
   })
 })
 ```
@@ -123,6 +134,7 @@ Group by operationId, not by HTTP method. Order: list, count, get-single, create
 ### Soft-delete
 
 If the domain uses soft-delete (`deletedAt` field in Prisma model), verify:
+
 - DELETE sets `deletedAt` (not hard-deletes) — query via `prisma` after the HTTP call.
 - GET list excludes soft-deleted records.
 - GET by id on soft-deleted record returns 404.
@@ -137,13 +149,13 @@ If the domain needs entity factories not yet in `backend/tests/support/fixtures.
 
 ## Pitfalls — include these in every generated file
 
-| Pitfall | Rule |
-|---------|------|
-| Unknown ObjectId | Use `randomBytes(12).toString('hex')` — 24-char hex string, valid ObjectId format, absent from DB. Never use `randomUUID()` for Mongo `@db.ObjectId` fields — UUID format causes a Prisma 500. |
-| Soft-delete filter | In Prisma queries inside tests, use `{ ...notDeleted }` from `backend/utils/softDelete.ts`. Never `{ deletedAt: null }` — Prisma v6+MongoDB only matches documents where the field is explicitly `null`, not missing. |
-| ESM imports | All TypeScript imports inside `backend/` must end in `.js` — even when importing `.ts` files. |
-| Apple Silicon wait | `INIT_WAIT_SEC=10` is set in the Testcontainers globalSetup for amd64-on-arm64 emulation. Tests that run faster don't need to do anything — just don't lower this value. |
-| Zod SDK import path | The Zod schemas live in the **frontend** tree: `../../../../frontend/web-application/src/sdk/generated/<tag>/<tag>.zod.js`. Use the generated types for response assertions — they are the ground truth for what the frontend expects. |
+| Pitfall                          | Rule                                                                                                                                                                                                                                        |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Unknown ObjectId                 | Use `randomBytes(12).toString('hex')` — 24-char hex string, valid ObjectId format, absent from DB. Never use `randomUUID()` for Mongo `@db.ObjectId` fields — UUID format causes a Prisma 500.                                              |
+| Soft-delete filter               | In Prisma queries inside tests, use `{ ...notDeleted }` from `backend/utils/softDelete.ts`. Never `{ deletedAt: null }` — Prisma v6+MongoDB only matches documents where the field is explicitly `null`, not missing.                       |
+| ESM imports                      | All TypeScript imports inside `backend/` must end in `.js` — even when importing `.ts` files.                                                                                                                                               |
+| Apple Silicon wait               | `INIT_WAIT_SEC=10` is set in the Testcontainers globalSetup for amd64-on-arm64 emulation. Tests that run faster don't need to do anything — just don't lower this value.                                                                    |
+| Zod SDK import path              | The Zod schemas live in the **frontend** tree: `../../../../frontend/web-application/src/sdk/generated/<tag>/<tag>.zod.js`. Use the generated types for response assertions — they are the ground truth for what the frontend expects.      |
 | ajv / openapi-backend validation | `openapi-backend` validates all **requests** against the spec. If a PATCH/POST test body doesn't pass the spec schema, the route returns 400 even if the handler would accept it. Match the request body exactly to what the spec requires. |
 
 ---

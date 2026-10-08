@@ -2,12 +2,12 @@
 
 ## URLs
 
-| Page         | URL               |
-| ------------ | ----------------- |
-| Liste        | `/users`          |
-| Détail       | `/users/:id`      |
-| Créer        | `/users/new`      |
-| Modifier     | `/users/:id/edit` |
+| Page     | URL               |
+| -------- | ----------------- |
+| Liste    | `/users`          |
+| Détail   | `/users/:id`      |
+| Créer    | `/users/new`      |
+| Modifier | `/users/:id/edit` |
 
 ## Liste des utilisateurs
 

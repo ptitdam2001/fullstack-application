@@ -10,27 +10,27 @@ Officiel désigné pour un ou plusieurs matchs via `UserMatch`. Accès en lectur
 
 ## Navigation disponible
 
-| Entrée              | URL              |
-| ------------------- | ---------------- |
-| Tableau de bord     | `/dashboard`     |
-| Championnats        | `/championships` |
-| Équipes             | `/teams`         |
-| Matchs              | `/matches`       |
-| Mes matchs          | `/my-matches`    |
-| Mon profil          | `/profile`       |
+| Entrée          | URL              |
+| --------------- | ---------------- |
+| Tableau de bord | `/dashboard`     |
+| Championnats    | `/championships` |
+| Équipes         | `/teams`         |
+| Matchs          | `/matches`       |
+| Mes matchs      | `/my-matches`    |
+| Mon profil      | `/profile`       |
 
 ## Accès global
 
-| Domaine                        | Lecture | Création | Modification | Suppression |
-| ------------------------------ | :-----: | :------: | :----------: | :---------: |
-| Championnats                   | ✅      | ❌       | ❌           | ❌          |
-| Équipes                        | ✅      | ❌       | ❌           | ❌          |
-| Matchs (tous)                  | ✅      | ❌       | ❌           | ❌          |
-| Scores (ses matchs)            | ✅      | ✅       | ✅           | —           |
-| Scores (autres)                | ✅      | ❌       | ❌           | —           |
-| Forfait (pendant son match)    | —       | ✅       | —            | —           |
-| Utilisateurs                   | ❌      | ❌       | ❌           | ❌          |
-| Classements                    | ✅      | —        | —            | —           |
+| Domaine                     | Lecture | Création | Modification | Suppression |
+| --------------------------- | :-----: | :------: | :----------: | :---------: |
+| Championnats                |   ✅    |    ❌    |      ❌      |     ❌      |
+| Équipes                     |   ✅    |    ❌    |      ❌      |     ❌      |
+| Matchs (tous)               |   ✅    |    ❌    |      ❌      |     ❌      |
+| Scores (ses matchs)         |   ✅    |    ✅    |      ✅      |      —      |
+| Scores (autres)             |   ✅    |    ❌    |      ❌      |      —      |
+| Forfait (pendant son match) |    —    |    ✅    |      —       |      —      |
+| Utilisateurs                |   ❌    |    ❌    |      ❌      |     ❌      |
+| Classements                 |   ✅    |    —     |      —       |      —      |
 
 ## Règles contextuelles
 

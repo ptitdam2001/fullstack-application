@@ -106,17 +106,17 @@ Pour chaque domaine, appliquer les étapes suivantes :
 5. **Activation** : changer l'import dans `index.ts`
 6. **Vérification** : `pnpm check:type` + test manuel des endpoints
 
-| Domaine         | Endpoints principaux                          | Statut     |
-| --------------- | --------------------------------------------- | ---------- |
-| `auth`          | login, me                                     | ✅ Complet |
-| `user`          | CRUD utilisateurs                             | ✅ Complet |
-| `team`          | CRUD + joueurs + calendrier                   | ✅ Complet |
-| `player`        | Profils joueurs (maillot, poste)              | ✅ Complet |
-| `match`         | CRUD matchs + scores                          | ✅ Complet |
-| `championship`  | CRUD championnats                             | ✅ Complet |
-| `userTeam`      | Assignation coach/joueur ↔ équipe             | ✅ Complet |
-| `userMatch`     | Assignation arbitre ↔ match                  | ✅ Complet |
-| `standings`     | Calcul classement par poule                  | ⏳ À faire |
+| Domaine        | Endpoints principaux              | Statut     |
+| -------------- | --------------------------------- | ---------- |
+| `auth`         | login, me                         | ✅ Complet |
+| `user`         | CRUD utilisateurs                 | ✅ Complet |
+| `team`         | CRUD + joueurs + calendrier       | ✅ Complet |
+| `player`       | Profils joueurs (maillot, poste)  | ✅ Complet |
+| `match`        | CRUD matchs + scores              | ✅ Complet |
+| `championship` | CRUD championnats                 | ✅ Complet |
+| `userTeam`     | Assignation coach/joueur ↔ équipe | ✅ Complet |
+| `userMatch`    | Assignation arbitre ↔ match       | ✅ Complet |
+| `standings`    | Calcul classement par poule       | ⏳ À faire |
 
 ### Critères de validation par domaine
 

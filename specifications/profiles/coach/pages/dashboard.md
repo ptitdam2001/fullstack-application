@@ -27,12 +27,12 @@ Page d'accueil après login. Layout deux colonnes : sidebar de navigation à gau
 
 #### KPI Cards — grille 2×2
 
-| Carte            | Valeur affichée                        |
-| ---------------- | -------------------------------------- |
-| Équipes actives  | Nombre d'équipes dont il est coach     |
-| Joueurs          | Nombre total de joueurs (toutes équipes) |
-| Matchs cette semaine | Matchs à venir dans les 7 jours   |
-| Bilan saison     | Victoires / Défaites (toutes équipes)  |
+| Carte                | Valeur affichée                          |
+| -------------------- | ---------------------------------------- |
+| Équipes actives      | Nombre d'équipes dont il est coach       |
+| Joueurs              | Nombre total de joueurs (toutes équipes) |
+| Matchs cette semaine | Matchs à venir dans les 7 jours          |
+| Bilan saison         | Victoires / Défaites (toutes équipes)    |
 
 #### Agenda — prochains matchs
 

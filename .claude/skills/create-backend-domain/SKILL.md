@@ -15,10 +15,10 @@ Stack: Node.js + TypeScript (ESM strict), Express, openapi-backend, Prisma + Mon
 
 This project has **two independent sources of truth** that must both be updated for every new domain:
 
-| File | Owns |
-|------|------|
-| `backend/prisma/schema.prisma` | Database structure — models, embedded types, relations, nullability |
-| `backend/openapi.yml` | API contract — routes, request/response schemas, required fields, security |
+| File                           | Owns                                                                       |
+| ------------------------------ | -------------------------------------------------------------------------- |
+| `backend/prisma/schema.prisma` | Database structure — models, embedded types, relations, nullability        |
+| `backend/openapi.yml`          | API contract — routes, request/response schemas, required fields, security |
 
 They are never derived from each other — both must be updated manually and deliberately. The domain code and Prisma client are generated **from** these two files, never the reverse.
 
@@ -29,6 +29,7 @@ They are never derived from each other — both must be updated manually and del
 Ask: **"Quel est le nom du domaine ?"** (e.g. `Match`, `Championship`, `Standing`)
 
 Derive from the answer:
+
 - **Folder**: lowercase (`match`, `championship`)
 - **Entity**: PascalCase (`Match`, `Championship`)
 - **Variable**: camelCase (`match`, `championship`) — use this everywhere, never the generic word "entity"
@@ -45,6 +46,7 @@ Offer 3 options:
 **(b) JSON** — the user provides a sample JSON object
 
 **(c) Prisma schema** — read `backend/prisma/schema.prisma`, find the matching model, and parse it automatically.
+
 - Map types: `String→string`, `Int→number`, `Float→number`, `Boolean→boolean`, `DateTime→Date`
 - Nullable fields (`String?`) → `string | null` (never `?: string` — always use `Type | null` for nullable domain fields)
 - Skip: relation fields (those referencing another model), the `@id` field (always added manually as `id: string`)
@@ -88,6 +90,7 @@ model <Entity> {
 ```
 
 Rules:
+
 - **Always** `@id @default(auto()) @map("_id") @db.ObjectId` on the id field (MongoDB ObjectId)
 - Nullable domain fields (`Type | null`) → `String?` / `Int?` / `Float?` in Prisma
 - If the entity embeds a sub-object (e.g. `area`), define an embedded `type` (not a relation model) and reference it non-nullable unless the business explicitly allows absence:
@@ -135,6 +138,7 @@ export type Update<Entity>Input = Partial<Create<Entity>Input>
 ```
 
 **Hard rule**: always exclude `'id'`, `'updatedAt'`, `'createdAt'`, and `'deletedAt'` from all input types — create AND update. These are Prisma-managed fields:
+
 - `updatedAt` → set automatically by `@updatedAt` on every write
 - `createdAt` → set once by `@default(now())` at insert
 - `deletedAt` → only set via the dedicated `softDelete()` use case, never via a generic update
@@ -352,6 +356,7 @@ await prisma.<entity>.update({ where: { id }, data: { deletedAt: new Date() } })
 ```
 
 If the query already has an `OR` condition at the same level (key conflict), wrap `notDeleted` in `AND` instead of spreading:
+
 ```ts
 where: {
   AND: [notDeleted],
@@ -444,16 +449,16 @@ Add two schemas at the end of the `components/schemas` section:
   type: object
   properties:
     field1:
-      type: string        # map TS types: string→string, number→integer or number, Date→string+format:date-time
+      type: string # map TS types: string→string, number→integer or number, Date→string+format:date-time
     optionalField:
       type: string
       nullable: true
   required:
-    - field1              # list all non-nullable fields; must match Prisma schema non-nullable fields
+    - field1 # list all non-nullable fields; must match Prisma schema non-nullable fields
 
 <Entity>:
   allOf:
-    - $ref: "#/components/schemas/<Entity>Input"
+    - $ref: '#/components/schemas/<Entity>Input'
     - type: object
       required:
         - id
@@ -470,144 +475,145 @@ Add two schemas at the end of the `components/schemas` section:
 Add the path entries before `security:`. Use the same `operationId` names as the exported handler functions.
 
 Security rules:
+
 - `openapi.yml` applies `jwtAuth` globally (all endpoints need auth by default)
 - To make an endpoint **public**: add `security: []` on that operation
 - To keep JWT validation **without role restriction**: omit `security` key entirely (global applies)
 
 ```yaml
-  /<entities>:              # plural, lowercase, e.g. /matches
-    get:
-      operationId: get<Entity>s
-      description: "Get list of <entities>"
-      tags:
-        - <Entity>
-      # security: []        ← uncomment to make public
-      parameters:
-        - in: query
-          name: page
-          schema:
-            type: integer
-        - in: query
-          name: count
-          schema:
-            type: integer
-      responses:
-        200:
-          description: ""
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/<Entity>"
-
-  /<entities>/count:
-    get:
-      operationId: count<Entity>s
-      description: "Count <entities>"
-      tags:
-        - <Entity>
-      responses:
-        200:
-          description: ""
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Count"
-
-  /<entity>:               # singular, lowercase, e.g. /match
-    post:
-      operationId: create<Entity>
-      description: "Create a <entity>"
-      tags:
-        - <Entity>
-      requestBody:
+/<entities>: # plural, lowercase, e.g. /matches
+  get:
+    operationId: get<Entity>s
+    description: 'Get list of <entities>'
+    tags:
+      - <Entity>
+    # security: []        ← uncomment to make public
+    parameters:
+      - in: query
+        name: page
+        schema:
+          type: integer
+      - in: query
+        name: count
+        schema:
+          type: integer
+    responses:
+      200:
+        description: ''
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/<Entity>Input"
-      responses:
-        201:
-          description: ""
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/<Entity>"
+              type: array
+              items:
+                $ref: '#/components/schemas/<Entity>'
 
-  /<entity>/{id}:
-    get:
-      operationId: get<Entity>
-      description: "Get a <entity>"
-      tags:
-        - <Entity>
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-      responses:
-        200:
-          description: ""
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/<Entity>"
-        404:
-          description: "Not found"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorOutput"
-    patch:
-      operationId: update<Entity>
-      description: "Update a <entity>"
-      tags:
-        - <Entity>
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-      requestBody:
+/<entities>/count:
+  get:
+    operationId: count<Entity>s
+    description: 'Count <entities>'
+    tags:
+      - <Entity>
+    responses:
+      200:
+        description: ''
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/<Entity>Input"
-      responses:
-        200:
-          description: ""
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/<Entity>"
-        404:
-          description: "Not found"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorOutput"
-    delete:
-      operationId: remove<Entity>
-      description: "Delete a <entity>"
-      tags:
-        - <Entity>
-      parameters:
-        - in: path
-          name: id
-          required: true
+              $ref: '#/components/schemas/Count'
+
+/<entity>: # singular, lowercase, e.g. /match
+  post:
+    operationId: create<Entity>
+    description: 'Create a <entity>'
+    tags:
+      - <Entity>
+    requestBody:
+      content:
+        application/json:
           schema:
-            type: string
-      responses:
-        204:
-          description: "Deleted"
-        404:
-          description: "Not found"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorOutput"
+            $ref: '#/components/schemas/<Entity>Input'
+    responses:
+      201:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/<Entity>'
+
+/<entity>/{id}:
+  get:
+    operationId: get<Entity>
+    description: 'Get a <entity>'
+    tags:
+      - <Entity>
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+    responses:
+      200:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/<Entity>'
+      404:
+        description: 'Not found'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorOutput'
+  patch:
+    operationId: update<Entity>
+    description: 'Update a <entity>'
+    tags:
+      - <Entity>
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+    requestBody:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/<Entity>Input'
+    responses:
+      200:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/<Entity>'
+      404:
+        description: 'Not found'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorOutput'
+  delete:
+    operationId: remove<Entity>
+    description: 'Delete a <entity>'
+    tags:
+      - <Entity>
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+    responses:
+      204:
+        description: 'Deleted'
+      404:
+        description: 'Not found'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorOutput'
 ```
 
 ---
@@ -615,11 +621,13 @@ Security rules:
 ## Step 7 — Update `backend/index.ts`
 
 Add alongside the other domain imports:
+
 ```ts
 import * as <domain>Handlers from './src/<domain>/infrastructure/<Entity>HttpHandlers'
 ```
 
 Spread in the handlers object:
+
 ```ts
 ...<domain>Handlers,
 ```
@@ -633,6 +641,7 @@ The Bruno collection lives in `backend/bruno/`. Create a folder for the new doma
 ### 8a — Create `backend/bruno/<entities>/` and add the 6 files
 
 **get-<entities>.bru** (seq: 1)
+
 ```
 meta {
   name: Get <Entity>s
@@ -657,6 +666,7 @@ params:query {
 ```
 
 **count-<entities>.bru** (seq: 2)
+
 ```
 meta {
   name: Count <Entity>s
@@ -676,6 +686,7 @@ auth:bearer {
 ```
 
 **create-<entity>.bru** (seq: 3) — body fields derived from `Create<Entity>Input`
+
 ```
 meta {
   name: Create <Entity>
@@ -707,6 +718,7 @@ script:post-response {
 ```
 
 **get-<entity>.bru** (seq: 4)
+
 ```
 meta {
   name: Get <Entity>
@@ -726,6 +738,7 @@ auth:bearer {
 ```
 
 **edit-<entity>.bru** (seq: 5) — partial body, one or two fields only
+
 ```
 meta {
   name: Edit <Entity>
@@ -751,6 +764,7 @@ body:json {
 ```
 
 **remove-<entity>.bru** (seq: 6)
+
 ```
 meta {
   name: Remove <Entity>
@@ -772,6 +786,7 @@ auth:bearer {
 ### 8b — Add the `<entity>Id` variable to the environment
 
 In `backend/bruno/environments/local.bru`, add a line inside `vars {}`:
+
 ```
   <entity>Id:
 ```
@@ -795,6 +810,7 @@ pnpm vitest run src/<domain>/application/<Entity>UseCases.test.ts
 ```
 
 Fix any TypeScript errors or failing tests before reporting completion. Common issues:
+
 - Missing `.js` extension on imports → add it
 - `select` object mismatch with domain type → align field names
 - `operationId` in spec doesn't match handler export name → rename one to match
@@ -805,17 +821,17 @@ Fix any TypeScript errors or failing tests before reporting completion. Common i
 
 ## Conventions (never deviate)
 
-| Rule | Value |
-|------|-------|
-| Import extensions | Always `.js` (ESM strict) |
-| prismaClient path | `'../../../utils/prismaClient.js'` |
-| softDelete helper | `'../../../utils/softDelete.js'` — always use `notDeleted` for soft-delete filters, never `{ deletedAt: null }` |
-| Input types | Always `Omit<Entity, 'id' \| 'updatedAt' \| 'createdAt' \| 'deletedAt'>` — never expose Prisma-managed fields in create or update |
-| requireRoles path | `'../../auth/application/requireRoles.js'` |
-| Role enum path | `'../../user/domain/User.js'` |
-| Nullable domain fields | `Type \| null` — never `Type?` |
-| Tests | `vi.fn().mockResolvedValue(...)` — no real DB, no real Express |
-| Pagination | Always `PaginationOptions = { page: number; count: number }` in every `findAll` |
-| Prisma select | Always explicit — never let Prisma return relation or embedded fields |
-| OpenAPI security | Global JWT by default; `security: []` to make public; no key = JWT validated, no role check |
-| Nullability sync | A field non-nullable in Prisma → non-nullable in domain type → in `required` in OpenAPI |
+| Rule                   | Value                                                                                                                             |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Import extensions      | Always `.js` (ESM strict)                                                                                                         |
+| prismaClient path      | `'../../../utils/prismaClient.js'`                                                                                                |
+| softDelete helper      | `'../../../utils/softDelete.js'` — always use `notDeleted` for soft-delete filters, never `{ deletedAt: null }`                   |
+| Input types            | Always `Omit<Entity, 'id' \| 'updatedAt' \| 'createdAt' \| 'deletedAt'>` — never expose Prisma-managed fields in create or update |
+| requireRoles path      | `'../../auth/application/requireRoles.js'`                                                                                        |
+| Role enum path         | `'../../user/domain/User.js'`                                                                                                     |
+| Nullable domain fields | `Type \| null` — never `Type?`                                                                                                    |
+| Tests                  | `vi.fn().mockResolvedValue(...)` — no real DB, no real Express                                                                    |
+| Pagination             | Always `PaginationOptions = { page: number; count: number }` in every `findAll`                                                   |
+| Prisma select          | Always explicit — never let Prisma return relation or embedded fields                                                             |
+| OpenAPI security       | Global JWT by default; `security: []` to make public; no key = JWT validated, no role check                                       |
+| Nullability sync       | A field non-nullable in Prisma → non-nullable in domain type → in `required` in OpenAPI                                           |

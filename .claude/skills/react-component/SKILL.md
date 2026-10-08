@@ -19,22 +19,22 @@ Ces règles sont enforced par le linter. Les violer crée des erreurs CI.
 
 ```tsx
 // ✅ type imports inline
-import { type FC, type ReactNode } from "react";
-import { type Team } from "../domain/Team";
+import { type FC, type ReactNode } from 'react'
+import { type Team } from '../domain/Team'
 
 // ❌ import type séparé
-import type { FC } from "react";
+import type { FC } from 'react'
 ```
 
 ### Composants : toujours arrow function + export const
 
 ```tsx
 // ✅
-export const TeamCard = ({ team }: Props) => <div>{team.name}</div>;
+export const TeamCard = ({ team }: Props) => <div>{team.name}</div>
 
 // ❌
 export function TeamCard({ team }: Props) {
-  return <div>{team.name}</div>;
+  return <div>{team.name}</div>
 }
 ```
 
@@ -217,58 +217,58 @@ Fichier : `NomComposant.page.tsx` dans le même dossier. Il encapsule tout accè
 
 ```tsx
 // TeamCard.page.tsx
-import { render, screen, fireEvent } from "@testing-library/react";
-import { vi } from "vitest";
-import { TeamCard } from "./TeamCard";
-import type { Team } from "../../domain/Team";
+import { render, screen, fireEvent } from '@testing-library/react'
+import { vi } from 'vitest'
+import { TeamCard } from './TeamCard'
+import type { Team } from '../../domain/Team'
 
-const defaultTeam: Team = { id: "1", name: "Seniors A", color: "#e53e3e" };
+const defaultTeam: Team = { id: '1', name: 'Seniors A', color: '#e53e3e' }
 
 export class TeamCardPage {
-  onViewClick = vi.fn();
-  private team: Team;
+  onViewClick = vi.fn()
+  private team: Team
 
   constructor(teamOverrides: Partial<Team> = {}) {
-    this.team = { ...defaultTeam, ...teamOverrides };
+    this.team = { ...defaultTeam, ...teamOverrides }
   }
 
   render() {
-    render(<TeamCard team={this.team} onViewClick={this.onViewClick} />);
-    return this;
+    render(<TeamCard team={this.team} onViewClick={this.onViewClick} />)
+    return this
   }
 
   teamName() {
-    return screen.getByText(this.team.name);
+    return screen.getByText(this.team.name)
   }
 
   viewButton() {
-    return screen.getByRole("button", { name: "teamCard.view" });
+    return screen.getByRole('button', { name: 'teamCard.view' })
   }
 
   clickViewButton() {
-    fireEvent.click(this.viewButton());
-    return this;
+    fireEvent.click(this.viewButton())
+    return this
   }
 }
 ```
 
 ```tsx
 // TeamCard.test.tsx
-import { describe, expect, it } from "vitest";
-import { TeamCardPage } from "./TeamCard.page";
+import { describe, expect, it } from 'vitest'
+import { TeamCardPage } from './TeamCard.page'
 
-describe("TeamCard", () => {
+describe('TeamCard', () => {
   it("affiche le nom de l'équipe", () => {
-    const page = new TeamCardPage().render();
-    expect(page.teamName()).toBeInTheDocument();
-  });
+    const page = new TeamCardPage().render()
+    expect(page.teamName()).toBeInTheDocument()
+  })
 
-  it("appelle onViewClick au clic sur le bouton", () => {
-    const page = new TeamCardPage().render();
-    page.clickViewButton();
-    expect(page.onViewClick).toHaveBeenCalledOnce();
-  });
-});
+  it('appelle onViewClick au clic sur le bouton', () => {
+    const page = new TeamCardPage().render()
+    page.clickViewButton()
+    expect(page.onViewClick).toHaveBeenCalledOnce()
+  })
+})
 ```
 
 Règles du Page Object :
@@ -331,15 +331,15 @@ Le hook de façade se teste directement, sans Page Object (pas de DOM) :
 
 ```ts
 // useTeamForm.test.ts
-import { renderHookWithProviders } from "@Common/testUtils";
-import { useTeamForm } from "./useTeamForm";
+import { renderHookWithProviders } from '@Common/testUtils'
+import { useTeamForm } from './useTeamForm'
 
-describe("useTeamForm", () => {
-  it("expose isPending false initialement", () => {
-    const { result } = renderHookWithProviders(() => useTeamForm());
-    expect(result.current.isPending).toBe(false);
-  });
-});
+describe('useTeamForm', () => {
+  it('expose isPending false initialement', () => {
+    const { result } = renderHookWithProviders(() => useTeamForm())
+    expect(result.current.isPending).toBe(false)
+  })
+})
 ```
 
 ### Ce qu'il faut couvrir

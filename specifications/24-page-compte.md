@@ -416,11 +416,11 @@ backend/src/image/
 
 ```typescript
 export interface IImageStorage {
-  save(input: SaveImageInput): Promise<SavedImage>; // { id, url }
-  findById(id: string): Promise<ImageContent | null>; // { data, contentType }
-  delete(id: string): Promise<void>;
-  deleteByOwner(ownerId: string): Promise<void>;
-  deleteByOwnerAndUrl(ownerId: string, url: string): Promise<void>;
+  save(input: SaveImageInput): Promise<SavedImage> // { id, url }
+  findById(id: string): Promise<ImageContent | null> // { data, contentType }
+  delete(id: string): Promise<void>
+  deleteByOwner(ownerId: string): Promise<void>
+  deleteByOwnerAndUrl(ownerId: string, url: string): Promise<void>
 }
 ```
 

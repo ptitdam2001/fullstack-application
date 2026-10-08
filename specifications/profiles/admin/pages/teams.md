@@ -2,12 +2,12 @@
 
 ## URLs
 
-| Page             | URL                        |
-| ---------------- | -------------------------- |
-| Liste            | `/teams`                   |
-| Détail           | `/teams/:id`               |
-| Créer            | `/teams/new`               |
-| Modifier         | `/teams/:id/edit`          |
+| Page     | URL               |
+| -------- | ----------------- |
+| Liste    | `/teams`          |
+| Détail   | `/teams/:id`      |
+| Créer    | `/teams/new`      |
+| Modifier | `/teams/:id/edit` |
 
 ## Liste des équipes
 

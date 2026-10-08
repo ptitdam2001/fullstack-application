@@ -21,6 +21,7 @@ Demander :
 > - **Non** → collecter les champs :
 
 Si schéma à créer, demander pour **chaque champ** :
+
 - **Nom** (ex. `email`, `firstName`)
 - **Type de valeur** : `string` / `number` / `boolean` / `date` / tableau / objet imbriqué
 - **Obligatoire ?** (`required` ou `optional`)
@@ -38,13 +39,13 @@ Demander :
 
 > **"Quel mode de validation pour ce formulaire ?"**
 
-| Mode | Déclenchement | Cas d'usage |
-|------|--------------|-------------|
-| `onBlur` | Valide quand le champ perd le focus | Formulaires classiques (login, inscription) — retour rapide sans interrompre la saisie |
-| `onChange` | Valide à chaque frappe | Champs avec indicateur temps-réel (force du mot de passe, slug auto) |
-| `onSubmit` | Valide uniquement à la soumission | Formulaires simples où valider en cours de saisie serait intrusif |
-| `onTouched` | Valide au premier blur, puis à chaque frappe | Compromis : silence au départ, feedback en temps-réel après le premier contact |
-| `all` | Combine `onBlur` + `onChange` | Formulaires CRUD où `isValid`/`isDirty` doit être exact à tout moment (bouton Submit conditionnel) |
+| Mode        | Déclenchement                                | Cas d'usage                                                                                        |
+| ----------- | -------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `onBlur`    | Valide quand le champ perd le focus          | Formulaires classiques (login, inscription) — retour rapide sans interrompre la saisie             |
+| `onChange`  | Valide à chaque frappe                       | Champs avec indicateur temps-réel (force du mot de passe, slug auto)                               |
+| `onSubmit`  | Valide uniquement à la soumission            | Formulaires simples où valider en cours de saisie serait intrusif                                  |
+| `onTouched` | Valide au premier blur, puis à chaque frappe | Compromis : silence au départ, feedback en temps-réel après le premier contact                     |
+| `all`       | Combine `onBlur` + `onChange`                | Formulaires CRUD où `isValid`/`isDirty` doit être exact à tout moment (bouton Submit conditionnel) |
 
 ---
 
@@ -113,7 +114,7 @@ import { BaseSchema } from '@Sdk/...'
 
 const MyFormSchema = BaseSchema.extend({
   confirmPassword: z.string().min(1),
-}).refine((d) => d.password === d.confirmPassword, {
+}).refine(d => d.password === d.confirmPassword, {
   message: 'Passwords do not match',
   path: ['confirmPassword'],
 })
@@ -159,12 +160,14 @@ const password = form.watch('password') ?? ''
 `form.formState` est un Proxy react-hook-form qui enregistre des subscriptions lors de l'accès aux propriétés. Avec `||`, si `isValid = false`, JavaScript court-circuite et `isDirty` n'est **jamais lu** → aucune subscription créée → le composant ne se re-rend pas quand `isDirty` change.
 
 **❌ Ne pas faire** :
+
 ```tsx
 // isDirty jamais accédé quand isValid = false → pas de subscription
 isDisabled={!form.formState.isValid || !form.formState.isDirty || isPending}
 ```
 
 **✅ Toujours extraire les deux avant le JSX** pour forcer la création des deux subscriptions :
+
 ```tsx
 const isValid = form.formState.isValid
 const isDirty = form.formState.isDirty
@@ -243,6 +246,7 @@ describe('MyForm', () => {
 ```
 
 **Contexte de test :**
+
 - `react-intl` mocké globalement dans `tests/setup.ts` — clés retournées telles quelles
 - `@hookform/devtools` mocké globalement — pas de DevTool rendu dans les tests
 - MSW configuré globalement — utiliser `server.use(...)` dans le `describe` si besoin
@@ -289,9 +293,7 @@ export const ValidationErrors: Story = {
 export const SuccessfulSubmit: Story = {
   parameters: {
     msw: {
-      handlers: [
-        http.post('/api/my-endpoint', () => HttpResponse.json({ id: '123' })),
-      ],
+      handlers: [http.post('/api/my-endpoint', () => HttpResponse.json({ id: '123' }))],
     },
   },
   play: async ({ canvasElement }) => {
@@ -306,6 +308,7 @@ export const SuccessfulSubmit: Story = {
 ```
 
 **Notes Storybook :**
+
 - `intlDecorator`, `QueryClientProvider`, `ThemeProvider` sont globaux — pas de wrapper manuel
 - `DevTool` s'affiche automatiquement dans Storybook (mode DEV) — pas besoin de configuration
 - Toujours au moins une story avec `play` couvrant la validation des erreurs

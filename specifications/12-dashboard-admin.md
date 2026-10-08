@@ -23,12 +23,12 @@ Le dashboard Admin est un dashboard **standalone** réservé aux utilisateurs av
 
 4 cartes métriques affichées en haut du dashboard :
 
-| KPI                        | Donnée                                                  | Source                                                    |
-| -------------------------- | ------------------------------------------------------- | --------------------------------------------------------- |
-| Matchs en attente de score | Matchs avec `status: SCHEDULED` dont la date est passée | `useGetMatches({ status: 'SCHEDULED', pastDue: true })`   |
-| Activations en attente     | Utilisateurs avec `isActive: false`                     | `useGetUsers({ isActive: false })`                        |
-| Championnats actifs        | Nombre total de championnats                            | `useCountChampionships()`                                 |
-| Équipes totales            | Nombre total d'équipes                                  | `useCountTeams()`                                         |
+| KPI                        | Donnée                                                  | Source                                                  |
+| -------------------------- | ------------------------------------------------------- | ------------------------------------------------------- |
+| Matchs en attente de score | Matchs avec `status: SCHEDULED` dont la date est passée | `useGetMatches({ status: 'SCHEDULED', pastDue: true })` |
+| Activations en attente     | Utilisateurs avec `isActive: false`                     | `useGetUsers({ isActive: false })`                      |
+| Championnats actifs        | Nombre total de championnats                            | `useCountChampionships()`                               |
+| Équipes totales            | Nombre total d'équipes                                  | `useCountTeams()`                                       |
 
 Chaque carte est cliquable et renvoie vers la liste correspondante (pré-filtrée si applicable).
 
@@ -72,11 +72,11 @@ Flux d'événements rafraîchi toutes les `DASHBOARD_POLLING_INTERVAL_MS` second
 
 3 boutons d'accès rapide positionnés en haut du dashboard (après les KPI cards) :
 
-| Raccourci              | Destination         |
-| ---------------------- | ------------------- |
-| Gérer les équipes      | `/app/admin/teams`  |
-| Gérer les utilisateurs | `/app/admin/users`  |
-| Gérer les matchs       | `/app/games`        |
+| Raccourci              | Destination        |
+| ---------------------- | ------------------ |
+| Gérer les équipes      | `/app/admin/teams` |
+| Gérer les utilisateurs | `/app/admin/users` |
+| Gérer les matchs       | `/app/games`       |
 
 ---
 
@@ -143,34 +143,34 @@ export const useAdminDashboard = () => {
   const { data: overdueMatches } = useGetMatches(
     { status: 'SCHEDULED', pastDue: true },
     { query: { refetchInterval: DASHBOARD_POLLING_INTERVAL_MS } }
-  );
+  )
   // KPI : activations en attente (filtre serveur)
   const { data: inactiveUsers } = useGetUsers(
     { isActive: false },
     { query: { refetchInterval: DASHBOARD_POLLING_INTERVAL_MS } }
-  );
+  )
   // Live Feed : sources séparées (filtre serveur par statut)
   const { data: forfeitedMatches } = useGetMatches(
     { status: 'FORFEITED' },
     { query: { refetchInterval: DASHBOARD_POLLING_INTERVAL_MS } }
-  );
+  )
   const { data: playedMatches } = useGetMatches(
     { status: 'PLAYED' },
     { query: { refetchInterval: DASHBOARD_POLLING_INTERVAL_MS } }
-  );
+  )
   const { data: teams } = useGetTeams({
     query: { refetchInterval: DASHBOARD_POLLING_INTERVAL_MS },
-  });
+  })
   // Camembert : tous les utilisateurs avec roles (retournés par GET /users)
-  const { data: allUsers } = useGetUsers();
-  const { data: championshipCount } = useCountChampionships();
-  const { data: teamCount } = useCountTeams();
+  const { data: allUsers } = useGetUsers()
+  const { data: championshipCount } = useCountChampionships()
+  const { data: teamCount } = useCountTeams()
 
-  const pendingScoreCount = overdueMatches?.length ?? 0;
-  const pendingActivationCount = inactiveUsers?.length ?? 0;
+  const pendingScoreCount = overdueMatches?.length ?? 0
+  const pendingActivationCount = inactiveUsers?.length ?? 0
 
-  const feedEvents = buildFeedEvents({ inactiveUsers, teams, forfeitedMatches, playedMatches });
-  const roleDistribution = buildRoleDistribution(allUsers);
+  const feedEvents = buildFeedEvents({ inactiveUsers, teams, forfeitedMatches, playedMatches })
+  const roleDistribution = buildRoleDistribution(allUsers)
 
   return {
     pendingScoreCount,
@@ -179,40 +179,36 @@ export const useAdminDashboard = () => {
     teamCount,
     feedEvents,
     roleDistribution,
-  };
-};
+  }
+}
 ```
 
 ### Type FeedEvent
 
 ```typescript
-type FeedEventType =
-  | "ACTIVATION_REQUEST"
-  | "TEAM_CREATED"
-  | "FORFEIT"
-  | "MATCH_COMPLETED";
+type FeedEventType = 'ACTIVATION_REQUEST' | 'TEAM_CREATED' | 'FORFEIT' | 'MATCH_COMPLETED'
 
 type FeedEvent = {
-  id: string;
-  type: FeedEventType;
-  label: string;
-  date: string; // ISO date pour le tri
-  href?: string; // Lien vers la ressource
-  actionLabel?: string; // Ex: "Activer" pour ACTIVATION_REQUEST
-  onAction?: () => void;
-};
+  id: string
+  type: FeedEventType
+  label: string
+  date: string // ISO date pour le tri
+  href?: string // Lien vers la ressource
+  actionLabel?: string // Ex: "Activer" pour ACTIVATION_REQUEST
+  onAction?: () => void
+}
 ```
 
 ### Filtres serveur implémentés
 
 Les filtres suivants sont disponibles en V1 :
 
-| Endpoint                                     | Besoin                                      |
-| -------------------------------------------- | ------------------------------------------- |
-| `GET /matches?status=SCHEDULED&pastDue=true` | Matchs sans score (KPI + badge sidebar)     |
-| `GET /matches?status=FORFEITED`              | Forfaits pour live feed                     |
-| `GET /matches?status=PLAYED`                 | Matchs terminés pour live feed              |
-| `GET /users?isActive=false`                  | Activations en attente (KPI + badge sidebar)|
+| Endpoint                                     | Besoin                                       |
+| -------------------------------------------- | -------------------------------------------- |
+| `GET /matches?status=SCHEDULED&pastDue=true` | Matchs sans score (KPI + badge sidebar)      |
+| `GET /matches?status=FORFEITED`              | Forfaits pour live feed                      |
+| `GET /matches?status=PLAYED`                 | Matchs terminés pour live feed               |
+| `GET /users?isActive=false`                  | Activations en attente (KPI + badge sidebar) |
 
 > `GET /users` retourne désormais un champ `roles[]` (COACH, PLAYER, REFEREE) dérivé des relations UserTeam et du flag `isReferee`. Utilisé pour le camembert et le dispatch sidebar.
 
