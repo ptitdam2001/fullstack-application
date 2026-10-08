@@ -3,3 +3,21 @@ staged=$(git diff --cached --name-only)
 if echo "$staged" | grep -qE '^backend/(openapi\.yml|prisma/schema\.prisma)$'; then
   (cd backend && pnpm check:sync-schema)
 fi
+
+# Same scope as the root check:format: backend/ and frontend/ check their own files.
+staged_markdown() {
+  git diff --cached --name-only --diff-filter=ACMR "$@" -- '*.md' ':!backend/' ':!frontend/'
+}
+
+if [ -n "$(staged_markdown)" ]; then
+  if [ ! -x node_modules/.bin/prettier ]; then
+    echo 'pre-commit: Prettier is not installed, the staged Markdown files cannot be checked.' >&2
+    echo 'pre-commit: run "pnpm install" at the repository root, then commit again.' >&2
+    exit 1
+  fi
+
+  if ! staged_markdown -z | xargs -0 node_modules/.bin/prettier --check; then
+    echo 'pre-commit: fix the files above with "npx prettier --write <file>", stage them, then commit again.' >&2
+    exit 1
+  fi
+fi
