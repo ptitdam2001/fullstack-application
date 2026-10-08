@@ -4,7 +4,7 @@ TEST_MONGO_CONTAINER := fullstack-test-mongo
 TEST_MONGO_PORT := 27018
 
 help: ## Affiche les commandes disponibles
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' Makefile | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-20s\033[0m %s\n", $$1, $$2}'
+	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' Makefile | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
 seed: ## Crée le jeu de données de test en base (idempotent)
 	cd backend && NODE_PATH=$$(pwd)/node_modules pnpm exec tsx ../scripts/seed/index.ts
