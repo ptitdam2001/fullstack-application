@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 pnpm start:dev       # Run dev server with hot reload (tsx watch)
 pnpm build           # Bundle with esbuild → dist/index.js
 pnpm start:prod      # Run production build
-pnpm check:type      # TypeScript type checking (no emit)
+pnpm check:type      # TypeScript type checking (no emit) — every .ts file: src, scripts, tests, config files
 pnpm vitest run      # Run all unit tests
 pnpm generate:prisma # Regenerate Prisma client after schema changes
 pnpm format:prisma   # Format prisma/schema.prisma

@@ -69,7 +69,7 @@ All feature work must align with the business rules defined in `specifications/`
 ```bash
 pnpm start:dev       # Dev server with hot reload (tsx watch)
 pnpm build           # Bundle with esbuild → dist/index.js
-pnpm check:type      # TypeScript type checking
+pnpm check:type      # TypeScript type checking — every .ts file: src, scripts, tests, config files
 pnpm generate:prisma # Regenerate Prisma client after schema changes
 pnpm db:push         # Create/update the MongoDB indexes of schema.prisma on DATABASE_URL (runs db:check-duplicates first)
 pnpm db:check-duplicates # Read-only: list documents that would block a unique index
