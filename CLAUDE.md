@@ -128,6 +128,7 @@ make stack-test-down  # Tear down test stack
 | `Markdown format`          | root `check:format` (Markdown files outside `backend/` and `frontend/`)                                                                                                                                                 |
 
 - Not covered by CI: Storybook plays (`test:stories`) and Playwright e2e (`test:e2e`, smoke). Run them locally when a change touches them.
+- The `Markdown format` check also runs before each commit: `.husky/pre-commit` runs `prettier --check` on the staged Markdown files outside `backend/` and `frontend/`. It checks only, it never rewrites a file: fix with `npx prettier --write <file>`, then stage again. It needs the root dependencies (`pnpm install` at the repository root) and stops the commit with a message when they are missing.
 - When adding a check script to a package, add the matching step to `ci.yml` in the same changeset.
 - The job names are the identifiers of the status checks: do not rename a job without updating the branch protection of `main`.
 - `schema-sync.yml` stays separate: it only runs when `openapi.yml` or `schema.prisma` changes (see [Automated guardrail](#automated-guardrail)).
