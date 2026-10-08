@@ -6,6 +6,7 @@ export default {
       target: '../../backend/openapi.yml',
     },
     output: {
+      tsconfig: { compilerOptions: { target: 'ES2022' } },
       httpClient: 'axios',
       client: 'react-query',
       target: './src/sdk/generated/sdk.ts',
