@@ -83,7 +83,7 @@ Hors CI pour l'instant, à lancer en local : les plays Storybook (`test:stories`
 
 Dérivée des **76 opérations** (58 paths) de `backend/openapi.yml`. Sert de checklist pour la Session 3 (un fichier de test fonctionnel par domaine, cf. convention de nommage et seuil de split ci-dessus).
 
-Légende : ✅ couvert · ❌ test fonctionnel à écrire (S3) · 🚫 route définie dans le contrat mais **sans handler enregistré** côté backend (répond `404` avec `{ status: 501, err: 'No handler registered for operation' }` — cf. `notImplemented` dans `backend/createApp.ts`)
+Légende : ✅ couvert · ❌ test fonctionnel à écrire (S3) · 🚫 route définie dans le contrat mais **sans handler enregistré** côté backend (répond `501` avec `{ status: 501, message: 'Not implemented' }` — cf. `notImplemented` dans `backend/createApp.ts`)
 
 #### Auth (3 opérations)
 
