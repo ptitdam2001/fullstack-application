@@ -4,6 +4,7 @@ import {
   MatchMode,
   PhaseType,
   TeamRole,
+  type Prisma,
   type AgeCategory,
   type Championship,
   type Group,
@@ -27,6 +28,7 @@ let sequence = 0
 const unique = (label: string): string => `${label}-${++sequence}`
 
 interface UserOverrides {
+  lastName?: string
   isAdmin?: boolean
   isReferee?: boolean
   isActive?: boolean
@@ -68,7 +70,12 @@ export const createSeason = (overrides: Partial<{ label: string }> = {}): Promis
   prisma.season.create({ data: { label: overrides.label ?? unique('Saison') } })
 
 export const createChampionship = async (
-  overrides: Partial<{ name: string; ageCategoryId: string; seasonId: string }> = {}
+  overrides: Partial<{
+    name: string
+    ageCategoryId: string
+    seasonId: string
+    pointsConfig: Prisma.PointsConfigCreateInput
+  }> = {}
 ): Promise<Championship> => {
   const ageCategoryId = overrides.ageCategoryId ?? (await createAgeCategory()).id
   const seasonId = overrides.seasonId ?? (await createSeason()).id

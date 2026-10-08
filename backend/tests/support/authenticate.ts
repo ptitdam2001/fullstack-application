@@ -6,7 +6,7 @@ import { JwtAuthService } from '../../src/auth/infrastructure/JwtAuthService'
  * `JWT_SECRET` is provided by `vitest.functional.config.ts` (test.env), so
  * tokens are verifiable by `createApp`'s `jwtAuth` security handler.
  */
-export const authHeaderFor = (userId: string, isAdmin = false): { Authorization: string } => {
+export const authHeaderFor = (userId: string, isAdmin = false, isCoach = false): { Authorization: string } => {
   const authService = new JwtAuthService()
-  return { Authorization: `Bearer ${authService.generateToken(userId, isAdmin)}` }
+  return { Authorization: `Bearer ${authService.generateToken(userId, isAdmin, isCoach)}` }
 }
