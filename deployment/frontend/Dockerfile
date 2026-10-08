@@ -1,7 +1,11 @@
 # ── Stage 1: Builder ──────────────────────────────────────────────────────────
 FROM node:22-alpine AS builder
 
-RUN corepack enable && corepack prepare pnpm@12.6.0 --activate
+# pnpm version: the packageManager field of the root package.json
+# (frontend/ is a workspace root without a package.json)
+COPY package.json /tmp/root-package.json
+RUN corepack enable && \
+    corepack prepare "$(node -p "require('/tmp/root-package.json').packageManager")" --activate
 
 WORKDIR /app/frontend
 
