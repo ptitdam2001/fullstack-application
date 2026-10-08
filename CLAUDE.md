@@ -51,7 +51,7 @@ All feature work must align with the business rules defined in `specifications/`
 | `specifications/05-standings.md`               | Standings — points calculation, tiebreakers, inter-group ranking                 |
 | `specifications/06-user-profiles.md`           | User profiles — roles (Admin/Coach/Referee/Player), permission matrix            |
 | `specifications/07-technical-choices.md`       | Technical choices — backend, design-system, application stack                    |
-| `specifications/08-architecture-hexagonale.md` | Architecture — hexagonal structure, port interfaces per domain                   |
+| `specifications/08-architecture-hexagonale.md` | Architecture — hexagonal structure, domain and port index                        |
 | `specifications/09-implementation-roadmap.md`  | Implementation roadmap — 4 phases from init to full frontend                     |
 | `specifications/15-form-factory.md`            | Form factory — `@repo/form-factory` API, modes de validation, formulaires migrés |
 | `specifications/16-strategie-de-test.md`       | Test strategy — pyramid, conventions, API coverage matrix, E2E flow matrix       |
@@ -200,7 +200,7 @@ backend/src/<domain>/
 └── infrastructure/ # PrismaRepository + HttpHandlers (adapters)
 ```
 
-Activation: changing **one import** in `index.ts` per domain activates the new hexagonal implementation. Legacy `controllers/` remain until validation. See `specifications/08-architecture-hexagonale.md` for port contracts.
+Activation: changing **one import** in `index.ts` per domain activates the new hexagonal implementation. Legacy `controllers/` remain until validation. Each port contract lives in `backend/src/<domain>/ports/`; `specifications/08-architecture-hexagonale.md` indexes the domains and their ports without copying the signatures.
 
 ## Frontend Architecture
 
