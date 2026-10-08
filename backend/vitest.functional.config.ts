@@ -14,14 +14,11 @@ export default defineConfig({
     globalSetup: ['./tests/support/database.ts'],
     // Run test files sequentially against the single shared container — each
     // file resets the database (tests/support/database.ts#resetDatabase),
-    // parallel files would wipe each other's fixtures mid-run.
+    // parallel files would wipe each other's fixtures mid-run. Each file still
+    // gets its own fork, so module state (Prisma singleton, rate limiters) never
+    // leaks from one file to the next.
     fileParallelism: false,
     pool: 'forks',
-    poolOptions: {
-      forks: {
-        singleFork: true,
-      },
-    },
     testTimeout: 30_000,
     hookTimeout: 120_000,
     // Dedicated test-only values — independent from `.env` (see tests/support/database.ts
