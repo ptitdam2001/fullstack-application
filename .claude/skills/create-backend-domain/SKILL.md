@@ -539,6 +539,12 @@ Security rules:
           application/json:
             schema:
               $ref: '#/components/schemas/<Entity>'
+      400:
+        $ref: '#/components/responses/BadRequest'
+      413:
+        $ref: '#/components/responses/PayloadTooLarge'
+      415:
+        $ref: '#/components/responses/UnsupportedMediaType'
 
 /<entity>/{id}:
   get:
@@ -588,12 +594,18 @@ Security rules:
           application/json:
             schema:
               $ref: '#/components/schemas/<Entity>'
+      400:
+        $ref: '#/components/responses/BadRequest'
       404:
         description: 'Not found'
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/ErrorOutput'
+      413:
+        $ref: '#/components/responses/PayloadTooLarge'
+      415:
+        $ref: '#/components/responses/UnsupportedMediaType'
   delete:
     operationId: remove<Entity>
     description: 'Delete a <entity>'
