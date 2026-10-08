@@ -76,16 +76,19 @@ Conventions communes à tous les ports :
 
 ### Authentification et guards
 
-Le JWT ne prouve que l'**identité** (`userId`, `iat`). À chaque requête authentifiée, le security handler relit en base l'état du compte et les droits (`isAdmin`, `isCoach`) : le `TokenPayload` fourni aux guards vient de la base, jamais des claims du token. La requête est refusée en `401` si le compte n'existe plus, est inactif ou bloqué, ou si le token a été émis avant `User.tokensValidAfter` (reset de mot de passe). Une rétrogradation, un blocage ou un retrait de coach prend donc effet immédiatement. Deux guards sont disponibles dans `src/auth/application/requireRoles.ts` :
+Le JWT ne prouve que l'**identité** (`userId`, `iat`). À chaque requête authentifiée, le security handler relit en base l'état du compte et les droits (`isAdmin`, `isCoach`) : le `TokenPayload` fourni aux guards vient de la base, jamais des claims du token. La requête est refusée en `401` si le compte n'existe plus, est inactif ou bloqué, ou si le token a été émis avant `User.tokensValidAfter` (reset de mot de passe). Une rétrogradation, un blocage ou un retrait de coach prend donc effet immédiatement. Les guards sont dans `src/auth/application/requireRoles.ts` :
 
 ```ts
-// Vérifie que le token est valide et retourne le payload
+// Retourne le payload de la requête authentifiée ; lève UnauthorizedError s'il est absent
 getAuthPayload(ctx: Context): TokenPayload
 
 // Lève ForbiddenError si isAdmin est false
 requireAdmin(ctx: Context): void
 
-// Retourne l'userId du token
+// Lève ForbiddenError si isAdmin et isCoach sont tous les deux false
+requireAdminOrCoach(ctx: Context): void
+
+// Retourne l'userId du payload
 getAuthUserId(ctx: Context): string
 ```
 
@@ -144,27 +147,9 @@ export type TeamId = string
 
 ---
 
-## État d'avancement backend
+## État d'avancement
 
-| Domaine        | Statut     | Tests |
-| -------------- | ---------- | ----- |
-| `auth`         | ✅ Complet | ✅    |
-| `user`         | ✅ Complet | ✅    |
-| `team`         | ✅ Complet | ✅    |
-| `player`       | ✅ Complet | ✅    |
-| `match`        | ✅ Complet | ✅    |
-| `championship` | ✅ Complet | ✅    |
-| `userTeam`     | ✅ Complet | ✅    |
-| `userMatch`    | ✅ Complet | ✅    |
-| `standings`    | ⏳ À faire | —     |
+La migration est terminée des deux côtés. Il n'y a pas de tableau de statut à tenir à jour : le code fait foi.
 
-## État d'avancement frontend
-
-| Feature        | Statut     |
-| -------------- | ---------- |
-| Auth           | ⏳ À faire |
-| Teams          | ⏳ À faire |
-| Players        | ⏳ À faire |
-| Matches        | ⏳ À faire |
-| Championships  | ⏳ À faire |
-| Standings      | ⏳ À faire |
+- **Backend** : tous les domaines du tableau [Domaines et ports](#domaines-et-ports) suivent la structure hexagonale et ont leurs tests unitaires. Le dossier `backend/controllers/` n'existe plus ; les handlers de chaque domaine sont enregistrés dans `backend/createApp.ts`.
+- **Frontend** : les feature modules de `frontend/web-application/src/` sont découpés en couches : `AgeCategory`, `Area`, `Auth`, `Championship`, `Dashboard`, `Game`, `Match`, `Player`, `Season`, `Teams`, `User`. Un module peut ne pas avoir toutes les couches (`Dashboard` n'a pas d'`infrastructure/`, `Player` n'a pas de `domain/`). `Admin`, `Calendar` et `Settings` ne contiennent que des pages et de la mise en page, sans couches.
