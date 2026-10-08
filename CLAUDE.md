@@ -20,9 +20,9 @@ Monorepo with a React frontend and a Node.js/Express backend sharing a single Op
 ```text
 backend/                      # Express v5 + OpenAPI-backend + Prisma + MongoDB
   openapi.yml                 # Source of truth for all API contracts and schemas
-  index.ts                    # Entry point — imports handlers by domain
-  controllers/                # Legacy handlers (being migrated to src/<domain>/)
-  src/                        # Hexagonal architecture (domain by domain migration)
+  index.ts                    # Entry point — starts the app built by createApp.ts
+  createApp.ts                # Express app — registers the handlers of every domain
+  src/                        # Hexagonal architecture, one directory per domain
 frontend/
   design-system/              # @repo/design-system — React Aria + Tailwind components
   web-application/            # application-material — SPA consuming the design system
@@ -190,7 +190,7 @@ When a public API changes (`openapi.yml`, new/modified route, changed schema), u
 
 ## Backend Architecture
 
-The backend follows hexagonal architecture (Ports & Adapters), migrated domain by domain from legacy controllers.
+The backend follows hexagonal architecture (Ports & Adapters), one directory per domain. The migration from the legacy controllers is finished: `backend/controllers/` no longer exists.
 
 ```text
 backend/src/<domain>/
@@ -200,7 +200,7 @@ backend/src/<domain>/
 └── infrastructure/ # PrismaRepository + HttpHandlers (adapters)
 ```
 
-Activation: changing **one import** in `index.ts` per domain activates the new hexagonal implementation. Legacy `controllers/` remain until validation. Each port contract lives in `backend/src/<domain>/ports/`; `specifications/08-architecture-hexagonale.md` indexes the domains and their ports without copying the signatures.
+The handlers of each domain are registered in `createApp.ts`. Each port contract lives in `backend/src/<domain>/ports/`; `specifications/08-architecture-hexagonale.md` indexes the domains and their ports without copying the signatures.
 
 ## Frontend Architecture
 
