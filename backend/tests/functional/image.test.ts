@@ -1,4 +1,5 @@
 import { randomBytes } from 'node:crypto'
+import type { Stream } from 'node:stream'
 import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { prisma } from '../../utils/prismaClient.js'
 import { createTestAgent } from '../support/client.js'
@@ -9,7 +10,7 @@ import { createUser } from '../support/fixtures.js'
 const newPublicId = (): string => randomBytes(16).toString('base64url')
 
 // supertest only buffers bodies it knows how to parse: collect image bodies as raw bytes.
-const binaryParser = (res: NodeJS.ReadableStream, callback: (err: Error | null, body: Buffer) => void): void => {
+const binaryParser = (res: Stream, callback: (err: Error | null, body: Buffer) => void): void => {
   const chunks: Buffer[] = []
   res.on('data', (chunk: Buffer) => chunks.push(chunk))
   res.on('end', () => callback(null, Buffer.concat(chunks)))
@@ -28,7 +29,7 @@ describe('image domain — functional API', () => {
 
   // ─── getImage ───────────────────────────────────────────────────────────
   describe('getImage — GET /images/{id}', () => {
-    const storeImage = async (data: Buffer, contentType: string) => {
+    const storeImage = async (data: Buffer<ArrayBuffer>, contentType: string) => {
       const owner = await createUser()
       return prisma.image.create({
         data: { publicId: newPublicId(), data, contentType, size: data.length, ownerId: owner.id },
