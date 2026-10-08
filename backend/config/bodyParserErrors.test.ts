@@ -15,8 +15,16 @@ describe('bodyParserErrorType', () => {
     expect(bodyParserErrorType(errorOfType(type))).toBe(type)
   })
 
+  it.each(['Z_DATA_ERROR', 'Z_BUF_ERROR'])('recognises the zlib error %s of a corrupt compressed body', code => {
+    const err = Object.assign(new Error('incorrect header check'), { code, errno: -3, status: 400 })
+
+    expect(bodyParserErrorType(err)).toBe('entity.inflate.failed')
+  })
+
   it.each([
     ['an error without a type', new Error('boom')],
+    ['a zlib error raised outside the body parser', Object.assign(new Error('boom'), { code: 'Z_DATA_ERROR' })],
+    ['a non-zlib error code with a 400 status', Object.assign(new Error('boom'), { code: 'ECONNRESET', status: 400 })],
     ['an error with an unknown type', errorOfType('entity.verify.failed', { status: 403 })],
     ['an error whose type is an Object.prototype key', errorOfType('toString')],
     ['an error with a non-string type', errorOfType(413)],
@@ -32,6 +40,7 @@ describe('bodyParserErrorType', () => {
 describe('bodyParserErrorResponse', () => {
   it.each([
     ['entity.parse.failed', 400],
+    ['entity.inflate.failed', 400],
     ['request.size.invalid', 400],
     ['request.aborted', 400],
     ['entity.too.large', 413],
