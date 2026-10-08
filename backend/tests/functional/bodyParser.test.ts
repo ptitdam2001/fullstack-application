@@ -31,6 +31,22 @@ describe('unreadable request body — functional API', () => {
     expect(warnLog).toHaveBeenCalledWith('POST /login 400 - entity.parse.failed')
   })
 
+  it.each(['gzip', 'deflate'])('answers 400 to a corrupt %s body', async encoding => {
+    const errorLog = vi.spyOn(logger, 'error')
+    const warnLog = vi.spyOn(logger, 'warn')
+
+    const res = await agent
+      .post('/login')
+      .set('Content-Type', 'application/json')
+      .set('Content-Encoding', encoding)
+      .send(Buffer.from('not a compressed body'))
+
+    expect(res.status).toBe(400)
+    expect(res.body).toEqual({ status: 400, message: 'Malformed compressed request body' })
+    expect(errorLog).not.toHaveBeenCalled()
+    expect(warnLog).toHaveBeenCalledWith('POST /login 400 - entity.inflate.failed')
+  })
+
   it('answers 413 to a body above the default limit on a normal route', async () => {
     const errorLog = vi.spyOn(logger, 'error')
     const warnLog = vi.spyOn(logger, 'warn')
