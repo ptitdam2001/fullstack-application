@@ -293,6 +293,7 @@ Honour it literally: one scope, one fix, follow-ups listed separately.
 
 This repo uses [Conventional Commits](https://www.conventionalcommits.org/) enforced by commitlint + husky. Use `git cz` for an interactive prompt instead of `git commit`.
 
+- A plain `git commit` in a terminal also opens the commitizen prompt: `.husky/prepare-commit-msg` starts it. The hook does nothing when git already has a message (`-m`, `-F`, merge, squash, `--amend`, template) or when no terminal is available (agent, script, graphical client).
 - Never commit directly to `main`. Every feature starts on a branch: `git checkout -b <type>/<description>` (`feature/`, `fix/`, `chore/`, `refactor/`, `docs/`, `test/` — e.g. `feature/coach-dashboard`).
 - Create structured, atomic commits grouped by concern (e.g., security fixes, refactor, tests) rather than single large commits.
 - Once the feature is complete and tests pass, open a PR targeting `main` — use the `ship-feature` skill to generate the description (API routes from `openapi.yml`, frontend module changes) and create it via `gh pr create`.
