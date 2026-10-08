@@ -319,8 +319,8 @@ After each step:
 ## Monorepo Layout
 
 ```text
-fullstack-application/          # pnpm workspace root (pnpm@12.6.0)
-├── package.json                # devDeps: commitlint, husky, commitizen
+fullstack-application/          # pnpm workspace root
+├── package.json                # devDeps: commitlint, husky, commitizen — packageManager: the pnpm version
 ├── pnpm-workspace.yaml         # workspace: tooling/*
 │
 ├── tooling/
@@ -379,6 +379,23 @@ openapi-express-ts (backend)
 
 - Always install from `frontend/` (workspace root), **never** from `frontend/web-application/` — workspace packages (`@repo/design-system`) won't resolve otherwise.
 - Root installs (`/`) cover `tooling/*` only; backend and frontend are independent install roots.
+
+### pnpm version
+
+The exact pnpm version is written in two `packageManager` fields: the root `package.json` and `backend/package.json`. Two, because `backend/` is its own install root and pnpm only reads the `package.json` of the root it installs. Everything else follows them:
+
+| Where                            | How it gets the version                                                                           |
+| -------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `/` and `backend/` (local)       | `packageManager`: another pnpm version switches to the declared one, or stops                     |
+| `frontend/` (local)              | no `package.json` there, so `engines.pnpm` (`^12.6.0`) of the three packages: another major stops |
+| `.github/workflows/*.yml`        | `pnpm/action-setup` without `version` reads `packageManager` of the root `package.json`           |
+| `deployment/backend/Dockerfile`  | `corepack prepare` on `packageManager` of `backend/package.json`                                  |
+| `deployment/frontend/Dockerfile` | `corepack prepare` on `packageManager` of the root `package.json`, copied into the image          |
+
+- **Bump pnpm**: change the two `packageManager` fields to the same version, then run `pnpm install` at the root and in `backend/` — pnpm records its own version in `pnpm-lock.yaml` (`packageManagerDependencies`) and `--frozen-lockfile` fails until the lockfile follows. Touch `engines.pnpm` of the three frontend packages on a major bump only.
+- Do not write the version anywhere else (workflow `version` input, `pnpm@x.y.z` in a Dockerfile): `pnpm/action-setup` fails when its `version` input and `packageManager` disagree.
+- `engines.node` (`>=22`, the version of CI and of the Docker images) is not enforced by pnpm: it documents the supported version.
+- pnpm refuses to run (`ERR_PNPM_UNSUPPORTED_ENGINE`, or `Failed to switch pnpm to v…`): the global pnpm is not the pinned one. Install the version of the root `packageManager` field (`npm install -g pnpm@<version>`), or run one command with `npx --yes pnpm@<version> <command>`.
 
 ## Known Pitfalls
 
