@@ -9,6 +9,7 @@ import {
   assignUserToTeam,
   createAdmin,
   createAgeCategory,
+  createChampionship,
   createGroup,
   createPhase,
   createPlayerOfTeam,
@@ -60,24 +61,6 @@ const seedMatch = (homeTeamId: string, awayTeamId: string, overrides: Record<str
     data: { homeTeamId, awayTeamId, area: makeArea(), status: 'SCHEDULED', ...overrides },
     select: seedMatchSelect,
   })
-
-/**
- * Local duplicate of the shared `createChampionship` fixture (tests/support/fixtures.ts), written when
- * that fixture did not handle `seasonId` yet. The fixture does now: removing this helper is tracked in
- * https://github.com/ptitdam2001/fullstack-application/issues/42.
- */
-const seedChampionship = async (ageCategoryId: string) => {
-  const suffix = randomBytes(4).toString('hex')
-  const season = await prisma.season.create({ data: { label: `Saison-${suffix}` } })
-  return prisma.championship.create({
-    data: {
-      name: `Championnat-${suffix}`,
-      ageCategoryId,
-      seasonId: season.id,
-      pointsConfig: { win: 3, draw: 2, loss: 1, forfeit: 0 },
-    },
-  })
-}
 
 /**
  * One caller per profile of the permission matrix (specifications/06-user-profiles.md).
@@ -248,8 +231,8 @@ describe('match domain — functional API (CRUD)', () => {
     it('règle métier: championshipId filters matches via group→phase (2-hop relation filter)', async () => {
       const catA = await createAgeCategory({ label: 'U13' })
       const catB = await createAgeCategory({ label: 'U15' })
-      const champA = await seedChampionship(catA.id)
-      const champB = await seedChampionship(catB.id)
+      const champA = await createChampionship({ ageCategoryId: catA.id })
+      const champB = await createChampionship({ ageCategoryId: catB.id })
       const phaseA = await createPhase(champA.id)
       const phaseB = await createPhase(champB.id)
       const [homeA, awayA] = [await createTeam(), await createTeam()]
@@ -272,8 +255,8 @@ describe('match domain — functional API (CRUD)', () => {
     it('règle métier: ageCategoryId filters matches via group→phase→championship (3-hop relation filter)', async () => {
       const catA = await createAgeCategory({ label: 'U13' })
       const catB = await createAgeCategory({ label: 'U15' })
-      const champA = await seedChampionship(catA.id)
-      const champB = await seedChampionship(catB.id)
+      const champA = await createChampionship({ ageCategoryId: catA.id })
+      const champB = await createChampionship({ ageCategoryId: catB.id })
       const phaseA = await createPhase(champA.id)
       const phaseB = await createPhase(champB.id)
       const [homeA, awayA] = [await createTeam(), await createTeam()]
@@ -295,8 +278,8 @@ describe('match domain — functional API (CRUD)', () => {
 
     it('règle métier: championshipId also matches bracket-based (knockout) matches', async () => {
       const cat = await createAgeCategory({ label: 'U11' })
-      const champ = await seedChampionship(cat.id)
-      const otherChamp = await seedChampionship((await createAgeCategory({ label: 'U9' })).id)
+      const champ = await createChampionship({ ageCategoryId: cat.id })
+      const otherChamp = await createChampionship({ ageCategoryId: (await createAgeCategory({ label: 'U9' })).id })
       const phase = await createPhase(champ.id, { type: 'KNOCKOUT' })
       const otherPhase = await createPhase(otherChamp.id, { type: 'KNOCKOUT' })
       const bracket = await prisma.bracket.create({ data: { phaseId: phase.id, name: 'Éliminatoires' } })
@@ -315,7 +298,7 @@ describe('match domain — functional API (CRUD)', () => {
 
     it('règle métier: championship with no phases yet returns an empty result, not everything', async () => {
       const cat = await createAgeCategory({ label: 'U17' })
-      const emptyChamp = await seedChampionship(cat.id)
+      const emptyChamp = await createChampionship({ ageCategoryId: cat.id })
       const home = await createTeam()
       const away = await createTeam()
       // an unrelated match exists in the DB, with no championship link
@@ -333,7 +316,7 @@ describe('match domain — functional API (CRUD)', () => {
   describe('getMatches, getMatch — championshipName/stageName/homeTeam/awayTeam enrichment', () => {
     it('règle métier: group match resolves championshipName, stageName and team summaries', async () => {
       const cat = await createAgeCategory({ label: 'U13' })
-      const champ = await seedChampionship(cat.id)
+      const champ = await createChampionship({ ageCategoryId: cat.id })
       const phase = await createPhase(champ.id)
       const home = await createTeam()
       const away = await createTeam()
@@ -356,7 +339,7 @@ describe('match domain — functional API (CRUD)', () => {
 
     it('règle métier: bracket match resolves championshipName and stageName from the bracket', async () => {
       const cat = await createAgeCategory({ label: 'U11' })
-      const champ = await seedChampionship(cat.id)
+      const champ = await createChampionship({ ageCategoryId: cat.id })
       const phase = await createPhase(champ.id, { type: 'KNOCKOUT' })
       const bracket = await prisma.bracket.create({ data: { phaseId: phase.id, name: 'Demi-finale' } })
       const home = await createTeam()
