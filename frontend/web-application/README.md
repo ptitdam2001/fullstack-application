@@ -4,22 +4,28 @@
 
 ### Setup Environment
 
-Create a `.env` file in the root directory with the following variables:
+Copy `.env.sample` to `.env` in `frontend/web-application/`:
+
+```bash
+cp .env.sample .env
+```
 
 ```env
-# Backend API URL
-BACKEND_BASEURL=http://localhost:3000
+# ENABLE Mock backend
+VITE_MOCKED_BACKEND=false
 
-# Client Storage Configuration
-VITE_CLIENT_STORAGE=default_application_database
+# Base url for the backend API
+VITE_BACKEND_BASEURL=http://localhost:4000/
 ```
 
 #### Environment Variables Description
 
-- `BACKEND_BASEURL`: The base URL for the backend API. Default is `http://localhost:3000`
-- `VITE_CLIENT_STORAGE`: The name of the IndexedDB database used for client-side storage. Default is `default_application_database`
+- `VITE_MOCKED_BACKEND`: set it to `false` to call the real backend. With any other value, or when the variable is missing, the dev server answers the API calls with the MSW mocks. A production build never starts the mocks.
+- `VITE_BACKEND_BASEURL`: the base URL of the backend API. When the variable is missing, the application uses `http://localhost:4000/`, the port published by `deployment/docker-compose.yml`. A backend started with `pnpm start:dev` listens on the `PORT` of `backend/.env` (`3000` in `backend/.env.sample`): set the URL to `http://localhost:3000/` in that case.
 
-Note: All environment variables must be prefixed with `VITE_` to be exposed to the client-side code in Vite applications.
+Note: Vite only exposes the variables prefixed with `VITE_` to the client-side code. The application reads no other variable.
+
+The e2e tests do not depend on these values: Playwright starts Vite in `e2e` mode, and `.env.e2e` overrides `.env`.
 
 ### Docker build
 
