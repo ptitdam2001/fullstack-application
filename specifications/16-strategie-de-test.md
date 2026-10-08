@@ -66,13 +66,14 @@ Les deux ne se remplacent pas (cf. ADR-0003) :
 
 ## Intégration continue
 
-Le workflow `.github/workflows/ci.yml` s'exécute sur chaque pull request et sur chaque push sur `main`, en trois jobs parallèles :
+Le workflow `.github/workflows/ci.yml` s'exécute sur chaque pull request et sur chaque push sur `main`, en quatre jobs parallèles :
 
 | Job                        | Niveau de la pyramide couvert                                                                            |
 | -------------------------- | -------------------------------------------------------------------------------------------------------- |
 | `Backend`                  | Tests unitaires backend, plus type-check, lint et format                                                 |
 | `Backend functional tests` | Tests fonctionnels backend (Testcontainers Mongo)                                                        |
 | `Frontend`                 | Tests unitaires web-application, design-system et form-factory, plus type-check, lint, format, code mort |
+| `Markdown format`          | Aucun : format Prettier des fichiers Markdown hors `backend/` et `frontend/`                             |
 
 Hors CI pour l'instant, à lancer en local : les plays Storybook (`test:stories`), les E2E Playwright mockés (`make test-e2e`) et le smoke full-stack (`make test-e2e-smoke`). Ils demandent Chromium, et la stack Docker de test pour le smoke.
 
