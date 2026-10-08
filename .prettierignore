@@ -1,0 +1,3 @@
+# Each package runs its own check:format with its own config:
+backend/
+frontend/
