@@ -10,6 +10,20 @@ if echo "$staged" | grep -qE '^backend/(openapi\.yml|prisma/schema\.prisma)$'; t
   (cd backend && pnpm check:sync-schema)
 fi
 
+# Status codes of the responses blocks: quoted, in ascending order (backend/eslint.config.js).
+if echo "$staged" | grep -qx 'backend/openapi.yml'; then
+  if [ ! -x backend/node_modules/.bin/eslint ]; then
+    echo 'pre-commit: ESLint is not installed, backend/openapi.yml cannot be linted.' >&2
+    echo 'pre-commit: run "pnpm install" in backend/, then commit again.' >&2
+    exit 1
+  fi
+
+  if ! (cd backend && node_modules/.bin/eslint openapi.yml); then
+    echo 'pre-commit: fix the order with "npx eslint --fix openapi.yml" in backend/, quote the codes by hand, stage, then commit again.' >&2
+    exit 1
+  fi
+fi
+
 # Same scope as the root check:format: backend/ and frontend/ check their own files.
 staged_markdown() {
   git diff --cached --name-only --diff-filter=ACMR "$@" -- '*.md' ':!backend/' ':!frontend/'

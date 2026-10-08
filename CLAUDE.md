@@ -73,7 +73,7 @@ pnpm check:type      # TypeScript type checking — every .ts file: src, scripts
 pnpm generate:prisma # Regenerate Prisma client after schema changes
 pnpm db:push         # Create/update the MongoDB indexes of schema.prisma on DATABASE_URL (runs db:check-duplicates first)
 pnpm db:check-duplicates # Read-only: list documents that would block a unique index
-pnpm lint            # ESLint (extends @repo/eslint-config/node)
+pnpm lint            # ESLint (extends @repo/eslint-config/node) — also lints the status codes of openapi.yml
 pnpm check:sync-schema # Flag nullability drift between openapi.yml and prisma/schema.prisma
 ```
 
@@ -182,6 +182,13 @@ specifications/ (business rules)
 ### Automated guardrail
 
 `backend/scripts/check-schema-sync.ts` (`pnpm check:sync-schema` from `backend/`) flags fields whose **nullability** disagrees between `openapi.yml` and `schema.prisma`, scoped to openapi schemas whose name exactly matches a prisma model (e.g. `Area` ↔ `model Area`) — Input/Result/WithoutId DTOs are intentionally partial and out of scope. It runs in a pre-commit hook (`.husky/pre-commit`, only when one of the two files is staged) and in CI (`.github/workflows/schema-sync.yml`). It does not check field types or presence — a manual review of the propagation workflow above is still required for those.
+
+### Status codes of `openapi.yml`
+
+In the `responses` block of an operation, every status code is quoted (`'404':`, never `404:`) and the codes are in ascending order. `backend/eslint.config.js` enforces both with `eslint-plugin-yml`, on `openapi.yml` only:
+
+- **Where it runs**: `pnpm lint` in `backend/` (CI job `Backend`), and `.husky/pre-commit` when `backend/openapi.yml` is staged.
+- **Fix**: `npx eslint --fix openapi.yml` in `backend/` reorders the codes. Quote a code by hand.
 
 ### Documentation sync on API changes
 
