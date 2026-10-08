@@ -22,7 +22,7 @@ The harness is fully wired (Session 1 of the testing initiative):
 | `backend/tests/support/client.ts` | `createTestAgent()` — returns a supertest agent mounted on `createApp()` (no port binding). |
 | `backend/tests/support/authenticate.ts` | `authHeaderFor(userId, isAdmin?)` — forges a valid JWT header for a given user. |
 | `backend/tests/support/fixtures.ts` | Entity factories: `createAdmin()`, `createUser()`, `createTeam()`, etc. Extend when the domain needs new fixtures. |
-| `backend/vitest.functional.config.ts` | Vitest config: includes `tests/functional/**/*.test.ts`, `globalSetup`, `testTimeout: 30000`, `singleThread: true`. |
+| `backend/vitest.functional.config.ts` | Vitest config: includes `tests/functional/**/*.test.ts`, `globalSetup`, `testTimeout: 30000`, `fileParallelism: false` (test files run one after the other, each in its own fork). |
 
 Run with: `pnpm --filter openapi-express-ts test:functional` or `make test-backend-func`
 
