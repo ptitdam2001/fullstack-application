@@ -105,6 +105,7 @@ pnpm --filter @repo/design-system storybook        # Storybook dev server on por
 ```bash
 docker compose -f deployment/docker-compose.yml up  # API (:4000), Swagger UI (:8082), Mongo Express (:8083)
 git cz               # Commitizen for conventional commits
+pnpm check:format    # Prettier check of the Markdown files outside backend/ and frontend/
 make help             # List all Makefile targets
 make up               # Start dev stack (Docker) — does NOT create the MongoDB indexes
 make db-push          # Create/update the MongoDB indexes (duplicate check, then prisma db push) on backend/.env DATABASE_URL
@@ -117,13 +118,14 @@ make stack-test-down  # Tear down test stack
 
 ### Continuous integration
 
-`.github/workflows/ci.yml` runs on every pull request and on every push to `main`, as three parallel jobs:
+`.github/workflows/ci.yml` runs on every pull request and on every push to `main`, as four parallel jobs:
 
 | Job                        | Runs                                                                                                                                                                                                                    |
 | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `Backend`                  | `generate:prisma`, `check:type`, `lint`, `check:format`, `test`                                                                                                                                                         |
 | `Backend functional tests` | `generate:prisma`, `test:functional` (Testcontainers MongoDB)                                                                                                                                                           |
 | `Frontend`                 | `gen:sdk`, design-system and form-factory builds, then web application `check:types`, `lint`, `check:format`, `check:dead-code`, `test`, then design-system and form-factory `check:types`, `check:format`, `test:unit` |
+| `Markdown format`          | root `check:format` (Markdown files outside `backend/` and `frontend/`)                                                                                                                                                 |
 
 - Not covered by CI: Storybook plays (`test:stories`) and Playwright e2e (`test:e2e`, smoke). Run them locally when a change touches them.
 - When adding a check script to a package, add the matching step to `ci.yml` in the same changeset.
