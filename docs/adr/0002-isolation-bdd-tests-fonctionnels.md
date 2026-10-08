@@ -38,5 +38,5 @@ Pourquoi pas les autres options :
 - Mise en place d'un `globalSetup`/`globalTeardown` Vitest dédié (`backend/vitest.functional.config.ts`) : démarre le conteneur, expose `DATABASE_URL` **avant** l'import du singleton `backend/utils/prismaClient.ts`, exécute `prisma db push`, puis arrête le conteneur en fin de suite.
 - Un helper `resetDatabase()` (`deleteMany` sur toutes les collections) permet un reset rapide entre fichiers de test sans redémarrer le conteneur.
 - **Docker doit être actif** pour lancer `pnpm test:functional` / `make test-backend-func` — à documenter dans `specifications/16-strategie-de-test.md` (Session 2) et le `README`/`CLAUDE.md` backend.
-- Les tests s'exécutent en `singleThread` (un seul conteneur partagé) pour éviter de multiplier les instances MongoDB — accepté comme compromis vitesse/simplicité, réévaluable si la suite grossit significativement.
+- Les fichiers de test s'exécutent en séquence (`fileParallelism: false`), chacun dans son propre fork, sur un seul conteneur partagé, pour éviter de multiplier les instances MongoDB — accepté comme compromis vitesse/simplicité, réévaluable si la suite grossit significativement.
 - Le choix de l'image (`4.4.3-bionic`) doit rester synchronisé avec celle du `docker-compose.yml` de développement — un changement de version dans l'un doit se refléter dans l'autre.
