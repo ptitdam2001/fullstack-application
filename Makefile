@@ -52,7 +52,7 @@ test-e2e: ## Lance les tests E2E frontend (Playwright + MSW, Vite dev server)
 COMPOSE_DEV := docker compose -f deployment/docker-compose.yml
 
 up: ## Lance la stack dev via Docker (API + Mongo + Swagger)
-	$(COMPOSE_DEV) up -d --build
+	$(COMPOSE_DEV) up -d --build --wait
 	@echo ""
 	@echo "Index MongoDB : non appliqués automatiquement. Sur une base neuve ou après un changement"
 	@echo "d'index dans schema.prisma, lancer 'make db-push' (vérifie d'abord les doublons)."
