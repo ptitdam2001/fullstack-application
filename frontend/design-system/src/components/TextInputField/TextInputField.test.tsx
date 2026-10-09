@@ -104,6 +104,26 @@ describe('TextInputField', () => {
     })
   })
 
+  describe('uncontrolled', () => {
+    it('shows defaultValue when no value prop is passed', () => {
+      render(<TextInputField label="Name" defaultValue="Alice" />)
+      expect(screen.getByRole('textbox')).toHaveValue('Alice')
+    })
+
+    it('keeps the typed text when no value prop is passed', () => {
+      render(<TextInputField label="Name" />)
+      fireEvent.change(screen.getByRole('textbox'), { target: { value: 'Alice' } })
+      expect(screen.getByRole('textbox')).toHaveValue('Alice')
+    })
+
+    it('stays controlled when the value prop is passed as undefined', () => {
+      // a react-hook-form field without a default value: value={field.value} is undefined
+      render(<TextInputField label="Name" value={undefined} onChange={vi.fn()} />)
+      fireEvent.change(screen.getByRole('textbox'), { target: { value: 'Alice' } })
+      expect(screen.getByRole('textbox')).toHaveValue('')
+    })
+  })
+
   describe('disabled', () => {
     it('disables input via isDisabled', () => {
       render(<TextInputField label="Name" isDisabled />)
