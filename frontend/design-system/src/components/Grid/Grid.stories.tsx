@@ -92,11 +92,12 @@ export const KeyboardNavigation: Story = {
   args: { ...Default.args },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    const listbox = canvas.getByRole('listbox')
-    await userEvent.click(listbox)
-    await userEvent.keyboard('{ArrowRight}')
-    const options = canvas.getAllByRole('option')
+    const options = await canvas.findAllByRole('option')
+    // Tab moves the focus to the first option. A click on the listbox container does not focus it.
+    await userEvent.tab()
     await expect(options[0]).toHaveFocus()
+    await userEvent.keyboard('{ArrowRight}')
+    await expect(options[1]).toHaveFocus()
   },
 }
 
