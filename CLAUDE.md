@@ -110,7 +110,8 @@ make help             # List all Makefile targets
 make up               # Start dev stack (Docker), waits until Mongo is primary and the API healthy — does NOT create the MongoDB indexes
 make db-push          # Create/update the MongoDB indexes (duplicate check, then prisma db push) on backend/.env DATABASE_URL
 make db-check-duplicates # Read-only: list documents that would block a unique index
-make test             # Run all tests (unit + func + e2e mocked)
+make test             # Run the backend tests (unit + func) and the mocked e2e — no frontend unit test
+make ci               # Replay the four CI jobs locally (or one: make ci-backend, ci-backend-functional, ci-frontend, ci-markdown)
 make stack-test-up    # Build + push indexes + seed isolated test stack (:27019, :4001, :3001)
 make test-e2e-smoke   # Run Playwright smoke tests against test stack
 make stack-test-down  # Tear down test stack
@@ -118,18 +119,19 @@ make stack-test-down  # Tear down test stack
 
 ### Continuous integration
 
-`.github/workflows/ci.yml` runs on every pull request and on every push to `main`, as four parallel jobs:
+`.github/workflows/ci.yml` runs on every pull request and on every push to `main`, as four parallel jobs. Each job runs one `ci-*` target of the root `Makefile`:
 
-| Job                        | Runs                                                                                                                                                                                                                    |
-| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Backend`                  | `generate:prisma`, `check:type`, `lint`, `check:format`, `test`                                                                                                                                                         |
-| `Backend functional tests` | `generate:prisma`, `test:functional` (Testcontainers MongoDB)                                                                                                                                                           |
-| `Frontend`                 | `gen:sdk`, design-system and form-factory builds, then web application `check:types`, `lint`, `check:format`, `check:dead-code`, `test`, then design-system and form-factory `check:types`, `check:format`, `test:unit` |
-| `Markdown format`          | root `check:format` (Markdown files outside `backend/` and `frontend/`)                                                                                                                                                 |
+| Job                        | Make target             | Runs                                                                                                                                                                                                                    |
+| -------------------------- | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Backend`                  | `ci-backend`            | `generate:prisma`, `check:type`, `lint`, `check:format`, `test`                                                                                                                                                         |
+| `Backend functional tests` | `ci-backend-functional` | `generate:prisma`, `test:functional` (Testcontainers MongoDB)                                                                                                                                                           |
+| `Frontend`                 | `ci-frontend`           | `gen:sdk`, design-system and form-factory builds, then web application `check:types`, `lint`, `check:format`, `check:dead-code`, `test`, then design-system and form-factory `check:types`, `check:format`, `test:unit` |
+| `Markdown format`          | `ci-markdown`           | root `check:format` (Markdown files outside `backend/` and `frontend/`)                                                                                                                                                 |
 
+- Each job installs its dependencies, then runs its make target: the commands live in the root `Makefile`, not in `ci.yml`. `make ci` runs the four targets locally, `make ci-frontend` runs one. The targets do not install anything: run `pnpm install --frozen-lockfile` first (root, `backend/`, `frontend/`); `ci-backend-functional` needs Docker.
 - Not covered by CI: Storybook plays (`test:stories`) and Playwright e2e (`test:e2e`, smoke). Run them locally when a change touches them.
 - The `Markdown format` check also runs before each commit: `.husky/pre-commit` runs `prettier --check` on the staged Markdown files outside `backend/` and `frontend/`. It checks only, it never rewrites a file: fix with `npx prettier --write <file>`, then stage again. It needs the root dependencies (`pnpm install` at the repository root) and stops the commit with a message when they are missing.
-- When adding a check script to a package, add the matching step to `ci.yml` in the same changeset.
+- When adding a check script to a package, add the matching command to the `ci-*` target of the `Makefile` in the same changeset. `ci.yml` only changes for a new job.
 - The job names are the identifiers of the status checks: do not rename a job without updating the branch protection of `main`.
 - `schema-sync.yml` stays separate: it only runs when `openapi.yml` or `schema.prisma` changes (see [Automated guardrail](#automated-guardrail)).
 
