@@ -25,6 +25,8 @@ export const Default: Story = {
     const canvas = within(canvasElement)
     const input = canvas.getByRole('textbox', { name: 'Brand color' })
     await userEvent.type(input, '#7f00ff')
+    // the field normalizes the value on blur
+    await userEvent.tab()
     await expect(input).toHaveValue('#7F00FF')
   },
 }
