@@ -61,15 +61,16 @@ services:
       interval: 5s
       timeout: 5s
       retries: 20
-  # TODO(pre-prod): no auth on this UI (ME_CONFIG_BASICAUTH: "false") — fine on localhost only.
-  # Before deploying this compose file to a remote server: set ME_CONFIG_BASICAUTH: "true" +
-  # ME_CONFIG_BASICAUTH_USERNAME/PASSWORD, or bind the port to "127.0.0.1:8083:8081".
+  # No auth on this UI (ME_CONFIG_BASICAUTH: "false"), and it connects to Mongo as root: the port is
+  # bound to loopback so that nothing else on the network reaches it.
+  # TODO(pre-prod): before deploying this compose file to a remote server, set
+  # ME_CONFIG_BASICAUTH: "true" + ME_CONFIG_BASICAUTH_USERNAME/PASSWORD.
   db-viewer:
     image: mongo-express
     restart: always
     env_file: ../backend/.env
     ports:
-      - "8083:8081"
+      - "127.0.0.1:8083:8081"
     environment:
       # backend/.env (env_file) carries the PORT of the API, and Mongo Express reads PORT too:
       # without this line it listens on that port instead of 8081, and the published port answers nothing.
