@@ -38,7 +38,7 @@ Les deux ne se remplacent pas (cf. ADR-0003) :
 - `describe('<domaine> domain — functional API', ...)` (ou `'<domaine>/<sous-ressource> — functional API'` si scindé), `it` décrit le scénario en langage métier (cas nominal, erreur, règle métier).
 - Pour chaque route : cas nominal (statut + forme du body validée contre les schémas Zod générés ou `openapi.yml`), cas d'erreur (`404`/`401`/`403`/validation `400`), règles métier spécifiques au domaine.
 - Helpers partagés dans `backend/tests/support/` : `database` (bootstrap/reset Testcontainers), `client` (agent supertest sur `createApp()`), `authenticate` (JWT de test), `fixtures` (factories d'entités).
-- Pitfalls connus à respecter : IDs MongoDB valides mais inconnus (`unknownObjectId()`), `notDeleted` pour le soft-delete, `INIT_WAIT_SEC=10` pour le replica set sous émulation amd64-on-arm64.
+- Pitfalls connus à respecter : IDs MongoDB valides mais inconnus (`unknownObjectId()`), `notDeleted` pour le soft-delete, le conteneur Mongo est prêt quand son healthcheck passe (replica set initié, nœud primaire) : ne pas remplacer cette attente par un délai fixe.
 
 ### Frontend — E2E (`frontend/web-application/e2e/`)
 

@@ -40,3 +40,11 @@ Pourquoi pas les autres options :
 - **Docker doit être actif** pour lancer `pnpm test:functional` / `make test-backend-func` — à documenter dans `specifications/16-strategie-de-test.md` (Session 2) et le `README`/`CLAUDE.md` backend.
 - Les fichiers de test s'exécutent en séquence (`fileParallelism: false`), chacun dans son propre fork, sur un seul conteneur partagé, pour éviter de multiplier les instances MongoDB — accepté comme compromis vitesse/simplicité, réévaluable si la suite grossit significativement.
 - Le choix de l'image (`4.4.3-bionic`) doit rester synchronisé avec celle du `docker-compose.yml` de développement — un changement de version dans l'un doit se refléter dans l'autre.
+
+## Mise à jour — 2026-10-09
+
+L'image est désormais `mongo:9.0` (image officielle), en développement, dans la stack de test et dans Testcontainers (issue #118). La décision ne change pas : Testcontainers, même image qu'en développement, bootstrap isolé dans `backend/tests/support/database.ts`.
+
+- L'image `prismagraphql/mongo-single-replica:4.4.3-bionic` ne redémarrait pas après une recréation du conteneur avec ses volumes (code de sortie 127), n'existe qu'en `amd64` et s'arrête à MongoDB 5.0.
+- Le replica set est maintenant initié par le healthcheck du conteneur (`rs.status()`, sinon `rs.initiate()`), et le conteneur est prêt quand le nœud est primaire. La variable `INIT_WAIT_SEC` n'existe plus.
+- Quatre endroits portent l'image et ce healthcheck, à modifier ensemble : `deployment/docker-compose.yml`, `deployment/docker-compose.test.yml`, la cible `db-test-up` du `Makefile`, `backend/tests/support/database.ts`.
