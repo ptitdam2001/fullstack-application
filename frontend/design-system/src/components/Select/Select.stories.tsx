@@ -36,9 +36,10 @@ export const Default: Story = {
     await userEvent.click(trigger)
     const listbox = within(document.body).getByRole('listbox')
     expect(listbox).toBeVisible()
-    const u13 = within(document.body).getByText('U13')
+    // by role: the hidden native <select> also holds an <option> with the text U13
+    const u13 = within(document.body).getByRole('option', { name: 'U13' })
     await userEvent.click(u13)
-    expect(canvas.getByText('U13')).toBeInTheDocument()
+    expect(trigger).toHaveTextContent('U13')
   },
 }
 

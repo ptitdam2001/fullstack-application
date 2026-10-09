@@ -32,8 +32,9 @@ export const Default: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const input = canvas.getByRole('combobox')
-    await userEvent.click(input)
-    const listbox = within(document.body).getByRole('listbox')
+    // the list opens on typing or on the trigger button, not on a click in the input
+    await userEvent.click(canvas.getByRole('button'))
+    const listbox = await within(document.body).findByRole('listbox')
     expect(listbox).toBeVisible()
     const item = within(document.body).getByText('Équipe B')
     await userEvent.click(item)

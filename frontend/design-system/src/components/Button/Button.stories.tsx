@@ -106,7 +106,9 @@ export const DisabledDoesNotFire: Story = {
     const canvas = within(canvasElement)
     const button = canvas.getByRole('button', { name: /disabled/i })
 
-    await userEvent.click(button)
+    expect(button).toBeDisabled()
+    // the disabled style sets pointer-events: none, which userEvent refuses to click by default
+    await userEvent.click(button, { pointerEventsCheck: 0 })
 
     expect(args.onClick).not.toHaveBeenCalled()
   },

@@ -25,7 +25,8 @@ export const Default: Story = {
     const canvas = within(canvasElement)
     const [, increment] = canvas.getAllByRole('button')
     fireEvent.click(increment)
-    expect(canvas.getByRole('spinbutton')).toHaveValue('1')
+    // react-aria renders a text input (aria-roledescription "Number field"), not a spinbutton
+    expect(canvas.getByRole('textbox', { name: 'Score' })).toHaveValue('1')
   },
 }
 
