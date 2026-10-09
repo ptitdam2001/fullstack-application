@@ -101,9 +101,9 @@ gen: ## Régénère Prisma client + frontend SDK
 	cd frontend/web-application && pnpm gen:sdk
 
 ds-build: ## Rebuild design system + clear Vite cache
-	pnpm --filter @repo/design-system build
+	cd frontend && pnpm --filter @repo/design-system build
 	rm -rf frontend/web-application/node_modules/.vite
 
 # ─── Suite complète ──────────────────────────────────────────────────────────
 
-test: test-backend-unit test-backend-func test-e2e ## Lance tous les tests (unit + func + e2e mocked)
+test: test-backend-unit test-backend-func test-e2e ## Lance les tests backend (unit + func) et les E2E frontend — pas les tests unitaires frontend
