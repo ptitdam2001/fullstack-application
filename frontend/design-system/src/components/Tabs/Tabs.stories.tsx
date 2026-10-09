@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { expect, userEvent, within } from 'storybook/test'
+import { expect, userEvent, waitFor, within } from 'storybook/test'
 
 import { Tabs } from './Tabs'
 import { TabPanel } from './TabPanel'
@@ -94,7 +94,8 @@ export const SelectTabOnClick: Story = {
     const passwordTab = canvas.getByRole('tab', { name: /password/i })
     await userEvent.click(passwordTab)
     expect(passwordTab).toHaveAttribute('aria-selected', 'true')
-    expect(canvas.getByText('Change your password here.')).toBeVisible()
+    // the entering panel starts at opacity 0 and fades in
+    await waitFor(() => expect(canvas.getByText('Change your password here.')).toBeVisible())
   },
 }
 
@@ -124,6 +125,7 @@ export const KeyboardNavigation: Story = {
     await userEvent.keyboard('{ArrowRight}')
     expect(passwordTab).toHaveFocus()
     expect(passwordTab).toHaveAttribute('aria-selected', 'true')
-    expect(canvas.getByText('Change your password here.')).toBeVisible()
+    // the entering panel starts at opacity 0 and fades in
+    await waitFor(() => expect(canvas.getByText('Change your password here.')).toBeVisible())
   },
 }
