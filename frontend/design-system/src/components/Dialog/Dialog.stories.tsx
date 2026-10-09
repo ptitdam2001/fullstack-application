@@ -81,13 +81,17 @@ export const ClosesOnEscape: Story = {
   },
 }
 
-export const ClosesOnOutsideClick: Story = {
+/** The dialog is not dismissable: a click on the overlay must not close it (no input lost by accident). */
+export const StaysOpenOnOutsideClick: Story = {
   args: { ...Default.args },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await userEvent.click(canvas.getByRole('button', { name: /open dialog/i }))
+    const dialog = await within(document.body).findByRole('dialog')
+    await expect(dialog).toBeVisible()
+    const overlay = document.querySelector<HTMLElement>('[data-slot="dialog-portal"]')
+    await expect(overlay).toBeInTheDocument()
+    await userEvent.click(overlay!)
     await expect(within(document.body).getByRole('dialog')).toBeVisible()
-    await userEvent.click(document.body)
-    await expect(within(document.body).queryByRole('dialog')).not.toBeInTheDocument()
   },
 }
