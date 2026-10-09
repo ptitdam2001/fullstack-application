@@ -7,19 +7,33 @@ import { GenericContainer, Wait, type StartedTestContainer } from 'testcontainer
  * Swapping engines later means changing only this file: the image, the
  * connection string builder, the migration command, and `resetDatabase`.
  *
- * Image kept in sync with the `mongodb` service in the root `docker-compose.yml` —
- * a replica-set build is required because Prisma+MongoDB needs one for `$transaction()`.
+ * Image and start-up kept in sync with the `mongodb` service of `deployment/docker-compose.yml` —
+ * a replica set is required because Prisma+MongoDB needs one for `$transaction()`.
  *
  * Credentials below are throwaway values for an ephemeral, localhost-only
  * container — deliberately NOT read from `.env`. Reusing dev/prod values would
  * couple the test suite to the developer's local config (and `.env` may not
  * even exist in CI, only `.env.sample`).
  */
-const MONGO_IMAGE = 'prismagraphql/mongo-single-replica:4.4.3-bionic'
+const MONGO_IMAGE = 'mongo:9.0'
 const MONGO_PORT = 27017
+const REPLICA_SET_NAME = 'rs0'
+const KEY_FILE = '/tmp/mongo-keyfile'
 const ROOT_USERNAME = 'test'
 const ROOT_PASSWORD = 'test'
 const DATABASE_NAME = 'test'
+
+// mongod refuses a replica set with authentication unless it gets a key file. With a single node
+// nobody else reads that key, so it is generated when the container starts.
+const START_MONGOD = [
+  `openssl rand -base64 756 > ${KEY_FILE}`,
+  `chmod 400 ${KEY_FILE}`,
+  `chown mongodb:mongodb ${KEY_FILE}`,
+  `exec docker-entrypoint.sh mongod --replSet ${REPLICA_SET_NAME} --bind_ip_all --keyFile ${KEY_FILE}`,
+].join(' && ')
+
+// Initiates the replica set when there is none, then succeeds once this node is primary.
+const INITIATE_REPLICA_SET_AND_CHECK_PRIMARY = `try { rs.status() } catch (e) { rs.initiate({ _id: '${REPLICA_SET_NAME}', members: [{ _id: 0, host: 'localhost:${MONGO_PORT}' }] }) } quit(db.hello().isWritablePrimary ? 0 : 1)`
 
 const PUSH_RETRY_ATTEMPTS = 10
 const PUSH_RETRY_DELAY_MS = 2_000
@@ -32,9 +46,8 @@ const buildDatabaseUrl = (host: string, port: number): string =>
 const sleep = (ms: number): Promise<void> => new Promise(resolve => setTimeout(resolve, ms))
 
 /**
- * `prisma db push` can fail for the first seconds after the port opens —
- * the image still finalizes replica-set initiation in the background. Retry
- * instead of guessing a fixed boot delay or parsing log messages.
+ * The container is reported started once its healthcheck passes, that is once the node is
+ * primary. The retry stays as a safety net for a `prisma db push` that fails right after that.
  */
 const pushSchema = (databaseUrl: string): void => {
   execFileSync('npx', ['prisma', 'db', 'push', '--skip-generate'], {
@@ -71,13 +84,28 @@ export const setup = async (): Promise<void> => {
       MONGO_INITDB_DATABASE: DATABASE_NAME,
       MONGO_INITDB_ROOT_USERNAME: ROOT_USERNAME,
       MONGO_INITDB_ROOT_PASSWORD: ROOT_PASSWORD,
-      // The image's entrypoint kills the bootstrap mongod, waits this long, then
-      // reconnects to init the replica set. Under amd64-on-arm64 emulation (Apple
-      // Silicon) mongod isn't back up within 1s — bump it so init doesn't race the restart.
-      INIT_WAIT_SEC: '10',
     })
+    .withEntrypoint(['bash', '-c', START_MONGOD])
     .withExposedPorts(MONGO_PORT)
-    .withWaitStrategy(Wait.forListeningPorts())
+    .withHealthCheck({
+      test: [
+        'CMD',
+        'mongosh',
+        '--quiet',
+        '-u',
+        ROOT_USERNAME,
+        '-p',
+        ROOT_PASSWORD,
+        '--authenticationDatabase',
+        'admin',
+        '--eval',
+        INITIATE_REPLICA_SET_AND_CHECK_PRIMARY,
+      ],
+      interval: 2_000,
+      timeout: 5_000,
+      retries: 30,
+    })
+    .withWaitStrategy(Wait.forHealthCheck())
     .withStartupTimeout(120_000)
     .start()
 
