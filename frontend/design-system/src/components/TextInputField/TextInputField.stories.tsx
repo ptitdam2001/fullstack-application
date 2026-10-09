@@ -59,7 +59,8 @@ export const Required: Story = {
   args: { label: 'Full name', isRequired: true, placeholder: 'Jane Smith' },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    await expect(canvas.getByRole('textbox', { name: /full name/i })).toHaveAttribute('aria-required', 'true')
+    // react-aria sets the native `required` attribute (native validation), not aria-required
+    await expect(canvas.getByRole('textbox', { name: /full name/i })).toBeRequired()
     await expect(canvas.getByText('*')).toBeInTheDocument()
   },
 }

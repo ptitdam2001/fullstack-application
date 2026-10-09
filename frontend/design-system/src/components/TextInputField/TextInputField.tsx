@@ -15,19 +15,24 @@ type TextInputFieldProps = Omit<React.ComponentProps<typeof AriaTextField>, 'chi
   'data-testid'?: string
 }
 
-export const TextInputField = ({
-  label,
-  errorMessage,
-  isInvalid,
-  isRequired,
-  isDisabled,
-  disabled,
-  className,
-  value,
-  placeholder,
-  'data-testid': dataTestId,
-  ...props
-}: TextInputFieldProps) => {
+export const TextInputField = (allProps: TextInputFieldProps) => {
+  const {
+    label,
+    errorMessage,
+    isInvalid,
+    isRequired,
+    isDisabled,
+    disabled,
+    className,
+    value,
+    placeholder,
+    'data-testid': dataTestId,
+    ...props
+  } = allProps
+  // Controlled as soon as the caller passes the `value` prop, even undefined or null (a react-hook-form
+  // field without a default value). Without the prop the field is uncontrolled and honours defaultValue.
+  const coercedValue = value == null ? '' : String(value)
+  const controlledValue = 'value' in allProps ? coercedValue : undefined
   const hasError = isInvalid || !!errorMessage
 
   return (
@@ -36,7 +41,7 @@ export const TextInputField = ({
       isInvalid={hasError}
       isRequired={isRequired}
       isDisabled={isDisabled ?? disabled}
-      value={value == null ? '' : String(value)}
+      value={controlledValue}
       className={cn('relative grid w-full items-center gap-1.5 pb-6', className)}
       {...props}
     >
