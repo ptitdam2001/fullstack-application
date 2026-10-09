@@ -71,6 +71,9 @@ services:
     ports:
       - "8083:8081"
     environment:
+      # backend/.env (env_file) carries the PORT of the API, and Mongo Express reads PORT too:
+      # without this line it listens on that port instead of 8081, and the published port answers nothing.
+      PORT: 8081
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: example
       ME_CONFIG_MONGODB_URL: mongodb://root:example@mongodb:27017/app?authSource=admin&directConnection=true
