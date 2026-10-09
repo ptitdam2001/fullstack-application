@@ -120,12 +120,18 @@ ci-backend: ## Job CI « Backend » : client Prisma, types, lint, format, tests 
 	cd backend && pnpm check:format
 	cd backend && pnpm test
 
+# Testcontainers démarre son propre replica set MongoDB et pose DATABASE_URL lui-même
+# (backend/tests/support/database.ts).
 ci-backend-functional: ## Job CI « Backend functional tests » : client Prisma, tests fonctionnels (Docker requis)
 	cd backend && DATABASE_URL=$(CI_DATABASE_URL) pnpm generate:prisma
 	cd backend && pnpm test:functional
 
-# Ordre imposé : le SDK puis les builds du design system et de la form factory d'abord,
-# l'application web consomme les paquets construits et knip a besoin du SDK généré.
+# Ordre imposé : le SDK puis les builds du design system et de la form factory d'abord.
+# src/sdk/ n'est pas versionné : sans lui le type check et le lint échouent, et knip signale
+# chaque import du SDK comme dépendance non déclarée. L'application web consomme les paquets
+# construits, pas leurs sources.
+# `test:unit` et non `test` pour le design system : `test` lance aussi le projet storybook,
+# qui exige un Chromium que la CI n'installe pas.
 ci-frontend: ## Job CI « Frontend » : SDK, builds, puis types, lint, format, code mort et tests unitaires
 	cd frontend && pnpm --filter application-material gen:sdk
 	cd frontend && pnpm --filter @repo/design-system build
