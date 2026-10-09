@@ -32,14 +32,20 @@ test-backend-unit: ## Lance les tests unitaires backend (Vitest, repositories mo
 test-backend-func: ## Lance les tests fonctionnels backend (Vitest + supertest + Mongo replica via testcontainers)
 	cd backend && pnpm test:functional
 
+# Même montage que le service `mongodb` de deployment/docker-compose.yml : replica set à un nœud,
+# keyfile généré au démarrage, replica set initié par le healthcheck (prêt quand `docker ps`
+# affiche "healthy").
 db-test-up: ## Démarre un Mongo replica de test isolé sur le port 27018 (debug local hors testcontainers)
 	docker run -d --name $(TEST_MONGO_CONTAINER) \
 		-p $(TEST_MONGO_PORT):27017 \
 		-e MONGO_INITDB_DATABASE=test \
 		-e MONGO_INITDB_ROOT_USERNAME=test \
 		-e MONGO_INITDB_ROOT_PASSWORD=test \
-		-e INIT_WAIT_SEC=10 \
-		prismagraphql/mongo-single-replica:4.4.3-bionic
+		--health-cmd "mongosh --quiet -u test -p test --authenticationDatabase admin --eval \"try { rs.status() } catch (e) { rs.initiate({ _id: 'rs0', members: [{ _id: 0, host: 'localhost:27017' }] }) } quit(db.hello().isWritablePrimary ? 0 : 1)\"" \
+		--health-interval 5s --health-timeout 5s --health-retries 20 \
+		--entrypoint bash \
+		mongo:9.0 \
+		-c 'openssl rand -base64 756 > /tmp/mongo-keyfile && chmod 400 /tmp/mongo-keyfile && chown mongodb:mongodb /tmp/mongo-keyfile && exec docker-entrypoint.sh mongod --replSet rs0 --bind_ip_all --keyFile /tmp/mongo-keyfile'
 
 db-test-down: ## Arrête et supprime le Mongo replica de test de debug local
 	docker rm -f $(TEST_MONGO_CONTAINER)
