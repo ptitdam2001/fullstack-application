@@ -11,9 +11,11 @@ seed: ## Crée le jeu de données de test en base (idempotent)
 
 # `prisma db push` est la seule chose qui crée les index MongoDB déclarés dans schema.prisma
 # (@unique, @@unique, @@index). Cible : DATABASE_URL de l'environnement, sinon celle de backend/.env.
-# Jamais appelée par `make up` : sur Mongo 4.4, créer un index unique sur une collection qui
-# contient des doublons ne renvoie pas d'erreur, la construction reste bloquée côté serveur.
-# `pnpm db:push` lance donc d'abord db:check-duplicates et s'arrête avant d'écrire s'il en trouve.
+# Jamais appelée par `make up` : démarrer la stack ne doit pas dépendre de doublons à corriger.
+# Sur des doublons, un `prisma db push` seul s'arrête au premier index unique impossible (E11000) :
+# un seul doublon signalé, index précédents déjà créés, index suivants absents.
+# `pnpm db:push` lance donc d'abord db:check-duplicates, qui les liste tous, et s'arrête avant
+# d'écrire s'il en trouve.
 db-check-duplicates: ## Liste les doublons qui bloqueraient un index unique (lecture seule)
 	cd backend && pnpm db:check-duplicates
 
