@@ -51,6 +51,11 @@ export default defineConfig({
       {
         extends: true,
         plugins: storybookPlugins,
+        // react-stately's Virtualizer reads process.env.VIRT_ON when NODE_ENV is 'test'. Chromium has no
+        // `process`: replace the flag in the pre-bundled dependencies, and keep the real virtualization since
+        // the browser has a real layout. Not a top-level `define`: Vitest copies a `process.env.*` define
+        // into the Node process, where it would also switch the virtualization on for the jsdom unit tests.
+        optimizeDeps: { rolldownOptions: { transform: { define: { 'process.env.VIRT_ON': 'true' } } } },
         test: {
           name: 'storybook',
           browser: {
