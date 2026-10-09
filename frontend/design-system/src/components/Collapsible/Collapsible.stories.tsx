@@ -1,4 +1,4 @@
-import { expect, userEvent, within } from 'storybook/test'
+import { expect, userEvent, waitFor, within } from 'storybook/test'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { ChevronsUpDown } from 'lucide-react'
 
@@ -65,12 +65,20 @@ export const TogglesContent: Story = {
     const canvas = within(canvasElement)
     const trigger = canvas.getByRole('button', { name: /toggle repositories/i })
 
-    // DisclosurePanel stays in DOM — use visibility check
-    await expect(canvas.getByText('Hidden item')).not.toBeVisible()
+    const panel = canvas.getByText('Hidden item').closest('[data-slot="collapsible-content"]')
+
+    // The closed DisclosurePanel stays in the DOM with hidden="until-found" (content-visibility: hidden),
+    // which toBeVisible() does not detect: assert the attributes react-aria sets.
+    await expect(trigger).toHaveAttribute('aria-expanded', 'false')
+    await expect(panel).toHaveAttribute('hidden')
     await userEvent.click(trigger)
+    await expect(trigger).toHaveAttribute('aria-expanded', 'true')
+    await expect(panel).not.toHaveAttribute('hidden')
     await expect(canvas.getByText('Hidden item')).toBeVisible()
     await userEvent.click(trigger)
-    await expect(canvas.getByText('Hidden item')).not.toBeVisible()
+    await expect(trigger).toHaveAttribute('aria-expanded', 'false')
+    // react-aria restores `hidden` once the closing transition has ended
+    await waitFor(() => expect(panel).toHaveAttribute('hidden'))
   },
 }
 
