@@ -1,9 +1,10 @@
 // Read-only pre-flight for `pnpm db:push`: lists the documents that would make MongoDB refuse a
 // unique index declared in prisma/schema.prisma (`@unique`, `@@unique`).
 // With MongoDB those indexes only exist once `prisma db push` has run; on a database that lived
-// without them, duplicates may have slipped past the application checks. On the project's Mongo 4.4
-// image the push then does not fail: the index build stays blocked on the server, hence this check
-// before any write. Unique sets come from the generated Prisma client — run `pnpm generate:prisma` first.
+// without them, duplicates may have slipped past the application checks. The push then stops at the
+// first unique index it cannot build: it names one duplicate only and leaves the indexes half
+// applied. Hence this check before any write, which lists them all.
+// Unique sets come from the generated Prisma client — run `pnpm generate:prisma` first.
 // A missing field counts as null, exactly as in a (non-sparse) MongoDB unique index.
 import 'dotenv/config'
 import { Prisma } from '@prisma/client'
