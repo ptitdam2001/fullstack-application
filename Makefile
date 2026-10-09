@@ -53,7 +53,7 @@ db-test-down: ## Arrête et supprime le Mongo replica de test de debug local
 	docker rm -f $(TEST_MONGO_CONTAINER)
 
 test-e2e: ## Lance les tests E2E frontend (Playwright + MSW, Vite dev server)
-	cd frontend/web-application && pnpm test:e2e
+	cd frontend && pnpm --filter application-material test:e2e --project=chromium
 
 # ─── Docker dev ───────────────────────────────────────────────────────────────
 

@@ -51,16 +51,16 @@ Les deux ne se remplacent pas (cf. ADR-0003) :
 
 ## Commandes
 
-| Commande                                              | Cible Makefile                                | Action                                                                             |
-| ----------------------------------------------------- | --------------------------------------------- | ---------------------------------------------------------------------------------- |
-| `pnpm --filter openapi-express-ts test`               | `make test-backend-unit`                      | Tests unitaires backend (Vitest, repositories mockés)                              |
-| `pnpm --filter openapi-express-ts test:functional`    | `make test-backend-func`                      | Tests fonctionnels backend (Vitest + supertest + Mongo replica via Testcontainers) |
-| —                                                     | `make db-test-up` / `make db-test-down`       | Démarre/arrête un Mongo replica de test isolé (debug local hors Testcontainers)    |
-| `pnpm --filter application-material test`             | —                                             | Tests unitaires frontend (Vitest, jsdom)                                           |
-| `pnpm --filter application-material test:e2e`         | `make test-e2e`                               | Playwright, projet `mocked` (MSW + Vite dev server)                                |
-| `pnpm exec playwright test --project=fullstack-smoke` | `make test-e2e-smoke`                         | Playwright projet `fullstack-smoke` contre la stack Docker test                    |
-| —                                                     | `make test`                                   | Suite complète : backend (unit + func) + E2E mocké                                 |
-| —                                                     | `make stack-test-up` / `make stack-test-down` | Up (index + seed) / down de la stack test (front :3001, API :4001, Mongo :27019)   |
+| Commande                                                         | Cible Makefile                                | Action                                                                             |
+| ---------------------------------------------------------------- | --------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `pnpm --filter openapi-express-ts test`                          | `make test-backend-unit`                      | Tests unitaires backend (Vitest, repositories mockés)                              |
+| `pnpm --filter openapi-express-ts test:functional`               | `make test-backend-func`                      | Tests fonctionnels backend (Vitest + supertest + Mongo replica via Testcontainers) |
+| —                                                                | `make db-test-up` / `make db-test-down`       | Démarre/arrête un Mongo replica de test isolé (debug local hors Testcontainers)    |
+| `pnpm --filter application-material test`                        | —                                             | Tests unitaires frontend (Vitest, jsdom)                                           |
+| `pnpm --filter application-material test:e2e --project=chromium` | `make test-e2e`                               | Playwright, projet `chromium` (MSW + Vite dev server)                              |
+| `pnpm exec playwright test --project=fullstack-smoke`            | `make test-e2e-smoke`                         | Playwright projet `fullstack-smoke` contre la stack Docker test                    |
+| —                                                                | `make test`                                   | Suite complète : backend (unit + func) + E2E mocké                                 |
+| —                                                                | `make stack-test-up` / `make stack-test-down` | Up (index + seed) / down de la stack test (front :3001, API :4001, Mongo :27019)   |
 
 ---
 
