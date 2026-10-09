@@ -87,6 +87,35 @@ jobs:
       - name: Builds, type check, lint, format check, dead code check, unit tests
         run: make ci-frontend
 
+  storybook:
+    name: Storybook plays
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: pnpm install --frozen-lockfile
+
+      # The `playwright` binary is exposed by application-material. The frontend
+      # lockfile holds a single Playwright version, shared with the Vitest
+      # browser provider of the design system: the browser build matches.
+      - name: Install Chromium
+        working-directory: frontend
+        run: pnpm --filter application-material exec playwright install --with-deps chromium
+
+      - name: Storybook plays (design system)
+        run: make ci-storybook
+
   markdown-format:
     name: Markdown format
     runs-on: ubuntu-latest
