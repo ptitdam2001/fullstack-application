@@ -1,10 +1,10 @@
-.PHONY: seed db-check-duplicates db-push help test-backend-unit test-backend-func db-test-up db-test-down test-e2e up down stack-test-up stack-test-down test-e2e-smoke test check lint gen ds-build
+.PHONY: seed db-check-duplicates db-push help test-backend-unit test-backend-func db-test-up db-test-down test-e2e up down stack-test-up stack-test-down test-e2e-smoke test check lint gen ds-build ci ci-backend ci-backend-functional ci-frontend ci-markdown
 
 TEST_MONGO_CONTAINER := fullstack-test-mongo
 TEST_MONGO_PORT := 27018
 
 help: ## Affiche les commandes disponibles
-	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' Makefile | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-20s\033[0m %s\n", $$1, $$2}'
+	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' Makefile | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-22s\033[0m %s\n", $$1, $$2}'
 
 seed: ## Crée le jeu de données de test en base (idempotent)
 	cd backend && NODE_PATH=$$(pwd)/node_modules pnpm exec tsx ../scripts/seed/index.ts
@@ -103,6 +103,49 @@ gen: ## Régénère Prisma client + frontend SDK
 ds-build: ## Rebuild design system + clear Vite cache
 	cd frontend && pnpm --filter @repo/design-system build
 	rm -rf frontend/web-application/node_modules/.vite
+
+# ─── CI ───────────────────────────────────────────────────────────────────────
+
+# Une cible par job de .github/workflows/ci.yml, mêmes commandes dans le même ordre.
+# Les dépendances doivent déjà être installées (`pnpm install --frozen-lockfile` à la racine,
+# dans backend/ et dans frontend/) : les cibles ne les installent pas.
+
+# `prisma generate` ne se connecte jamais, mais prisma.config.ts exige DATABASE_URL.
+CI_DATABASE_URL := mongodb://localhost:27017/ci
+
+ci-backend: ## Job CI « Backend » : client Prisma, types, lint, format, tests unitaires
+	cd backend && DATABASE_URL=$(CI_DATABASE_URL) pnpm generate:prisma
+	cd backend && pnpm check:type
+	cd backend && pnpm lint
+	cd backend && pnpm check:format
+	cd backend && pnpm test
+
+ci-backend-functional: ## Job CI « Backend functional tests » : client Prisma, tests fonctionnels (Docker requis)
+	cd backend && DATABASE_URL=$(CI_DATABASE_URL) pnpm generate:prisma
+	cd backend && pnpm test:functional
+
+# Ordre imposé : le SDK puis les builds du design system et de la form factory d'abord,
+# l'application web consomme les paquets construits et knip a besoin du SDK généré.
+ci-frontend: ## Job CI « Frontend » : SDK, builds, puis types, lint, format, code mort et tests unitaires
+	cd frontend && pnpm --filter application-material gen:sdk
+	cd frontend && pnpm --filter @repo/design-system build
+	cd frontend && pnpm --filter @repo/form-factory build
+	cd frontend && pnpm --filter application-material check:types
+	cd frontend && pnpm --filter application-material lint
+	cd frontend && pnpm --filter application-material check:format
+	cd frontend && pnpm --filter application-material check:dead-code
+	cd frontend && pnpm --filter application-material test --run
+	cd frontend && pnpm --filter @repo/design-system check:types
+	cd frontend && pnpm --filter @repo/design-system check:format
+	cd frontend && pnpm --filter @repo/design-system test:unit --run
+	cd frontend && pnpm --filter @repo/form-factory check:types
+	cd frontend && pnpm --filter @repo/form-factory check:format
+	cd frontend && pnpm --filter @repo/form-factory test:unit --run
+
+ci-markdown: ## Job CI « Markdown format » : Prettier sur les Markdown hors backend/ et frontend/
+	pnpm check:format
+
+ci: ci-backend ci-backend-functional ci-frontend ci-markdown ## Rejoue en local les quatre jobs de la CI
 
 # ─── Suite complète ──────────────────────────────────────────────────────────
 
