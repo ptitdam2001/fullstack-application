@@ -17,13 +17,14 @@ permissions:
   contents: read
 
 jobs:
+  # Each job installs its own dependencies, then runs one target of the root
+  # Makefile: the list of checks lives there (`ci-*` targets), so that
+  # `make ci` replays the same commands locally. Add a check to the target,
+  # not to this file.
   backend:
     name: Backend
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    defaults:
-      run:
-        working-directory: backend
     steps:
       - uses: actions/checkout@v7
 
@@ -36,34 +37,16 @@ jobs:
           cache-dependency-path: backend/pnpm-lock.yaml
 
       - name: Install dependencies
+        working-directory: backend
         run: pnpm install --frozen-lockfile
 
-      # The Prisma client is not versioned: the type check fails without it.
-      # prisma.config.ts requires DATABASE_URL, but `generate` never connects.
-      - name: Generate the Prisma client
-        run: pnpm generate:prisma
-        env:
-          DATABASE_URL: mongodb://localhost:27017/ci
-
-      - name: Type check
-        run: pnpm check:type
-
-      - name: Lint
-        run: pnpm lint
-
-      - name: Format check
-        run: pnpm check:format
-
-      - name: Unit tests
-        run: pnpm test
+      - name: Type check, lint, format check, unit tests
+        run: make ci-backend
 
   backend-functional:
     name: Backend functional tests
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    defaults:
-      run:
-        working-directory: backend
     steps:
       - uses: actions/checkout@v7
 
@@ -76,25 +59,16 @@ jobs:
           cache-dependency-path: backend/pnpm-lock.yaml
 
       - name: Install dependencies
+        working-directory: backend
         run: pnpm install --frozen-lockfile
 
-      - name: Generate the Prisma client
-        run: pnpm generate:prisma
-        env:
-          DATABASE_URL: mongodb://localhost:27017/ci
-
-      # Testcontainers starts its own MongoDB replica set and sets DATABASE_URL
-      # itself (tests/support/database.ts); Docker ships with ubuntu-latest.
       - name: Functional tests
-        run: pnpm test:functional
+        run: make ci-backend-functional
 
   frontend:
     name: Frontend
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    defaults:
-      run:
-        working-directory: frontend
     steps:
       - uses: actions/checkout@v7
 
@@ -107,56 +81,11 @@ jobs:
           cache-dependency-path: frontend/pnpm-lock.yaml
 
       - name: Install dependencies
+        working-directory: frontend
         run: pnpm install --frozen-lockfile
 
-      # src/sdk/ is not versioned: orval reads ../../backend/openapi.yml, and
-      # the type check and the lint both fail without the generated SDK.
-      - name: Generate the SDK
-        run: pnpm --filter application-material gen:sdk
-
-      # The web application consumes the built packages, not their sources.
-      - name: Build the design system
-        run: pnpm --filter @repo/design-system build
-
-      - name: Build the form factory
-        run: pnpm --filter @repo/form-factory build
-
-      - name: Type check (web application)
-        run: pnpm --filter application-material check:types
-
-      - name: Lint (web application)
-        run: pnpm --filter application-material lint
-
-      - name: Format check (web application)
-        run: pnpm --filter application-material check:format
-
-      # Must run after the SDK generation: without src/sdk/generated, knip
-      # reports every SDK import as an unlisted dependency.
-      - name: Dead code check (web application)
-        run: pnpm --filter application-material check:dead-code
-
-      - name: Unit tests (web application)
-        run: pnpm --filter application-material test --run
-
-      - name: Type check (design system)
-        run: pnpm --filter @repo/design-system check:types
-
-      - name: Format check (design system)
-        run: pnpm --filter @repo/design-system check:format
-
-      # `test:unit`, not `test`: the default run also starts the storybook
-      # project, which needs a Chromium that this job does not install.
-      - name: Unit tests (design system)
-        run: pnpm --filter @repo/design-system test:unit --run
-
-      - name: Type check (form factory)
-        run: pnpm --filter @repo/form-factory check:types
-
-      - name: Format check (form factory)
-        run: pnpm --filter @repo/form-factory check:format
-
-      - name: Unit tests (form factory)
-        run: pnpm --filter @repo/form-factory test:unit --run
+      - name: Builds, type check, lint, format check, dead code check, unit tests
+        run: make ci-frontend
 
   markdown-format:
     name: Markdown format
@@ -176,7 +105,5 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # Markdown outside backend/ and frontend/: each package checks its own
-      # directory, see the root .prettierignore.
       - name: Format check (Markdown outside the packages)
-        run: pnpm check:format
+        run: make ci-markdown
