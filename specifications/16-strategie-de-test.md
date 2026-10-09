@@ -51,34 +51,35 @@ Les deux ne se remplacent pas (cf. ADR-0003) :
 
 ## Commandes
 
-| Commande                                                         | Cible Makefile                                                                       | Action                                                                             |
-| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------- |
-| `pnpm --filter openapi-express-ts test`                          | `make test-backend-unit`                                                             | Tests unitaires backend (Vitest, repositories mockés)                              |
-| `pnpm --filter openapi-express-ts test:functional`               | `make test-backend-func`                                                             | Tests fonctionnels backend (Vitest + supertest + Mongo replica via Testcontainers) |
-| —                                                                | `make db-test-up` / `make db-test-down`                                              | Démarre/arrête un Mongo replica de test isolé (debug local hors Testcontainers)    |
-| `pnpm --filter application-material test`                        | —                                                                                    | Tests unitaires frontend (Vitest, jsdom)                                           |
-| `pnpm --filter application-material test:e2e --project=chromium` | `make test-e2e`                                                                      | Playwright, projet `chromium` (MSW + Vite dev server)                              |
-| `pnpm exec playwright test --project=fullstack-smoke`            | `make test-e2e-smoke`                                                                | Playwright projet `fullstack-smoke` contre la stack Docker test                    |
-| —                                                                | `make test`                                                                          | Backend (unit + func) + E2E mocké, sans les tests unitaires frontend               |
-| —                                                                | `make ci` / `make ci-backend`, `ci-backend-functional`, `ci-frontend`, `ci-markdown` | Rejoue en local les quatre jobs de la CI, ou un seul (dépendances déjà installées) |
-| —                                                                | `make stack-test-up` / `make stack-test-down`                                        | Up (index + seed) / down de la stack test (front :3001, API :4001, Mongo :27019)   |
+| Commande                                                         | Cible Makefile                                                                                       | Action                                                                             |
+| ---------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `pnpm --filter openapi-express-ts test`                          | `make test-backend-unit`                                                                             | Tests unitaires backend (Vitest, repositories mockés)                              |
+| `pnpm --filter openapi-express-ts test:functional`               | `make test-backend-func`                                                                             | Tests fonctionnels backend (Vitest + supertest + Mongo replica via Testcontainers) |
+| —                                                                | `make db-test-up` / `make db-test-down`                                                              | Démarre/arrête un Mongo replica de test isolé (debug local hors Testcontainers)    |
+| `pnpm --filter application-material test`                        | —                                                                                                    | Tests unitaires frontend (Vitest, jsdom)                                           |
+| `pnpm --filter application-material test:e2e --project=chromium` | `make test-e2e`                                                                                      | Playwright, projet `chromium` (MSW + Vite dev server)                              |
+| `pnpm exec playwright test --project=fullstack-smoke`            | `make test-e2e-smoke`                                                                                | Playwright projet `fullstack-smoke` contre la stack Docker test                    |
+| —                                                                | `make test`                                                                                          | Backend (unit + func) + E2E mocké, sans les tests unitaires frontend               |
+| —                                                                | `make ci` / `make ci-backend`, `ci-backend-functional`, `ci-frontend`, `ci-storybook`, `ci-markdown` | Rejoue en local les cinq jobs de la CI, ou un seul (dépendances déjà installées)   |
+| —                                                                | `make stack-test-up` / `make stack-test-down`                                                        | Up (index + seed) / down de la stack test (front :3001, API :4001, Mongo :27019)   |
 
 ---
 
 ## Intégration continue
 
-Le workflow `.github/workflows/ci.yml` s'exécute sur chaque pull request et sur chaque push sur `main`, en quatre jobs parallèles :
+Le workflow `.github/workflows/ci.yml` s'exécute sur chaque pull request et sur chaque push sur `main`, en cinq jobs parallèles :
 
 | Job                        | Niveau de la pyramide couvert                                                                            |
 | -------------------------- | -------------------------------------------------------------------------------------------------------- |
 | `Backend`                  | Tests unitaires backend, plus type-check, lint et format                                                 |
 | `Backend functional tests` | Tests fonctionnels backend (Testcontainers Mongo)                                                        |
 | `Frontend`                 | Tests unitaires web-application, design-system et form-factory, plus type-check, lint, format, code mort |
+| `Storybook plays`          | Plays des stories du design system, dans Chromium (Vitest browser + Playwright)                          |
 | `Markdown format`          | Aucun : format Prettier des fichiers Markdown hors `backend/` et `frontend/`                             |
 
-Chaque job installe ses dépendances puis lance une cible du `Makefile` racine (`ci-backend`, `ci-backend-functional`, `ci-frontend`, `ci-markdown`) : la liste des commandes vit dans le `Makefile`, pas dans `ci.yml`. `make ci` rejoue les quatre en local.
+Chaque job installe ses dépendances puis lance une cible du `Makefile` racine (`ci-backend`, `ci-backend-functional`, `ci-frontend`, `ci-storybook`, `ci-markdown`) : la liste des commandes vit dans le `Makefile`, pas dans `ci.yml`. `make ci` rejoue les cinq en local. Le job `Storybook plays` installe aussi le Chromium de Playwright avant sa cible.
 
-Hors CI pour l'instant, à lancer en local : les plays Storybook (`test:stories`), les E2E Playwright mockés (`make test-e2e`) et le smoke full-stack (`make test-e2e-smoke`). Ils demandent Chromium, et la stack Docker de test pour le smoke.
+Hors CI pour l'instant, à lancer en local : les E2E Playwright mockés (`make test-e2e`) et le smoke full-stack (`make test-e2e-smoke`). Ils demandent Chromium, et la stack Docker de test pour le smoke.
 
 ---
 

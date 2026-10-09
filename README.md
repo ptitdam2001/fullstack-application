@@ -25,7 +25,7 @@ Des scripts Make sont disponibles pour les opérations courantes.
 make help   # liste toutes les commandes
 make seed   # crée un jeu de données de test en base
 make db-push # crée/met à jour les index MongoDB du schéma Prisma (contrôle des doublons d'abord)
-make ci     # rejoue en local les quatre jobs de la CI (dépendances déjà installées, Docker requis)
+make ci     # rejoue en local les cinq jobs de la CI (dépendances déjà installées, Docker et Chromium de Playwright requis)
 ```
 
 Voir [`scripts/README.md`](scripts/README.md) pour le détail de chaque script et comment en ajouter.

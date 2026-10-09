@@ -1,4 +1,4 @@
-.PHONY: seed db-check-duplicates db-push help test-backend-unit test-backend-func db-test-up db-test-down test-e2e up down stack-test-up stack-test-down test-e2e-smoke test check lint gen ds-build ci ci-backend ci-backend-functional ci-frontend ci-markdown
+.PHONY: seed db-check-duplicates db-push help test-backend-unit test-backend-func db-test-up db-test-down test-e2e up down stack-test-up stack-test-down test-e2e-smoke test check lint gen ds-build ci ci-backend ci-backend-functional ci-frontend ci-storybook ci-markdown
 
 TEST_MONGO_CONTAINER := fullstack-test-mongo
 TEST_MONGO_PORT := 27018
@@ -108,7 +108,8 @@ ds-build: ## Rebuild design system + clear Vite cache
 
 # Une cible par job de .github/workflows/ci.yml, mêmes commandes dans le même ordre.
 # Les dépendances doivent déjà être installées (`pnpm install --frozen-lockfile` à la racine,
-# dans backend/ et dans frontend/) : les cibles ne les installent pas.
+# dans backend/ et dans frontend/) : les cibles ne les installent pas. Même règle pour le
+# Chromium de Playwright, requis par ci-storybook.
 
 # `prisma generate` ne se connecte jamais, mais prisma.config.ts exige DATABASE_URL.
 CI_DATABASE_URL := mongodb://localhost:27017/ci
@@ -131,7 +132,7 @@ ci-backend-functional: ## Job CI « Backend functional tests » : client Prisma,
 # chaque import du SDK comme dépendance non déclarée. L'application web consomme les paquets
 # construits, pas leurs sources.
 # `test:unit` et non `test` pour le design system : `test` lance aussi le projet storybook,
-# qui exige un Chromium que la CI n'installe pas.
+# qui exige Chromium. Les plays ont leur propre job : ci-storybook.
 ci-frontend: ## Job CI « Frontend » : SDK, builds, puis types, lint, format, code mort et tests unitaires
 	cd frontend && pnpm --filter application-material gen:sdk
 	cd frontend && pnpm --filter @repo/design-system build
@@ -148,10 +149,15 @@ ci-frontend: ## Job CI « Frontend » : SDK, builds, puis types, lint, format, c
 	cd frontend && pnpm --filter @repo/form-factory check:format
 	cd frontend && pnpm --filter @repo/form-factory test:unit --run
 
+# Les plays importent les sources du design system : ni SDK ni build à préparer.
+# Chromium manquant : `cd frontend && pnpm --filter application-material exec playwright install chromium`.
+ci-storybook: ## Job CI « Storybook plays » : plays des stories du design system (Chromium requis)
+	cd frontend && pnpm --filter @repo/design-system test:stories --run
+
 ci-markdown: ## Job CI « Markdown format » : Prettier sur les Markdown hors backend/ et frontend/
 	pnpm check:format
 
-ci: ci-backend ci-backend-functional ci-frontend ci-markdown ## Rejoue en local les quatre jobs de la CI
+ci: ci-backend ci-backend-functional ci-frontend ci-storybook ci-markdown ## Rejoue en local les cinq jobs de la CI
 
 # ─── Suite complète ──────────────────────────────────────────────────────────
 
