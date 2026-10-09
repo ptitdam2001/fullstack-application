@@ -51,31 +51,37 @@ docker compose -f deployment/docker-compose.yml up --build
 
 **`api`** — OpenAPI-first Express backend (Node 22, Alpine). Built with esbuild, Prisma ORM connects to MongoDB. `DATABASE_URL` is overridden to target the `mongodb` container.
 
-**`mongodb`** — Single-node replica set (`prismagraphql/mongo-single-replica`), required by Prisma for transaction support. Its healthcheck passes once the replica set is initiated and the node is primary: the image restarts `mongod` to initiate it, and until then the port answers but a write fails with `node is not in primary or recovering state`. `api` and `db-viewer` start only after that (`depends_on` with `condition: service_healthy`).
+**`mongodb`** — Official `mongo:9.0` image run as a single-node replica set, required by Prisma for transaction support. Its healthcheck initiates the replica set when the data has none, then passes once the node is primary; until then the port answers but a write fails with `node is not in primary or recovering state`. `api` and `db-viewer` start only after that (`depends_on` with `condition: service_healthy`). The data lives in two named volumes (`mongodb-data`, `mongodb-config`): a recreated container gets them back and starts normally.
 
 **`db-viewer`** — Mongo Express, a web-based MongoDB admin UI. No authentication required in dev (`ME_CONFIG_BASICAUTH=false`).
 
 `make up` runs the same stack detached with `--wait`: it returns once `mongodb` and `api` are healthy, so a command chained after it (`make up && make db-push`) finds a database that accepts writes. It fails when a container exits at start-up — for instance `api` with the `JWT_SECRET` placeholder of `.env.sample`; read the cause with `docker compose -f deployment/docker-compose.yml logs api`.
 
-### `mongodb` exits with code 127 after a recreation
+### Moving the dev data from the Mongo 4.4 container
 
-Compose recreates the `mongodb` container whenever its definition changes in `docker-compose.yml` (or with `--force-recreate`) and gives the new container the data volumes of the old one. The image then stops at start-up:
+Until October 2026 the stack ran `prismagraphql/mongo-single-replica:4.4.3-bionic`, with its data in anonymous volumes. MongoDB 9.0 cannot open data files written by 4.4, and the new container starts on the empty named volumes: without the steps below the application sees an empty database. The old volumes are not deleted, but reading them again needs the old image.
 
-```text
-Initializing replica set...
-/usr/local/bin/docker-entrypoint.sh: line 407: -u: command not found
-```
-
-The entrypoint of `prismagraphql/mongo-single-replica` only knows how to initiate the replica set on an empty data directory, and the marker telling it the work is already done (`/var/tmp/.initialized`) lives in the container, not in the volume. The data is intact. Put the marker back in the stopped container, then start the stack again:
+Dump the database **before** the first `make up` on the new image, while the 4.4 container is still running:
 
 ```bash
-touch .initialized
-docker cp .initialized "$(docker compose -f deployment/docker-compose.yml ps -a -q mongodb)":/var/tmp/.initialized
-rm .initialized
+# 1. Dump from the 4.4 container (read-only). Keep the archive outside the repository.
+docker compose -f deployment/docker-compose.yml exec -T mongodb \
+  mongodump --quiet -u root -p example --authenticationDatabase admin --db app --archive --gzip > ~/app-mongo-4.4.archive.gz
+
+# 2. Replace the container: Mongo 9.0, empty named volumes.
 make up
+
+# 3. Restore the documents.
+docker compose -f deployment/docker-compose.yml exec -T mongodb \
+  mongorestore --quiet -u root -p example --authenticationDatabase admin --archive --gzip --nsInclude 'app.*' < ~/app-mongo-4.4.archive.gz
+
+# 4. Create the indexes of schema.prisma (see below).
+make db-push
 ```
 
-Do not run `docker compose down -v` or `docker compose rm -v` to get out of this state: both delete the volumes, and the database with them.
+No data worth keeping: skip steps 1 and 3, then run `make db-push` and `make seed`.
+
+Do not run `docker compose down -v`: it deletes the named volumes, and the database with them.
 
 ### MongoDB indexes
 

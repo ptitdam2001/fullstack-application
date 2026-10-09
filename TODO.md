@@ -3,7 +3,6 @@
 ## Global
 
 - Sécuriser mongo-express avant déploiement sur serveur distant (ME_CONFIG_BASICAUTH: "false" actuellement, ok en local uniquement — voir commentaire dans deployment/docker-compose.yml)
-- Mongo dev/test tourne sur `4.4.3-bionic` (EOL) — réévaluer la version au moment de la prod
 - Ajouter des limites CPU/mémoire sur les services docker-compose avant la prod
 - Définir `app.set('trust proxy', N)` dans `createApp.ts` si un reverse proxy/LB/CDN est ajouté devant l'API en prod (`req.ip` = IP du proxy sinon, tous les clients partagent le même compteur de rate limit — voir spec 10, Limitation de débit). Aucun proxy devant l'API dans la stack docker-compose actuelle (nginx ne sert que le SPA frontend), donc pas de bug actif aujourd'hui.
 - Ajouter un serveur mail dans la stack et brancher un vrai `IEmailService` à la place de `NoopEmailService` — sans lui, les emails d'activation et de reset de mot de passe ne sont pas délivrés en production (spec 10, Sécurité › Logs)
