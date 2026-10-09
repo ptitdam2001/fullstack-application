@@ -16,26 +16,47 @@ services:
   # TODO(pre-prod): hardcoded root/example creds — fine on localhost only. Before deploying this
   # compose file to a remote server: use secrets/env-injected creds, or keep the loopback bind below.
   mongodb:
-    image: prismagraphql/mongo-single-replica:4.4.3-bionic
+    image: mongo:9.0
     env_file: ../backend/.env
     environment:
       MONGO_INITDB_DATABASE: app
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
-      INIT_WAIT_SEC: 3
+    # Single-node replica set: Prisma needs one for transactions. mongod refuses --replSet with
+    # authentication unless it gets a key file. With one node nobody else reads that key, so it is
+    # generated at each start instead of being stored.
+    entrypoint:
+      - bash
+      - -c
+      - |
+        openssl rand -base64 756 > /tmp/mongo-keyfile
+        chmod 400 /tmp/mongo-keyfile
+        chown mongodb:mongodb /tmp/mongo-keyfile
+        exec docker-entrypoint.sh mongod --replSet rs0 --bind_ip_all --keyFile /tmp/mongo-keyfile
     ports:
       - "127.0.0.1:27017:27017"
-    # Healthy = replica set initiated and this node is primary. A plain ping already answers while
-    # the image is still restarting mongod (INIT_WAIT_SEC), and the first write from the API then
+    # Named volumes: the data outlives the container and is easy to find and back up.
+    volumes:
+      - mongodb-data:/data/db
+      - mongodb-config:/data/configdb
+    # The healthcheck initiates the replica set when the data directory has none, then passes once
+    # this node is primary. It reads the state from the data, so a recreated container that gets
+    # its volumes back starts normally. Until the node is primary the port answers but a write
     # fails with "node is not in primary or recovering state". Same check as docker-compose.test.yml.
     healthcheck:
       test:
         [
           "CMD",
-          "mongo",
+          "mongosh",
           "--quiet",
+          "-u",
+          "root",
+          "-p",
+          "example",
+          "--authenticationDatabase",
+          "admin",
           "--eval",
-          "quit(db.isMaster().setName && db.isMaster().ismaster ? 0 : 1)",
+          "try { rs.status() } catch (e) { rs.initiate({ _id: 'rs0', members: [{ _id: 0, host: 'localhost:27017' }] }) } quit(db.hello().isWritablePrimary ? 0 : 1)",
         ]
       interval: 5s
       timeout: 5s
@@ -69,3 +90,7 @@ services:
     depends_on:
       mongodb:
         condition: service_healthy
+
+volumes:
+  mongodb-data:
+  mongodb-config:
