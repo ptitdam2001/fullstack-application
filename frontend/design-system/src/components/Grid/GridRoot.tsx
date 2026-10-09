@@ -43,8 +43,10 @@ export const GridRoot = <T extends object>({
   ...props
 }: GridRootProps<T>) => (
   <Virtualizer layout={GridLayout} layoutOptions={toGridLayoutOptions(layoutOptions)}>
+    {/* layout="grid" gives the two-dimensional keyboard navigation: without it ArrowLeft/ArrowRight do nothing */}
     <ListBox
       data-slot="grid"
+      layout="grid"
       className={cn(
         gridVariants({ variant }),
         'scrollbar-track-background block scrollbar-thin scrollbar-thumb-gray-600 p-0 dark:scrollbar-thumb-gray-500 dark:scrollbar-track-gray-800',
