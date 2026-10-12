@@ -4,13 +4,5 @@
   "project": ["**/*.{js,ts,tsx,mdx,css}"],
   "playwright": {
     "entry": ["e2e/**/*.{spec,setup}.ts"]
-  },
-  "ignoreDependencies": [
-    "@eslint/js",
-    "eslint-plugin-react",
-    "eslint-plugin-react-hooks",
-    "eslint-plugin-react-refresh",
-    "globals",
-    "typescript-eslint"
-  ]
+  }
 }
