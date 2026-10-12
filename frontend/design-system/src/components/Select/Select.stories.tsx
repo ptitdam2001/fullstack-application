@@ -93,11 +93,17 @@ export const KeyboardNavigation: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const trigger = canvas.getByRole('button')
-    await userEvent.click(trigger)
+    await userEvent.tab()
+    expect(trigger).toHaveFocus()
+    // opened with the keyboard, the list focuses its first item: one ArrowDown reaches U13
+    await userEvent.keyboard('{Enter}')
+    await within(document.body).findByRole('listbox')
     await userEvent.keyboard('{ArrowDown}')
     await userEvent.keyboard('{Enter}')
-    expect(canvas.getByText('U13')).toBeInTheDocument()
-    await userEvent.click(trigger)
+    // on the trigger: the hidden native <select> also holds an <option> with the text U13
+    expect(trigger).toHaveTextContent('U13')
+    await userEvent.keyboard('{Enter}')
+    await within(document.body).findByRole('listbox')
     await userEvent.keyboard('{Escape}')
     expect(within(document.body).queryByRole('listbox')).not.toBeInTheDocument()
   },
