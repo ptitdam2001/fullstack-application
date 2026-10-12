@@ -6,8 +6,6 @@
     "entry": ["e2e/**/*.{spec,setup}.ts"]
   },
   "ignoreDependencies": [
-    "autoprefixer",
-    "postcss",
     "@eslint/js",
     "eslint-plugin-react",
     "eslint-plugin-react-hooks",
