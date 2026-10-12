@@ -5,7 +5,6 @@
   "playwright": {
     "entry": ["e2e/**/*.{spec,setup}.ts"]
   },
-  "ignore": ["src/mocks/server.ts"],
   "ignoreDependencies": [
     "autoprefixer",
     "postcss",
