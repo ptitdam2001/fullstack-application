@@ -12,7 +12,7 @@ type AdminSeasonTableProps = {
 export const AdminSeasonTable = ({ seasons, onEdit, onDelete }: AdminSeasonTableProps) => (
   <Table>
     <TableHeader>
-      <TableHead>
+      <TableHead isRowHeader>
         <FormattedMessage id="adminSeasons.table.label" />
       </TableHead>
       <TableHead>

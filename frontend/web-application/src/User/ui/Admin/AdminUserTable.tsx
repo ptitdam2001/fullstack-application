@@ -23,7 +23,7 @@ export const AdminUserTable = ({
 }: AdminUserTableProps) => (
   <Table>
     <TableHeader>
-      <TableHead>
+      <TableHead isRowHeader>
         <FormattedMessage id="adminUsers.table.name" />
       </TableHead>
       <TableHead>

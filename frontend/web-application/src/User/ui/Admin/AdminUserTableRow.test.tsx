@@ -22,7 +22,7 @@ describe('AdminUserTableRow', () => {
 
   it('renders the first name alone when last name is null', () => {
     const page = new AdminUserTableRowPage({ ...user, lastName: null }).render()
-    expect(page.cells()[0]).toHaveTextContent(/^Jane$/)
+    expect(page.nameCell()).toHaveTextContent(/^Jane$/)
   })
 
   it('renders the email', () => {
@@ -38,7 +38,7 @@ describe('AdminUserTableRow', () => {
 
   it('renders — when the user has no role', () => {
     const page = new AdminUserTableRowPage({ ...user, roles: [] }).render()
-    expect(page.cells()[2]).toHaveTextContent('—')
+    expect(page.cells()[1]).toHaveTextContent('—')
   })
 
   describe('status', () => {

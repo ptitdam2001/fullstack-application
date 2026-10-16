@@ -15,7 +15,7 @@ export const AdminTeamTable = ({ teams, onEdit, onDelete }: AdminTeamTableProps)
       <TableHead className="w-[60px]">
         <FormattedMessage id="adminTeams.table.color" />
       </TableHead>
-      <TableHead>
+      <TableHead isRowHeader>
         <FormattedMessage id="adminTeams.table.name" />
       </TableHead>
       <TableHead>

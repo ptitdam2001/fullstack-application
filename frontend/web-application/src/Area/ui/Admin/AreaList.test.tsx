@@ -39,6 +39,13 @@ describe('AreaList', () => {
     expect(screen.getByText('Stade B')).toBeInTheDocument()
   })
 
+  it('marks the address column as the row header', () => {
+    mockUseAreaList(areas, areas.length)
+    render(<AreaList />)
+    expect(screen.getAllByRole('rowheader')).toHaveLength(2)
+    expect(screen.getByRole('rowheader', { name: /Stade A/ })).toBeInTheDocument()
+  })
+
   it('renders empty state when list is empty', () => {
     mockUseAreaList([], 0)
     render(<AreaList />)

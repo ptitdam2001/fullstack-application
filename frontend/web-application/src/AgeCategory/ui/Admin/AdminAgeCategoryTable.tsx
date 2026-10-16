@@ -12,7 +12,7 @@ type AdminAgeCategoryTableProps = {
 export const AdminAgeCategoryTable = ({ ageCategories, onEdit, onDelete }: AdminAgeCategoryTableProps) => (
   <Table>
     <TableHeader>
-      <TableHead>
+      <TableHead isRowHeader>
         <FormattedMessage id="adminAgeCategories.table.label" />
       </TableHead>
       <TableHead>

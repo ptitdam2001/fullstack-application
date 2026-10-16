@@ -36,6 +36,14 @@ export class AdminUserTablePage {
     return screen.getByText('adminUsers.table.empty')
   }
 
+  rowHeaders() {
+    return screen.getAllByRole('rowheader')
+  }
+
+  rowHeader(name: string) {
+    return screen.getByRole('rowheader', { name: new RegExp(name) })
+  }
+
   rowEmail(email: string) {
     return screen.getByText(email)
   }
