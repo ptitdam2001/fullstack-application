@@ -28,13 +28,13 @@ const renderList = async () => {
 describe('useUserListSuspense', () => {
   beforeEach(() => vi.clearAllMocks())
 
-  it('always paginates, with the zero-based page sent as-is (the /users API is zero-based)', async () => {
+  it('always paginates, sending the zero-based UI page as the 1-based API page', async () => {
     const { result } = await renderList()
-    expect(lastListParams()).toEqual({ page: 0, limit: 20 })
+    expect(lastListParams()).toEqual({ page: 1, count: 20 })
 
     act(() => result.current.changePage(2))
     await waitFor(() => expect(result.current.pagination.page).toBe(2))
-    expect(lastListParams()).toEqual({ page: 2, limit: 20 })
+    expect(lastListParams()).toEqual({ page: 3, count: 20 })
   })
 
   it('starts without filter and counts every user', async () => {
@@ -55,7 +55,7 @@ describe('useUserListSuspense', () => {
     })
 
     expect(result.current.pagination.page).toBe(0)
-    expect(lastListParams()).toEqual({ page: 0, limit: 20, isActive: false })
+    expect(lastListParams()).toEqual({ page: 1, count: 20, isActive: false })
     expect(lastCountParams()).toEqual({ isActive: false })
   })
 

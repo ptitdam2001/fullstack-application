@@ -9,10 +9,11 @@ export const parsePageSize = (value: unknown, defaultValue = 20, max = 100): num
   return Math.min(Math.floor(parsed), max)
 }
 
-export const parsePage = (value: unknown, min = 1): number => {
+// Pages start at 1 (specifications/07-technical-choices.md › Pagination des listes).
+export const parsePage = (value: unknown): number => {
   const parsed = Number(value)
-  if (!Number.isFinite(parsed) || parsed < min) {
-    return min
+  if (!Number.isFinite(parsed) || parsed < 1) {
+    return 1
   }
   return Math.floor(parsed)
 }

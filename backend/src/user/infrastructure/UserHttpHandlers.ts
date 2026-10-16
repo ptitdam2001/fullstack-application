@@ -23,15 +23,15 @@ const buildFilter = (query: Context['request']['query']): UserFilterOptions => (
 
 /** Maps GET /users query params to list options. Pagination is opt-in (see UserListOptions). */
 const toUserListOptions = (query: Context['request']['query']): UserListOptions => {
-  // Case 1: page or/and limit are present
-  if ('page' in query || 'limit' in query) {
-    const { page, limit } = query
-    const parsedPage = parsePage(page, 0)
-    const parsedLimit = parsePageSize(limit)
+  // Case 1: page or/and count are present
+  if ('page' in query || 'count' in query) {
+    const { page, count } = query
+    const parsedPage = parsePage(page)
+    const parsedCount = parsePageSize(count)
 
     return {
       ...buildFilter(query),
-      pagination: { page: parsedPage, limit: parsedLimit },
+      pagination: { page: parsedPage, count: parsedCount },
     }
   }
 

@@ -1,9 +1,9 @@
 import type { AuthState, UserProfile, UpdateUserInput } from '../domain/User.js'
+import type { PaginationOptions } from '../../../utils/pagination.js'
 
 export type UserFilterOptions = { isActive?: boolean }
-/** Zero-based page. Pagination is opt-in: omitted → every matching user is returned. */
-export type UserPagination = { page: number; limit: number }
-export type UserListOptions = UserFilterOptions & { pagination?: UserPagination }
+/** Pagination is opt-in: omitted → every matching user is returned. */
+export type UserListOptions = UserFilterOptions & { pagination?: PaginationOptions }
 
 /** `user` is the profile read after the change; `previousAvatar` the value the change replaced. */
 export type AvatarReplacement = { user: UserProfile; previousAvatar: string | null }

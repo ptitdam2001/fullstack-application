@@ -354,15 +354,15 @@ paths:
       operationId: 'getUsers'
       tags:
         - Users
-      description: 'List users (admin only). Pagination is opt-in — omit both page and limit to get every user.'
+      description: 'List users (admin only). Pagination is opt-in — omit both page and count to get every user.'
       parameters:
         - in: query
           name: page
           schema:
             type: integer
-          description: Zero-based page index (defaults to 0 when only limit is given)
+          description: Page number, starting at 1 (defaults to 1 when only count is given)
         - in: query
-          name: limit
+          name: count
           schema:
             type: integer
           description: Page size (defaults to 20, capped at 100)
