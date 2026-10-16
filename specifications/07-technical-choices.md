@@ -65,7 +65,7 @@ Toute route de liste paginée prend les mêmes deux paramètres de requête :
 - Le backend saute `(page - 1) * count` éléments. `page=1` donne la première page sur toutes les routes.
 - Une valeur absente, non numérique ou non finie prend la valeur par défaut (`backend/config/pagination.ts`).
 - Les ports déclarent le type `PaginationOptions` une seule fois, dans `backend/utils/pagination.ts`.
-- `GET /users` fait exception sur un point : la pagination est facultative. Sans `page` ni `count`, la route renvoie toute la liste.
+- `GET /users` et `GET /teams` font exception sur un point : la pagination est facultative. Sans `page` ni `count`, la route renvoie toute la liste. Le tableau de bord et les classements en dépendent.
 - Côté frontend, `usePagination` compte les pages à partir de `0`. Le hook d'application envoie `page + 1` à l'API.
 
 ---

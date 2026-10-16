@@ -1,4 +1,9 @@
-import type { ITeamRepository, TeamPlayersOptions, TeamCalendarOptions } from '../ports/ITeamRepository.js'
+import type {
+  ITeamRepository,
+  PaginationOptions,
+  TeamPlayersOptions,
+  TeamCalendarOptions,
+} from '../ports/ITeamRepository.js'
 import type { CreateTeamInput, UpdateTeamInput, CreateTeamWithCoachInput, TeamCurrentGroup } from '../domain/Team.js'
 import type { Team } from '../domain/Team.js'
 import type { UserTeam } from '../../userTeam/domain/UserTeam.js'
@@ -11,8 +16,8 @@ export class TeamUseCases {
     return this.repo.count()
   }
 
-  getAll() {
-    return this.repo.findAll()
+  getAll(pagination?: PaginationOptions) {
+    return this.repo.findAll(pagination)
   }
 
   async getById(id: string) {

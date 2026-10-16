@@ -9,6 +9,7 @@ import type { Player } from '../../player/domain/Player.js'
 import type { UserTeam } from '../../userTeam/domain/UserTeam.js'
 import type { PaginationOptions } from '../../../utils/pagination.js'
 
+export type { PaginationOptions }
 export type TeamPlayersOptions = PaginationOptions
 export type TeamCalendarOptions = PaginationOptions & { startDate?: Date; endDate?: Date }
 
@@ -20,7 +21,8 @@ export type GameSummary = {
 
 export interface ITeamRepository {
   count(): Promise<number>
-  findAll(): Promise<Team[]>
+  /** Pagination is opt-in: omitted → every team is returned. */
+  findAll(pagination?: PaginationOptions): Promise<Team[]>
   findById(id: string): Promise<Team | null>
   create(input: CreateTeamInput): Promise<Team>
   update(id: string, input: UpdateTeamInput): Promise<Team>

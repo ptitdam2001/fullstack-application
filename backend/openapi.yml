@@ -439,7 +439,7 @@ paths:
   /teams:
     get:
       operationId: 'getTeams'
-      description: 'get list of teams'
+      description: 'get list of teams. Pagination is opt-in — omit both page and count to get every team.'
       tags:
         - Teams
       security: []
@@ -448,12 +448,12 @@ paths:
           name: page
           schema:
             type: integer
-          description: The number of items to skip before starting to collect the result set
+          description: Page number, starting at 1 (defaults to 1)
         - in: query
-          name: limit
+          name: count
           schema:
             type: integer
-          description: The numbers of items to return
+          description: Page size (defaults to 20, capped at 100)
       responses:
         '200':
           description: ''
@@ -1226,12 +1226,12 @@ paths:
           name: page
           schema:
             type: integer
-          description: The number of items to skip before starting to collect the result set
+          description: Page number, starting at 1 (defaults to 1)
         - in: query
-          name: limit
+          name: count
           schema:
             type: integer
-          description: The numbers of items to return
+          description: Page size (defaults to 20, capped at 100)
       responses:
         '200':
           description: ''
@@ -1272,12 +1272,12 @@ paths:
           name: page
           schema:
             type: integer
-          description: The number of items to skip before starting to collect the result set
+          description: Page number, starting at 1 (defaults to 1)
         - in: query
-          name: limit
+          name: count
           schema:
             type: integer
-          description: The numbers of items to return
+          description: Page size (defaults to 20, capped at 100)
       responses:
         '200':
           description: ''

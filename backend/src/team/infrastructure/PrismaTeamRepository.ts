@@ -1,6 +1,12 @@
 import { prisma } from '../../../utils/prismaClient.js'
 import { notDeleted } from '../../../utils/softDelete.js'
-import type { ITeamRepository, TeamPlayersOptions, TeamCalendarOptions, GameSummary } from '../ports/ITeamRepository.js'
+import type {
+  ITeamRepository,
+  PaginationOptions,
+  TeamPlayersOptions,
+  TeamCalendarOptions,
+  GameSummary,
+} from '../ports/ITeamRepository.js'
 import type {
   Team,
   CreateTeamInput,
@@ -16,9 +22,12 @@ export class PrismaTeamRepository implements ITeamRepository {
     return prisma.team.count({ where: { ...notDeleted } })
   }
 
-  async findAll(): Promise<Team[]> {
+  async findAll(pagination?: PaginationOptions): Promise<Team[]> {
     return prisma.team.findMany({
       where: { ...notDeleted },
+      // Stable order so pages don't overlap or skip teams between requests
+      orderBy: { id: 'asc' },
+      ...(pagination && { skip: (pagination.page - 1) * pagination.count, take: pagination.count }),
       select: { id: true, name: true, color: true, ageCategoryId: true, updatedAt: true },
     })
   }

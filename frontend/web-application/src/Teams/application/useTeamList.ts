@@ -7,7 +7,7 @@ export const useTeamList = (rowsPerPage = 12) => {
   const [isPending, startTransition] = useTransition()
   const changePage = (page: number) => startTransition(() => rawChangePage(page))
 
-  const query = useGetTeamsSuspense({ page: pagination.page, limit: pagination.rowsPerPage })
+  const query = useGetTeamsSuspense({ page: pagination.page + 1, count: pagination.rowsPerPage })
   const countQuery = useCountTeamsSuspense()
 
   const totalPages = Math.ceil(((countQuery.data ?? 0) as number) / rowsPerPage)
