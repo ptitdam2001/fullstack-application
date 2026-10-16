@@ -34,26 +34,20 @@ describe('parsePageSize', () => {
 })
 
 describe('parsePage', () => {
-  it('returns the min (default 1) when the value is missing', () => {
+  it('returns 1 when the value is missing', () => {
     expect(parsePage(undefined)).toBe(1)
   })
 
-  it('returns the min when the value is not a number', () => {
+  it('returns 1 when the value is not a number', () => {
     expect(parsePage('abc')).toBe(1)
   })
 
-  it('returns the min when the value is below it', () => {
+  it('returns 1 when the value is below it', () => {
     expect(parsePage('-1')).toBe(1)
     expect(parsePage('0')).toBe(1)
   })
 
   it('floors a fractional value', () => {
     expect(parsePage('2.9')).toBe(2)
-  })
-
-  it('supports a 0-based min for offset-style pagination', () => {
-    expect(parsePage(undefined, 0)).toBe(0)
-    expect(parsePage('-1', 0)).toBe(0)
-    expect(parsePage('0', 0)).toBe(0)
   })
 })

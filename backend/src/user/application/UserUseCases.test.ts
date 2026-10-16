@@ -71,8 +71,8 @@ describe('UserUseCases.getAll', () => {
 
   it('forwards pagination alongside the filter to the repo', async () => {
     const repo = makeRepo()
-    await makeUseCases(repo).getAll({ isActive: true, pagination: { page: 1, limit: 10 } })
-    expect(repo.findAll).toHaveBeenCalledWith({ isActive: true, pagination: { page: 1, limit: 10 } })
+    await makeUseCases(repo).getAll({ isActive: true, pagination: { page: 1, count: 10 } })
+    expect(repo.findAll).toHaveBeenCalledWith({ isActive: true, pagination: { page: 1, count: 10 } })
   })
 
   it('returned user profile with exposed roles', async () => {

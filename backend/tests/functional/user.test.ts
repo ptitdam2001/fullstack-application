@@ -135,7 +135,7 @@ describe('user domain — functional API', () => {
       }
     }
 
-    it('without page nor limit returns every user (opt-in pagination)', async () => {
+    it('without page nor count returns every user (opt-in pagination)', async () => {
       await seedUsers(24)
       const admin = await createAdmin()
 
@@ -145,13 +145,13 @@ describe('user domain — functional API', () => {
       expect(res.body).toHaveLength(25)
     })
 
-    it('paginates with a zero-based page and no overlap between pages', async () => {
+    it('paginates from page 1 with no overlap between pages', async () => {
       await seedUsers(4)
       const admin = await createAdmin()
 
-      const first = await agent.get('/users?page=0&limit=2').set(authHeaderFor(admin.id, true))
-      const second = await agent.get('/users?page=1&limit=2').set(authHeaderFor(admin.id, true))
-      const last = await agent.get('/users?page=2&limit=2').set(authHeaderFor(admin.id, true))
+      const first = await agent.get('/users?page=1&count=2').set(authHeaderFor(admin.id, true))
+      const second = await agent.get('/users?page=2&count=2').set(authHeaderFor(admin.id, true))
+      const last = await agent.get('/users?page=3&count=2').set(authHeaderFor(admin.id, true))
 
       expect(first.body).toHaveLength(2)
       expect(second.body).toHaveLength(2)
@@ -160,20 +160,22 @@ describe('user domain — functional API', () => {
       expect(new Set(ids).size).toBe(5)
     })
 
-    it('limit alone defaults page to 0', async () => {
+    it('count alone returns the first page', async () => {
       await seedUsers(3)
       const admin = await createAdmin()
 
-      const res = await agent.get('/users?limit=2').set(authHeaderFor(admin.id, true))
+      const countOnly = await agent.get('/users?count=2').set(authHeaderFor(admin.id, true))
+      const firstPage = await agent.get('/users?page=1&count=2').set(authHeaderFor(admin.id, true))
 
-      expect(res.body).toHaveLength(2)
+      expect(countOnly.body).toHaveLength(2)
+      expect(countOnly.body).toEqual(firstPage.body)
     })
 
-    it('caps limit at 100', async () => {
+    it('caps count at 100', async () => {
       await seedUsers(101)
       const admin = await createAdmin()
 
-      const res = await agent.get('/users?page=0&limit=500').set(authHeaderFor(admin.id, true))
+      const res = await agent.get('/users?page=1&count=500').set(authHeaderFor(admin.id, true))
 
       expect(res.body).toHaveLength(100)
     })

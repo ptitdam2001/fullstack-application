@@ -114,7 +114,7 @@ export class PrismaUserRepository implements IUserRepository {
       where: toWhere(options),
       // Stable order so pages don't overlap or skip users between requests
       orderBy: { createdAt: 'asc' },
-      ...(pagination && { skip: pagination.page * pagination.limit, take: pagination.limit }),
+      ...(pagination && { skip: (pagination.page - 1) * pagination.count, take: pagination.count }),
       select,
     })
     return rows.map(toUserProfile)
