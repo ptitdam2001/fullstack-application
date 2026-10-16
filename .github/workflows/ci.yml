@@ -136,3 +136,16 @@ jobs:
 
       - name: Format check (Markdown outside the packages)
         run: make ci-markdown
+
+  # Builds both images of deployment/docker-compose.test.yml and throws them
+  # away: no registry, no push. The Dockerfiles install their own dependencies
+  # (pnpm through corepack), so this job needs neither pnpm nor Node.
+  docker-images:
+    name: Docker images
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Build the backend and frontend images
+        run: make ci-docker
