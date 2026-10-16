@@ -148,6 +148,7 @@ ci-frontend: ## Job CI « Frontend » : SDK, builds, puis types, lint, format, c
 	cd frontend && pnpm --filter application-material check:dead-code
 	cd frontend && pnpm --filter application-material test --run
 	cd frontend && pnpm --filter @repo/design-system check:types
+	cd frontend && pnpm --filter @repo/design-system lint
 	cd frontend && pnpm --filter @repo/design-system check:format
 	cd frontend && pnpm --filter @repo/design-system test:unit --run
 	cd frontend && pnpm --filter @repo/form-factory check:types
