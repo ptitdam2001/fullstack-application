@@ -1043,12 +1043,12 @@ paths:
           name: page
           schema:
             type: integer
-          description: The number of items to skip before starting to collect the result set
+          description: Page number, starting at 1 (defaults to 1)
         - in: query
-          name: limit
+          name: count
           schema:
             type: integer
-          description: The numbers of items to return
+          description: Page size (defaults to 20, capped at 100)
       responses:
         '200':
           description: ''

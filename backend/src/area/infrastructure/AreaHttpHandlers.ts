@@ -13,9 +13,9 @@ export const countAllAreas = async (_: Context, __: Request, res: Response) => {
 }
 
 export const getAreaList = async (ctx: Context, _: Request, res: Response) => {
-  const page = parsePage(ctx.request.query.page, 0)
-  const limit = parsePageSize(ctx.request.query.limit)
-  res.json(await useCases.getAll({ page, limit }))
+  const page = parsePage(ctx.request.query.page)
+  const count = parsePageSize(ctx.request.query.count)
+  res.json(await useCases.getAll({ page, count }))
 }
 
 export const getArea = async (ctx: Context, _: Request, res: Response) => {

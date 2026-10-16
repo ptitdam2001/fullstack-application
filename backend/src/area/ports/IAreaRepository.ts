@@ -1,6 +1,7 @@
 import type { Area, CreateAreaInput, UpdateAreaInput } from '../domain/Area.js'
+import type { PaginationOptions } from '../../../utils/pagination.js'
 
-export type PaginationOptions = { page: number; limit: number }
+export type { PaginationOptions }
 
 export interface IAreaRepository {
   count(): Promise<number>

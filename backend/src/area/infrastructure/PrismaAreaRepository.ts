@@ -18,11 +18,11 @@ export class PrismaAreaRepository implements IAreaRepository {
     return prisma.area.count({ where: { ...notDeleted } })
   }
 
-  async findAll({ page, limit }: PaginationOptions): Promise<Area[]> {
+  async findAll({ page, count }: PaginationOptions): Promise<Area[]> {
     return prisma.area.findMany({
       where: { ...notDeleted },
-      skip: page * limit,
-      take: limit,
+      skip: (page - 1) * count,
+      take: count,
       select,
     }) as Promise<Area[]>
   }

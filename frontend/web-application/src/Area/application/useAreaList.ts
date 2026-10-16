@@ -8,7 +8,7 @@ export const useAreaList = () => {
   const changePage = (page: number) => startTransition(() => rawChangePage(page))
   const changeRowsPerPage = (rowsPerPage: number) => startTransition(() => rawChangeRowsPerPage(rowsPerPage))
 
-  const query = useGetAreaListSuspense({ page: pagination.page, limit: pagination.rowsPerPage })
+  const query = useGetAreaListSuspense({ page: pagination.page + 1, count: pagination.rowsPerPage })
   const countQuery = useCountAllAreasSuspense()
   return { query, countQuery, pagination, changePage, changeRowsPerPage, isPending }
 }
