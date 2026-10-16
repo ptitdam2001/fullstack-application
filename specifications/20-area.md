@@ -60,10 +60,12 @@ Un lieu (Area) est un espace physique — terrain de sport, salle, complexe — 
 
 ### Paramètres de pagination (`GET /areas`)
 
-| Paramètre | Type   | Description                           |
-| --------- | ------ | ------------------------------------- |
-| `page`    | number | Index 0-based (offset = page × limit) |
-| `limit`   | number | Nombre d'éléments à retourner         |
+Convention commune à toutes les listes : voir `07-technical-choices.md` §Pagination des listes.
+
+| Paramètre | Type   | Description                                     |
+| --------- | ------ | ----------------------------------------------- |
+| `page`    | number | Numéro de page, à partir de `1` (défaut `1`)    |
+| `count`   | number | Nombre d'éléments par page (défaut `20`, ≤ 100) |
 
 ---
 

@@ -101,7 +101,7 @@ Les dialogs create/edit/delete sont des sous-routes rendues via `<Outlet />` dan
 
 | Route          | Méthode | Operation ID | Description                  |
 | -------------- | ------- | ------------ | ---------------------------- |
-| `/teams`       | GET     | getTeams     | Liste paginée (page, limit)  |
+| `/teams`       | GET     | getTeams     | Liste paginée (page, count)  |
 | `/teams/count` | GET     | countTeams   | Nombre total d'équipes       |
 | `/team`        | POST    | createTeam   | Créer une équipe             |
 | `/team/{id}`   | GET     | getTeam      | Détail d'une équipe          |
