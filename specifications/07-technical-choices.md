@@ -53,6 +53,21 @@ Toute réponse d'erreur de l'API a la forme `ErrorOutput` : `{ status, message }
 - Les corps illisibles sont reconnus par `backend/config/bodyParserErrors.ts`. Le statut et le message viennent de cette table, jamais de l'erreur.
 - `400`, `413` et `415` sont déclarés une fois dans `components/responses` (`BadRequest`, `PayloadTooLarge`, `UnsupportedMediaType`). Toute opération qui a un `requestBody` les référence ; `backend/config/openapiBodyResponses.test.ts` le vérifie.
 
+### Pagination des listes
+
+Toute route de liste paginée prend les mêmes deux paramètres de requête :
+
+| Paramètre | Type   | Défaut | Règle                                                                     |
+| --------- | ------ | ------ | ------------------------------------------------------------------------- |
+| `page`    | entier | `1`    | Numéro de page, la première page vaut `1`. Une valeur inférieure vaut `1` |
+| `count`   | entier | `20`   | Nombre d'éléments par page, plafonné à `100`                              |
+
+- Le backend saute `(page - 1) * count` éléments. `page=1` donne la première page sur toutes les routes.
+- Une valeur absente, non numérique ou non finie prend la valeur par défaut (`backend/config/pagination.ts`).
+- Les ports déclarent le type `PaginationOptions` une seule fois, dans `backend/utils/pagination.ts`.
+- `GET /users` fait exception sur un point : la pagination est facultative. Sans `page` ni `count`, la route renvoie toute la liste.
+- Côté frontend, `usePagination` compte les pages à partir de `0`. Le hook d'application envoie `page + 1` à l'API.
+
 ---
 
 ## Frontend — deux packages distincts
