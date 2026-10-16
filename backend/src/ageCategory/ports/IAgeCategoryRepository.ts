@@ -1,6 +1,7 @@
 import type { AgeCategory, CreateAgeCategoryInput, UpdateAgeCategoryInput } from '../domain/AgeCategory.js'
+import type { PaginationOptions } from '../../../utils/pagination.js'
 
-export type PaginationOptions = { page: number; count: number }
+export type { PaginationOptions }
 
 export interface IAgeCategoryRepository {
   count(): Promise<number>

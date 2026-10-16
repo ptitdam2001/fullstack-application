@@ -1,6 +1,7 @@
 import type { Match, MatchStatus, CreateMatchInput, UpdateMatchInput } from '../domain/Match.js'
+import type { PaginationOptions } from '../../../utils/pagination.js'
 
-export type PaginationOptions = { page: number; count: number }
+export type { PaginationOptions }
 export type MatchFilterOptions = {
   status?: MatchStatus
   pastDue?: boolean
