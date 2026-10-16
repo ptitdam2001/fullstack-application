@@ -73,20 +73,22 @@ export const DisabledItem: Story = {
   ),
 }
 
+const ControlledRender = () => {
+  const [value, setValue] = useState('u13')
+  return (
+    <div className="flex flex-col gap-4">
+      <RadioGroup label="Catégorie" value={value} onChange={setValue}>
+        <Radio value="u11">U11</Radio>
+        <Radio value="u13">U13</Radio>
+        <Radio value="u15">U15</Radio>
+      </RadioGroup>
+      <p className="text-muted-foreground text-sm">Sélection : {value}</p>
+    </div>
+  )
+}
+
 export const Controlled: Story = {
-  render: () => {
-    const [value, setValue] = useState('u13')
-    return (
-      <div className="flex flex-col gap-4">
-        <RadioGroup label="Catégorie" value={value} onChange={setValue}>
-          <Radio value="u11">U11</Radio>
-          <Radio value="u13">U13</Radio>
-          <Radio value="u15">U15</Radio>
-        </RadioGroup>
-        <p className="text-muted-foreground text-sm">Sélection : {value}</p>
-      </div>
-    )
-  },
+  render: () => <ControlledRender />,
 }
 
 export const KeyboardNavigation: Story = {

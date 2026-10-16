@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent, within } from 'storybook/test'
-import { useState } from 'react'
+import { useState, type ComponentProps } from 'react'
 
 import { DatePicker } from './DatePicker'
 import { Calendar } from './Calendar'
@@ -20,11 +20,25 @@ export default meta
 
 type Story = StoryObj<typeof meta>
 
+type ControlledDatePickerProps = ComponentProps<typeof DatePicker> & { initialDate?: Date }
+
+const ControlledDatePicker = ({ initialDate, ...args }: ControlledDatePickerProps) => {
+  const [date, setDate] = useState<Date | undefined>(initialDate)
+  return <DatePicker {...args} value={date} onChange={setDate} className="w-64" />
+}
+
+const CalendarSingleRender = () => {
+  const [date, setDate] = useState<Date | undefined>()
+  return <Calendar mode="single" selected={date} onSelect={setDate} />
+}
+
+const CalendarRangeRender = () => {
+  const [range, setRange] = useState<{ from?: Date; to?: Date } | undefined>()
+  return <Calendar mode="range" selected={range} onSelect={setRange} />
+}
+
 export const Default: Story = {
-  render: args => {
-    const [date, setDate] = useState<Date | undefined>()
-    return <DatePicker {...args} label="Date du match" value={date} onChange={setDate} className="w-64" />
-  },
+  render: args => <ControlledDatePicker {...args} label="Date du match" />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const trigger = canvas.getByRole('button')
@@ -47,10 +61,7 @@ export const Default: Story = {
 }
 
 export const WithValue: Story = {
-  render: args => {
-    const [date, setDate] = useState<Date | undefined>(new Date(2024, 5, 15))
-    return <DatePicker {...args} label="Date de naissance" value={date} onChange={setDate} className="w-64" />
-  },
+  render: args => <ControlledDatePicker {...args} label="Date de naissance" initialDate={new Date(2024, 5, 15)} />,
 }
 
 export const Disabled: Story = {
@@ -62,15 +73,9 @@ export const Disabled: Story = {
 }
 
 export const CalendarStandalone: Story = {
-  render: () => {
-    const [date, setDate] = useState<Date | undefined>()
-    return <Calendar mode="single" selected={date} onSelect={setDate} />
-  },
+  render: () => <CalendarSingleRender />,
 }
 
 export const CalendarWithRange: Story = {
-  render: () => {
-    const [range, setRange] = useState<{ from?: Date; to?: Date } | undefined>()
-    return <Calendar mode="range" selected={range} onSelect={setRange} />
-  },
+  render: () => <CalendarRangeRender />,
 }

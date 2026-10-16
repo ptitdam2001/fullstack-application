@@ -37,18 +37,20 @@ export const DisabledChecked: Story = {
   args: { children: 'Activé (verrouillé)', isDisabled: true, defaultSelected: true },
 }
 
+const ControlledRender = () => {
+  const [on, setOn] = useState(false)
+  return (
+    <div className="flex flex-col gap-4">
+      <Switch isSelected={on} onChange={setOn}>
+        {on ? 'Activé' : 'Désactivé'}
+      </Switch>
+      <p className="text-muted-foreground text-sm">État : {on ? 'ON' : 'OFF'}</p>
+    </div>
+  )
+}
+
 export const Controlled: Story = {
-  render: () => {
-    const [on, setOn] = useState(false)
-    return (
-      <div className="flex flex-col gap-4">
-        <Switch isSelected={on} onChange={setOn}>
-          {on ? 'Activé' : 'Désactivé'}
-        </Switch>
-        <p className="text-muted-foreground text-sm">État : {on ? 'ON' : 'OFF'}</p>
-      </div>
-    )
-  },
+  render: () => <ControlledRender />,
 }
 
 export const KeyboardToggle: Story = {

@@ -38,15 +38,17 @@ export const Empty: Story = {
   args: { value: 0, label: 'En attente', showValue: true },
 }
 
+const AnimatedRender = () => {
+  const [value, setValue] = useState(0)
+  useEffect(() => {
+    const id = setInterval(() => {
+      setValue(v => (v >= 100 ? 0 : v + 5))
+    }, 300)
+    return () => clearInterval(id)
+  }, [])
+  return <Progress value={value} label="Synchronisation" showValue />
+}
+
 export const Animated: Story = {
-  render: () => {
-    const [value, setValue] = useState(0)
-    useEffect(() => {
-      const id = setInterval(() => {
-        setValue(v => (v >= 100 ? 0 : v + 5))
-      }, 300)
-      return () => clearInterval(id)
-    }, [])
-    return <Progress value={value} label="Synchronisation" showValue />
-  },
+  render: () => <AnimatedRender />,
 }

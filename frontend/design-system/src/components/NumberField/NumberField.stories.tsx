@@ -34,16 +34,18 @@ export const WithStep: Story = {
   args: { label: 'Buts', defaultValue: 0, minValue: 0, maxValue: 30, step: 1 },
 }
 
+const ControlledRender = () => {
+  const [value, setValue] = useState(0)
+  return (
+    <div className="flex flex-col gap-2">
+      <NumberField label="Score équipe A" value={value} onChange={setValue} minValue={0} maxValue={20} />
+      <p className="text-muted-foreground text-sm">Valeur : {value}</p>
+    </div>
+  )
+}
+
 export const Controlled: Story = {
-  render: () => {
-    const [value, setValue] = useState(0)
-    return (
-      <div className="flex flex-col gap-2">
-        <NumberField label="Score équipe A" value={value} onChange={setValue} minValue={0} maxValue={20} />
-        <p className="text-muted-foreground text-sm">Valeur : {value}</p>
-      </div>
-    )
-  },
+  render: () => <ControlledRender />,
 }
 
 export const Disabled: Story = {
