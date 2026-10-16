@@ -8,7 +8,7 @@ import { AdminSeasonTableRow } from './AdminSeasonTableRow'
 const wrapper = ({ children }: { children: ReactNode }) => (
   <Table>
     <TableHeader>
-      <TableHead />
+      <TableHead isRowHeader />
       <TableHead />
       <TableHead />
       <TableHead />

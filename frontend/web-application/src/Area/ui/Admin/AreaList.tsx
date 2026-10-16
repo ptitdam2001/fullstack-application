@@ -23,7 +23,7 @@ const BaseAreaList = ({ actions }: AreaListProps) => {
     >
       <Table>
         <TableHeader>
-          <TableHead>
+          <TableHead isRowHeader>
             <FormattedMessage id="adminAreas.table.address" />
           </TableHead>
           {actions && (

@@ -9,7 +9,7 @@ const wrapper = ({ children }: { children: ReactNode }) => (
   <Table>
     <TableHeader>
       <TableHead />
-      <TableHead />
+      <TableHead isRowHeader />
       <TableHead />
       <TableHead />
       <TableHead />
@@ -63,7 +63,7 @@ describe('AdminTeamTableRow', () => {
       wrapper,
     })
     const cells = screen.getAllByRole('gridcell')
-    expect(cells[2]).toHaveTextContent('—')
+    expect(cells[1]).toHaveTextContent('—')
   })
 
   it('renders the primary venue name', () => {
@@ -74,7 +74,7 @@ describe('AdminTeamTableRow', () => {
   it('renders — when areas is empty', () => {
     render(<AdminTeamTableRow team={{ ...team, areas: [] }} onEdit={vi.fn()} onDelete={vi.fn()} />, { wrapper })
     const cells = screen.getAllByRole('gridcell')
-    expect(cells[3]).toHaveTextContent('—')
+    expect(cells[2]).toHaveTextContent('—')
   })
 
   it('renders edit and delete action buttons', () => {

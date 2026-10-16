@@ -54,6 +54,12 @@ describe('AdminChampionshipTable', () => {
     expect(screen.getByText('Championnat U15 2026')).toBeInTheDocument()
   })
 
+  it('marks the name column as the row header', () => {
+    render(<AdminChampionshipTable championships={championships} onResume={vi.fn()} onViewDetail={vi.fn()} />)
+    expect(screen.getAllByRole('rowheader')).toHaveLength(championships.length)
+    expect(screen.getByRole('rowheader', { name: /Championnat U13 2026/ })).toBeInTheDocument()
+  })
+
   it('renders an empty state when there are no championships', () => {
     render(<AdminChampionshipTable championships={[]} onResume={vi.fn()} onViewDetail={vi.fn()} />)
     expect(screen.getByText('adminChampionships.table.empty')).toBeInTheDocument()

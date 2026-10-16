@@ -35,6 +35,12 @@ describe('AdminUserTable', () => {
     expect(page.rowEmail('max@example.com')).toBeInTheDocument()
   })
 
+  it('marks the name column as the row header', () => {
+    const page = new AdminUserTablePage(users).render()
+    expect(page.rowHeaders()).toHaveLength(users.length)
+    expect(page.rowHeader('Jane Doe')).toBeInTheDocument()
+  })
+
   it('renders empty state when list is empty', () => {
     const page = new AdminUserTablePage([]).render()
     expect(page.emptyState()).toBeInTheDocument()
