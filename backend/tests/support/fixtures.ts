@@ -6,6 +6,7 @@ import {
   TeamRole,
   type Prisma,
   type AgeCategory,
+  type Area,
   type Championship,
   type Group,
   type Phase,
@@ -68,6 +69,11 @@ export const createTeam = (overrides: Partial<{ name: string; ageCategoryId: str
 
 export const createSeason = (overrides: Partial<{ label: string }> = {}): Promise<Season> =>
   prisma.season.create({ data: { label: overrides.label ?? unique('Saison') } })
+
+export const createArea = (): Promise<Area> =>
+  prisma.area.create({
+    data: { name: unique('Area'), address: '1 rue du Stade', city: 'Lyon', longitude: 4.83, latitude: 45.76 },
+  })
 
 export const createChampionship = async (
   overrides: Partial<{

@@ -31,7 +31,7 @@ describe('AreaUseCases.count', () => {
 
 describe('AreaUseCases.getAll', () => {
   it('returns paginated list', async () => {
-    const result = await new AreaUseCases(makeRepo()).getAll({ page: 0, limit: 20 })
+    const result = await new AreaUseCases(makeRepo()).getAll({ page: 1, count: 20 })
     expect(result).toHaveLength(1)
   })
 })

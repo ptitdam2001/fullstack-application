@@ -214,16 +214,16 @@ Légende : ✅ couvert · ❌ test fonctionnel à écrire (S3) · 🚫 route dé
 | GET     | `/teams/{teamId}/join-requests`             | `getTeamJoinRequests`   | ✅ couvert (`teamJoinRequest.test.ts`) |
 | PATCH   | `/teams/{teamId}/join-requests/{requestId}` | `updateTeamJoinRequest` | ✅ couvert (`teamJoinRequest.test.ts`) |
 
-#### Area (6 opérations) — ⚠️ non implémenté
+#### Area (6 opérations)
 
-| Méthode | Path           | operationId     | Statut            |
-| ------- | -------------- | --------------- | ----------------- |
-| GET     | `/areas`       | `getAreaList`   | 🚫 handler absent |
-| POST    | `/areas`       | `createArea`    | 🚫 handler absent |
-| GET     | `/areas/count` | `countAllAreas` | 🚫 handler absent |
-| GET     | `/areas/{id}`  | `getArea`       | 🚫 handler absent |
-| DELETE  | `/areas/{id}`  | `deleteArea`    | 🚫 handler absent |
-| PATCH   | `/areas/{id}`  | `updateArea`    | 🚫 handler absent |
+| Méthode | Path           | operationId     | Statut                                        |
+| ------- | -------------- | --------------- | --------------------------------------------- |
+| GET     | `/areas`       | `getAreaList`   | ✅ couvert, pagination seule (`area.test.ts`) |
+| POST    | `/areas`       | `createArea`    | ❌ à écrire                                   |
+| GET     | `/areas/count` | `countAllAreas` | ❌ à écrire                                   |
+| GET     | `/areas/{id}`  | `getArea`       | ❌ à écrire                                   |
+| DELETE  | `/areas/{id}`  | `deleteArea`    | ❌ à écrire                                   |
+| PATCH   | `/areas/{id}`  | `updateArea`    | ❌ à écrire                                   |
 
 #### Games (7 opérations) — ⚠️ non implémenté, legacy
 
