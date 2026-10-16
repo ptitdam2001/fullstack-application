@@ -34,6 +34,12 @@ describe('TeamUseCases.getAll', () => {
     expect(teams).toHaveLength(1)
     expect(teams[0].id).toBe('team-1')
   })
+
+  it('forwards the pagination to the repo', async () => {
+    const repo = makeRepo()
+    await new TeamUseCases(repo).getAll({ page: 2, count: 10 })
+    expect(repo.findAll).toHaveBeenCalledWith({ page: 2, count: 10 })
+  })
 })
 
 describe('TeamUseCases.getById', () => {

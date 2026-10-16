@@ -55,6 +55,54 @@ describe('team domain — functional API', () => {
     })
   })
 
+  describe('GET /teams — pagination', () => {
+    const seedTeams = async (n: number) => {
+      for (let i = 0; i < n; i++) {
+        await createTeam()
+      }
+    }
+    const ids = (body: { id: string }[]) => body.map(team => team.id)
+
+    it('without page nor count returns every team (opt-in pagination)', async () => {
+      await seedTeams(25)
+
+      const res = await agent.get('/teams')
+
+      expect(res.body).toHaveLength(25)
+    })
+
+    it('page=1 is the first page, with no overlap between pages', async () => {
+      await seedTeams(5)
+
+      const first = await agent.get('/teams?page=1&count=2')
+      const second = await agent.get('/teams?page=2&count=2')
+      const last = await agent.get('/teams?page=3&count=2')
+
+      expect(first.status).toBe(200)
+      expect(first.body).toHaveLength(2)
+      expect(second.body).toHaveLength(2)
+      expect(last.body).toHaveLength(1)
+      expect(new Set([...ids(first.body), ...ids(second.body), ...ids(last.body)]).size).toBe(5)
+    })
+
+    it('count alone returns the first page', async () => {
+      await seedTeams(3)
+
+      const countOnly = await agent.get('/teams?count=2')
+      const firstPage = await agent.get('/teams?page=1&count=2')
+
+      expect(ids(countOnly.body)).toEqual(ids(firstPage.body))
+    })
+
+    it('caps count at 100', async () => {
+      await seedTeams(101)
+
+      const res = await agent.get('/teams?page=1&count=500')
+
+      expect(res.body).toHaveLength(100)
+    })
+  })
+
   describe('GET /teams/count', () => {
     it('counts non-deleted teams', async () => {
       await createTeam()

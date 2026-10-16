@@ -8,7 +8,7 @@ export const useGameList = () => {
   const changePage = (page: number) => startTransition(() => rawChangePage(page))
   const changeRowsPerPage = (rowsPerPage: number) => startTransition(() => rawChangeRowsPerPage(rowsPerPage))
 
-  const query = useGetGamesSuspense({ page: pagination.page, limit: pagination.rowsPerPage })
+  const query = useGetGamesSuspense({ page: pagination.page + 1, count: pagination.rowsPerPage })
   const countQuery = useCountAllGamesSuspense()
   return { query, countQuery, pagination, changePage, changeRowsPerPage, isPending }
 }

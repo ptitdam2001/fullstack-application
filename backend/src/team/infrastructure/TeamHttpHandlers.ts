@@ -23,8 +23,12 @@ export const countTeams = async (_: Context, __: Request, res: Response) => {
   res.json(await teamUseCases.count())
 }
 
-export const getTeams = async (_: Context, __: Request, res: Response) => {
-  res.json(await teamUseCases.getAll())
+// Pagination is opt-in: without page nor count, every team is returned (dashboard, standings, lookups).
+export const getTeams = async (ctx: Context, _: Request, res: Response) => {
+  const { query } = ctx.request
+  const pagination =
+    'page' in query || 'count' in query ? { page: parsePage(query.page), count: parsePageSize(query.count) } : undefined
+  res.json(await teamUseCases.getAll(pagination))
 }
 
 export const getTeam = async (ctx: Context, _: Request, res: Response) => {
