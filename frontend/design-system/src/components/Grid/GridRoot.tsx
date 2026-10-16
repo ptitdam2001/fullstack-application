@@ -26,7 +26,9 @@ const toSize = (s: SizeLike) => ({
 })
 
 const toGridLayoutOptions = (opts: GridLayoutOptionsInput | undefined): GridLayoutOptions | undefined => {
-  if (!opts) return undefined
+  if (!opts) {
+    return undefined
+  }
   return {
     ...opts,
     ...(opts.minItemSize ? { minItemSize: toSize(opts.minItemSize) } : {}),

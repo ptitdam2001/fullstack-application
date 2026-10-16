@@ -18,7 +18,9 @@ const PanelStateSync = () => {
 
   const syncRef = React.useCallback(
     (node: HTMLSpanElement | null) => {
-      if (!node) return
+      if (!node) {
+        return
+      }
       const panel = node.closest('[data-slot="collapsible-content"]')
       if (panel) {
         panel.setAttribute('data-state', isExpanded ? 'open' : 'closed')

@@ -5,6 +5,29 @@ import { cn } from '../../utils/cn'
 
 type CheckboxProps = AriaCheckboxProps
 
+type CheckboxIndicatorProps = {
+  isIndeterminate: boolean
+  isSelected: boolean
+}
+
+const CheckboxIndicator = ({ isIndeterminate, isSelected }: CheckboxIndicatorProps) => {
+  if (isIndeterminate) {
+    return (
+      <svg viewBox="0 0 16 16" className="size-3 fill-current">
+        <rect x="2" y="7" width="12" height="2" rx="1" />
+      </svg>
+    )
+  }
+  if (isSelected) {
+    return (
+      <svg viewBox="0 0 16 16" className="size-3 fill-current">
+        <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.75.75 0 0 1 1.06-1.06L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z" />
+      </svg>
+    )
+  }
+  return null
+}
+
 export const Checkbox = ({ className, children, ...props }: CheckboxProps) => (
   <AriaCheckbox
     data-slot="checkbox"
@@ -28,15 +51,7 @@ export const Checkbox = ({ className, children, ...props }: CheckboxProps) => (
           )}
           aria-hidden
         >
-          {renderProps.isIndeterminate ? (
-            <svg viewBox="0 0 16 16" className="size-3 fill-current">
-              <rect x="2" y="7" width="12" height="2" rx="1" />
-            </svg>
-          ) : renderProps.isSelected ? (
-            <svg viewBox="0 0 16 16" className="size-3 fill-current">
-              <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.75.75 0 0 1 1.06-1.06L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z" />
-            </svg>
-          ) : null}
+          <CheckboxIndicator isIndeterminate={renderProps.isIndeterminate} isSelected={renderProps.isSelected} />
         </span>
         {typeof children === 'function' ? children(renderProps) : children}
       </>
