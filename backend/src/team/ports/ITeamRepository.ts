@@ -7,9 +7,10 @@ import type {
 } from '../domain/Team.js'
 import type { Player } from '../../player/domain/Player.js'
 import type { UserTeam } from '../../userTeam/domain/UserTeam.js'
+import type { PaginationOptions } from '../../../utils/pagination.js'
 
-export type TeamPlayersOptions = { page: number; count: number }
-export type TeamCalendarOptions = { page: number; count: number; startDate?: Date; endDate?: Date }
+export type TeamPlayersOptions = PaginationOptions
+export type TeamCalendarOptions = PaginationOptions & { startDate?: Date; endDate?: Date }
 
 export type GameSummary = {
   id: string
