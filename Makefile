@@ -1,4 +1,4 @@
-.PHONY: seed db-check-duplicates db-push help test-backend-unit test-backend-func db-test-up db-test-down test-e2e up down stack-test-up stack-test-down test-e2e-smoke test check lint gen ds-build ci ci-backend ci-backend-functional ci-frontend ci-storybook ci-markdown
+.PHONY: seed db-check-duplicates db-push help test-backend-unit test-backend-func db-test-up db-test-down test-e2e up down stack-test-up stack-test-down test-e2e-smoke test check lint gen ds-build ci ci-backend ci-backend-functional ci-frontend ci-storybook ci-markdown ci-docker build-images
 
 TEST_MONGO_CONTAINER := fullstack-test-mongo
 TEST_MONGO_PORT := 27018
@@ -83,6 +83,11 @@ stack-test-up: ## Lance la stack test isolée (build + index + seed)
 stack-test-down: ## Arrête la stack test et supprime les volumes
 	$(COMPOSE_TEST) down -v
 
+# Construit les deux images de la stack test (api-test, front-test) sans rien démarrer :
+# vérifie que les Dockerfiles compilent. Le front embarque VITE_BACKEND_BASEURL=http://localhost:4001/.
+build-images: ## Construit les images Docker backend et frontend (sans démarrer la stack)
+	$(COMPOSE_TEST) build
+
 test-e2e-smoke: ## Lance les tests E2E smoke (nécessite stack-test-up)
 	cd frontend/web-application && npx playwright test --project=fullstack-smoke
 
@@ -157,7 +162,10 @@ ci-storybook: ## Job CI « Storybook plays » : plays des stories du design syst
 ci-markdown: ## Job CI « Markdown format » : Prettier sur les Markdown hors backend/ et frontend/
 	pnpm check:format
 
-ci: ci-backend ci-backend-functional ci-frontend ci-storybook ci-markdown ## Rejoue en local les cinq jobs de la CI
+# Les images installent leurs dépendances elles-mêmes : seul Docker est requis.
+ci-docker: build-images ## Job CI « Docker images » : construit les images backend et frontend (Docker requis)
+
+ci: ci-backend ci-backend-functional ci-frontend ci-storybook ci-markdown ci-docker ## Rejoue en local les six jobs de la CI
 
 # ─── Suite complète ──────────────────────────────────────────────────────────
 

@@ -29,7 +29,15 @@ The e2e tests do not depend on these values: Playwright starts Vite in `e2e` mod
 
 ### Docker build
 
-The image is built by `deployment/frontend/Dockerfile`, from the repository root (the build context must hold `frontend/`, `tooling/` and `backend/openapi.yml`):
+The image is built by `deployment/frontend/Dockerfile`, from the repository root (the build context must hold `frontend/`, `tooling/` and `backend/openapi.yml`).
+
+To check that the image still builds, run from the repository root (the CI job `Docker images` runs the same target):
+
+```bash
+make build-images
+```
+
+This target builds the images of the test stack: the frontend image targets the API on `http://localhost:4001/`. For an image that targets another API, build it by hand:
 
 ```bash
 docker build -f deployment/frontend/Dockerfile --build-arg VITE_BACKEND_BASEURL=http://localhost:4000/ -t frontend:latest .
