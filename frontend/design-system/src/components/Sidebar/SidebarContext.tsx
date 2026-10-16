@@ -20,6 +20,5 @@ const useSidebar = () => {
   return context
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
 export { SidebarContext, useSidebar }
 export type { SidebarContextProps }

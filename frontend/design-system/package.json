@@ -23,6 +23,7 @@
     "test:stories": "vitest --project storybook",
     "test:ui": "vitest --ui --coverage",
     "check:types": "tsc --noEmit",
+    "lint": "eslint .",
     "check:format": "prettier -c ."
   },
   "dependencies": {
