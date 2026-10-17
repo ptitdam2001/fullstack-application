@@ -25,4 +25,13 @@ describe('JwtAuthService', () => {
     vi.stubEnv('JWT_SECRET', 'functional-test-secret')
     expect(() => new JwtAuthService()).not.toThrow()
   })
+
+  it('signs the token version as the ver claim', () => {
+    vi.stubEnv('JWT_SECRET', 'functional-test-secret')
+    const service = new JwtAuthService()
+
+    const claims = service.verifyToken(service.generateToken('user-1', false, false, 7))
+
+    expect(claims).toMatchObject({ userId: 'user-1', ver: 7 })
+  })
 })

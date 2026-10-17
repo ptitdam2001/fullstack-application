@@ -1,5 +1,4 @@
 import { randomBytes } from 'node:crypto'
-import jwt from 'jsonwebtoken'
 import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { prisma } from '../../utils/prismaClient.js'
 import { authHeaderFor } from '../support/authenticate.js'
@@ -196,12 +195,8 @@ describe('registration domain — functional API', () => {
 
     it('règle métier: a successful reset revokes the tokens issued before it', async () => {
       const user = await createUser()
-      const oldToken = jwt.sign(
-        { userId: user.id, isAdmin: false, isCoach: false, iat: Math.floor(Date.now() / 1000) - 60 },
-        process.env.JWT_SECRET as string,
-        { expiresIn: 7200 }
-      )
-      const oldHeader = { Authorization: `Bearer ${oldToken}` }
+      // Issued right before the reset, usually in the same second (#54)
+      const oldHeader = authHeaderFor(user.id)
       expect((await agent.get('/me').set(oldHeader)).status).toBe(200)
 
       await agent.post('/forgot-password').send({ email: user.email })
@@ -210,7 +205,7 @@ describe('registration domain — functional API', () => {
 
       expect((await agent.get('/me').set(oldHeader)).status).toBe(401)
       const persisted = await prisma.user.findUniqueOrThrow({ where: { id: user.id } })
-      expect(persisted.tokensValidAfter).not.toBeNull()
+      expect(persisted.tokenVersion).toBe(1)
 
       // A login right after the reset (same second) must work
       const login = await agent.post('/login').send({ email: user.email, password: 'NewPassword123' })

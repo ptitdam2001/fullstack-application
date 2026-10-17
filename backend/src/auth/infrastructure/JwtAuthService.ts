@@ -23,8 +23,8 @@ export class JwtAuthService implements IAuthService {
     this.expiresIn = Number(process.env.JWT_EXPIRE || 7200)
   }
 
-  generateToken(userId: string, isAdmin: boolean, isCoach: boolean): string {
-    return jwt.sign({ userId, isAdmin, isCoach }, this.secret, { expiresIn: this.expiresIn })
+  generateToken(userId: string, isAdmin: boolean, isCoach: boolean, tokenVersion: number): string {
+    return jwt.sign({ userId, isAdmin, isCoach, ver: tokenVersion }, this.secret, { expiresIn: this.expiresIn })
   }
 
   verifyToken(token: string): TokenPayload {

@@ -31,7 +31,7 @@ const mockUser = {
 
 const makeRepo = (overrides: Partial<IUserRepository> = {}): IUserRepository => ({
   findById: vi.fn().mockResolvedValue(mockUser),
-  findByEmailWithPassword: vi.fn().mockResolvedValue({ ...mockUser, password: 'hashed' }),
+  findByEmailWithPassword: vi.fn().mockResolvedValue({ ...mockUser, password: 'hashed', tokenVersion: 0 }),
   findByIdWithPassword: vi.fn().mockResolvedValue({ ...mockUser, password: 'hashed' }),
   findAll: vi.fn().mockResolvedValue([mockUser]),
   count: vi.fn().mockResolvedValue(1),
@@ -43,8 +43,8 @@ const makeRepo = (overrides: Partial<IUserRepository> = {}): IUserRepository => 
   resetLoginAttempts: vi.fn().mockResolvedValue(undefined),
   findAuthState: vi
     .fn()
-    .mockResolvedValue({ isAdmin: false, isActive: true, isBlocked: false, isCoach: false, tokensValidAfter: null }),
-  changePassword: vi.fn().mockResolvedValue(undefined),
+    .mockResolvedValue({ isAdmin: false, isActive: true, isBlocked: false, isCoach: false, tokenVersion: 0 }),
+  changePassword: vi.fn().mockResolvedValue(1),
   revokeTokens: vi.fn().mockResolvedValue(undefined),
   ...overrides,
 })
@@ -64,7 +64,7 @@ describe('AuthUseCases.login', () => {
   const withUser = (extra: Record<string, unknown> = {}) => ({
     findByEmailWithPassword: vi
       .fn()
-      .mockResolvedValue({ ...mockUser, password: 'hashed', lockedUntil: null, ...extra }),
+      .mockResolvedValue({ ...mockUser, password: 'hashed', lockedUntil: null, tokenVersion: 0, ...extra }),
   })
   const wrongPassword = { comparePassword: vi.fn().mockResolvedValue(false) }
 
@@ -207,21 +207,27 @@ describe('AuthUseCases.login', () => {
     })
   })
 
-  it('calls generateToken with userId, isAdmin, and isCoach', async () => {
+  it('calls generateToken with userId, isAdmin, isCoach and the token version', async () => {
     const authService = makeAuthService()
     await new AuthUseCases(makeRepo(), authService).login('alice@example.com', 'password')
-    expect(authService.generateToken).toHaveBeenCalledWith('user-1', false, false)
+    expect(authService.generateToken).toHaveBeenCalledWith('user-1', false, false, 0)
+  })
+
+  it('signs the token with the stored token version, so it survives the last revocation', async () => {
+    const authService = makeAuthService()
+    await makeUseCases(withUser({ tokenVersion: 3 }), authService).login('alice@example.com', 'password')
+    expect(authService.generateToken).toHaveBeenCalledWith('user-1', false, false, 3)
   })
 
   it('derives isCoach from the roles resolved by the user repository', async () => {
     const authService = makeAuthService()
     await makeUseCases(withUser({ roles: ['COACH'] }), authService).login('alice@example.com', 'password')
-    expect(authService.generateToken).toHaveBeenCalledWith('user-1', false, true)
+    expect(authService.generateToken).toHaveBeenCalledWith('user-1', false, true, 0)
   })
 })
 
 describe('AuthUseCases.authenticate (spec 10, Sécurité › Sessions)', () => {
-  const claims = { userId: 'user-1', isAdmin: true, isCoach: true, iat: 100, exp: 200 }
+  const claims = { userId: 'user-1', isAdmin: true, isCoach: true, ver: 0, iat: 100, exp: 200 }
   const withToken = (overrides: Record<string, unknown> = {}) => ({
     verifyToken: vi.fn().mockReturnValue({ ...claims, ...overrides }),
   })
@@ -229,7 +235,7 @@ describe('AuthUseCases.authenticate (spec 10, Sécurité › Sessions)', () => {
     findAuthState: vi
       .fn()
       .mockResolvedValue(
-        state && { isAdmin: false, isActive: true, isBlocked: false, isCoach: false, tokensValidAfter: null, ...state }
+        state && { isAdmin: false, isActive: true, isBlocked: false, isCoach: false, tokenVersion: 0, ...state }
       ),
   })
 
@@ -262,29 +268,29 @@ describe('AuthUseCases.authenticate (spec 10, Sécurité › Sessions)', () => {
     await expect(makeUseCases(withState(state), withToken()).authenticate('jwt')).rejects.toThrow(UnauthorizedError)
   })
 
-  describe('token revocation (tokensValidAfter)', () => {
-    // withToken() claims iat = 100 (seconds since epoch)
-    it('refuses a token issued before tokensValidAfter', async () => {
-      const uc = makeUseCases(withState({ tokensValidAfter: new Date(200_000) }), withToken())
-      await expect(uc.authenticate('jwt')).rejects.toThrow(UnauthorizedError)
-    })
-
-    it('accepts a token issued in the same second as tokensValidAfter (a login right after the reset)', async () => {
-      const uc = makeUseCases(withState({ tokensValidAfter: new Date(100_500) }), withToken())
+  describe('token revocation (tokenVersion)', () => {
+    it('accepts a token signed with the current version', async () => {
+      const uc = makeUseCases(withState({ tokenVersion: 2 }), withToken({ ver: 2 }))
       await expect(uc.authenticate('jwt')).resolves.toMatchObject({ userId: 'user-1' })
     })
 
-    it('accepts a token issued after tokensValidAfter', async () => {
-      const uc = makeUseCases(withState({ tokensValidAfter: new Date(50_000) }), withToken())
-      await expect(uc.authenticate('jwt')).resolves.toMatchObject({ userId: 'user-1' })
-    })
-
-    it('refuses a token without iat once a revocation date exists (fail closed)', async () => {
-      const uc = makeUseCases(withState({ tokensValidAfter: new Date(50_000) }), withToken({ iat: undefined }))
+    it('refuses a token signed with a version revoked since', async () => {
+      const uc = makeUseCases(withState({ tokenVersion: 2 }), withToken({ ver: 1 }))
       await expect(uc.authenticate('jwt')).rejects.toThrow(UnauthorizedError)
     })
 
-    it('does not require iat when nothing was revoked', async () => {
+    it('refuses a token signed with a version the user never reached', async () => {
+      const uc = makeUseCases(withState({ tokenVersion: 2 }), withToken({ ver: 3 }))
+      await expect(uc.authenticate('jwt')).rejects.toThrow(UnauthorizedError)
+    })
+
+    // A token issued before the version existed cannot be placed against the last revocation (spec 10).
+    it('refuses a token without version, even when nothing was revoked (fail closed)', async () => {
+      const uc = makeUseCases(withState({ tokenVersion: 0 }), withToken({ ver: undefined }))
+      await expect(uc.authenticate('jwt')).rejects.toThrow(UnauthorizedError)
+    })
+
+    it('does not look at iat', async () => {
       const uc = makeUseCases(withState({}), withToken({ iat: undefined }))
       await expect(uc.authenticate('jwt')).resolves.toMatchObject({ userId: 'user-1' })
     })
@@ -330,10 +336,8 @@ describe('AuthUseCases.changePassword', () => {
     vi.unstubAllEnvs()
   })
 
-  it('stores the new hash, revokes the previous tokens and returns a fresh token', async () => {
-    vi.useFakeTimers()
-    vi.setSystemTime(new Date('2026-10-02T10:00:00.500Z'))
-    const repo = { ...withStoredPassword(), changePassword: vi.fn().mockResolvedValue(undefined) }
+  it('stores the new hash, revokes the previous tokens and returns a token signed with the new version', async () => {
+    const repo = { ...withStoredPassword(), changePassword: vi.fn().mockResolvedValue(4) }
     const authService = {
       comparePassword: vi.fn().mockResolvedValue(true),
       hashPassword: vi.fn().mockResolvedValue('new-hash'),
@@ -344,12 +348,13 @@ describe('AuthUseCases.changePassword', () => {
 
     expect(authService.comparePassword).toHaveBeenCalledWith('Current123', 'stored-hash')
     expect(authService.hashPassword).toHaveBeenCalledWith('NewPassword1')
-    expect(repo.changePassword).toHaveBeenCalledWith('user-1', 'new-hash', new Date('2026-10-02T10:00:00.500Z'))
+    expect(repo.changePassword).toHaveBeenCalledWith('user-1', 'new-hash')
+    expect(authService.generateToken).toHaveBeenCalledWith('user-1', false, false, 4)
     expect(result).toEqual({ userId: 'user-1', email: 'alice@example.com', isAdmin: false, token: 'fresh-token' })
   })
 
   it('signs the fresh token after the password is stored', async () => {
-    const repo = { ...withStoredPassword(), changePassword: vi.fn().mockResolvedValue(undefined) }
+    const repo = { ...withStoredPassword(), changePassword: vi.fn().mockResolvedValue(1) }
     const authService = { generateToken: vi.fn().mockReturnValue('fresh-token') }
 
     await makeUseCases(repo, authService).changePassword('user-1', 'Current123', 'NewPassword1')
@@ -365,7 +370,7 @@ describe('AuthUseCases.changePassword', () => {
 
     const result = await makeUseCases(repo, authService).changePassword('user-1', 'Current123', 'NewPassword1')
 
-    expect(authService.generateToken).toHaveBeenCalledWith('user-1', true, true)
+    expect(authService.generateToken).toHaveBeenCalledWith('user-1', true, true, 1)
     expect(result.isAdmin).toBe(true)
   })
 
@@ -415,9 +420,7 @@ describe('AuthUseCases.changePassword', () => {
 
       const [, until] = repo.lockUntil.mock.calls[0] as [string, Date]
       expect(until.getTime()).toBeGreaterThanOrEqual(before + 15 * 60_000)
-      const [revokedUser, revokedAt] = repo.revokeTokens.mock.calls[0] as [string, Date]
-      expect(revokedUser).toBe('user-1')
-      expect(revokedAt.getTime()).toBeGreaterThanOrEqual(before)
+      expect(repo.revokeTokens).toHaveBeenCalledWith('user-1')
       expect(repo.changePassword).not.toHaveBeenCalled()
     })
 
@@ -458,36 +461,23 @@ describe('AuthUseCases.changePassword', () => {
     )
   })
 
-  // Real JWTs against the real `authenticate`: iat has whole-second precision while tokensValidAfter has
-  // milliseconds, so the fresh token must survive the revocation it was issued with.
+  // Real JWTs against the real `authenticate`: a JWT is deterministic and iat has whole-second precision, so a
+  // revocation compared by date left the tokens of the same second alive (#54). The version leaves no window.
   describe('token revocation, with real tokens', () => {
     const setUp = async () => {
       vi.stubEnv('JWT_SECRET', 'unit-test-secret-long-enough')
       const authService = new JwtAuthService()
-      const state: AuthState = {
-        isAdmin: false,
-        isActive: true,
-        isBlocked: false,
-        isCoach: false,
-        tokensValidAfter: null,
-      }
+      const state: AuthState = { isAdmin: false, isActive: true, isBlocked: false, isCoach: false, tokenVersion: 0 }
       const storedHash = await authService.hashPassword('Current123')
       const repo = makeRepo({
         findByIdWithPassword: vi.fn().mockResolvedValue({ ...mockUser, password: storedHash }),
         findAuthState: vi.fn().mockImplementation(async () => state),
-        changePassword: vi.fn().mockImplementation(async (_id: string, _hash: string, tokensValidAfter: Date) => {
-          state.tokensValidAfter = tokensValidAfter
-        }),
+        changePassword: vi.fn().mockImplementation(async () => ++state.tokenVersion),
       })
       return { authService, useCases: new AuthUseCases(repo, authService) }
     }
 
-    it.each([
-      ['at the very start of a second', '2026-10-02T10:00:00.000Z'],
-      ['at the very end of a second', '2026-10-02T10:00:00.999Z'],
-    ])('accepts the fresh token when the change happens %s', async (_label, now) => {
-      vi.useFakeTimers()
-      vi.setSystemTime(new Date(now))
+    it('accepts the fresh token', async () => {
       const { useCases } = await setUp()
 
       const { token } = await useCases.changePassword('user-1', 'Current123', 'NewPassword1')
@@ -499,12 +489,25 @@ describe('AuthUseCases.changePassword', () => {
       vi.useFakeTimers()
       vi.setSystemTime(new Date('2026-10-02T09:59:00.000Z'))
       const { authService, useCases } = await setUp()
-      const oldToken = authService.generateToken('user-1', false, false)
+      const oldToken = authService.generateToken('user-1', false, false, 0)
       await expect(useCases.authenticate(oldToken)).resolves.toMatchObject({ userId: 'user-1' })
 
       vi.setSystemTime(new Date('2026-10-02T10:00:00.500Z'))
+      await useCases.changePassword('user-1', 'Current123', 'NewPassword1')
+
+      await expect(useCases.authenticate(oldToken)).rejects.toThrow(UnauthorizedError)
+    })
+
+    it('refuses a token issued in the same second as the change, and hands out a different one', async () => {
+      vi.useFakeTimers()
+      vi.setSystemTime(new Date('2026-10-02T10:00:00.100Z'))
+      const { authService, useCases } = await setUp()
+      const oldToken = authService.generateToken('user-1', false, false, 0)
+
+      vi.setSystemTime(new Date('2026-10-02T10:00:00.900Z'))
       const { token } = await useCases.changePassword('user-1', 'Current123', 'NewPassword1')
 
+      expect(token).not.toBe(oldToken)
       await expect(useCases.authenticate(oldToken)).rejects.toThrow(UnauthorizedError)
       await expect(useCases.authenticate(token)).resolves.toMatchObject({ userId: 'user-1' })
     })

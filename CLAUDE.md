@@ -72,7 +72,8 @@ pnpm start:dev       # Dev server with hot reload (tsx watch)
 pnpm build           # Bundle with esbuild → dist/index.js
 pnpm check:type      # TypeScript type checking — every .ts file: src, scripts, tests, config files
 pnpm generate:prisma # Regenerate Prisma client after schema changes
-pnpm db:push         # Create/update the MongoDB indexes of schema.prisma on DATABASE_URL (runs db:check-duplicates first)
+pnpm db:push         # Create/update the MongoDB indexes of schema.prisma on DATABASE_URL (runs db:check-duplicates first, db:backfill after)
+pnpm db:backfill     # Idempotent: give their default to the fields that documents stored before them lack (users.tokenVersion)
 pnpm db:check-duplicates # Read-only: list documents that would block a unique index
 pnpm lint            # ESLint (extends @repo/eslint-config/node) — also lints the status codes of openapi.yml
 pnpm check:sync-schema # Flag nullability drift between openapi.yml and prisma/schema.prisma
@@ -109,7 +110,7 @@ git cz               # Commitizen for conventional commits
 pnpm check:format    # Prettier check of the Markdown files outside backend/ and frontend/
 make help             # List all Makefile targets
 make up               # Start dev stack (Docker), waits until Mongo is primary and the API healthy — does NOT create the MongoDB indexes
-make db-push          # Create/update the MongoDB indexes (duplicate check, then prisma db push) on backend/.env DATABASE_URL
+make db-push          # Create/update the MongoDB indexes (duplicate check, prisma db push, then backfill of missing fields) on backend/.env DATABASE_URL
 make db-check-duplicates # Read-only: list documents that would block a unique index
 make test             # Run the backend tests (unit + func) and the mocked e2e — no frontend unit test
 make ci               # Replay the six CI jobs locally (or one: make ci-backend, ci-backend-functional, ci-frontend, ci-storybook, ci-markdown, ci-docker)
