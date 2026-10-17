@@ -64,19 +64,14 @@ describe('PlayerStandingsTable', () => {
     expect(screen.getByText('Adversaire')).toBeInTheDocument()
   })
 
-  it('highlights the player team row', () => {
-    const { container } = render(<PlayerStandingsTable teamId={TEAM_ID} userId="user-1" />)
-    const rows = container.querySelectorAll('tbody tr')
-    const playerRow = Array.from(rows).find(row => row.textContent?.includes('Mon Équipe'))
-    expect(playerRow?.className).toContain('bg-primary/10')
-    expect(playerRow?.className).toContain('font-bold')
+  it('marks the player team row as the current one', () => {
+    render(<PlayerStandingsTable teamId={TEAM_ID} userId="user-1" />)
+    expect(screen.getByRole('row', { name: /Mon Équipe/ })).toHaveAttribute('aria-current', 'true')
   })
 
-  it('does not highlight other team rows', () => {
-    const { container } = render(<PlayerStandingsTable teamId={TEAM_ID} userId="user-1" />)
-    const rows = container.querySelectorAll('tbody tr')
-    const otherRow = Array.from(rows).find(row => row.textContent?.includes('Adversaire'))
-    expect(otherRow?.className).not.toContain('bg-primary/10')
+  it('does not mark other team rows as current', () => {
+    render(<PlayerStandingsTable teamId={TEAM_ID} userId="user-1" />)
+    expect(screen.getByRole('row', { name: /Adversaire/ })).not.toHaveAttribute('aria-current')
   })
 
   it('shows group name', () => {
