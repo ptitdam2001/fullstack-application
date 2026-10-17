@@ -8,7 +8,6 @@ import { TableFooter } from './TableFooter'
 import { TableRow } from './TableRow'
 import { TableHead } from './TableHead'
 import { TableCell } from './TableCell'
-import { TableCaption } from './TableCaption'
 import { Badge } from '../Badge/Badge'
 
 const meta = {
@@ -29,8 +28,7 @@ const standings = [
 
 export const Standings: Story = {
   render: () => (
-    <Table aria-label="Classement — Championnat U13 — Phase 1">
-      <TableCaption>Classement — Championnat U13 — Phase 1</TableCaption>
+    <Table aria-label="Classement — Championnat U13 — Phase 1" caption="Mis à jour après la 10e journée">
       <TableHeader>
         <TableHead className="w-10 text-center">#</TableHead>
         <TableHead isRowHeader>Équipe</TableHead>
@@ -59,6 +57,13 @@ export const Standings: Story = {
       </TableBody>
     </Table>
   ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    // the caption lives outside the react-aria collection, so the rows still render
+    expect(await canvas.findByRole('rowheader', { name: 'Équipe A' })).toBeInTheDocument()
+    expect(canvas.getAllByRole('rowheader')).toHaveLength(standings.length)
+    expect(canvas.getByRole('grid')).toHaveAccessibleDescription('Mis à jour après la 10e journée')
+  },
 }
 
 export const MatchList: Story = {
