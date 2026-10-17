@@ -286,6 +286,8 @@ Before investigating code, eliminate these in order:
 
 Only after all three are confirmed, investigate code.
 
+Still stuck, or the symptom is about the environment (e2e redirected to sign-in, fresh worktree, Docker disk, frozen `vitest`, seed in the wrong database): see `docs/troubleshooting.md`.
+
 ## i18n Convention
 
 - NEVER hardcode user-facing strings. All UI text must go through react-intl using `FormattedMessage` or `useIntl` with i18n keys.
