@@ -42,20 +42,21 @@ tooling/
 
 All feature work must align with the business rules defined in `specifications/`. Read the relevant spec before implementing any domain logic.
 
-| File                                           | Domain                                                                           |
-| ---------------------------------------------- | -------------------------------------------------------------------------------- |
-| `specifications/01-domain-glossary.md`         | Glossary — canonical definitions for all domain concepts                         |
-| `specifications/02-championship.md`            | Championship — age categories, phases, points config, multi-phase rules          |
-| `specifications/03-match.md`                   | Match — structure, statuses, scoring, forfeit, auto-generation                   |
-| `specifications/04-team.md`                    | Team — color, venue, age category, championship enrollment                       |
-| `specifications/05-standings.md`               | Standings — points calculation, tiebreakers, inter-group ranking                 |
-| `specifications/06-user-profiles.md`           | User profiles — roles (Admin/Coach/Referee/Player), permission matrix            |
-| `specifications/07-technical-choices.md`       | Technical choices — backend, design-system, application stack                    |
-| `specifications/08-architecture-hexagonale.md` | Architecture — hexagonal structure, domain and port index                        |
-| `specifications/09-implementation-roadmap.md`  | Implementation roadmap — 4 phases from init to full frontend                     |
-| `specifications/15-form-factory.md`            | Form factory — `@repo/form-factory` API, modes de validation, formulaires migrés |
-| `specifications/16-strategie-de-test.md`       | Test strategy — pyramid, conventions, API coverage matrix, E2E flow matrix       |
-| `specifications/24-page-compte.md`             | Account page — self-service profile, photo, password change; image storage port  |
+| File                                           | Domain                                                                                       |
+| ---------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `specifications/00-conventions.md`             | Cross-cutting conventions — backend, frontend, tests, process; says which tool enforces each |
+| `specifications/01-domain-glossary.md`         | Glossary — canonical definitions for all domain concepts                                     |
+| `specifications/02-championship.md`            | Championship — age categories, phases, points config, multi-phase rules                      |
+| `specifications/03-match.md`                   | Match — structure, statuses, scoring, forfeit, auto-generation                               |
+| `specifications/04-team.md`                    | Team — color, venue, age category, championship enrollment                                   |
+| `specifications/05-standings.md`               | Standings — points calculation, tiebreakers, inter-group ranking                             |
+| `specifications/06-user-profiles.md`           | User profiles — roles (Admin/Coach/Referee/Player), permission matrix                        |
+| `specifications/07-technical-choices.md`       | Technical choices — backend, design-system, application stack                                |
+| `specifications/08-architecture-hexagonale.md` | Architecture — hexagonal structure, domain and port index                                    |
+| `specifications/09-implementation-roadmap.md`  | Implementation roadmap — 4 phases from init to full frontend                                 |
+| `specifications/15-form-factory.md`            | Form factory — `@repo/form-factory` API, modes de validation, formulaires migrés             |
+| `specifications/16-strategie-de-test.md`       | Test strategy — pyramid, conventions, API coverage matrix, E2E flow matrix                   |
+| `specifications/24-page-compte.md`             | Account page — self-service profile, photo, password change; image storage port              |
 
 > When adding a new feature or modifying existing domain logic, update the relevant spec first, then propagate to `openapi.yml`, backend, and frontend.
 
