@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react'
 import { Table } from './Table'
 import { TableHeader } from './TableHeader'
 import { TableBody } from './TableBody'
+import { TableFooter } from './TableFooter'
 import { TableRow } from './TableRow'
 import { TableHead } from './TableHead'
 import { TableCell } from './TableCell'
@@ -94,6 +95,41 @@ describe('TableBody', () => {
       </Table>
     )
     expect(container.querySelector('[data-slot="table-body"]')).toBeInTheDocument()
+  })
+})
+
+describe('TableFooter', () => {
+  const FooterTable = () => (
+    <Table aria-label="test">
+      <TableHeader>
+        <TableHead isRowHeader>Équipe</TableHead>
+        <TableHead>Pts</TableHead>
+      </TableHeader>
+      <TableBody>
+        <TableRow id="a">
+          <TableCell>Équipe A</TableCell>
+          <TableCell>25</TableCell>
+        </TableRow>
+      </TableBody>
+      <TableFooter>
+        <TableRow id="total">
+          <TableCell>Total</TableCell>
+          <TableCell>48</TableCell>
+        </TableRow>
+      </TableFooter>
+    </Table>
+  )
+
+  it('sets data-slot="table-footer"', () => {
+    const { container } = render(<FooterTable />)
+    expect(container.querySelector('[data-slot="table-footer"]')).toBeInTheDocument()
+  })
+
+  it('renders its rows after the body rows', () => {
+    render(<FooterTable />)
+    const rowHeaders = screen.getAllByRole('rowheader').map(cell => cell.textContent)
+    expect(rowHeaders).toEqual(['Équipe A', 'Total'])
+    expect(screen.getByText('48')).toBeInTheDocument()
   })
 })
 
