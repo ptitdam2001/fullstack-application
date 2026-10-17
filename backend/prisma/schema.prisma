@@ -202,7 +202,7 @@ model User {
   isReferee             Boolean   @default(false)
   loginAttempts         Int       @default(0)
   lockedUntil           DateTime?
-  tokensValidAfter      DateTime?
+  tokenVersion          Int       @default(0)
   activationToken       String?
   activationTokenExpiry DateTime?
   resetToken            String?

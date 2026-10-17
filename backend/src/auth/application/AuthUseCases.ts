@@ -71,7 +71,7 @@ export class AuthUseCases {
       await this.userRepo.resetLoginAttempts(user.id)
     }
 
-    const token = this.authService.generateToken(user.id, user.isAdmin, user.roles.includes('COACH'))
+    const token = this.authService.generateToken(user.id, user.isAdmin, user.roles.includes('COACH'), user.tokenVersion)
     return { userId: user.id, email: user.email, isAdmin: user.isAdmin, token }
   }
 
@@ -83,12 +83,9 @@ export class AuthUseCases {
     if (!state || !state.isActive || state.isBlocked) {
       throw new UnauthorizedError()
     }
-    // iat has whole-second precision, so compare in seconds: a token issued in the same second as the reset
-    // (e.g. the login right after it) stays valid. A token without iat cannot be dated: refuse it.
-    if (
-      state.tokensValidAfter &&
-      !(claims.iat !== undefined && claims.iat >= Math.floor(state.tokensValidAfter.getTime() / 1000))
-    ) {
+    // Revocation by version, not by date: iat has whole-second precision, a date left the tokens of the same
+    // second alive (#54). A token without version predates versions: refuse it.
+    if (claims.ver !== state.tokenVersion) {
       throw new UnauthorizedError()
     }
     return { userId: claims.userId, isAdmin: state.isAdmin, isCoach: state.isCoach, iat: claims.iat, exp: claims.exp }
@@ -122,9 +119,8 @@ export class AuthUseCases {
     if (!(await this.authService.comparePassword(currentPassword, user.password))) {
       const attempts = await this.userRepo.incrementLoginAttempts(userId)
       if (attempts >= getMaxLoginAttempts()) {
-        const now = new Date()
-        await this.userRepo.lockUntil(userId, new Date(now.getTime() + getLockoutMinutes() * 60_000))
-        await this.userRepo.revokeTokens(userId, now)
+        await this.userRepo.lockUntil(userId, new Date(Date.now() + getLockoutMinutes() * 60_000))
+        await this.userRepo.revokeTokens(userId)
         // The session no longer exists: this is the one case where the route answers 401.
         throw new UnauthorizedError()
       }
@@ -135,11 +131,11 @@ export class AuthUseCases {
     }
 
     const hashed = await this.authService.hashPassword(newPassword)
-    // Revocation date taken BEFORE the token is signed: `authenticate` accepts a token whose iat (whole
-    // seconds) is not older than this date floored to the second, so the fresh token always passes.
-    await this.userRepo.changePassword(userId, hashed, new Date())
+    // Signed with the version this very write produced: the fresh token always passes and always differs
+    // from the revoked ones, even within the same second.
+    const tokenVersion = await this.userRepo.changePassword(userId, hashed)
 
-    const token = this.authService.generateToken(user.id, user.isAdmin, user.roles.includes('COACH'))
+    const token = this.authService.generateToken(user.id, user.isAdmin, user.roles.includes('COACH'), tokenVersion)
     return { userId: user.id, email: user.email, isAdmin: user.isAdmin, token }
   }
 }

@@ -117,7 +117,7 @@ export class PrismaRegistrationRepository implements IRegistrationRepository {
         loginAttempts: 0,
         lockedUntil: null,
         isBlocked: false,
-        tokensValidAfter: new Date(),
+        tokenVersion: { increment: 1 },
       },
     })
   }

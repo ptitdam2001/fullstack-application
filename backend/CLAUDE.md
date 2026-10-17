@@ -12,7 +12,8 @@ pnpm check:type      # TypeScript type checking (no emit) — every .ts file: sr
 pnpm vitest run      # Run all unit tests
 pnpm generate:prisma # Regenerate Prisma client after schema changes
 pnpm format:prisma   # Format prisma/schema.prisma
-pnpm db:push         # Create/update the MongoDB indexes of schema.prisma on DATABASE_URL (runs db:check-duplicates first)
+pnpm db:push         # Create/update the MongoDB indexes of schema.prisma on DATABASE_URL (runs db:check-duplicates first, db:backfill after)
+pnpm db:backfill     # Idempotent: give their default to the fields that documents stored before them lack
 pnpm db:check-duplicates # Read-only: list documents that would block a unique index
 pnpm check:sync-schema # Flag nullability drift between openapi.yml and prisma/schema.prisma
 pnpm lint            # ESLint — TypeScript files, and the status codes of openapi.yml (quoted, ascending)
@@ -24,6 +25,7 @@ With MongoDB there are no migrations: the indexes declared in `prisma/schema.pri
 
 - **When**: on a fresh database, and after adding or changing an index in the schema. `pnpm db:push` (or `make db-push` from the root) targets `DATABASE_URL` — the environment variable if set, otherwise `backend/.env`. It is idempotent and never drops data.
 - **Duplicates first**: `db:push` starts with `db:check-duplicates` (`scripts/check-unique-duplicates.ts`, read-only, unique sets read from the generated Prisma client) and stops before any write if two documents share a unique key. A missing field counts as `null`, as in the index. Do not bypass it with a bare `prisma db push` on a database that has data: over duplicates it stops at the first unique index it cannot build (`E11000 duplicate key error`), names one duplicate only, and leaves the indexes half applied — those before the failing one exist, those after it do not.
+- **Backfill after**: `db:push` ends with `db:backfill` (`scripts/backfill-missing-fields.ts`, list in `scripts/backfillMissingFields.ts`). It sets a field to its default on the documents that lack it, only where it is missing. Prisma reads a missing field as its `@default`, but `increment` writes `null` on it: without the backfill, a password change would not revoke the sessions of a user stored before `tokenVersion` existed. When a field used with an atomic operator is added to a model that already has documents, add it to the list.
 - **Where it is wired**: functional tests (`tests/support/database.ts`) and `make stack-test-up` push automatically. `make up` does not — run `make db-push` yourself. The Docker image does not push at start-up either (see the root `README.md` › Docker).
 - **Verify**: `db.users.getIndexes()` in a Mongo shell must list `users_email_key`, not just `_id_`.
 

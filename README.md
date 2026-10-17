@@ -93,7 +93,7 @@ Dev database — once on a fresh database, then after every index change in the 
 
 ```bash
 make db-check-duplicates   # read-only: lists documents sharing a unique key
-make db-push               # same check, then prisma db push (idempotent, never drops data)
+make db-push               # same check, then prisma db push and the backfill of missing fields (idempotent, never drops data)
 ```
 
 Both target `DATABASE_URL` from `backend/.env` and need the backend dependencies installed (`cd backend && pnpm install && pnpm generate:prisma`). To target another database, pass the URL in single quotes — unquoted, the shell cuts it at `&` and `backend/.env` is used instead: `DATABASE_URL='mongodb://…?authSource=admin&directConnection=true' make db-push`.

@@ -19,7 +19,7 @@ seed: ## Crée le jeu de données de test en base (idempotent)
 db-check-duplicates: ## Liste les doublons qui bloqueraient un index unique (lecture seule)
 	cd backend && pnpm db:check-duplicates
 
-db-push: ## Crée/met à jour les index MongoDB du schéma Prisma (contrôle des doublons puis prisma db push)
+db-push: ## Crée/met à jour les index MongoDB du schéma Prisma (contrôle des doublons, prisma db push, puis backfill des champs manquants)
 	@cd backend && pnpm db:push || { \
 		echo ""; \
 		echo "db-push a échoué : les index du schéma ne sont pas garantis en base. Causes habituelles :"; \

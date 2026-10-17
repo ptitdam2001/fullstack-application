@@ -1,4 +1,6 @@
 import { TeamRole } from '@prisma/client'
+import jwt from 'jsonwebtoken'
+import { MongoClient } from 'mongodb'
 import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { prisma } from '../../utils/prismaClient.js'
 import { authHeaderFor } from '../support/authenticate.js'
@@ -6,6 +8,17 @@ import { createTestAgent } from '../support/client.js'
 import { resetDatabase } from '../support/database.js'
 import { assignUserToTeam, createAdmin, createTeam, createUser, FIXTURE_PASSWORD } from '../support/fixtures.js'
 import { JwtAuthService } from '../../src/auth/infrastructure/JwtAuthService.js'
+import { backfillMissingFields } from '../../scripts/backfillMissingFields.js'
+
+const backfill = async (): Promise<void> => {
+  const client = new MongoClient(process.env.DATABASE_URL!)
+  await client.connect()
+  try {
+    await backfillMissingFields(client.db())
+  } finally {
+    await client.close()
+  }
+}
 
 describe('auth domain — functional API', () => {
   let agent: Awaited<ReturnType<typeof createTestAgent>>
@@ -336,11 +349,73 @@ describe('auth domain — functional API', () => {
     it('ignores an isCoach claim the database does not back', async () => {
       const user = await createUser()
       const area = await prisma.area.create({ data: areaBody })
-      const forged = { Authorization: `Bearer ${new JwtAuthService().generateToken(user.id, false, true)}` }
+      const forged = { Authorization: `Bearer ${new JwtAuthService().generateToken(user.id, false, true, 0)}` }
 
       const res = await agent.patch(`/areas/${area.id}`).set(forged).send(areaBody)
 
       expect(res.status).toBe(403)
+    })
+
+    it('answers 401 to a token without version claim (issued before versions existed)', async () => {
+      const user = await createUser()
+      const unversioned = jwt.sign(
+        { userId: user.id, isAdmin: false, isCoach: false },
+        process.env.JWT_SECRET as string,
+        {
+          expiresIn: 7200,
+        }
+      )
+
+      const res = await agent.get('/me').set({ Authorization: `Bearer ${unversioned}` })
+
+      expect(res.status).toBe(401)
+    })
+
+    it('answers 401 to a token whose version is no longer the current one', async () => {
+      const user = await createUser()
+      const header = authHeaderFor(user.id)
+      expect((await agent.get('/me').set(header)).status).toBe(200)
+
+      await prisma.user.update({ where: { id: user.id }, data: { tokenVersion: { increment: 1 } } })
+
+      expect((await agent.get('/me').set(header)).status).toBe(401)
+      expect((await agent.get('/me').set(authHeaderFor(user.id, false, false, 1))).status).toBe(200)
+    })
+
+    // Users stored before tokenVersion existed have no such field in MongoDB.
+    it('signs in a user whose document has no tokenVersion field', async () => {
+      const user = await createUser()
+      await prisma.$runCommandRaw({
+        update: 'users',
+        updates: [{ q: { _id: { $oid: user.id } }, u: { $unset: { tokenVersion: '' } } }],
+      })
+
+      const login = await agent.post('/login').send({ email: user.email, password: FIXTURE_PASSWORD })
+
+      expect(login.status).toBe(200)
+      expect((await agent.get('/me').set({ Authorization: `Bearer ${login.body.token}` })).status).toBe(200)
+    })
+
+    // Once `pnpm db:push` has backfilled the field: Prisma's `increment` writes null on a missing one.
+    it('revokes the sessions of a user whose document had no tokenVersion field', async () => {
+      const user = await createUser()
+      await prisma.$runCommandRaw({
+        update: 'users',
+        updates: [{ q: { _id: { $oid: user.id } }, u: { $unset: { tokenVersion: '' } } }],
+      })
+      await backfill()
+      const login = await agent.post('/login').send({ email: user.email, password: FIXTURE_PASSWORD })
+      const oldHeader = { Authorization: `Bearer ${login.body.token}` }
+
+      const change = await agent
+        .put('/me/password')
+        .set(oldHeader)
+        .send({ currentPassword: FIXTURE_PASSWORD, newPassword: 'NewPassword123' })
+
+      expect(change.status).toBe(200)
+      expect((await agent.get('/me').set(oldHeader)).status).toBe(401)
+      expect((await agent.get('/me').set({ Authorization: `Bearer ${change.body.token}` })).status).toBe(200)
+      expect((await prisma.user.findUniqueOrThrow({ where: { id: user.id } })).tokenVersion).toBe(1)
     })
   })
 

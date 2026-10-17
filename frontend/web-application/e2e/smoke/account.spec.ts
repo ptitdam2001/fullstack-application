@@ -284,9 +284,6 @@ test.describe('smoke — account page', () => {
     const oldToken = (await account.storedToken())!
     expect((await request.get(`${API_URL}/me`, { headers: bearer(oldToken) })).status()).toBe(200)
 
-    // A JWT is deterministic and its `iat` has whole-second precision: a password changed in the very second
-    // of the sign-in would yield the same token again, still valid. Never the case for a human — only for a test.
-    await page.waitForTimeout(1_100)
     await account.changePassword(SEED.password, NEW_PASSWORD)
 
     await expect(page.getByText(ACCOUNT_TOASTS.passwordChanged)).toBeVisible()
@@ -304,8 +301,6 @@ test.describe('smoke — account page', () => {
     await expect(account.heading).toBeVisible()
     expect(await account.storedToken()).toBe(newToken)
 
-    // `tokensValidAfter` is compared to the JWT `iat` per whole second
-    await page.waitForTimeout(1_100)
     expect((await request.get(`${API_URL}/me`, { headers: bearer(oldToken) })).status()).toBe(401)
 
     // The other device is sent back to the login page at its next action (a background refetch may

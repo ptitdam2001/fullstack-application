@@ -1,4 +1,3 @@
-import jwt from 'jsonwebtoken'
 import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { prisma } from '../../utils/prismaClient.js'
 import { authHeaderFor } from '../support/authenticate.js'
@@ -28,16 +27,6 @@ const imageIdOf = (avatar: string): string => {
     throw new Error(`Not an image url: ${avatar}`)
   }
   return match[1]
-}
-
-/** A token issued a minute ago — `authHeaderFor` tokens are issued "now", too close to tell before from after. */
-const olderAuthHeaderFor = (userId: string): { Authorization: string } => {
-  const token = jwt.sign(
-    { userId, isAdmin: false, isCoach: false, iat: Math.floor(Date.now() / 1000) - 60 },
-    process.env.JWT_SECRET as string,
-    { expiresIn: 7200 }
-  )
-  return { Authorization: `Bearer ${token}` }
 }
 
 describe('account page (self-service profile) — functional API', () => {
@@ -488,9 +477,10 @@ describe('account page (self-service profile) — functional API', () => {
       expect(withOld.status).toBe(401)
     })
 
+    // The old token is issued right before the change, usually in the same second (#54)
     it('règle métier: revokes the tokens issued before the change, the returned one stays valid', async () => {
       const user = await createUser()
-      const oldHeader = olderAuthHeaderFor(user.id)
+      const oldHeader = authHeaderFor(user.id)
       expect((await agent.get('/me').set(oldHeader)).status).toBe(200)
 
       const res = await agent
@@ -499,12 +489,13 @@ describe('account page (self-service profile) — functional API', () => {
         .send({ currentPassword: FIXTURE_PASSWORD, newPassword: NEW_PASSWORD })
 
       expect(res.status).toBe(200)
+      expect(`Bearer ${res.body.token}`).not.toBe(oldHeader.Authorization)
       expect((await agent.get('/me').set(oldHeader)).status).toBe(401)
       const fresh = await agent.get('/me').set({ Authorization: `Bearer ${res.body.token}` })
       expect(fresh.status).toBe(200)
       expect(fresh.body.id).toBe(user.id)
       const stored = await prisma.user.findUniqueOrThrow({ where: { id: user.id } })
-      expect(stored.tokensValidAfter).not.toBeNull()
+      expect(stored.tokenVersion).toBe(1)
     })
 
     it('règle métier: clears the failed login counter, a temporary lock and a pending reset link', async () => {
@@ -541,7 +532,7 @@ describe('account page (self-service profile) — functional API', () => {
 
     it('400 (not 401) — wrong current password, nothing changes and the session survives', async () => {
       const user = await createUser()
-      const header = olderAuthHeaderFor(user.id)
+      const header = authHeaderFor(user.id)
       const before = await prisma.user.findUniqueOrThrow({ where: { id: user.id } })
 
       const res = await agent
@@ -554,7 +545,7 @@ describe('account page (self-service profile) — functional API', () => {
       expect(res.body).not.toHaveProperty('token')
       const after = await prisma.user.findUniqueOrThrow({ where: { id: user.id } })
       expect(after.password).toBe(before.password)
-      expect(after.tokensValidAfter).toBeNull()
+      expect(after.tokenVersion).toBe(0)
       expect(after.loginAttempts).toBe(1)
       expect(after.lockedUntil).toBeNull()
       expect((await agent.get('/me').set(header)).status).toBe(200)
@@ -562,8 +553,8 @@ describe('account page (self-service profile) — functional API', () => {
 
     it('règle métier: the 5th wrong current password locks the account and signs every session out', async () => {
       const user = await createUser()
-      const header = olderAuthHeaderFor(user.id)
-      const otherDevice = olderAuthHeaderFor(user.id)
+      const header = authHeaderFor(user.id)
+      const otherDevice = authHeaderFor(user.id)
       const attempt = () =>
         agent.put('/me/password').set(header).send({ currentPassword: 'Wrong@1234', newPassword: NEW_PASSWORD })
 
@@ -589,7 +580,7 @@ describe('account page (self-service profile) — functional API', () => {
 
     it('règle métier: a successful change restarts the count of wrong current passwords', async () => {
       const user = await createUser()
-      const header = olderAuthHeaderFor(user.id)
+      const header = authHeaderFor(user.id)
       for (let i = 0; i < 4; i += 1) {
         await agent.put('/me/password').set(header).send({ currentPassword: 'Wrong@1234', newPassword: NEW_PASSWORD })
       }
@@ -619,7 +610,7 @@ describe('account page (self-service profile) — functional API', () => {
       expect(res.status).toBe(400)
       const after = await prisma.user.findUniqueOrThrow({ where: { id: user.id } })
       expect(after.password).toBe(before.password)
-      expect(after.tokensValidAfter).toBeNull()
+      expect(after.tokenVersion).toBe(0)
     })
 
     it('400 — validation: missing currentPassword', async () => {

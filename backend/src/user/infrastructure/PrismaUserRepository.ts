@@ -92,12 +92,20 @@ export class PrismaUserRepository implements IUserRepository {
 
   async findByEmailWithPassword(
     email: string
-  ): Promise<(UserProfile & { password: string; lockedUntil: Date | null }) | null> {
-    const row = await prisma.user.findUnique({ where: { email }, select: { ...select, password: true } })
+  ): Promise<(UserProfile & { password: string; lockedUntil: Date | null; tokenVersion: number }) | null> {
+    const row = await prisma.user.findUnique({
+      where: { email },
+      select: { ...select, password: true, tokenVersion: true },
+    })
     if (!row) {
       return null
     }
-    return { ...toUserProfile(row), password: row.password, lockedUntil: row.lockedUntil }
+    return {
+      ...toUserProfile(row),
+      password: row.password,
+      lockedUntil: row.lockedUntil,
+      tokenVersion: row.tokenVersion,
+    }
   }
 
   async findByIdWithPassword(id: string): Promise<(UserProfile & { password: string }) | null> {
@@ -184,7 +192,7 @@ export class PrismaUserRepository implements IUserRepository {
         isActive: true,
         isBlocked: true,
         lockedUntil: true,
-        tokensValidAfter: true,
+        tokenVersion: true,
         userTeams: { where: { role: TeamRole.COACH }, select: { id: true }, take: 1 },
       },
     })
@@ -196,7 +204,7 @@ export class PrismaUserRepository implements IUserRepository {
       isActive: row.isActive,
       isBlocked: row.isBlocked || isLockActive(row.lockedUntil),
       isCoach: row.userTeams.length > 0,
-      tokensValidAfter: row.tokensValidAfter,
+      tokenVersion: row.tokenVersion,
     }
   }
 
@@ -204,21 +212,23 @@ export class PrismaUserRepository implements IUserRepository {
     await prisma.user.update({ where: { id: userId }, data: { loginAttempts: 0, lockedUntil: null } })
   }
 
-  async revokeTokens(userId: string, at: Date): Promise<void> {
-    await prisma.user.update({ where: { id: userId }, data: { tokensValidAfter: at } })
+  async revokeTokens(userId: string): Promise<void> {
+    await prisma.user.update({ where: { id: userId }, data: { tokenVersion: { increment: 1 } } })
   }
 
-  async changePassword(userId: string, hashedPassword: string, tokensValidAfter: Date): Promise<void> {
-    await prisma.user.update({
+  async changePassword(userId: string, hashedPassword: string): Promise<number> {
+    const row = await prisma.user.update({
       where: { id: userId },
+      select: { tokenVersion: true },
       data: {
         password: hashedPassword,
-        tokensValidAfter,
+        tokenVersion: { increment: 1 },
         loginAttempts: 0,
         lockedUntil: null,
         resetToken: null,
         resetTokenExpiry: null,
       },
     })
+    return row.tokenVersion
   }
 }

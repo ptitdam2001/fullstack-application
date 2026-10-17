@@ -10,7 +10,9 @@ export type AvatarReplacement = { user: UserProfile; previousAvatar: string | nu
 
 export interface IUserRepository {
   findById(id: string): Promise<UserProfile | null>
-  findByEmailWithPassword(email: string): Promise<(UserProfile & { password: string; lockedUntil: Date | null }) | null>
+  findByEmailWithPassword(
+    email: string
+  ): Promise<(UserProfile & { password: string; lockedUntil: Date | null; tokenVersion: number }) | null>
   findByIdWithPassword(id: string): Promise<(UserProfile & { password: string }) | null>
   findAll(options?: UserListOptions): Promise<UserProfile[]>
   count(filters?: UserFilterOptions): Promise<number>
@@ -29,10 +31,12 @@ export interface IUserRepository {
   resetLoginAttempts(userId: string): Promise<void>
   findAuthState(userId: string): Promise<AuthState | null>
   /**
-   * Stores the new hash and revokes every token issued before `tokensValidAfter`. Also clears the failed
-   * login counter, the temporary lock and any pending reset link.
+   * Stores the new hash and increments the token version, which revokes every token signed before. Also
+   * clears the failed login counter, the temporary lock and any pending reset link.
+   *
+   * Returns the new token version, read from the same atomic write: the caller signs the next token with it.
    */
-  changePassword(userId: string, hashedPassword: string, tokensValidAfter: Date): Promise<void>
-  /** Refuses every token issued before `at`: all the sessions of the user are signed out. */
-  revokeTokens(userId: string, at: Date): Promise<void>
+  changePassword(userId: string, hashedPassword: string): Promise<number>
+  /** Increments the token version: all the sessions of the user are signed out. */
+  revokeTokens(userId: string): Promise<void>
 }
