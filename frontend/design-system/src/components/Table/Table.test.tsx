@@ -6,7 +6,6 @@ import { TableBody } from './TableBody'
 import { TableRow } from './TableRow'
 import { TableHead } from './TableHead'
 import { TableCell } from './TableCell'
-import { TableCaption } from './TableCaption'
 
 function BasicTable(props: Omit<React.ComponentProps<typeof Table>, 'children'>) {
   return (
@@ -166,25 +165,5 @@ describe('TableCell', () => {
   it('renders the cells of the isRowHeader column as row headers', () => {
     render(<BasicTable />)
     expect(screen.getByRole('rowheader', { name: 'Équipe A' })).toBeInTheDocument()
-  })
-})
-
-describe('TableCaption', () => {
-  it('sets data-slot="table-caption"', () => {
-    const { container } = render(
-      <table>
-        <TableCaption>Cap</TableCaption>
-      </table>
-    )
-    expect(container.querySelector('[data-slot="table-caption"]')).toBeInTheDocument()
-  })
-
-  it('renders caption text', () => {
-    render(
-      <table>
-        <TableCaption>Classement général</TableCaption>
-      </table>
-    )
-    expect(screen.getByText('Classement général')).toBeInTheDocument()
   })
 })
