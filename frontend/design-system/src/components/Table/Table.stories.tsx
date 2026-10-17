@@ -133,11 +133,17 @@ export const WithFooter: Story = {
         </TableRow>
       </TableBody>
       <TableFooter>
-        <tr>
-          <td className="p-2 font-medium">Total</td>
-          <td className="p-2 text-right font-medium">48</td>
-        </tr>
+        <TableRow id="total">
+          <TableCell>Total</TableCell>
+          <TableCell className="text-right">48</TableCell>
+        </TableRow>
       </TableFooter>
     </Table>
   ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    expect(await canvas.findByRole('rowheader', { name: 'Équipe A' })).toBeInTheDocument()
+    expect(canvas.getAllByRole('rowheader')).toHaveLength(3)
+    expect(canvas.getByText('48')).toBeInTheDocument()
+  },
 }
