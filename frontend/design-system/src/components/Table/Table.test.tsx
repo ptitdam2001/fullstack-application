@@ -3,14 +3,14 @@ import { render, screen } from '@testing-library/react'
 import { Table } from './Table'
 import { TableHeader } from './TableHeader'
 import { TableBody } from './TableBody'
+import { TableFooter } from './TableFooter'
 import { TableRow } from './TableRow'
 import { TableHead } from './TableHead'
 import { TableCell } from './TableCell'
-import { TableCaption } from './TableCaption'
 
-function BasicTable() {
+function BasicTable(props: Omit<React.ComponentProps<typeof Table>, 'children'>) {
   return (
-    <Table aria-label="Classement">
+    <Table aria-label="Classement" {...props}>
       <TableHeader>
         <TableHead isRowHeader>Équipe</TableHead>
         <TableHead>Pts</TableHead>
@@ -41,6 +41,33 @@ describe('Table', () => {
     const { container } = render(<Table aria-label="test" className="custom" />)
     expect(container.querySelector('[data-slot="table"]')).toHaveClass('custom')
   })
+
+  it('renders no caption without the caption prop', () => {
+    const { container } = render(<BasicTable />)
+    expect(container.querySelector('[data-slot="table-caption"]')).not.toBeInTheDocument()
+    expect(screen.getByRole('grid')).toHaveAccessibleDescription('')
+  })
+
+  it('renders the caption next to the rows', () => {
+    const { container } = render(<BasicTable caption="Classement général" />)
+    expect(container.querySelector('[data-slot="table-caption"]')).toHaveTextContent('Classement général')
+    expect(screen.getByRole('rowheader', { name: 'Équipe A' })).toBeInTheDocument()
+  })
+
+  it('describes the table by its caption', () => {
+    render(<BasicTable caption="Classement général" />)
+    expect(screen.getByRole('grid')).toHaveAccessibleDescription('Classement général')
+  })
+
+  it('keeps the aria-describedby of the caller', () => {
+    render(
+      <>
+        <p id="note">Mis à jour hier</p>
+        <BasicTable caption="Classement général" aria-describedby="note" />
+      </>
+    )
+    expect(screen.getByRole('grid')).toHaveAccessibleDescription('Mis à jour hier Classement général')
+  })
 })
 
 describe('TableHeader', () => {
@@ -68,6 +95,41 @@ describe('TableBody', () => {
       </Table>
     )
     expect(container.querySelector('[data-slot="table-body"]')).toBeInTheDocument()
+  })
+})
+
+describe('TableFooter', () => {
+  const FooterTable = () => (
+    <Table aria-label="test">
+      <TableHeader>
+        <TableHead isRowHeader>Équipe</TableHead>
+        <TableHead>Pts</TableHead>
+      </TableHeader>
+      <TableBody>
+        <TableRow id="a">
+          <TableCell>Équipe A</TableCell>
+          <TableCell>25</TableCell>
+        </TableRow>
+      </TableBody>
+      <TableFooter>
+        <TableRow id="total">
+          <TableCell>Total</TableCell>
+          <TableCell>48</TableCell>
+        </TableRow>
+      </TableFooter>
+    </Table>
+  )
+
+  it('sets data-slot="table-footer"', () => {
+    const { container } = render(<FooterTable />)
+    expect(container.querySelector('[data-slot="table-footer"]')).toBeInTheDocument()
+  })
+
+  it('renders its rows after the body rows', () => {
+    render(<FooterTable />)
+    const rowHeaders = screen.getAllByRole('rowheader').map(cell => cell.textContent)
+    expect(rowHeaders).toEqual(['Équipe A', 'Total'])
+    expect(screen.getByText('48')).toBeInTheDocument()
   })
 })
 
@@ -139,25 +201,5 @@ describe('TableCell', () => {
   it('renders the cells of the isRowHeader column as row headers', () => {
     render(<BasicTable />)
     expect(screen.getByRole('rowheader', { name: 'Équipe A' })).toBeInTheDocument()
-  })
-})
-
-describe('TableCaption', () => {
-  it('sets data-slot="table-caption"', () => {
-    const { container } = render(
-      <table>
-        <TableCaption>Cap</TableCaption>
-      </table>
-    )
-    expect(container.querySelector('[data-slot="table-caption"]')).toBeInTheDocument()
-  })
-
-  it('renders caption text', () => {
-    render(
-      <table>
-        <TableCaption>Classement général</TableCaption>
-      </table>
-    )
-    expect(screen.getByText('Classement général')).toBeInTheDocument()
   })
 })

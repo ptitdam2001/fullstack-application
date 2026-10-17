@@ -70,7 +70,7 @@ react-aria sets state via data attributes, not CSS classes:
 | Disabled | `data-disabled` | `data-disabled:opacity-50` |
 | Pressed  | `data-pressed`  | `data-pressed:scale-95`    |
 
-**Tailwind v3 syntax `data-[hovered]:` does NOT work in v4** — use `data-hovered:` without brackets.
+`data-hovered:` and `data-[hovered]:` compile to the same `[data-hovered]` selector (checked on Tailwind 4.3.3). Prefer `data-hovered:`, the convention of the design system. A state style that does not apply usually means react-aria never set the attribute: assert it in the test first.
 
 To assert state in tests:
 
