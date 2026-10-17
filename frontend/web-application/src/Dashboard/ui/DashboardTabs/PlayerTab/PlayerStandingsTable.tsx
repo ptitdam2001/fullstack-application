@@ -56,6 +56,7 @@ export const PlayerStandingsTable = ({ teamId, userId: _userId }: Props) => {
           {standings.rows.map(row => (
             <tr
               key={row.teamId}
+              aria-current={row.teamId === teamId ? 'true' : undefined}
               className={cn('border-b last:border-0', row.teamId === teamId && 'bg-primary/10 font-bold')}
             >
               <td className="py-1.5 pr-3">{row.rank}</td>
