@@ -193,10 +193,10 @@ sequenceDiagram
             UC->>AuthSvc: hashPassword(newPassword)
             AuthSvc-->>UC: hashedPassword
             UC->>UserRepo: mise à jour du mot de passe
-            Note over UserRepo,DB: password=hash, tokensValidAfter=now — tous les tokens antérieurs sont révoqués
+            Note over UserRepo,DB: password=hash, tokenVersion+1 — tous les tokens antérieurs sont révoqués
             UserRepo->>DB: prisma.user.update(...)
-            UC->>AuthSvc: generateToken(userId, isAdmin, isCoach)
-            AuthSvc-->>UC: token (émis après tokensValidAfter)
+            UC->>AuthSvc: generateToken(userId, isAdmin, isCoach, tokenVersion)
+            AuthSvc-->>UC: token (claim ver = nouvelle tokenVersion)
             UC-->>API: TokenData
             API-->>FE: 200 TokenData
             Note over FE: remplace le token stocké (localStorage, clé 'user')
@@ -296,7 +296,7 @@ model Image {
 
 Le frontend résout une URL relative par rapport à l'URL de base de l'API ; une URL absolue est utilisée telle quelle.
 
-`User.tokensValidAfter` (existant, voir [[10-inscription-et-authentification]]) est désormais posé aussi par le changement de mot de passe.
+`User.tokenVersion` (voir [[10-inscription-et-authentification]]) est incrémenté aussi par le changement de mot de passe.
 
 ---
 
@@ -439,12 +439,12 @@ Emplacement :
 - `updateMyProfile`, `updateMyAvatar`, `removeMyAvatar` : domaine `user` — `ProfileUseCases` (`backend/src/user/application/ProfileUseCases.ts`) et `ProfileHttpHandlers.ts`. Ils modifient l'entité utilisateur.
 - `changeMyPassword` : domaine `auth` — `AuthUseCases.changePassword` et `AuthHttpHandlers.ts`. Il émet un token, exactement comme `login`.
 
-| Use case           | Input                                        | Output                | Description                                                                                           |
-| ------------------ | -------------------------------------------- | --------------------- | ----------------------------------------------------------------------------------------------------- |
-| `updateMyProfile`  | `userId`, `{ firstName?, lastName? }`        | `UserWithoutPassword` | Met à jour uniquement prénom et nom                                                                   |
-| `updateMyAvatar`   | `userId`, `{ contentType, data }`            | `UserWithoutPassword` | Valide l'image, l'enregistre, pose `avatar`, supprime l'image qu'il a remplacée                       |
-| `removeMyAvatar`   | `userId`                                     | `UserWithoutPassword` | Remet `avatar` à `null`, puis supprime l'image qu'il a remplacée                                      |
-| `changeMyPassword` | `userId`, `{ currentPassword, newPassword }` | `TokenData`           | Vérifie le mot de passe actuel, enregistre le nouveau, pose `tokensValidAfter`, émet un nouveau token |
+| Use case           | Input                                        | Output                | Description                                                                                             |
+| ------------------ | -------------------------------------------- | --------------------- | ------------------------------------------------------------------------------------------------------- |
+| `updateMyProfile`  | `userId`, `{ firstName?, lastName? }`        | `UserWithoutPassword` | Met à jour uniquement prénom et nom                                                                     |
+| `updateMyAvatar`   | `userId`, `{ contentType, data }`            | `UserWithoutPassword` | Valide l'image, l'enregistre, pose `avatar`, supprime l'image qu'il a remplacée                         |
+| `removeMyAvatar`   | `userId`                                     | `UserWithoutPassword` | Remet `avatar` à `null`, puis supprime l'image qu'il a remplacée                                        |
+| `changeMyPassword` | `userId`, `{ currentPassword, newPassword }` | `TokenData`           | Vérifie le mot de passe actuel, enregistre le nouveau, incrémente `tokenVersion`, émet un nouveau token |
 
 Les handlers ne contiennent aucune logique métier : extraction de l'utilisateur courant, appel du cas d'usage, mapping des erreurs métier vers `400`.
 
@@ -492,7 +492,7 @@ L'intercepteur axios du frontend traite **tout** `401` comme une session expiré
 
 #### Révocation des sessions
 
-Un changement réussi pose `tokensValidAfter = now` : tout JWT émis avant est refusé (`401`), exactement comme après une réinitialisation (voir [[10-inscription-et-authentification]], « Cas limites techniques › Sessions (JWT) »). Une session volée ne survit donc pas au changement de mot de passe. Le token de la requête étant lui aussi révoqué, la réponse en délivre un nouveau pour la session courante.
+Un changement réussi incrémente `tokenVersion` : tout JWT émis avant, même dans la même seconde, est refusé (`401`), exactement comme après une réinitialisation (voir [[10-inscription-et-authentification]], « Cas limites techniques › Sessions (JWT) »). Une session volée ne survit donc pas au changement de mot de passe. Le token de la requête étant lui aussi révoqué, la réponse en délivre un nouveau pour la session courante.
 
 #### Limitation de débit
 
@@ -510,7 +510,7 @@ La limite de débit porte sur l'IP : elle ne freine pas un attaquant qui détien
 
 - Un mot de passe actuel erroné incrémente `loginAttempts`, le **même compteur** que les échecs de connexion, avec le même seuil (`MAX_LOGIN_ATTEMPTS`, 5 par défaut) et la même durée de blocage (`LOGIN_LOCKOUT_MINUTES`, 15 minutes par défaut) — voir [[10-inscription-et-authentification]], « Cas : mauvais mot de passe — blocage progressif ».
 - En dessous du seuil : `400`, la session reste valide.
-- Au seuil : `lockedUntil` est posé **et** `tokensValidAfter = now`. La tentative répond `401` : c'est le seul cas où un mot de passe actuel erroné répond `401`, parce que la session n'existe réellement plus. Le frontend renvoie alors l'utilisateur vers la page de connexion.
+- Au seuil : `lockedUntil` est posé **et** `tokenVersion` est incrémenté. La tentative répond `401` : c'est le seul cas où un mot de passe actuel erroné répond `401`, parce que la session n'existe réellement plus. Le frontend renvoie alors l'utilisateur vers la page de connexion.
 - Pourquoi révoquer les sessions : `lockedUntil` n'est contrôlé qu'à la connexion. Un blocage seul laisserait vivante la session qui devine.
 - Un changement de mot de passe réussi remet le compteur à zéro. Un mot de passe actuel correct accompagné d'un nouveau mot de passe hors règles ne compte pas comme un échec.
 - Conséquence assumée : quiconque dispose d'une session ouverte peut bloquer le compte pendant 15 minutes. C'est préférable à lui laisser deviner le mot de passe, et sa session est coupée du même coup.
@@ -544,7 +544,7 @@ Le mot de passe est haché par `IAuthService.hashPassword` (bcrypt), comme à l'
 
 ### Cas limites techniques
 
-- **Précision de `tokensValidAfter`** : la comparaison avec le `iat` du JWT se fait à la seconde. Le token délivré par `changeMyPassword` est émis après la pose de `tokensValidAfter` et reste donc valide.
+- **Token délivré par `changeMyPassword`** : il est signé avec la version renvoyée par l'incrément en base, donc il est accepté et diffère toujours de l'ancien token, même si la connexion et le changement ont lieu dans la même seconde.
 - **Requêtes concurrentes après un changement de mot de passe** : une requête partie avec l'ancien token après le changement reçoit `401` ; l'intercepteur déconnecte alors l'utilisateur. Le frontend doit remplacer le token dès la réponse `200`.
 - **`removeMyAvatar` sans photo** : idempotent — `200` avec l'utilisateur inchangé.
 - **Image supprimée encore en cache** : une ancienne URL peut rester servie par le cache du navigateur jusqu'à expiration ; sans conséquence, `User.avatar` pointe déjà vers la nouvelle.

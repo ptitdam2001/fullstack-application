@@ -126,7 +126,7 @@ Un utilisateur connecté change son mot de passe depuis la page compte (`PUT /me
 - La confirmation du nouveau mot de passe est vérifiée par l'interface uniquement ; elle n'est pas envoyée à l'API.
 - Un mot de passe actuel incorrect répond `400`, et non `401` : pour le frontend, `401` signifie « session expirée » (stockage vidé, redirection vers la connexion).
 - Un mot de passe actuel incorrect **compte comme un échec de connexion** (même compteur `loginAttempts`, même seuil). Au 5ᵉ échec consécutif, le compte est bloqué temporairement **et toutes ses sessions sont révoquées** ; cette tentative répond `401`. Sans la révocation, le blocage n'arrêterait que les nouvelles connexions, pas la session qui devine.
-- Un changement réussi **révoque tous les tokens émis auparavant** (`tokensValidAfter`, comme le reset) : les autres appareils sont déconnectés. La réponse fournit un nouveau token (`TokenData`) pour que la session courante continue.
+- Un changement réussi **révoque tous les tokens émis auparavant** (`tokenVersion` incrémenté, comme le reset) : les autres appareils sont déconnectés. La réponse fournit un nouveau token (`TokenData`) pour que la session courante continue.
 - La route est soumise à une limitation de débit (voir « Limitation de débit »).
 
 ---
@@ -428,7 +428,7 @@ sequenceDiagram
         UC->>AuthSvc: hashPassword(newPassword)
         AuthSvc-->>UC: hashedPassword
         UC->>RegRepo: resetPassword(userId, hashedPassword)
-        Note over RegRepo,DB: password=hash, resetToken=null, resetTokenExpiry=null, loginAttempts=0, lockedUntil=null, isBlocked=false, tokensValidAfter=now
+        Note over RegRepo,DB: password=hash, resetToken=null, resetTokenExpiry=null, loginAttempts=0, lockedUntil=null, isBlocked=false, tokenVersion+1
         RegRepo->>DB: prisma.user.update(...)
         UC-->>API: void
         API-->>FE: 200
@@ -535,7 +535,7 @@ model User {
   isReferee             Boolean   @default(false)   // nouveau — auto-déclaration arbitre
   loginAttempts         Int       @default(0)       // nouveau
   lockedUntil           DateTime?                   // blocage temporaire : fin du verrouillage (null = pas de verrou)
-  tokensValidAfter      DateTime?                   // révocation : tout JWT émis avant cette date est refusé (posé par resetPassword et changeMyPassword)
+  tokenVersion          Int       @default(0)       // révocation : seul un JWT dont la claim `ver` vaut cette version est accepté (incrémenté par resetPassword et changeMyPassword)
   activationToken       String?                     // nouveau
   activationTokenExpiry DateTime?                   // nouveau
   resetToken            String?                     // nouveau
@@ -931,7 +931,7 @@ Règles :
 
 - **Race condition inscription** : deux registrations simultanées avec le même email → contrainte `@@unique` sur `email` (MongoDB) garantit qu'une seule réussit — l'autre lève `PrismaClientKnownRequestError` code `P2002`, à mapper en `409`
 - **Resend activation sur compte déjà actif** : le use case vérifie `isActive` avant de générer un token — si actif, retourne `200` sans effet
-- **Sessions (JWT)** : le token ne prouve que l'identité ; `isAdmin`, `isCoach` et l'état du compte (existant, actif, non bloqué) sont relus en base à chaque requête authentifiée, donc blocage, rétrogradation, retrait de coach et suppression prennent effet immédiatement (`401` pour un compte supprimé, inactif ou bloqué). Un reset de mot de passe réussi pose `tokensValidAfter` : les tokens émis avant sont refusés (une session volée ne survit pas au reset). Un changement de mot de passe par l'utilisateur connecté (`PUT /me/password`, voir [[24-page-compte]]) pose `tokensValidAfter` de la même façon et renvoie un nouveau token pour la session courante. `POST /logout` ne révoque pas le token — le frontend le supprime — car une révocation par token demanderait un suivi des sessions, ou déconnecterait tous les appareils de l'utilisateur
+- **Sessions (JWT)** : le token ne prouve que l'identité ; `isAdmin`, `isCoach` et l'état du compte (existant, actif, non bloqué) sont relus en base à chaque requête authentifiée, donc blocage, rétrogradation, retrait de coach et suppression prennent effet immédiatement (`401` pour un compte supprimé, inactif ou bloqué). Révocation par version : chaque JWT porte la claim `ver`, la valeur de `User.tokenVersion` au moment où il est signé, et n'est accepté que si `ver` est égal à la version en base. Un reset de mot de passe réussi incrémente `tokenVersion` : les tokens émis avant sont refusés (une session volée ne survit pas au reset), même ceux émis dans la même seconde. Un changement de mot de passe par l'utilisateur connecté (`PUT /me/password`, voir [[24-page-compte]]) incrémente `tokenVersion` de la même façon et renvoie un nouveau token, signé avec la nouvelle version, donc toujours différent de l'ancien. Une version, contrairement à une date comparée au `iat` du JWT (précis à la seconde), ne laisse aucune fenêtre. Un token sans claim `ver` (émis avant l'introduction de la version) est refusé : le déploiement déconnecte une fois tous les utilisateurs. `POST /logout` ne révoque pas le token — le frontend le supprime — car une révocation par token demanderait un suivi des sessions, ou déconnecterait tous les appareils de l'utilisateur
 - **Reset password sur compte bloqué** : débloque le compte (`isBlocked=false`, `lockedUntil=null`) + remet `loginAttempts=0` en même opération — comportement voulu par la spec
 - **Upsert join request sur statut APPROVED** : le use case vérifie le statut existant avant l'upsert — si `APPROVED`, lève `AlreadyMemberError` (409)
 - **`POST /teams/with-coach` sans contrainte de doublons** : un utilisateur peut créer plusieurs équipes et être COACH de chacune — pas de contrainte à ajouter

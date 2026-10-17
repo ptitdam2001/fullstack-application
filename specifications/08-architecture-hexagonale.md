@@ -76,7 +76,7 @@ Conventions communes à tous les ports :
 
 ### Authentification et guards
 
-Le JWT ne prouve que l'**identité** (`userId`, `iat`). À chaque requête authentifiée, le security handler relit en base l'état du compte et les droits (`isAdmin`, `isCoach`) : le `TokenPayload` fourni aux guards vient de la base, jamais des claims du token. La requête est refusée en `401` si le compte n'existe plus, est inactif ou bloqué, ou si le token a été émis avant `User.tokensValidAfter` (reset de mot de passe). Une rétrogradation, un blocage ou un retrait de coach prend donc effet immédiatement. Les guards sont dans `src/auth/application/requireRoles.ts` :
+Le JWT ne prouve que l'**identité** (`userId`, `ver`). À chaque requête authentifiée, le security handler relit en base l'état du compte et les droits (`isAdmin`, `isCoach`) : le `TokenPayload` fourni aux guards vient de la base, jamais des claims du token. La requête est refusée en `401` si le compte n'existe plus, est inactif ou bloqué, ou si sa claim `ver` diffère de `User.tokenVersion` (incrémenté par un reset ou un changement de mot de passe). Une rétrogradation, un blocage ou un retrait de coach prend donc effet immédiatement. Les guards sont dans `src/auth/application/requireRoles.ts` :
 
 ```ts
 // Retourne le payload de la requête authentifiée ; lève UnauthorizedError s'il est absent
