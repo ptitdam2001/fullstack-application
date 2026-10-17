@@ -82,12 +82,12 @@ src/components/NomComposant/
    ```tsx
    import { Select as AriaSelect, SelectValue as AriaSelectValue } from 'react-aria-components'
    ```
-5. **Tailwind CSS v4** — utiliser la syntaxe data-attribute sans crochets :
+5. **Tailwind CSS v4** — préférer la forme courte pour un état booléen de react-aria :
    ```tsx
-   // ✅ v4
+   // ✅ forme préférée pour un état booléen
    'data-focused:bg-accent data-hovered:bg-accent data-disabled:opacity-50 data-selected:bg-accent'
-   // ❌ v3 (ne pas utiliser)
-   'data-[focused]:bg-accent data-[hovered]:bg-accent data-[disabled]:opacity-50'
+   // ✅ crochets pour une valeur
+   'data-[orientation=vertical]:flex-row'
    ```
 6. **Arrow function** — toujours `export const` + flèche, jamais `function` :
    ```tsx
@@ -142,22 +142,23 @@ export const BadgeVariants = cva(
 - Navigation polymorphe → `onPress + useNavigate` ou `Link` react-aria avec styles `ButtonVariants`
 - Trigger de Dialog/Menu → utilise directement `Button` (react-aria expose `ButtonContext` aux enfants)
 
-### Tailwind v4 — data attributes (syntaxe obligatoire)
+### Tailwind v4 — data attributes
 
 ```css
-/* ✅ v4 — sans crochets */
+/* ✅ forme préférée pour un état booléen */
 data-hovered:bg-accent
 data-focused:ring-2
 data-selected:font-bold
 data-disabled:opacity-50
 data-pressed:scale-95
 
-/* ❌ v3 — NE PAS UTILISER */
-data-[hovered]:bg-accent
-data-[focused]:ring-2
+/* ✅ crochets pour une valeur */
+data-[orientation=vertical]:flex-row
 ```
 
-react-aria pose ces attributs sur les éléments — les styles ne s'appliquent qu'avec la syntaxe v4.
+`data-selected:` et `data-[selected]:` produisent le même sélecteur `[data-selected]` (vérifié sur Tailwind 4.3.3) : les deux fonctionnent, la forme courte est la convention du design system.
+
+react-aria pose ces attributs sur les éléments, et seulement quand l'état existe (`data-selected` demande un `selectionMode`, par exemple). Un style d'état qui ne s'applique pas : vérifier d'abord la présence de l'attribut dans le DOM.
 
 ---
 
