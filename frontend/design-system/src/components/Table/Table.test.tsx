@@ -8,9 +8,9 @@ import { TableHead } from './TableHead'
 import { TableCell } from './TableCell'
 import { TableCaption } from './TableCaption'
 
-function BasicTable() {
+function BasicTable(props: Omit<React.ComponentProps<typeof Table>, 'children'>) {
   return (
-    <Table aria-label="Classement">
+    <Table aria-label="Classement" {...props}>
       <TableHeader>
         <TableHead isRowHeader>Équipe</TableHead>
         <TableHead>Pts</TableHead>
@@ -40,6 +40,33 @@ describe('Table', () => {
   it('forwards className', () => {
     const { container } = render(<Table aria-label="test" className="custom" />)
     expect(container.querySelector('[data-slot="table"]')).toHaveClass('custom')
+  })
+
+  it('renders no caption without the caption prop', () => {
+    const { container } = render(<BasicTable />)
+    expect(container.querySelector('[data-slot="table-caption"]')).not.toBeInTheDocument()
+    expect(screen.getByRole('grid')).toHaveAccessibleDescription('')
+  })
+
+  it('renders the caption next to the rows', () => {
+    const { container } = render(<BasicTable caption="Classement général" />)
+    expect(container.querySelector('[data-slot="table-caption"]')).toHaveTextContent('Classement général')
+    expect(screen.getByRole('rowheader', { name: 'Équipe A' })).toBeInTheDocument()
+  })
+
+  it('describes the table by its caption', () => {
+    render(<BasicTable caption="Classement général" />)
+    expect(screen.getByRole('grid')).toHaveAccessibleDescription('Classement général')
+  })
+
+  it('keeps the aria-describedby of the caller', () => {
+    render(
+      <>
+        <p id="note">Mis à jour hier</p>
+        <BasicTable caption="Classement général" aria-describedby="note" />
+      </>
+    )
+    expect(screen.getByRole('grid')).toHaveAccessibleDescription('Mis à jour hier Classement général')
   })
 })
 
