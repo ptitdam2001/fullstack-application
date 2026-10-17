@@ -8,7 +8,7 @@ import { AdminUserTableRow } from './AdminUserTableRow'
 const wrapper = ({ children }: { children: ReactNode }) => (
   <Table>
     <TableHeader>
-      <TableHead />
+      <TableHead isRowHeader />
       <TableHead />
       <TableHead />
       <TableHead />
@@ -42,6 +42,10 @@ export class AdminUserTableRowPage {
       { wrapper }
     )
     return this
+  }
+
+  nameCell() {
+    return screen.getByRole('rowheader')
   }
 
   cells() {

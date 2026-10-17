@@ -24,6 +24,12 @@ describe('AdminAgeCategoryTable', () => {
     expect(screen.getByText('U18')).toBeInTheDocument()
   })
 
+  it('marks the label column as the row header', () => {
+    render(<AdminAgeCategoryTable ageCategories={ageCategories} onEdit={vi.fn()} onDelete={vi.fn()} />)
+    expect(screen.getAllByRole('rowheader')).toHaveLength(3)
+    expect(screen.getByRole('rowheader', { name: /U13/ })).toBeInTheDocument()
+  })
+
   it('renders empty state when list is empty', () => {
     render(<AdminAgeCategoryTable ageCategories={[]} onEdit={vi.fn()} onDelete={vi.fn()} />)
     expect(screen.getByText('adminAgeCategories.table.empty')).toBeInTheDocument()

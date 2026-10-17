@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { expect, within } from 'storybook/test'
 
 import { Table } from './Table'
 import { TableHeader } from './TableHeader'
@@ -32,7 +33,7 @@ export const Standings: Story = {
       <TableCaption>Classement — Championnat U13 — Phase 1</TableCaption>
       <TableHeader>
         <TableHead className="w-10 text-center">#</TableHead>
-        <TableHead>Équipe</TableHead>
+        <TableHead isRowHeader>Équipe</TableHead>
         <TableHead className="text-center">J</TableHead>
         <TableHead className="text-center">G</TableHead>
         <TableHead className="text-center">N</TableHead>
@@ -65,7 +66,7 @@ export const MatchList: Story = {
     <Table aria-label="Liste des matchs">
       <TableHeader>
         <TableHead>Date</TableHead>
-        <TableHead>Domicile</TableHead>
+        <TableHead isRowHeader>Domicile</TableHead>
         <TableHead className="text-center">Score</TableHead>
         <TableHead>Extérieur</TableHead>
         <TableHead>Statut</TableHead>
@@ -101,13 +102,19 @@ export const MatchList: Story = {
       </TableBody>
     </Table>
   ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    // the cells of the isRowHeader column name each row for screen readers
+    expect(await canvas.findByRole('rowheader', { name: 'Équipe C' })).toBeInTheDocument()
+    expect(canvas.getAllByRole('rowheader')).toHaveLength(3)
+  },
 }
 
 export const WithFooter: Story = {
   render: () => (
     <Table aria-label="Points par équipe">
       <TableHeader>
-        <TableHead>Équipe</TableHead>
+        <TableHead isRowHeader>Équipe</TableHead>
         <TableHead className="text-right">Points</TableHead>
       </TableHeader>
       <TableBody>

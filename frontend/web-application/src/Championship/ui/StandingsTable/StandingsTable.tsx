@@ -15,7 +15,7 @@ export const StandingsTable = ({ rows, teams, qualifyRank }: StandingsTableProps
   <Table>
     <TableHeader>
       <TableHead className="w-8" />
-      <TableHead className="text-left">
+      <TableHead isRowHeader className="text-left">
         <FormattedMessage id="championshipDetail.standings.table.team" />
       </TableHead>
       <TableHead>

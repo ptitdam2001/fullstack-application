@@ -12,7 +12,7 @@ function BasicTable() {
   return (
     <Table aria-label="Classement">
       <TableHeader>
-        <TableHead>Équipe</TableHead>
+        <TableHead isRowHeader>Équipe</TableHead>
         <TableHead>Pts</TableHead>
       </TableHeader>
       <TableBody>
@@ -48,7 +48,7 @@ describe('TableHeader', () => {
     const { container } = render(
       <Table aria-label="test">
         <TableHeader>
-          <TableHead>Col</TableHead>
+          <TableHead isRowHeader>Col</TableHead>
         </TableHeader>
         <TableBody />
       </Table>
@@ -62,7 +62,7 @@ describe('TableBody', () => {
     const { container } = render(
       <Table aria-label="test">
         <TableHeader>
-          <TableHead>Col</TableHead>
+          <TableHead isRowHeader>Col</TableHead>
         </TableHeader>
         <TableBody />
       </Table>
@@ -76,7 +76,7 @@ describe('TableRow', () => {
     const { container } = render(
       <Table aria-label="test">
         <TableHeader>
-          <TableHead>Col</TableHead>
+          <TableHead isRowHeader>Col</TableHead>
         </TableHeader>
         <TableBody>
           <TableRow>
@@ -94,7 +94,7 @@ describe('TableHead', () => {
     const { container } = render(
       <Table aria-label="test">
         <TableHeader>
-          <TableHead>Col</TableHead>
+          <TableHead isRowHeader>Col</TableHead>
         </TableHeader>
         <TableBody />
       </Table>
@@ -108,7 +108,7 @@ describe('TableCell', () => {
     const { container } = render(
       <Table aria-label="test">
         <TableHeader>
-          <TableHead>Col</TableHead>
+          <TableHead isRowHeader>Col</TableHead>
         </TableHeader>
         <TableBody>
           <TableRow>
@@ -124,7 +124,7 @@ describe('TableCell', () => {
     render(
       <Table aria-label="test">
         <TableHeader>
-          <TableHead>Col</TableHead>
+          <TableHead isRowHeader>Col</TableHead>
         </TableHeader>
         <TableBody>
           <TableRow>
@@ -134,6 +134,11 @@ describe('TableCell', () => {
       </Table>
     )
     expect(screen.getByText('Équipe A')).toBeInTheDocument()
+  })
+
+  it('renders the cells of the isRowHeader column as row headers', () => {
+    render(<BasicTable />)
+    expect(screen.getByRole('rowheader', { name: 'Équipe A' })).toBeInTheDocument()
   })
 })
 

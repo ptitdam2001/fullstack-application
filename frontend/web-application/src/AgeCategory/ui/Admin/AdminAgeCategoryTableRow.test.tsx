@@ -8,7 +8,7 @@ import { AdminAgeCategoryTableRow } from './AdminAgeCategoryTableRow'
 const wrapper = ({ children }: { children: ReactNode }) => (
   <Table>
     <TableHeader>
-      <TableHead />
+      <TableHead isRowHeader />
       <TableHead />
       <TableHead />
     </TableHeader>

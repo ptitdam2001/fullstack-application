@@ -27,7 +27,7 @@ type AdminChampionshipTableProps = {
 export const AdminChampionshipTable = ({ championships, onResume, onViewDetail }: AdminChampionshipTableProps) => (
   <Table>
     <TableHeader>
-      <TableHead>
+      <TableHead isRowHeader>
         <FormattedMessage id="adminChampionships.table.name" />
       </TableHead>
       <TableHead>

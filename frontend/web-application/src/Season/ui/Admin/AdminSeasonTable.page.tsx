@@ -34,6 +34,14 @@ export class AdminSeasonTablePage {
     return screen.getByText('adminSeasons.table.empty')
   }
 
+  rowHeaders() {
+    return screen.getAllByRole('rowheader')
+  }
+
+  rowHeader(name: string) {
+    return screen.getByRole('rowheader', { name: new RegExp(name) })
+  }
+
   rowLabel(label: string) {
     return screen.getByText(label)
   }

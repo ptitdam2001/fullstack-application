@@ -50,6 +50,12 @@ describe('StandingsTable', () => {
     expect(screen.getByText('Lyon HB Club')).toBeInTheDocument()
   })
 
+  it('marks the team column as the row header', () => {
+    render(<StandingsTable rows={rows} teams={teams} qualifyRank={1} />)
+    expect(screen.getAllByRole('rowheader')).toHaveLength(rows.length)
+    expect(screen.getByRole('rowheader', { name: /HB Villeurbanne/ })).toBeInTheDocument()
+  })
+
   it('renders points and goal difference values', () => {
     render(<StandingsTable rows={rows} teams={teams} qualifyRank={1} />)
     expect(screen.getByText('9')).toBeInTheDocument()

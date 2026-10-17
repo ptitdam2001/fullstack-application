@@ -26,6 +26,12 @@ describe('AdminTeamTable', () => {
     expect(screen.getByText('Les Verts')).toBeInTheDocument()
   })
 
+  it('marks the name column as the row header', () => {
+    render(<AdminTeamTable teams={teams} onEdit={vi.fn()} onDelete={vi.fn()} />)
+    expect(screen.getAllByRole('rowheader')).toHaveLength(3)
+    expect(screen.getByRole('rowheader', { name: /Les Rouges/ })).toBeInTheDocument()
+  })
+
   it('renders empty state when teams list is empty', () => {
     render(<AdminTeamTable teams={[]} onEdit={vi.fn()} onDelete={vi.fn()} />)
     expect(screen.getByText('adminTeams.table.empty')).toBeInTheDocument()
