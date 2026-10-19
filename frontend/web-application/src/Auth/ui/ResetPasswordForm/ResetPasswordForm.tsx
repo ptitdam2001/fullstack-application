@@ -1,5 +1,5 @@
 import { useIntl, FormattedMessage } from 'react-intl'
-import { useSearchParams } from 'react-router'
+import { Link, useSearchParams } from 'react-router'
 import { Button, PasswordInput, Toast } from '@repo/design-system'
 import { Loader2 } from 'lucide-react'
 import { z } from 'zod'
@@ -8,6 +8,7 @@ import { ResetPasswordBody } from '@Sdk/authentication/authentication.zod'
 import { useResetPasswordAction } from '../../application/useResetPasswordAction'
 import { isPasswordCompliant } from '../../domain/password'
 import { getErrorKey } from '../../infrastructure/httpError'
+import { FORGOTTEN_PASSWORD_PAGE } from '../../domain/Auth'
 
 // confirmPassword is a UI-only field: it is checked here and never sent to the API
 const ResetFormSchema = ResetPasswordBody.extend({
@@ -32,6 +33,19 @@ export const ResetPasswordForm = () => {
   const { process, isPending } = useResetPasswordAction()
   const { Field, Form } = resetPasswordFormFactory.useForm({ mode: 'onBlur', defaultValues: { token } })
 
+  if (!token) {
+    return (
+      <div className="flex flex-col gap-4">
+        <p className="font-medium text-red-600">
+          <FormattedMessage id="resetPassword.error.missingToken" />
+        </p>
+        <Link to={FORGOTTEN_PASSWORD_PAGE} className="text-sm text-blue-600 hover:underline">
+          <FormattedMessage id="resetPassword.error.requestNewLink" />
+        </Link>
+      </div>
+    )
+  }
+
   return (
     <div className="flex flex-col gap-6">
       <h2 className="text-2xl font-bold">
@@ -41,6 +55,7 @@ export const ResetPasswordForm = () => {
         onSubmit={async (data: ResetFormValues) => {
           try {
             await process(token, data.newPassword)
+            toast.success(intl.formatMessage({ id: 'resetPassword.success.description' }))
           } catch (err: unknown) {
             toast(intl.formatMessage({ id: getErrorKey(err, SUBMIT_ERROR_KEYS, 'resetPassword.error.generic') }))
           }

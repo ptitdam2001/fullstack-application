@@ -23,6 +23,18 @@ export class ResetPasswordFormPage {
     return this.canvas.getByText(/the password needs at least 8|le mot de passe doit contenir au moins 8/i)
   }
 
+  submitButtonOrNull() {
+    return this.canvas.queryByRole('button', { name: /reset password|réinitialiser/i })
+  }
+
+  invalidLinkMessage() {
+    return this.canvas.findByText(/the reset link is invalid|le lien de réinitialisation est invalide/i)
+  }
+
+  requestNewLink() {
+    return this.canvas.getByRole('link', { name: /request a new link|demander un nouveau lien/i })
+  }
+
   mismatchError() {
     return this.canvas.getByText(/passwords do not match|les mots de passe ne correspondent pas/i)
   }

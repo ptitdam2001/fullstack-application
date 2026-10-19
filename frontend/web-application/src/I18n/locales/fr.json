@@ -65,6 +65,8 @@
     "success.cta": "Se connecter",
     "error.invalid": "Le lien de réinitialisation est invalide ou expiré, ou le mot de passe ne respecte pas les règles (8 caractères, 1 chiffre, 1 majuscule).",
     "error.passwordRules": "Le mot de passe doit contenir au moins 8 caractères, 1 chiffre et 1 majuscule.",
+    "error.missingToken": "Le lien de réinitialisation est invalide ou expiré.",
+    "error.requestNewLink": "Demander un nouveau lien",
     "error.passwordMismatch": "Les mots de passe ne correspondent pas.",
     "error.tooManyRequests": "Trop de tentatives. Merci de patienter avant de réessayer.",
     "error.generic": "Une erreur est survenue. Veuillez réessayer."
