@@ -8,7 +8,7 @@ import type { RegisterInput } from '@Sdk/model'
 import { TeamSelectField } from '@Teams/ui/TeamSelect/TeamSelectField'
 import { useRegisterAction } from '../../application/useRegisterAction'
 import { getPasswordStrength, isPasswordCompliant } from '../../domain/password'
-import { getHttpStatus } from '../../infrastructure/httpError'
+import { getErrorKey } from '../../infrastructure/httpError'
 
 // confirmPassword is a UI-only field: it is checked here and never sent to the API
 const RegisterFormSchema = RegisterBody.extend({
@@ -19,6 +19,11 @@ const RegisterFormSchema = RegisterBody.extend({
 type RegisterFormValues = z.infer<typeof RegisterFormSchema>
 
 const registerFormFactory = createFormFactory({ schema: RegisterFormSchema })
+
+const SUBMIT_ERROR_KEYS: Partial<Record<number, string>> = {
+  400: 'register.error.invalid',
+  409: 'register.error.emailInUse',
+}
 
 const strengthKeys = [
   'register.strength.weak',
@@ -48,16 +53,7 @@ export const RegisterForm = () => {
       }
       await process(input)
     } catch (err: unknown) {
-      switch (getHttpStatus(err)) {
-        case 400:
-          toast(intl.formatMessage({ id: 'register.error.invalid' }))
-          break
-        case 409:
-          toast(intl.formatMessage({ id: 'register.error.emailInUse' }))
-          break
-        default:
-          toast(intl.formatMessage({ id: 'register.error.generic' }))
-      }
+      toast(intl.formatMessage({ id: getErrorKey(err, SUBMIT_ERROR_KEYS, 'register.error.generic') }))
     }
   }
 
