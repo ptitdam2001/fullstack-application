@@ -83,6 +83,26 @@ export const PasswordMismatch: Story = {
   },
 }
 
+export const SubmitRejected: Story = {
+  name: 'Soumission 400 — toast lien invalide ou mot de passe refusé',
+  parameters: {
+    msw: {
+      handlers: [
+        http.post('*/reset-password', () =>
+          HttpResponse.json({ status: 400, message: 'Token invalide ou expiré' }, { status: 400 })
+        ),
+      ],
+    },
+  },
+  play: async ({ canvasElement }) => {
+    const page = new ResetPasswordFormPage(canvasElement)
+    await page.fillPasswords('Password1', 'Password1')
+    await page.submit()
+
+    await page.toast(/reset link is invalid or expired|lien de réinitialisation est invalide ou expiré/i)
+  },
+}
+
 export const SubmitTooManyRequests: Story = {
   name: 'Soumission 429 — toast dédié',
   parameters: {
