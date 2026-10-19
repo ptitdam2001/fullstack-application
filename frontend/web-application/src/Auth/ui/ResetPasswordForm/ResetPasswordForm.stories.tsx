@@ -13,9 +13,9 @@ const meta = {
   component: ResetPasswordForm,
   title: 'Auth/ResetPasswordForm',
   decorators: [
-    Story => (
+    (Story, { parameters }) => (
       // useSearchParams()/useNavigate() need a router context — no route is matched, just a location.
-      <MemoryRouter initialEntries={['/reset-password?token=test-token']}>
+      <MemoryRouter initialEntries={[parameters.location]}>
         <div className="h-screen w-96 p-6">
           <Story />
         </div>
@@ -23,6 +23,7 @@ const meta = {
     ),
   ],
   parameters: {
+    location: '/reset-password?token=test-token',
     msw: {
       handlers: [getResetPasswordMockHandler()],
     },
@@ -69,6 +70,29 @@ export const WeakPasswordIsNotSubmitted: Story = {
 
     await waitFor(() => expect(page.rulesError()).toBeInTheDocument())
     await expect(onResetPassword).not.toHaveBeenCalled()
+  },
+}
+
+export const MissingToken: Story = {
+  name: 'Lien sans token — lien invalide, nouveau lien proposé, pas de formulaire',
+  parameters: { location: '/reset-password' },
+  play: async ({ canvasElement }) => {
+    const page = new ResetPasswordFormPage(canvasElement)
+
+    await page.invalidLinkMessage()
+    await expect(page.requestNewLink()).toHaveAttribute('href', '/auth/forgotten-password')
+    await expect(page.submitButtonOrNull()).not.toBeInTheDocument()
+  },
+}
+
+export const SubmitSuccess: Story = {
+  name: 'Soumission réussie — confirmation affichée',
+  play: async ({ canvasElement }) => {
+    const page = new ResetPasswordFormPage(canvasElement)
+    await page.fillPasswords('Password1', 'Password1')
+    await page.submit()
+
+    await page.toast(/your password has been reset|votre mot de passe a été réinitialisé/i)
   },
 }
 
