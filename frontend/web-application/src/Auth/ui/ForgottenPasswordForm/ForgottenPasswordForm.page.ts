@@ -15,18 +15,31 @@ export class ForgottenPasswordFormPage {
     return this.canvas.getByRole('button', { name: /reset password|réinitialiser/i })
   }
 
-  resendButton() {
+  resendResetLinkButton() {
+    return this.canvas.findByRole('button', {
+      name: /send the reset link again|renvoyer le lien de réinitialisation/i,
+    })
+  }
+
+  resendActivationButton() {
     return this.canvas.findByRole('button', {
       name: /request a new activation link|renvoyer un lien d'activation/i,
     })
   }
 
   successMessage() {
-    return this.canvas.getByText(/email sent if your account exists|email envoyé si votre compte existe/i)
+    return this.canvas.getByText(
+      /if an account exists for this address, a reset link|si un compte existe pour cette adresse, un lien de réinitialisation/i
+    )
   }
 
   toast(matcher: RegExp) {
     return within(document.body).findByText(matcher)
+  }
+
+  /** Toasts outlive their story: count them to tell a new one from a leftover */
+  toasts(matcher: RegExp) {
+    return within(document.body).queryAllByText(matcher)
   }
 
   async fillEmail(email: string) {
@@ -40,9 +53,13 @@ export class ForgottenPasswordFormPage {
     return this
   }
 
-  async clickResend() {
-    const button = await this.resendButton()
-    await userEvent.click(button)
+  async clickResendResetLink() {
+    await userEvent.click(await this.resendResetLinkButton())
+    return this
+  }
+
+  async clickResendActivation() {
+    await userEvent.click(await this.resendActivationButton())
     return this
   }
 }

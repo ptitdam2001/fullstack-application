@@ -1,9 +1,23 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { expect, waitFor } from 'storybook/test'
+import { expect, fn, waitFor } from 'storybook/test'
 import { http, HttpResponse } from 'msw'
-import { getForgotPasswordMockHandler, getResendActivationMockHandler } from '@Sdk/authentication/authentication.msw'
 import { ForgottenPasswordForm } from './ForgottenPasswordForm'
 import { ForgottenPasswordFormPage } from './ForgottenPasswordForm.page'
+
+// Spies on the bodies received by the two email routes
+const onForgotPassword = fn()
+const onResendActivation = fn()
+
+const handlers = [
+  http.post('*/forgot-password', async ({ request }) => {
+    onForgotPassword(await request.json())
+    return new HttpResponse(null, { status: 200 })
+  }),
+  http.post('*/resend-activation', async ({ request }) => {
+    onResendActivation(await request.json())
+    return new HttpResponse(null, { status: 200 })
+  }),
+]
 
 const meta = {
   component: ForgottenPasswordForm,
@@ -16,9 +30,11 @@ const meta = {
     ),
   ],
   parameters: {
-    msw: {
-      handlers: [getForgotPasswordMockHandler(), getResendActivationMockHandler()],
-    },
+    msw: { handlers },
+  },
+  beforeEach: () => {
+    onForgotPassword.mockClear()
+    onResendActivation.mockClear()
   },
 } satisfies Meta<typeof ForgottenPasswordForm>
 
@@ -30,13 +46,41 @@ export const Default: Story = {
 }
 
 export const SubmitSuccess: Story = {
-  name: 'Soumission réussie — passe à l’écran de renvoi',
+  name: 'Soumission réussie — message de réinitialisation',
   play: async ({ canvasElement }) => {
     const page = new ForgottenPasswordFormPage(canvasElement)
     await page.fillEmail('user@example.com')
     await page.submit()
 
     await waitFor(() => expect(page.successMessage()).toBeInTheDocument())
+    await expect(onForgotPassword).toHaveBeenCalledWith({ email: 'user@example.com' })
+  },
+}
+
+export const ResendResetLink: Story = {
+  name: 'Renvoi du lien de réinitialisation — même route, même adresse',
+  play: async ({ canvasElement }) => {
+    const page = new ForgottenPasswordFormPage(canvasElement)
+    await page.fillEmail('user@example.com')
+    await page.submit()
+    await page.clickResendResetLink()
+
+    await waitFor(() => expect(onForgotPassword).toHaveBeenCalledTimes(2))
+    await expect(onForgotPassword).toHaveBeenLastCalledWith({ email: 'user@example.com' })
+    await expect(onResendActivation).not.toHaveBeenCalled()
+  },
+}
+
+export const ResendActivation: Story = {
+  name: 'Compte pas encore activé — renvoi du lien d’activation',
+  play: async ({ canvasElement }) => {
+    const page = new ForgottenPasswordFormPage(canvasElement)
+    await page.fillEmail('user@example.com')
+    await page.submit()
+    await page.clickResendActivation()
+
+    await page.toast(/email sent if your account exists|email envoyé si votre compte existe/i)
+    await expect(onResendActivation).toHaveBeenCalledWith({ email: 'user@example.com' })
   },
 }
 
@@ -60,12 +104,12 @@ export const SubmitTooManyRequests: Story = {
   },
 }
 
-export const ResendTooManyRequests: Story = {
-  name: 'Renvoi 429 — toast dédié',
+export const ResendActivationTooManyRequests: Story = {
+  name: 'Renvoi d’activation 429 — toast dédié',
   parameters: {
     msw: {
       handlers: [
-        getForgotPasswordMockHandler(),
+        handlers[0],
         http.post('*/resend-activation', () =>
           HttpResponse.json({ status: 429, message: 'Too many requests' }, { status: 429 })
         ),
@@ -76,8 +120,10 @@ export const ResendTooManyRequests: Story = {
     const page = new ForgottenPasswordFormPage(canvasElement)
     await page.fillEmail('user@example.com')
     await page.submit()
-    await page.clickResend()
+    const tooManyRequests = /too many attempts|trop de tentatives/i
+    const before = page.toasts(tooManyRequests).length
+    await page.clickResendActivation()
 
-    await page.toast(/too many attempts|trop de tentatives/i)
+    await waitFor(() => expect(page.toasts(tooManyRequests)).toHaveLength(before + 1))
   },
 }

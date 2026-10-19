@@ -49,6 +49,11 @@
     "resend.submit": "Send",
     "resend.success": "Email sent if your account exists and is not yet activated."
   },
+  "forgotPassword": {
+    "success": "If an account exists for this address, a reset link has been sent.",
+    "resend": "Send the reset link again",
+    "activation.hint": "Account not activated yet?"
+  },
   "resetPassword": {
     "title": "New password",
     "field.newPassword": "New password",
