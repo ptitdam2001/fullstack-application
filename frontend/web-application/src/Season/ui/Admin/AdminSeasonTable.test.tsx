@@ -45,6 +45,11 @@ describe('AdminSeasonTable', () => {
     expect(page.rowLabel('2025-2026')).toBeInTheDocument()
   })
 
+  it('names the table after the page title', () => {
+    const page = new AdminSeasonTablePage(seasons).render()
+    expect(page.table('adminSeasons.title')).toBeInTheDocument()
+  })
+
   it('marks the label column as the row header', () => {
     const page = new AdminSeasonTablePage(seasons).render()
     expect(page.rowHeaders()).toHaveLength(seasons.length)

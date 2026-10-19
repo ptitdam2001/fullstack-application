@@ -35,6 +35,11 @@ describe('AdminUserTable', () => {
     expect(page.rowEmail('max@example.com')).toBeInTheDocument()
   })
 
+  it('names the table after the page title', () => {
+    const page = new AdminUserTablePage(users).render()
+    expect(page.table('adminUsers.title')).toBeInTheDocument()
+  })
+
   it('marks the name column as the row header', () => {
     const page = new AdminUserTablePage(users).render()
     expect(page.rowHeaders()).toHaveLength(users.length)

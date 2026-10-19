@@ -6,7 +6,7 @@ import type { Season } from '../../domain/Season'
 import { AdminSeasonTableRow } from './AdminSeasonTableRow'
 
 const wrapper = ({ children }: { children: ReactNode }) => (
-  <Table>
+  <Table aria-label="test">
     <TableHeader>
       <TableHead isRowHeader />
       <TableHead />

@@ -1,4 +1,4 @@
-import { FormattedMessage } from 'react-intl'
+import { FormattedMessage, useIntl } from 'react-intl'
 import { Table, TableHeader, TableHead, TableBody } from '@repo/design-system'
 import { AdminChampionshipTableRow } from './AdminChampionshipTableRow'
 import type { PhaseType } from '@Championship/domain/Phase'
@@ -24,52 +24,55 @@ type AdminChampionshipTableProps = {
   onViewDetail: (id: string) => void
 }
 
-export const AdminChampionshipTable = ({ championships, onResume, onViewDetail }: AdminChampionshipTableProps) => (
-  <Table>
-    <TableHeader>
-      <TableHead isRowHeader>
-        <FormattedMessage id="adminChampionships.table.name" />
-      </TableHead>
-      <TableHead>
-        <FormattedMessage id="adminChampionships.table.season" />
-      </TableHead>
-      <TableHead>
-        <FormattedMessage id="adminChampionships.table.category" />
-      </TableHead>
-      <TableHead>
-        <FormattedMessage id="adminChampionships.table.status" />
-      </TableHead>
-      <TableHead>
-        <FormattedMessage id="adminChampionships.table.dates" />
-      </TableHead>
-      <TableHead>
-        <FormattedMessage id="adminChampionships.table.phase" />
-      </TableHead>
-      <TableHead>
-        <FormattedMessage id="adminChampionships.table.teams" />
-      </TableHead>
-      <TableHead>
-        <FormattedMessage id="adminChampionships.table.progress" />
-      </TableHead>
-      <TableHead className="w-[120px]">
-        <FormattedMessage id="adminChampionships.table.actions" />
-      </TableHead>
-    </TableHeader>
-    <TableBody
-      renderEmptyState={() => (
-        <div className="text-muted-foreground py-8 text-center">
-          <FormattedMessage id="adminChampionships.table.empty" />
-        </div>
-      )}
-    >
-      {championships.map(championship => (
-        <AdminChampionshipTableRow
-          key={championship.id}
-          championship={championship}
-          onResume={onResume}
-          onViewDetail={onViewDetail}
-        />
-      ))}
-    </TableBody>
-  </Table>
-)
+export const AdminChampionshipTable = ({ championships, onResume, onViewDetail }: AdminChampionshipTableProps) => {
+  const intl = useIntl()
+  return (
+    <Table aria-label={intl.formatMessage({ id: 'adminChampionships.title' })}>
+      <TableHeader>
+        <TableHead isRowHeader>
+          <FormattedMessage id="adminChampionships.table.name" />
+        </TableHead>
+        <TableHead>
+          <FormattedMessage id="adminChampionships.table.season" />
+        </TableHead>
+        <TableHead>
+          <FormattedMessage id="adminChampionships.table.category" />
+        </TableHead>
+        <TableHead>
+          <FormattedMessage id="adminChampionships.table.status" />
+        </TableHead>
+        <TableHead>
+          <FormattedMessage id="adminChampionships.table.dates" />
+        </TableHead>
+        <TableHead>
+          <FormattedMessage id="adminChampionships.table.phase" />
+        </TableHead>
+        <TableHead>
+          <FormattedMessage id="adminChampionships.table.teams" />
+        </TableHead>
+        <TableHead>
+          <FormattedMessage id="adminChampionships.table.progress" />
+        </TableHead>
+        <TableHead className="w-[120px]">
+          <FormattedMessage id="adminChampionships.table.actions" />
+        </TableHead>
+      </TableHeader>
+      <TableBody
+        renderEmptyState={() => (
+          <div className="text-muted-foreground py-8 text-center">
+            <FormattedMessage id="adminChampionships.table.empty" />
+          </div>
+        )}
+      >
+        {championships.map(championship => (
+          <AdminChampionshipTableRow
+            key={championship.id}
+            championship={championship}
+            onResume={onResume}
+            onViewDetail={onViewDetail}
+          />
+        ))}
+      </TableBody>
+    </Table>
+  )
+}
