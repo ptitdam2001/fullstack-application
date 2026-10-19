@@ -3,9 +3,10 @@ import { type AvatarErrorCode, isAcceptedAvatarType } from '../domain/Account'
 import { resizeImageToJpegBase64 } from '../infrastructure/resizeImage'
 import { getMeQueryKey, useRemoveMyAvatar, useUpdateMyAvatar } from '../infrastructure/useAuthApi'
 import { useAuthSession } from './useAuthSession'
+import { getHttpStatus } from '../infrastructure/httpError'
 
 const toServerErrorCode = (err: unknown): AvatarErrorCode => {
-  const status = (err as { response?: { status?: number } })?.response?.status
+  const status = getHttpStatus(err)
   return status === 400 ? 'rejected' : 'generic'
 }
 

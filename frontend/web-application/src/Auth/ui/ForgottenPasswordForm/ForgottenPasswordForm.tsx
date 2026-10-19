@@ -6,6 +6,7 @@ import { createFormFactory } from '@repo/form-factory'
 import { ForgotPasswordBody } from '@Sdk/authentication/authentication.zod'
 import { useForgotPasswordAction } from '../../application/useForgotPasswordAction'
 import { useResendActivation } from '../../infrastructure/useAuthApi'
+import { getHttpStatus } from '../../infrastructure/httpError'
 
 const forgotPasswordFormFactory = createFormFactory({ schema: ForgotPasswordBody })
 
@@ -22,7 +23,7 @@ export const ForgottenPasswordForm = () => {
       await resend({ data: { email: sentEmail } })
       toast(intl.formatMessage({ id: 'activate.resend.success' }))
     } catch (err: unknown) {
-      const status = (err as { response?: { status?: number } })?.response?.status
+      const status = getHttpStatus(err)
       if (status === 429) {
         toast(intl.formatMessage({ id: 'auth.error.tooManyRequests' }))
       } else {
@@ -56,7 +57,7 @@ export const ForgottenPasswordForm = () => {
             await process(data.email!)
             setSentEmail(data.email!)
           } catch (err: unknown) {
-            const status = (err as { response?: { status?: number } })?.response?.status
+            const status = getHttpStatus(err)
             if (status === 429) {
               toast(intl.formatMessage({ id: 'auth.error.tooManyRequests' }))
             } else {

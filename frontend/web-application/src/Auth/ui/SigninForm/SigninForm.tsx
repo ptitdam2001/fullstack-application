@@ -5,6 +5,7 @@ import { Loader2 } from 'lucide-react'
 import { createFormFactory } from '@repo/form-factory'
 import { LoginBody } from '@Sdk/authentication/authentication.zod'
 import { useLoginAction } from '../../application/useLoginAction'
+import { getHttpStatus } from '../../infrastructure/httpError'
 
 const signinFormFactory = createFormFactory({ schema: LoginBody })
 
@@ -29,7 +30,7 @@ export const SigninForm = ({ forgotPasswordHref }: SigninFormProps) => {
           try {
             await process(data.email!, data.password!)
           } catch (err: unknown) {
-            const status = (err as { response?: { status?: number } })?.response?.status
+            const status = getHttpStatus(err)
             const message = (err as { response?: { data?: { message?: string } } })?.response?.data?.message ?? ''
             if (status === 403 && message.toLowerCase().includes('activé')) {
               toast(intl.formatMessage({ id: 'auth.error.accountInactive' }))

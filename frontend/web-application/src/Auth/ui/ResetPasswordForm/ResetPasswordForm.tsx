@@ -7,6 +7,7 @@ import { createFormFactory } from '@repo/form-factory'
 import { ResetPasswordBody } from '@Sdk/authentication/authentication.zod'
 import { useResetPasswordAction } from '../../application/useResetPasswordAction'
 import { isPasswordCompliant } from '../../domain/password'
+import { getHttpStatus } from '../../infrastructure/httpError'
 
 // confirmPassword is a UI-only field: it is checked here and never sent to the API
 const ResetFormSchema = ResetPasswordBody.extend({
@@ -36,7 +37,7 @@ export const ResetPasswordForm = () => {
           try {
             await process(token, data.newPassword)
           } catch (err: unknown) {
-            const status = (err as { response?: { status?: number } })?.response?.status
+            const status = getHttpStatus(err)
             // The server answers 400 to an invalid or expired token as well as to a refused password
             if (status === 400) {
               toast(intl.formatMessage({ id: 'resetPassword.error.invalid' }))

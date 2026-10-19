@@ -6,6 +6,7 @@ import { createFormFactory } from '@repo/form-factory'
 import { ChangeMyPasswordBody } from '../../domain/Account'
 import { isPasswordCompliant } from '../../domain/password'
 import { useChangeMyPasswordAction } from '../../application/useChangeMyPasswordAction'
+import { getHttpStatus } from '../../infrastructure/httpError'
 
 // confirmPassword is a UI-only field: it is checked here and never sent to the API
 const ChangePasswordFormSchema = ChangeMyPasswordBody.extend({
@@ -28,7 +29,7 @@ const SUBMIT_ERROR_KEYS: Record<ChangePasswordSubmitError, string> = {
 }
 
 const toSubmitError = (err: unknown): ChangePasswordSubmitError => {
-  const status = (err as { response?: { status?: number } })?.response?.status
+  const status = getHttpStatus(err)
   if (status === 400) {
     return 'invalid'
   }
