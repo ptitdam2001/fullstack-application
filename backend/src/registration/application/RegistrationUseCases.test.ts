@@ -5,6 +5,7 @@ import type { IEmailService } from '../ports/IEmailService.js'
 import type { IAuthService } from '../../auth/ports/IAuthService.js'
 import { EmailAlreadyUsedError, InvalidTokenError } from '../domain/RegistrationErrors.js'
 import { UserNotFoundError } from '../../user/domain/UserErrors.js'
+import { WeakPasswordError } from '../../auth/domain/AuthErrors.js'
 
 const now = new Date()
 const future = new Date(now.getTime() + 3_600_000)
@@ -108,6 +109,35 @@ describe('RegistrationUseCases.register', () => {
       expect.any(Date)
     )
   })
+
+  it.each(['aaaaaaaa', 'nouppercase1', 'NoDigitHere'])(
+    'throws WeakPasswordError for %j and creates nothing',
+    async password => {
+      const repo = makeRepo()
+      const emailService = makeEmailService()
+      await expect(
+        new RegistrationUseCases(repo, emailService, makeAuthService()).register({
+          firstName: 'Alice',
+          email: 'alice@example.com',
+          password,
+        })
+      ).rejects.toThrow(WeakPasswordError)
+      expect(repo.create).not.toHaveBeenCalled()
+      expect(emailService.sendActivationEmail).not.toHaveBeenCalled()
+    }
+  )
+
+  it('checks the password before the email, so a weak password does not reveal a used email', async () => {
+    const repo = makeRepo({ existsByEmail: vi.fn().mockResolvedValue(true) })
+    await expect(
+      new RegistrationUseCases(repo, makeEmailService(), makeAuthService()).register({
+        firstName: 'Alice',
+        email: 'alice@example.com',
+        password: 'aaaaaaaa',
+      })
+    ).rejects.toThrow(WeakPasswordError)
+    expect(repo.existsByEmail).not.toHaveBeenCalled()
+  })
 })
 
 describe('RegistrationUseCases.activateAccount', () => {
@@ -202,6 +232,21 @@ describe('RegistrationUseCases.resetPassword', () => {
         'expired-token',
         'NewPassword1'
       )
+    ).rejects.toThrow(InvalidTokenError)
+  })
+
+  it.each(['aaaaaaaa', 'nouppercase1', 'NoDigitHere'])(
+    'throws WeakPasswordError for %j and keeps the password',
+    async newPassword => {
+      const repo = makeRepo()
+      await expect(make(repo).resetPassword('valid-token', newPassword)).rejects.toThrow(WeakPasswordError)
+      expect(repo.resetPassword).not.toHaveBeenCalled()
+    }
+  )
+
+  it('checks the token before the password rules', async () => {
+    await expect(
+      make({ findByResetToken: vi.fn().mockResolvedValue(null) }).resetPassword('bad-token', 'aaaaaaaa')
     ).rejects.toThrow(InvalidTokenError)
   })
 })

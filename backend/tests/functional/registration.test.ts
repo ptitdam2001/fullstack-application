@@ -90,6 +90,17 @@ describe('registration domain — functional API', () => {
 
       expect(res.status).toBe(400)
     })
+
+    it.each([
+      ['without a digit', 'NoDigitHere'],
+      ['without an uppercase letter', 'nouppercase1'],
+    ])('400 — weak password: %s, no user created', async (_label, password) => {
+      const res = await agent.post('/register').send({ firstName: 'Alice', email: 'alice4@fixtures.local', password })
+
+      expect(res.status).toBe(400)
+      expect(res.body).toMatchObject({ status: 400, message: expect.any(String) })
+      expect(await prisma.user.findFirst({ where: { email: 'alice4@fixtures.local' } })).toBeNull()
+    })
   })
 
   // ─── activateAccount ────────────────────────────────────────────────────
@@ -211,6 +222,23 @@ describe('registration domain — functional API', () => {
       const login = await agent.post('/login').send({ email: user.email, password: 'NewPassword123' })
       const newHeader = { Authorization: `Bearer ${login.body.token}` }
       expect((await agent.get('/me').set(newHeader)).status).toBe(200)
+    })
+
+    it.each([
+      ['without a digit', 'NoDigitHere'],
+      ['without an uppercase letter', 'nouppercase1'],
+    ])('400 — weak new password: %s, password unchanged', async (_label, newPassword) => {
+      const user = await createUser()
+      await agent.post('/forgot-password').send({ email: user.email })
+      const before = await prisma.user.findUniqueOrThrow({ where: { id: user.id } })
+
+      const res = await agent.post('/reset-password').send({ token: before.resetToken, newPassword })
+
+      expect(res.status).toBe(400)
+      expect(res.body).toMatchObject({ status: 400, message: expect.any(String) })
+      const after = await prisma.user.findUniqueOrThrow({ where: { id: user.id } })
+      expect(after.password).toBe(before.password)
+      expect(after.tokenVersion).toBe(0)
     })
 
     it('400 — invalid token', async () => {

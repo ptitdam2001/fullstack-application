@@ -4,6 +4,8 @@ import type { IAuthService } from '../../auth/ports/IAuthService.js'
 import type { RegistrationUser, RegisterInput } from '../domain/Registration.js'
 import { EmailAlreadyUsedError, InvalidTokenError } from '../domain/RegistrationErrors.js'
 import { UserNotFoundError } from '../../user/domain/UserErrors.js'
+import { WeakPasswordError } from '../../auth/domain/AuthErrors.js'
+import { isPasswordValid } from '../../auth/domain/PasswordPolicy.js'
 
 const ACTIVATION_EXPIRY_HOURS = (): number => parseInt(process.env.ACTIVATION_TOKEN_EXPIRY_HOURS ?? '48')
 const RESET_EXPIRY_MS = 7 * 24 * 3_600_000
@@ -16,6 +18,10 @@ export class RegistrationUseCases {
   ) {}
 
   async register(input: RegisterInput): Promise<RegistrationUser> {
+    // Rules before the email lookup: a weak password must not learn whether the email is taken.
+    if (!isPasswordValid(input.password)) {
+      throw new WeakPasswordError()
+    }
     const exists = await this.repo.existsByEmail(input.email)
     if (exists) {
       throw new EmailAlreadyUsedError()
@@ -87,6 +93,10 @@ export class RegistrationUseCases {
     }
     if (user.resetTokenExpiry && user.resetTokenExpiry < new Date()) {
       throw new InvalidTokenError()
+    }
+    // Token first: the rules of the new password are only discussed with someone holding a valid link.
+    if (!isPasswordValid(newPassword)) {
+      throw new WeakPasswordError()
     }
 
     const hashed = await this.authService.hashPassword(newPassword)
