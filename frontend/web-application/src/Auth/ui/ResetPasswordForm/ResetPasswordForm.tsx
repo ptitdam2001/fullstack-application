@@ -7,7 +7,7 @@ import { createFormFactory } from '@repo/form-factory'
 import { ResetPasswordBody } from '@Sdk/authentication/authentication.zod'
 import { useResetPasswordAction } from '../../application/useResetPasswordAction'
 import { isPasswordCompliant } from '../../domain/password'
-import { getHttpStatus } from '../../infrastructure/httpError'
+import { getErrorKey } from '../../infrastructure/httpError'
 
 // confirmPassword is a UI-only field: it is checked here and never sent to the API
 const ResetFormSchema = ResetPasswordBody.extend({
@@ -16,6 +16,11 @@ const ResetFormSchema = ResetPasswordBody.extend({
 }).refine(d => d.newPassword === d.confirmPassword, { path: ['confirmPassword'] })
 
 type ResetFormValues = z.infer<typeof ResetFormSchema>
+
+const SUBMIT_ERROR_KEYS: Partial<Record<number, string>> = {
+  400: 'resetPassword.error.invalid',
+  429: 'resetPassword.error.tooManyRequests',
+}
 
 const resetPasswordFormFactory = createFormFactory({ schema: ResetFormSchema })
 
@@ -37,16 +42,7 @@ export const ResetPasswordForm = () => {
           try {
             await process(token, data.newPassword)
           } catch (err: unknown) {
-            switch (getHttpStatus(err)) {
-              case 400:
-                toast(intl.formatMessage({ id: 'resetPassword.error.invalid' }))
-                break
-              case 429:
-                toast(intl.formatMessage({ id: 'resetPassword.error.tooManyRequests' }))
-                break
-              default:
-                toast(intl.formatMessage({ id: 'resetPassword.error.generic' }))
-            }
+            toast(intl.formatMessage({ id: getErrorKey(err, SUBMIT_ERROR_KEYS, 'resetPassword.error.generic') }))
           }
         }}
         className="flex flex-col"
