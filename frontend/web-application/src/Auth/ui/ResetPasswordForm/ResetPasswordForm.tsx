@@ -6,13 +6,13 @@ import { z } from 'zod'
 import { createFormFactory } from '@repo/form-factory'
 import { ResetPasswordBody } from '@Sdk/authentication/authentication.zod'
 import { useResetPasswordAction } from '../../application/useResetPasswordAction'
+import { isPasswordCompliant } from '../../domain/password'
 
+// confirmPassword is a UI-only field: it is checked here and never sent to the API
 const ResetFormSchema = ResetPasswordBody.extend({
+  newPassword: ResetPasswordBody.shape.newPassword.refine(isPasswordCompliant),
   confirmPassword: z.string().min(1),
-}).refine(d => d.newPassword === d.confirmPassword, {
-  message: 'Passwords do not match',
-  path: ['confirmPassword'],
-})
+}).refine(d => d.newPassword === d.confirmPassword, { path: ['confirmPassword'] })
 
 type ResetFormValues = z.infer<typeof ResetFormSchema>
 
@@ -56,7 +56,11 @@ export const ResetPasswordForm = () => {
                 {...field}
                 placeholder={intl.formatMessage({ id: 'resetPassword.field.newPassword.placeholder' })}
               />
-              {fieldState.error && <p className="absolute bottom-1 text-sm text-red-500">{fieldState.error.message}</p>}
+              {fieldState.error && (
+                <p className="absolute bottom-1 text-sm text-red-500">
+                  <FormattedMessage id="resetPassword.error.passwordRules" />
+                </p>
+              )}
             </div>
           )}
         </Field>
@@ -67,7 +71,11 @@ export const ResetPasswordForm = () => {
                 <FormattedMessage id="resetPassword.field.confirmPassword" />
               </label>
               <PasswordInput {...field} placeholder="••••••••" />
-              {fieldState.error && <p className="absolute bottom-1 text-sm text-red-500">{fieldState.error.message}</p>}
+              {fieldState.error && (
+                <p className="absolute bottom-1 text-sm text-red-500">
+                  <FormattedMessage id="resetPassword.error.passwordMismatch" />
+                </p>
+              )}
             </div>
           )}
         </Field>

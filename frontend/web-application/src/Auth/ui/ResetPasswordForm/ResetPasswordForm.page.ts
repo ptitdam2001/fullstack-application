@@ -19,8 +19,12 @@ export class ResetPasswordFormPage {
     return this.canvas.getByRole('button', { name: /reset password|réinitialiser/i })
   }
 
+  rulesError() {
+    return this.canvas.getByText(/the password needs at least 8|le mot de passe doit contenir au moins 8/i)
+  }
+
   mismatchError() {
-    return this.canvas.getByText(/passwords do not match/i)
+    return this.canvas.getByText(/passwords do not match|les mots de passe ne correspondent pas/i)
   }
 
   toast(matcher: RegExp) {
