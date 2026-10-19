@@ -103,3 +103,22 @@ export const AccentedUppercaseIsAccepted: Story = {
     await expect(onRegister).toHaveBeenCalledWith(expect.objectContaining({ password: 'Écureuil1' }))
   },
 }
+
+export const SubmitRejected: Story = {
+  name: 'Soumission 400 — toast qui rappelle les règles',
+  parameters: {
+    msw: {
+      handlers: [
+        getGetTeamsMockHandler([]),
+        http.post('*/register', () => HttpResponse.json({ status: 400, message: 'Invalid request' }, { status: 400 })),
+      ],
+    },
+  },
+  play: async ({ canvasElement }) => {
+    const page = new RegisterFormPage(canvasElement)
+    await page.fill('Password1', 'Password1')
+    await page.submit()
+
+    await page.toast(/some information is invalid|certaines informations sont invalides/i)
+  },
+}

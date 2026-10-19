@@ -58,7 +58,7 @@
     "success.title": "Password changed!",
     "success.description": "Your password has been reset. You can now sign in.",
     "success.cta": "Sign in",
-    "error.invalid": "The reset link is invalid or expired.",
+    "error.invalid": "The reset link is invalid or expired, or the password does not meet the rules (8 characters, 1 digit, 1 uppercase letter).",
     "error.passwordRules": "The password needs at least 8 characters, 1 digit and 1 uppercase letter.",
     "error.passwordMismatch": "Passwords do not match.",
     "error.tooManyRequests": "Too many attempts. Please wait a while before trying again.",
@@ -283,6 +283,7 @@
     "error.passwordRules": "The password needs at least 8 characters, 1 digit and 1 uppercase letter.",
     "error.passwordMismatch": "Passwords do not match.",
     "error.emailInUse": "This email address is already registered.",
+    "error.invalid": "Some information is invalid. The password needs at least 8 characters, 1 digit and 1 uppercase letter.",
     "error.generic": "An error occurred. Please try again."
   },
   "adminTeams": {

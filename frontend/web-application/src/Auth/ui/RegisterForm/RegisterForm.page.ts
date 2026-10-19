@@ -35,6 +35,10 @@ export class RegisterFormPage {
     return this.canvas.getByText(/passwords do not match|les mots de passe ne correspondent pas/i)
   }
 
+  toast(matcher: RegExp) {
+    return within(document.body).findByText(matcher)
+  }
+
   successMessage() {
     return this.canvas.findByText(/account created|compte créé/i)
   }

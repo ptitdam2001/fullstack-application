@@ -58,7 +58,7 @@
     "success.title": "Mot de passe modifié !",
     "success.description": "Votre mot de passe a été réinitialisé. Vous pouvez vous connecter.",
     "success.cta": "Se connecter",
-    "error.invalid": "Le lien de réinitialisation est invalide ou expiré.",
+    "error.invalid": "Le lien de réinitialisation est invalide ou expiré, ou le mot de passe ne respecte pas les règles (8 caractères, 1 chiffre, 1 majuscule).",
     "error.passwordRules": "Le mot de passe doit contenir au moins 8 caractères, 1 chiffre et 1 majuscule.",
     "error.passwordMismatch": "Les mots de passe ne correspondent pas.",
     "error.tooManyRequests": "Trop de tentatives. Merci de patienter avant de réessayer.",
@@ -283,6 +283,7 @@
     "error.passwordRules": "Le mot de passe doit contenir au moins 8 caractères, 1 chiffre et 1 majuscule.",
     "error.passwordMismatch": "Les mots de passe ne correspondent pas.",
     "error.emailInUse": "Cette adresse e-mail est déjà utilisée.",
+    "error.invalid": "Certaines informations sont invalides. Le mot de passe doit contenir au moins 8 caractères, 1 chiffre et 1 majuscule.",
     "error.generic": "Une erreur est survenue. Veuillez réessayer."
   },
   "adminTeams": {
