@@ -1,11 +1,12 @@
 import { Link, useSearchParams } from 'react-router'
-import { FormattedMessage } from 'react-intl'
+import { FormattedMessage, useIntl } from 'react-intl'
 import { Button, Toast } from '@repo/design-system'
 import { Loader2 } from 'lucide-react'
 import { LOGIN_PAGE } from '../../domain/Auth'
 import { useActivateAction } from '../../application/useActivateAction'
 
 export const ActivateForm = () => {
+  const intl = useIntl()
   const toast = Toast.useToast()
   const [searchParams] = useSearchParams()
   const token = searchParams.get('token') ?? ''
@@ -13,7 +14,7 @@ export const ActivateForm = () => {
 
   const handleActivate = () => {
     process(token).catch(() => {
-      toast('activate.error.invalid')
+      toast(intl.formatMessage({ id: 'activate.error.invalid' }))
     })
   }
 
