@@ -1,16 +1,14 @@
 import { useEffect } from 'react'
 import { Navigate } from 'react-router'
-import { clearAuthStorage } from '../../infrastructure/authStorage'
-import { AuthProvider } from '../../application/AuthProvider'
-import { DEFAULT_AUTH_DATA, LOGIN_PAGE } from '../../domain/Auth'
+import { useLogoutAction } from '../../application/useLogoutAction'
+import { LOGIN_PAGE } from '../../domain/Auth'
 
 export const Logout = () => {
-  const dispatch = AuthProvider.useAuthDispatch()
+  const logout = useLogoutAction()
 
   useEffect(() => {
-    clearAuthStorage()
-    dispatch(DEFAULT_AUTH_DATA)
-  }, [dispatch])
+    logout()
+  }, [logout])
 
   return <Navigate to={LOGIN_PAGE} replace />
 }
