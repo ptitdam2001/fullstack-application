@@ -7,14 +7,13 @@ import { RegisterBody } from '@Sdk/authentication/authentication.zod'
 import type { RegisterInput } from '@Sdk/model'
 import { TeamSelectField } from '@Teams/ui/TeamSelect/TeamSelectField'
 import { useRegisterAction } from '../../application/useRegisterAction'
-import { getPasswordStrength } from '../../domain/password'
+import { getPasswordStrength, isPasswordCompliant } from '../../domain/password'
 
+// confirmPassword is a UI-only field: it is checked here and never sent to the API
 const RegisterFormSchema = RegisterBody.extend({
+  password: RegisterBody.shape.password.refine(isPasswordCompliant),
   confirmPassword: z.string().min(1),
-}).refine(d => d.password === d.confirmPassword, {
-  message: 'Passwords do not match',
-  path: ['confirmPassword'],
-})
+}).refine(d => d.password === d.confirmPassword, { path: ['confirmPassword'] })
 
 type RegisterFormValues = z.infer<typeof RegisterFormSchema>
 
@@ -144,7 +143,11 @@ export const RegisterForm = () => {
                 </span>
               </div>
             )}
-            {fieldState.error && <p className="absolute bottom-1 text-sm text-red-500">{fieldState.error.message}</p>}
+            {fieldState.error && (
+              <p className="absolute bottom-1 text-sm text-red-500">
+                <FormattedMessage id="register.error.passwordRules" />
+              </p>
+            )}
           </div>
         )}
       </Field>
@@ -155,7 +158,11 @@ export const RegisterForm = () => {
               <FormattedMessage id="register.field.confirmPassword" />
             </label>
             <PasswordInput {...field} placeholder="••••••••" />
-            {fieldState.error && <p className="absolute bottom-1 text-sm text-red-500">{fieldState.error.message}</p>}
+            {fieldState.error && (
+              <p className="absolute bottom-1 text-sm text-red-500">
+                <FormattedMessage id="register.error.passwordMismatch" />
+              </p>
+            )}
           </div>
         )}
       </Field>
