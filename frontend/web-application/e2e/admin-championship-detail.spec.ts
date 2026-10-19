@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from './fixtures/test'
 import type { Championship, Group, GroupStandings, Match, Phase, Team } from '@Sdk/model'
 import { MatchMode, MatchStatus, PhaseType } from '@Sdk/model'
 import { mockMsw } from './mockMsw'
