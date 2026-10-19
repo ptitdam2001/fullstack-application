@@ -48,14 +48,15 @@ export const RegisterForm = () => {
       }
       await process(input)
     } catch (err: unknown) {
-      const status = getHttpStatus(err)
-      if (status === 400) {
-        // The form applies the same rules as the server: only reached when the two drift apart
-        toast(intl.formatMessage({ id: 'register.error.invalid' }))
-      } else if (status === 409) {
-        toast(intl.formatMessage({ id: 'register.error.emailInUse' }))
-      } else {
-        toast(intl.formatMessage({ id: 'register.error.generic' }))
+      switch (getHttpStatus(err)) {
+        case 400:
+          toast(intl.formatMessage({ id: 'register.error.invalid' }))
+          break
+        case 409:
+          toast(intl.formatMessage({ id: 'register.error.emailInUse' }))
+          break
+        default:
+          toast(intl.formatMessage({ id: 'register.error.generic' }))
       }
     }
   }
