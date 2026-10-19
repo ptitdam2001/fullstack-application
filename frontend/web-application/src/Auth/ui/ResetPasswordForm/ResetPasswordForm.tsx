@@ -37,14 +37,15 @@ export const ResetPasswordForm = () => {
           try {
             await process(token, data.newPassword)
           } catch (err: unknown) {
-            const status = getHttpStatus(err)
-            // The server answers 400 to an invalid or expired token as well as to a refused password
-            if (status === 400) {
-              toast(intl.formatMessage({ id: 'resetPassword.error.invalid' }))
-            } else if (status === 429) {
-              toast(intl.formatMessage({ id: 'resetPassword.error.tooManyRequests' }))
-            } else {
-              toast(intl.formatMessage({ id: 'resetPassword.error.generic' }))
+            switch (getHttpStatus(err)) {
+              case 400:
+                toast(intl.formatMessage({ id: 'resetPassword.error.invalid' }))
+                break
+              case 429:
+                toast(intl.formatMessage({ id: 'resetPassword.error.tooManyRequests' }))
+                break
+              default:
+                toast(intl.formatMessage({ id: 'resetPassword.error.generic' }))
             }
           }
         }}
