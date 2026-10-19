@@ -49,6 +49,11 @@
     "resend.submit": "Envoyer",
     "resend.success": "Email envoyé si votre compte existe et n'est pas encore activé."
   },
+  "forgotPassword": {
+    "success": "Si un compte existe pour cette adresse, un lien de réinitialisation a été envoyé.",
+    "resend": "Renvoyer le lien de réinitialisation",
+    "activation.hint": "Compte pas encore activé ?"
+  },
   "resetPassword": {
     "title": "Nouveau mot de passe",
     "field.newPassword": "Nouveau mot de passe",

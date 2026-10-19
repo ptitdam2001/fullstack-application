@@ -18,17 +18,30 @@ export const ForgottenPasswordForm = () => {
   const [sentEmail, setSentEmail] = useState<string>('')
   const { Field, Form } = forgotPasswordFormFactory.useForm({ mode: 'onBlur' })
 
-  const onResend = async () => {
+  const toastSendError = (err: unknown) => {
+    if (getHttpStatus(err) === 429) {
+      toast(intl.formatMessage({ id: 'auth.error.tooManyRequests' }))
+    } else {
+      toast(intl.formatMessage({ id: 'auth.error.generic' }))
+    }
+  }
+
+  const onResendResetLink = async () => {
+    try {
+      await process(sentEmail)
+      toast(intl.formatMessage({ id: 'forgotPassword.success' }))
+    } catch (err: unknown) {
+      toastSendError(err)
+    }
+  }
+
+  // This screen is also the way back for an account that was never activated
+  const onResendActivation = async () => {
     try {
       await resend({ data: { email: sentEmail } })
       toast(intl.formatMessage({ id: 'activate.resend.success' }))
     } catch (err: unknown) {
-      const status = getHttpStatus(err)
-      if (status === 429) {
-        toast(intl.formatMessage({ id: 'auth.error.tooManyRequests' }))
-      } else {
-        toast(intl.formatMessage({ id: 'auth.error.generic' }))
-      }
+      toastSendError(err)
     }
   }
 
@@ -36,12 +49,19 @@ export const ForgottenPasswordForm = () => {
     return (
       <div className="flex flex-col gap-4">
         <p className="font-medium">
-          <FormattedMessage id="activate.resend.success" />
+          <FormattedMessage id="forgotPassword.success" />
         </p>
-        <Button variant="outline" isDisabled={isResending} onPress={onResend} className="w-full max-w-sm">
-          {isResending && <Loader2 className="animate-spin" />}
-          <FormattedMessage id="activate.error.resend" />
+        <Button variant="outline" isDisabled={isPending} onPress={onResendResetLink} className="w-full max-w-sm">
+          {isPending && <Loader2 className="animate-spin" />}
+          <FormattedMessage id="forgotPassword.resend" />
         </Button>
+        <p className="text-sm text-slate-500">
+          <FormattedMessage id="forgotPassword.activation.hint" />{' '}
+          <Button variant="link" isDisabled={isResending} onPress={onResendActivation} className="h-auto p-0">
+            {isResending && <Loader2 className="animate-spin" />}
+            <FormattedMessage id="activate.error.resend" />
+          </Button>
+        </p>
       </div>
     )
   }
@@ -57,12 +77,7 @@ export const ForgottenPasswordForm = () => {
             await process(data.email!)
             setSentEmail(data.email!)
           } catch (err: unknown) {
-            const status = getHttpStatus(err)
-            if (status === 429) {
-              toast(intl.formatMessage({ id: 'auth.error.tooManyRequests' }))
-            } else {
-              toast(intl.formatMessage({ id: 'auth.error.generic' }))
-            }
+            toastSendError(err)
           }
         }}
         className="flex flex-col"
