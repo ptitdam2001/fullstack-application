@@ -22,6 +22,11 @@ describe('isPasswordCompliant', () => {
     expect(isPasswordCompliant('Abcdefg1')).toBe(true)
   })
 
+  // Same rule as the server (backend PasswordPolicy): any Unicode uppercase letter counts
+  it('accepts an accented uppercase letter', () => {
+    expect(isPasswordCompliant('Écureuil1')).toBe(true)
+  })
+
   it.each(['Abcdef1', 'abcdefg1', 'Abcdefgh'])('rejects %j', password => {
     expect(isPasswordCompliant(password)).toBe(false)
   })

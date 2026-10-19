@@ -1,6 +1,6 @@
 /**
  * Password rules (specifications/10-inscription-et-authentification.md):
- * at least 8 characters, 1 digit and 1 uppercase letter.
+ * at least 8 characters, 1 digit and 1 uppercase letter (any Unicode one, as on the server).
  * Single source for the strength meter and for the client-side validation.
  */
 const PASSWORD_MIN_LENGTH = 8
@@ -13,10 +13,10 @@ export const getPasswordStrength = (password: string): PasswordStrength => {
   if (password.length >= PASSWORD_MIN_LENGTH) {
     score++
   }
-  if (/[0-9]/.test(password)) {
+  if (/\d/.test(password)) {
     score++
   }
-  if (/[A-Z]/.test(password)) {
+  if (/\p{Lu}/u.test(password)) {
     score++
   }
   return score as PasswordStrength
