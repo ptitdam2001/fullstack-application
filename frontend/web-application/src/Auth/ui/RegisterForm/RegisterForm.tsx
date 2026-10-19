@@ -8,6 +8,7 @@ import type { RegisterInput } from '@Sdk/model'
 import { TeamSelectField } from '@Teams/ui/TeamSelect/TeamSelectField'
 import { useRegisterAction } from '../../application/useRegisterAction'
 import { getPasswordStrength, isPasswordCompliant } from '../../domain/password'
+import { getHttpStatus } from '../../infrastructure/httpError'
 
 // confirmPassword is a UI-only field: it is checked here and never sent to the API
 const RegisterFormSchema = RegisterBody.extend({
@@ -47,7 +48,7 @@ export const RegisterForm = () => {
       }
       await process(input)
     } catch (err: unknown) {
-      const status = (err as { response?: { status?: number } })?.response?.status
+      const status = getHttpStatus(err)
       if (status === 400) {
         // The form applies the same rules as the server: only reached when the two drift apart
         toast(intl.formatMessage({ id: 'register.error.invalid' }))
