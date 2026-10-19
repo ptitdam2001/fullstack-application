@@ -5,6 +5,7 @@ import { binaryParser, createTestAgent } from '../support/client.js'
 import { resetDatabase } from '../support/database.js'
 import { createAdmin, createUser, FIXTURE_PASSWORD } from '../support/fixtures.js'
 import { MAX_AVATAR_BYTES } from '../../src/user/domain/Avatar.js'
+import { PASSWORD_RULES_MESSAGE } from '../../src/auth/domain/PasswordPolicy.js'
 
 // A real 1×1 PNG
 const PNG_BASE64 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=='
@@ -594,11 +595,12 @@ describe('account page (self-service profile) — functional API', () => {
       expect((await prisma.user.findUniqueOrThrow({ where: { id: user.id } })).loginAttempts).toBe(0)
     })
 
+    // Too short is refused by the openapi-backend validation (minLength), the other rules by the use case
     it.each([
-      ['shorter than 8 characters (validation)', 'Abc1'],
-      ['without a digit', 'NewPassword'],
-      ['without an uppercase letter', 'newpassword123'],
-    ])('400 — weak new password: %s', async (_label, newPassword) => {
+      ['shorter than 8 characters (validation)', 'Abc1', 'Invalid request'],
+      ['without a digit', 'NewPassword', PASSWORD_RULES_MESSAGE],
+      ['without an uppercase letter', 'newpassword123', PASSWORD_RULES_MESSAGE],
+    ])('400 — weak new password: %s', async (_label, newPassword, message) => {
       const user = await createUser()
       const before = await prisma.user.findUniqueOrThrow({ where: { id: user.id } })
 
@@ -608,6 +610,7 @@ describe('account page (self-service profile) — functional API', () => {
         .send({ currentPassword: FIXTURE_PASSWORD, newPassword })
 
       expect(res.status).toBe(400)
+      expect(res.body).toMatchObject({ status: 400, message })
       const after = await prisma.user.findUniqueOrThrow({ where: { id: user.id } })
       expect(after.password).toBe(before.password)
       expect(after.tokenVersion).toBe(0)
