@@ -35,6 +35,9 @@ L'authentification couvre l'ensemble des flux permettant à un utilisateur de cr
 - Au moins **1 chiffre**
 - Au moins **1 majuscule**
 - Les caractères spéciaux sont autorisés (non obligatoires)
+- Une **majuscule** est toute lettre majuscule Unicode (`\p{Lu}`) : `É` compte. Même définition côté client et côté serveur
+
+Le serveur applique ces règles sur les trois routes qui fixent un mot de passe : `POST /register`, `POST /reset-password` et `PUT /me/password`. Un mot de passe non conforme répond `400`. À l'inscription, la règle est vérifiée avant l'unicité de l'email : un mot de passe faible ne révèle pas si l'email est déjà pris. À la réinitialisation, le token est vérifié d'abord.
 
 ### Activation du compte
 

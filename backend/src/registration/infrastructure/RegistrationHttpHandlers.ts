@@ -3,7 +3,7 @@ import type { Context } from 'openapi-backend'
 import { RegistrationUseCases } from '../application/RegistrationUseCases.js'
 import { getAuthUserId, requireAdmin } from '../../auth/application/requireRoles.js'
 import { EmailAlreadyUsedError, InvalidTokenError } from '../domain/RegistrationErrors.js'
-import { UnauthorizedError, ForbiddenError } from '../../auth/domain/AuthErrors.js'
+import { UnauthorizedError, ForbiddenError, WeakPasswordError } from '../../auth/domain/AuthErrors.js'
 import { UserNotFoundError } from '../../user/domain/UserErrors.js'
 import { PrismaRegistrationRepository } from './PrismaRegistrationRepository.js'
 import { NoopEmailService } from './NoopEmailService.js'
@@ -22,6 +22,12 @@ export const register = async (_: Context, req: Request, res: Response) => {
     const { activationTokenExpiry: _, resetTokenExpiry: __, ...publicUser } = user
     return res.status(201).json({ ...publicUser, roles: [] })
   } catch (err) {
+    if (err instanceof WeakPasswordError) {
+      return res.status(400).json({
+        message: 'Le mot de passe doit contenir au moins 8 caractères, 1 chiffre et 1 majuscule',
+        status: 400,
+      })
+    }
     if (err instanceof EmailAlreadyUsedError) {
       return res.status(409).json({ message: 'Email already in use', status: 409 })
     }
@@ -68,6 +74,12 @@ export const resetPassword = async (_: Context, req: Request, res: Response) => 
     await useCases.resetPassword(req.body.token, req.body.newPassword)
     return res.status(200).send()
   } catch (err) {
+    if (err instanceof WeakPasswordError) {
+      return res.status(400).json({
+        message: 'Le mot de passe doit contenir au moins 8 caractères, 1 chiffre et 1 majuscule',
+        status: 400,
+      })
+    }
     if (err instanceof InvalidTokenError) {
       return res.status(400).json({ message: 'Token invalide ou expiré', status: 400 })
     }
