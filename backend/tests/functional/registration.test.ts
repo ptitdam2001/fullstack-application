@@ -1,5 +1,6 @@
 import { randomBytes } from 'node:crypto'
 import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
+import { PASSWORD_RULES_MESSAGE } from '../../src/auth/domain/PasswordPolicy.js'
 import { prisma } from '../../utils/prismaClient.js'
 import { authHeaderFor } from '../support/authenticate.js'
 import { createTestAgent } from '../support/client.js'
@@ -98,7 +99,7 @@ describe('registration domain — functional API', () => {
       const res = await agent.post('/register').send({ firstName: 'Alice', email: 'alice4@fixtures.local', password })
 
       expect(res.status).toBe(400)
-      expect(res.body).toMatchObject({ status: 400, message: expect.any(String) })
+      expect(res.body).toMatchObject({ status: 400, message: PASSWORD_RULES_MESSAGE })
       expect(await prisma.user.findFirst({ where: { email: 'alice4@fixtures.local' } })).toBeNull()
     })
   })
@@ -235,7 +236,7 @@ describe('registration domain — functional API', () => {
       const res = await agent.post('/reset-password').send({ token: before.resetToken, newPassword })
 
       expect(res.status).toBe(400)
-      expect(res.body).toMatchObject({ status: 400, message: expect.any(String) })
+      expect(res.body).toMatchObject({ status: 400, message: PASSWORD_RULES_MESSAGE })
       const after = await prisma.user.findUniqueOrThrow({ where: { id: user.id } })
       expect(after.password).toBe(before.password)
       expect(after.tokenVersion).toBe(0)
