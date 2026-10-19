@@ -37,6 +37,30 @@ describe('Table', () => {
     expect(el).toBeInTheDocument()
   })
 
+  it('names the table by aria-label', () => {
+    render(<BasicTable />)
+    expect(screen.getByRole('grid', { name: 'Classement' })).toBeInTheDocument()
+  })
+
+  it('names the table by aria-labelledby', () => {
+    render(
+      <>
+        <h2 id="standings-title">Classement général</h2>
+        <Table aria-labelledby="standings-title" />
+      </>
+    )
+    expect(screen.getByRole('grid', { name: 'Classement général' })).toBeInTheDocument()
+  })
+
+  it('requires an accessible name at the type level', () => {
+    // Never rendered: react-aria would warn. tsc fails if the type stops requiring a name.
+    const unnamedTable = () => (
+      // @ts-expect-error a Table needs aria-label or aria-labelledby
+      <Table />
+    )
+    expect(unnamedTable).toBeTypeOf('function')
+  })
+
   it('forwards className', () => {
     const { container } = render(<Table aria-label="test" className="custom" />)
     expect(container.querySelector('[data-slot="table"]')).toHaveClass('custom')
