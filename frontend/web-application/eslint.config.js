@@ -18,7 +18,20 @@ const restrictedImportPaths = [
   },
 ]
 
-const restrictedImports = modules => ['error', { paths: restrictedImportPaths, patterns: deepImportPatterns(modules) }]
+const restrictedImports = (modules, extraPaths = []) => [
+  'error',
+  { paths: [...restrictedImportPaths, ...extraPaths], patterns: deepImportPatterns(modules) },
+]
+
+// A mocked e2e spec takes `test` from e2e/fixtures/test.ts, which fails the test on an uncaught page error.
+const playwrightTestImportPaths = [
+  {
+    name: '@playwright/test',
+    importNames: ['test'],
+    message:
+      "Import test and expect from './fixtures/test': its test fails on an uncaught page error, which React hides by rendering again.",
+  },
+]
 
 // Flat config replaces a rule's options instead of merging them: every `files` block below
 // repeats these selectors before adding its own.
@@ -85,6 +98,12 @@ export default [
         ...cssClassAssertionSelectors,
         ...apiRouteInterceptSelectors,
       ],
+    },
+  },
+  {
+    files: ['e2e/*.spec.ts'],
+    rules: {
+      'no-restricted-imports': restrictedImports(barrelOnlyModules, playwrightTestImportPaths),
     },
   },
 ]

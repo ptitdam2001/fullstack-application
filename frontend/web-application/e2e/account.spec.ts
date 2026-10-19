@@ -1,4 +1,5 @@
-import { test, expect, type Page, type Request } from '@playwright/test'
+import type { Page, Request } from '@playwright/test'
+import { test, expect } from './fixtures/test'
 import { applyMswOverride } from './mockMsw'
 import { ACCOUNT_TOASTS, ACCOUNT_URL, AccountPage } from './pages/AccountPage'
 import { corruptPhoto, JPEG_SIGNATURE, textFile, validPhoto } from './fixtures/images'

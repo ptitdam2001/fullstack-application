@@ -1,4 +1,5 @@
-import { test, expect, type Page } from '@playwright/test'
+import type { Page } from '@playwright/test'
+import { test, expect } from './fixtures/test'
 
 test.describe('admin — championships', () => {
   test('list page has a button that opens the wizard', async ({ page }) => {

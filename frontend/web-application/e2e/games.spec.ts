@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from './fixtures/test'
 
 // These tests run with the storageState from setup/auth.setup.ts (admin user)
 
