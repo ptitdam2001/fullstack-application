@@ -36,6 +36,10 @@ export class AdminUserTablePage {
     return screen.getByText('adminUsers.table.empty')
   }
 
+  table(name: string) {
+    return screen.getByRole('grid', { name })
+  }
+
   rowHeaders() {
     return screen.getAllByRole('rowheader')
   }

@@ -34,6 +34,10 @@ export class AdminSeasonTablePage {
     return screen.getByText('adminSeasons.table.empty')
   }
 
+  table(name: string) {
+    return screen.getByRole('grid', { name })
+  }
+
   rowHeaders() {
     return screen.getAllByRole('rowheader')
   }

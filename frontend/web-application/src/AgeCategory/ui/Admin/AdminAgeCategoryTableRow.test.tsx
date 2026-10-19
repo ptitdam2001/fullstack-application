@@ -6,7 +6,7 @@ import type { AgeCategory } from '../../domain/AgeCategory'
 import { AdminAgeCategoryTableRow } from './AdminAgeCategoryTableRow'
 
 const wrapper = ({ children }: { children: ReactNode }) => (
-  <Table>
+  <Table aria-label="test">
     <TableHeader>
       <TableHead isRowHeader />
       <TableHead />

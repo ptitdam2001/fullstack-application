@@ -6,7 +6,7 @@ import type { User } from '../../domain/User'
 import { AdminUserTableRow } from './AdminUserTableRow'
 
 const wrapper = ({ children }: { children: ReactNode }) => (
-  <Table>
+  <Table aria-label="test">
     <TableHeader>
       <TableHead isRowHeader />
       <TableHead />

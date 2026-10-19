@@ -24,6 +24,11 @@ describe('AdminAgeCategoryTable', () => {
     expect(screen.getByText('U18')).toBeInTheDocument()
   })
 
+  it('names the table after the page title', () => {
+    render(<AdminAgeCategoryTable ageCategories={ageCategories} onEdit={vi.fn()} onDelete={vi.fn()} />)
+    expect(screen.getByRole('grid', { name: 'adminAgeCategories.title' })).toBeInTheDocument()
+  })
+
   it('marks the label column as the row header', () => {
     render(<AdminAgeCategoryTable ageCategories={ageCategories} onEdit={vi.fn()} onDelete={vi.fn()} />)
     expect(screen.getAllByRole('rowheader')).toHaveLength(3)

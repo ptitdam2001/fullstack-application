@@ -39,6 +39,12 @@ describe('AreaList', () => {
     expect(screen.getByText('Stade B')).toBeInTheDocument()
   })
 
+  it('names the table after the page title', () => {
+    mockUseAreaList(areas, areas.length)
+    render(<AreaList />)
+    expect(screen.getByRole('grid', { name: 'adminAreas.title' })).toBeInTheDocument()
+  })
+
   it('marks the address column as the row header', () => {
     mockUseAreaList(areas, areas.length)
     render(<AreaList />)

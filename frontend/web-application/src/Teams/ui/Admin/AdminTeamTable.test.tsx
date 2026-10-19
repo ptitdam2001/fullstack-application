@@ -26,6 +26,11 @@ describe('AdminTeamTable', () => {
     expect(screen.getByText('Les Verts')).toBeInTheDocument()
   })
 
+  it('names the table after the page title', () => {
+    render(<AdminTeamTable teams={teams} onEdit={vi.fn()} onDelete={vi.fn()} />)
+    expect(screen.getByRole('grid', { name: 'adminTeams.title' })).toBeInTheDocument()
+  })
+
   it('marks the name column as the row header', () => {
     render(<AdminTeamTable teams={teams} onEdit={vi.fn()} onDelete={vi.fn()} />)
     expect(screen.getAllByRole('rowheader')).toHaveLength(3)

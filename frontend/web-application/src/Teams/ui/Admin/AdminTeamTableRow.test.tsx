@@ -6,7 +6,7 @@ import { type Area, type TeamWithAgeCategoryLabel } from '../../domain/Team'
 import { AdminTeamTableRow } from './AdminTeamTableRow'
 
 const wrapper = ({ children }: { children: ReactNode }) => (
-  <Table>
+  <Table aria-label="test">
     <TableHeader>
       <TableHead />
       <TableHead isRowHeader />

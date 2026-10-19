@@ -7,7 +7,7 @@ import type { ChampionshipRow } from './AdminChampionshipTable'
 import { PhaseType } from '@Championship/domain/Phase'
 
 const wrapper = ({ children }: { children: ReactNode }) => (
-  <Table>
+  <Table aria-label="test">
     <TableHeader>
       <TableHead isRowHeader />
       <TableHead />

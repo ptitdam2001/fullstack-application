@@ -1,4 +1,4 @@
-import { FormattedMessage } from 'react-intl'
+import { FormattedMessage, useIntl } from 'react-intl'
 import { AreaDisplay } from '../AreaDisplay'
 import { ErrorBoundary } from '@Common/ErrorBoundary'
 import { TableLoader } from '@Common/Loading'
@@ -12,6 +12,7 @@ type AreaListProps = {
 }
 
 const BaseAreaList = ({ actions }: AreaListProps) => {
+  const intl = useIntl()
   const { query, countQuery, pagination, changePage, changeRowsPerPage, isPending } = useAreaList()
   const addresses = query.data
   const count = countQuery.data
@@ -21,7 +22,7 @@ const BaseAreaList = ({ actions }: AreaListProps) => {
       className={`flex h-full w-full flex-col gap-0.5 transition-opacity ${isPending ? 'opacity-50' : ''}`}
       aria-busy={isPending}
     >
-      <Table>
+      <Table aria-label={intl.formatMessage({ id: 'adminAreas.title' })}>
         <TableHeader>
           <TableHead isRowHeader>
             <FormattedMessage id="adminAreas.table.address" />

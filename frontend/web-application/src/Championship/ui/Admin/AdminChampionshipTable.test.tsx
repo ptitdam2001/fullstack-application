@@ -54,6 +54,11 @@ describe('AdminChampionshipTable', () => {
     expect(screen.getByText('Championnat U15 2026')).toBeInTheDocument()
   })
 
+  it('names the table after the page title', () => {
+    render(<AdminChampionshipTable championships={championships} onResume={vi.fn()} onViewDetail={vi.fn()} />)
+    expect(screen.getByRole('grid', { name: 'adminChampionships.title' })).toBeInTheDocument()
+  })
+
   it('marks the name column as the row header', () => {
     render(<AdminChampionshipTable championships={championships} onResume={vi.fn()} onViewDetail={vi.fn()} />)
     expect(screen.getAllByRole('rowheader')).toHaveLength(championships.length)
