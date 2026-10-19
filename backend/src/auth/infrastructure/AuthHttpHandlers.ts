@@ -14,6 +14,7 @@ import { UserNotFoundError } from '../../user/domain/UserErrors.js'
 import { PrismaUserRepository } from '../../user/infrastructure/PrismaUserRepository.js'
 import { JwtAuthService } from './JwtAuthService.js'
 import { logger } from '../../../config/logger.js'
+import { PASSWORD_RULES_MESSAGE } from '../domain/PasswordPolicy.js'
 
 const useCases = new AuthUseCases(new PrismaUserRepository(), new JwtAuthService())
 
@@ -68,10 +69,7 @@ export const changeMyPassword = async (ctx: Context, req: Request, res: Response
       return res.status(400).json({ message: 'Mot de passe actuel incorrect', status: 400 })
     }
     if (err instanceof WeakPasswordError) {
-      return res.status(400).json({
-        message: 'Le mot de passe doit contenir au moins 8 caractères, 1 chiffre et 1 majuscule',
-        status: 400,
-      })
+      return res.status(400).json({ message: PASSWORD_RULES_MESSAGE, status: 400 })
     }
     if (err instanceof UserNotFoundError) {
       return res.status(404).json({ message: 'User not found', status: 404 })

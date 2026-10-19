@@ -9,6 +9,7 @@ import { PrismaRegistrationRepository } from './PrismaRegistrationRepository.js'
 import { NoopEmailService } from './NoopEmailService.js'
 import { JwtAuthService } from '../../auth/infrastructure/JwtAuthService.js'
 import { logger } from '../../../config/logger.js'
+import { PASSWORD_RULES_MESSAGE } from '../../auth/domain/PasswordPolicy.js'
 
 const useCases = new RegistrationUseCases(
   new PrismaRegistrationRepository(),
@@ -23,10 +24,7 @@ export const register = async (_: Context, req: Request, res: Response) => {
     return res.status(201).json({ ...publicUser, roles: [] })
   } catch (err) {
     if (err instanceof WeakPasswordError) {
-      return res.status(400).json({
-        message: 'Le mot de passe doit contenir au moins 8 caractères, 1 chiffre et 1 majuscule',
-        status: 400,
-      })
+      return res.status(400).json({ message: PASSWORD_RULES_MESSAGE, status: 400 })
     }
     if (err instanceof EmailAlreadyUsedError) {
       return res.status(409).json({ message: 'Email already in use', status: 409 })
@@ -75,10 +73,7 @@ export const resetPassword = async (_: Context, req: Request, res: Response) => 
     return res.status(200).send()
   } catch (err) {
     if (err instanceof WeakPasswordError) {
-      return res.status(400).json({
-        message: 'Le mot de passe doit contenir au moins 8 caractères, 1 chiffre et 1 majuscule',
-        status: 400,
-      })
+      return res.status(400).json({ message: PASSWORD_RULES_MESSAGE, status: 400 })
     }
     if (err instanceof InvalidTokenError) {
       return res.status(400).json({ message: 'Token invalide ou expiré', status: 400 })
