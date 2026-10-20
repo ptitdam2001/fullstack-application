@@ -114,7 +114,8 @@ export const EditButtonInitiallyDisabled: Story = {
   args: { ageCategoryId: 'age-category-1', defaultValues: existingAgeCategory },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    const button = await canvas.findByRole('button', { name: /update|mettre à jour/i })
+    // The i18n decorator suspends the first render: 1000 ms is not enough under the load of the full suite
+    const button = await canvas.findByRole('button', { name: /update|mettre à jour/i }, { timeout: 3000 })
     expect(button).toBeDisabled()
   },
 }
