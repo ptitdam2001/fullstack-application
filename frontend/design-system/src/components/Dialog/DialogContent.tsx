@@ -4,10 +4,23 @@ import { XIcon } from 'lucide-react'
 
 import { cn } from '../../utils/cn'
 
-function DialogContent({ className, children, ...props }: React.ComponentProps<typeof AriaDialog>) {
+type DialogContentProps = React.ComponentProps<typeof AriaDialog> & {
+  open?: boolean
+  defaultOpen?: boolean
+  onOpenChange?: (open: boolean) => void
+}
+
+function DialogContent({ className, children, open, defaultOpen, onOpenChange, ...props }: DialogContentProps) {
+  // Controlled without a <Dialog> wrapper: a DialogTrigger without a pressable child makes react-aria warn.
+  const controlledProps =
+    open !== undefined || defaultOpen !== undefined || onOpenChange !== undefined
+      ? { isOpen: open, defaultOpen, onOpenChange }
+      : {}
+
   return (
     <ModalOverlay
       data-slot="dialog-portal"
+      {...controlledProps}
       className="entering:animate-in entering:fade-in-0 exiting:animate-out exiting:fade-out-0 fixed inset-0 z-50 flex items-center justify-center bg-black/80"
     >
       <Modal
