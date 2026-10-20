@@ -20,17 +20,15 @@ test.describe('teams — list', () => {
   })
 
   test('view mode toggles between grid and list', async ({ page }) => {
-    await page.getByLabel('List view').click()
+    await page.getByRole('button', { name: 'List view' }).click()
     await expect(page.getByLabel('Teams')).toBeVisible()
 
-    await page.getByLabel('Grid view').click()
+    await page.getByRole('button', { name: 'Grid view' }).click()
     await expect(page.getByLabel('Teams')).toBeVisible()
   })
 
   test('create team button navigates to create form', async ({ page }) => {
-    // CirclePlus button links to "create" — scoped to MenuBar, since the sidebar's
-    // Home logo link also renders as a <Link> earlier in the DOM.
-    await page.locator('.MenuBar a[href$="/create"]').click()
+    await page.getByRole('link', { name: 'Create Team' }).click()
     await expect(page).toHaveURL(/\/create/)
   })
 })
