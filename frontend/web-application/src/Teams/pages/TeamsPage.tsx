@@ -4,7 +4,7 @@ import { CirclePlus, LayoutGrid, List } from 'lucide-react'
 import { MenuBar } from '@Common/MenuBar/MenuBar'
 import { Button, Layout, Separator } from '@repo/design-system'
 import { useLocalStorage } from '@Common/hooks/useLocalstorage'
-import { useIntl } from '@I18n/translation'
+import { FormattedMessage, useIntl } from '@I18n/translation'
 
 type ViewMode = 'grid' | 'list'
 
@@ -16,7 +16,19 @@ export const TeamsPage = () => {
     <Layout.Root>
       <Layout.Header>
         <MenuBar
-          leftActions={[{ url: 'create', label: <CirclePlus /> }]}
+          leftActions={[
+            {
+              url: 'create',
+              label: (
+                <>
+                  <CirclePlus />
+                  <span className="sr-only">
+                    <FormattedMessage id="teams.createTeam" />
+                  </span>
+                </>
+              ),
+            },
+          ]}
           rightActions={[
             <div key="view-toggle" className="flex gap-1">
               <Button
