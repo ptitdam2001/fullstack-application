@@ -10,17 +10,22 @@ type PasswordInputProps = Omit<AriaInputProps, 'type'> & {
   hidePasswordLabel?: string
 }
 
-export const PasswordInput = ({
-  className,
-  showPasswordLabel = 'Show password',
-  hidePasswordLabel = 'Hide password',
-  ...props
-}: PasswordInputProps) => {
+export const PasswordInput = (allProps: PasswordInputProps) => {
+  const {
+    className,
+    showPasswordLabel = 'Show password',
+    hidePasswordLabel = 'Hide password',
+    value,
+    ...props
+  } = allProps
   const [show, setShow] = useState(false)
+  // Controlled as soon as the caller passes the `value` prop, even undefined (a react-hook-form field
+  // without a default value). Without the prop the input is uncontrolled and honours defaultValue.
+  const controlledValue = 'value' in allProps ? (value ?? '') : undefined
 
   return (
     <div data-slot="password-input" className="relative">
-      <Input {...props} type={show ? 'text' : 'password'} className={cn('pr-10', className)} />
+      <Input {...props} value={controlledValue} type={show ? 'text' : 'password'} className={cn('pr-10', className)} />
       <AriaButton
         className="text-muted-foreground hover:text-foreground pressed:text-foreground focus-visible:ring-ring/50 absolute top-1/2 right-2.5 -translate-y-1/2 rounded p-0.5 transition-colors outline-none focus-visible:ring-2"
         type="button"

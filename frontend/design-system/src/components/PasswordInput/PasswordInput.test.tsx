@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { PasswordInput } from './PasswordInput'
 
@@ -46,5 +46,25 @@ describe('PasswordInput', () => {
   it('forwards input props', () => {
     render(<PasswordInput placeholder="••••••••" />)
     expect(screen.getByPlaceholderText('••••••••')).toBeInTheDocument()
+  })
+
+  describe('value', () => {
+    // A react-hook-form field without a default value spreads { value: undefined } on the first render.
+    it('stays controlled when the value prop goes from undefined to a string', () => {
+      const error = vi.spyOn(console, 'error').mockImplementation(() => {})
+      const { container, rerender } = render(<PasswordInput value={undefined} onChange={vi.fn()} />)
+      expect(container.querySelector('input')).toHaveValue('')
+
+      rerender(<PasswordInput value="secret" onChange={vi.fn()} />)
+      expect(container.querySelector('input')).toHaveValue('secret')
+      expect(error).not.toHaveBeenCalledWith(expect.stringContaining('uncontrolled input to be controlled'))
+      error.mockRestore()
+    })
+
+    it('stays uncontrolled without the value prop', () => {
+      const { container } = render(<PasswordInput defaultValue="typed" />)
+      fireEvent.change(container.querySelector('input')!, { target: { value: 'typed more' } })
+      expect(container.querySelector('input')).toHaveValue('typed more')
+    })
   })
 })
