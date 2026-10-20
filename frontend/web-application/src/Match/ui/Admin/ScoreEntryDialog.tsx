@@ -1,12 +1,10 @@
 import { FormattedMessage, useIntl } from 'react-intl'
 import {
   Button,
-  Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogPortal,
   DialogTitle,
   NumberField,
   Toast,
@@ -59,60 +57,56 @@ export const ScoreEntryDialog = ({ match, open, onOpenChange, onFinish }: Props)
   const isValid = form.formState.isValid
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogPortal>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>
-              <FormattedMessage id={hasScore ? 'adminMatches.card.editScore' : 'adminMatches.card.enterScore'} />
-            </DialogTitle>
-            <DialogDescription className="pt-1">
-              {match.stageName}
-              {scheduledDate && ` · ${scheduledDate}`}
-            </DialogDescription>
-          </DialogHeader>
-          <Form name="scoreEntryForm" onSubmit={onSubmit} className="flex flex-col gap-4 pt-2">
-            <div className="flex items-center justify-between gap-4">
-              <TeamRow team={match.homeTeam} />
-              <Field name="homeGoals">
-                {({ field, fieldState }) => (
-                  <NumberField
-                    label={intl.formatMessage({ id: 'adminMatches.scoreDialog.homeGoals' })}
-                    value={field.value}
-                    onChange={field.onChange}
-                    minValue={0}
-                    isInvalid={fieldState.invalid}
-                    className="w-28"
-                  />
-                )}
-              </Field>
-            </div>
-            <div className="flex items-center justify-between gap-4">
-              <TeamRow team={match.awayTeam} />
-              <Field name="awayGoals">
-                {({ field, fieldState }) => (
-                  <NumberField
-                    label={intl.formatMessage({ id: 'adminMatches.scoreDialog.awayGoals' })}
-                    value={field.value}
-                    onChange={field.onChange}
-                    minValue={0}
-                    isInvalid={fieldState.invalid}
-                    className="w-28"
-                  />
-                )}
-              </Field>
-            </div>
-            <DialogFooter className="pt-2">
-              <Button variant="outline" onPress={() => onOpenChange(false)} isDisabled={isPending}>
-                <FormattedMessage id="adminMatches.scoreDialog.cancel" />
-              </Button>
-              <Button type="submit" isDisabled={!isValid || isPending}>
-                <FormattedMessage id="adminMatches.scoreDialog.submit" />
-              </Button>
-            </DialogFooter>
-          </Form>
-        </DialogContent>
-      </DialogPortal>
-    </Dialog>
+    <DialogContent open={open} onOpenChange={onOpenChange}>
+      <DialogHeader>
+        <DialogTitle>
+          <FormattedMessage id={hasScore ? 'adminMatches.card.editScore' : 'adminMatches.card.enterScore'} />
+        </DialogTitle>
+        <DialogDescription className="pt-1">
+          {match.stageName}
+          {scheduledDate && ` · ${scheduledDate}`}
+        </DialogDescription>
+      </DialogHeader>
+      <Form name="scoreEntryForm" onSubmit={onSubmit} className="flex flex-col gap-4 pt-2">
+        <div className="flex items-center justify-between gap-4">
+          <TeamRow team={match.homeTeam} />
+          <Field name="homeGoals">
+            {({ field, fieldState }) => (
+              <NumberField
+                label={intl.formatMessage({ id: 'adminMatches.scoreDialog.homeGoals' })}
+                value={field.value}
+                onChange={field.onChange}
+                minValue={0}
+                isInvalid={fieldState.invalid}
+                className="w-28"
+              />
+            )}
+          </Field>
+        </div>
+        <div className="flex items-center justify-between gap-4">
+          <TeamRow team={match.awayTeam} />
+          <Field name="awayGoals">
+            {({ field, fieldState }) => (
+              <NumberField
+                label={intl.formatMessage({ id: 'adminMatches.scoreDialog.awayGoals' })}
+                value={field.value}
+                onChange={field.onChange}
+                minValue={0}
+                isInvalid={fieldState.invalid}
+                className="w-28"
+              />
+            )}
+          </Field>
+        </div>
+        <DialogFooter className="pt-2">
+          <Button variant="outline" onPress={() => onOpenChange(false)} isDisabled={isPending}>
+            <FormattedMessage id="adminMatches.scoreDialog.cancel" />
+          </Button>
+          <Button type="submit" isDisabled={!isValid || isPending}>
+            <FormattedMessage id="adminMatches.scoreDialog.submit" />
+          </Button>
+        </DialogFooter>
+      </Form>
+    </DialogContent>
   )
 }
