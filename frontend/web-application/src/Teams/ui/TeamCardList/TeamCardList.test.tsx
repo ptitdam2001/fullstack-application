@@ -41,4 +41,16 @@ describe('TeamCardList', () => {
     )
     expect(screen.getAllByRole('option')).toHaveLength(2)
   })
+
+  it('names the listbox and the buttons of each card through i18n keys', () => {
+    render(
+      <MemoryRouter>
+        <TeamCardList teams={teams} />
+      </MemoryRouter>
+    )
+    expect(screen.getByRole('listbox', { name: 'teams.title' })).toBeInTheDocument()
+    expect(screen.getAllByRole('button', { name: 'teamCard.view' })).toHaveLength(2)
+    expect(screen.getAllByRole('button', { name: 'teamCard.players' })).toHaveLength(2)
+    expect(screen.getAllByRole('button', { name: 'common.edit' })).toHaveLength(2)
+  })
 })
