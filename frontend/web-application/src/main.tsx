@@ -11,6 +11,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { IntlProvider } from '@I18n/'
 
 import { reactQueryClient } from '@Config/reactQueryClient'
+import { getBaseUrl } from '@Config/axios-instance'
 
 import './index.css'
 import { Toast } from '@repo/design-system'
@@ -24,7 +25,16 @@ async function enableMocking() {
 
   // `worker.start()` returns a Promise that resolves
   // once the Service Worker is up and ready to intercept requests.
-  await worker.start()
+  // Only an API request without a handler is a mock to write: the Google Fonts requests of index.html
+  // and the Vite modules reach the network on purpose.
+  const apiBaseUrl = getBaseUrl()
+  await worker.start({
+    onUnhandledRequest: (request, print) => {
+      if (request.url.startsWith(apiBaseUrl)) {
+        print.warning()
+      }
+    },
+  })
 
   if (import.meta.env.MODE === 'e2e') {
     const { exposeE2eOverrides } = await import('./mocks/e2eOverrides')
