@@ -23,13 +23,13 @@ const restrictedImports = (modules, extraPaths = []) => [
   { paths: [...restrictedImportPaths, ...extraPaths], patterns: deepImportPatterns(modules) },
 ]
 
-// A mocked e2e spec takes `test` from e2e/fixtures/test.ts, which fails the test on an uncaught page error.
+// A mocked e2e spec takes `test` from e2e/fixtures/test.ts, which fails the test on an uncaught page error or a console warning.
 const playwrightTestImportPaths = [
   {
     name: '@playwright/test',
     importNames: ['test'],
     message:
-      "Import test and expect from './fixtures/test': its test fails on an uncaught page error, which React hides by rendering again.",
+      "Import test and expect from './fixtures/test': its test fails on an uncaught page error or a console warning, which the final DOM never shows.",
   },
 ]
 
