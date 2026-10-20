@@ -1,9 +1,19 @@
-import { describe, it, expect } from 'vitest'
+import { renderHook } from '@testing-library/react'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import dayjs from 'dayjs'
 import type { Match } from '@Sdk/model/match'
 import type { Team } from '@Sdk/model/team'
 import { MatchStatus } from '@Sdk/model/matchStatus'
-import { splitRefereeMatches, teamNameMap } from './useRefereeDashboard'
+import { DASHBOARD_POLLING_INTERVAL_MS } from '@Config/dashboard.config'
+import { splitRefereeMatches, teamNameMap, useRefereeDashboard } from './useRefereeDashboard'
+
+const mockUseGetUserMatches = vi.fn()
+
+vi.mock('@Sdk/user-match/user-match', () => ({
+  useGetUserMatches: (...args: unknown[]) => mockUseGetUserMatches(...args),
+}))
+vi.mock('@Sdk/teams/teams', () => ({ useGetTeams: () => ({ data: [] }) }))
+vi.mock('@Sdk/match/match', () => ({ useGetMatches: () => ({ data: [] }) }))
 
 const makeMatch = (overrides: Partial<Match> = {}): Match =>
   ({
@@ -88,5 +98,26 @@ describe('teamNameMap', () => {
   it('maps team ids to names', () => {
     const teams: Team[] = [{ id: 'team-1', name: 'Alpha' } as Team, { id: 'team-2', name: 'Beta' } as Team]
     expect(teamNameMap(teams)).toEqual({ 'team-1': 'Alpha', 'team-2': 'Beta' })
+  })
+})
+
+describe('useRefereeDashboard', () => {
+  beforeEach(() => {
+    mockUseGetUserMatches.mockReset().mockReturnValue({ data: [] })
+  })
+
+  // The signed-in user is not known yet on the first render: requesting GET /user//matches would fail.
+  it('does not request the referee matches without a user id', () => {
+    renderHook(() => useRefereeDashboard(''))
+    expect(mockUseGetUserMatches).toHaveBeenCalledWith('', {
+      query: { refetchInterval: DASHBOARD_POLLING_INTERVAL_MS, enabled: false },
+    })
+  })
+
+  it('requests the referee matches of the user', () => {
+    renderHook(() => useRefereeDashboard('user-1'))
+    expect(mockUseGetUserMatches).toHaveBeenCalledWith('user-1', {
+      query: { refetchInterval: DASHBOARD_POLLING_INTERVAL_MS, enabled: true },
+    })
   })
 })
