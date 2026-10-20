@@ -1,15 +1,17 @@
 import { Button, Card, Grid } from '@repo/design-system'
 import { Eye, Pencil, Users, Volleyball } from 'lucide-react'
 import { useNavigate } from 'react-router'
+import { useIntl } from '@I18n/translation'
 import type { Team } from '../../domain/Team'
 
 type Props = { teams: Team[] }
 
 export const TeamCardGrid = ({ teams }: Props) => {
   const navigate = useNavigate()
+  const intl = useIntl()
   return (
     <Grid.Root
-      aria-label="Teams"
+      aria-label={intl.formatMessage({ id: 'teams.title' })}
       items={teams}
       variant="ghost"
       className="h-full"
@@ -23,18 +25,28 @@ export const TeamCardGrid = ({ teams }: Props) => {
               <Card.Title>{team.name}</Card.Title>
             </Card.Content>
             <Card.Footer className="justify-center gap-1">
-              <Button variant="outline" size="icon" aria-label="View" onPress={() => navigate(`/app/team/${team.id}`)}>
+              <Button
+                variant="outline"
+                size="icon"
+                aria-label={intl.formatMessage({ id: 'teamCard.view' })}
+                onPress={() => navigate(`/app/team/${team.id}`)}
+              >
                 <Eye />
               </Button>
               <Button
                 variant="outline"
                 size="icon"
-                aria-label="Players"
+                aria-label={intl.formatMessage({ id: 'teamCard.players' })}
                 onPress={() => navigate(`/app/team/${team.id}/players`)}
               >
                 <Users />
               </Button>
-              <Button variant="outline" size="icon" aria-label="Edit" onPress={() => navigate(`${team.id}/edit`)}>
+              <Button
+                variant="outline"
+                size="icon"
+                aria-label={intl.formatMessage({ id: 'common.edit' })}
+                onPress={() => navigate(`${team.id}/edit`)}
+              >
                 <Pencil />
               </Button>
             </Card.Footer>
