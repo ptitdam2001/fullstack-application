@@ -85,12 +85,6 @@ const router = createBrowserRouter(
               handle={{ breadcrumb: <FormattedMessage id="breadcrumb.players" /> }}
             />
           </Route>
-
-          <Route
-            path="create"
-            element={<TeamCreatePage />}
-            handle={{ breadcrumb: <FormattedMessage id="breadcrumb.create" /> }}
-          />
         </Route>
 
         <Route
