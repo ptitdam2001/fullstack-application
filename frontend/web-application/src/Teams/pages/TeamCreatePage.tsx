@@ -2,6 +2,7 @@ import { cn, DialogContent, DialogHeader, DialogTitle } from '@repo/design-syste
 import { TeamForm } from '../ui/TeamForm/TeamForm'
 import { useTheme } from '@Theme/Provider/ThemeProvider'
 import { useState } from 'react'
+import { FormattedMessage } from 'react-intl'
 import { useNavigate } from 'react-router'
 
 export const TeamCreatePage = () => {
@@ -22,11 +23,13 @@ export const TeamCreatePage = () => {
         { dark: currentTheme && ['dark', 'system'].includes(currentTheme) },
         'fixed top-1/2 left-1/2 flex flex-col',
         'max-h-[85vh] w-[90vw] max-w-125 -translate-x-1/2 -translate-y-1/2 rounded-md',
-        'data-[state=open]:animate-contentShow p-6.25 shadow-(--shadow-6) focus:outline-none dark:bg-gray-600'
+        'p-6.25 shadow-(--shadow-6) focus:outline-none dark:bg-gray-600'
       )}
     >
       <DialogHeader>
-        <DialogTitle>Create</DialogTitle>
+        <DialogTitle>
+          <FormattedMessage id="teams.createTeam" />
+        </DialogTitle>
       </DialogHeader>
       <div className="flex grow flex-col">
         <TeamForm

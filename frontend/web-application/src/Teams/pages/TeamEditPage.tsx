@@ -1,7 +1,8 @@
 import { NotFound } from '@Common/NotFound'
 import { useNavigate, useParams } from 'react-router'
-import { DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@repo/design-system'
+import { DialogContent, DialogHeader, DialogTitle } from '@repo/design-system'
 import React from 'react'
+import { FormattedMessage } from 'react-intl'
 import { cn } from '@repo/design-system'
 import { useTheme } from '@Theme/Provider/ThemeProvider'
 import { LinearProgress } from '@Common/Loading/LinearProgress'
@@ -30,12 +31,13 @@ export const TeamEditPage = () => {
         { dark: currentTheme && ['dark', 'system'].includes(currentTheme) },
         'fixed top-1/2 left-1/2 flex flex-col',
         'max-h-[85vh] w-[90vw] max-w-125 -translate-x-1/2 -translate-y-1/2 rounded-md',
-        'data-[state=open]:animate-contentShow p-6.25 shadow-(--shadow-6) focus:outline-none dark:bg-gray-600'
+        'p-6.25 shadow-(--shadow-6) focus:outline-none dark:bg-gray-600'
       )}
     >
       <DialogHeader>
-        <DialogTitle>{teamId ? 'Edit' : 'Create'}</DialogTitle>
-        <DialogDescription></DialogDescription>
+        <DialogTitle>
+          <FormattedMessage id="teams.editTeam" />
+        </DialogTitle>
       </DialogHeader>
       <div className="flex grow flex-col">
         {isError && <NotFound />}
