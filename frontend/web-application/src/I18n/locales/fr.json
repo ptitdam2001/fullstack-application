@@ -119,10 +119,13 @@
     "editTeam": "Modifier l'équipe",
     "teamList": "Liste des équipes",
     "teamDetails": "Détails de l'équipe",
-    "teamPlayers": "Joueurs de l'équipe"
+    "teamPlayers": "Joueurs de l'équipe",
+    "gridView": "Vue en grille",
+    "listView": "Vue en liste"
   },
   "teamCard": {
     "view": "Voir",
+    "players": "Joueurs",
     "ageCategory": "Catégorie d'âge"
   },
   "players": {

@@ -4,10 +4,12 @@ import { CirclePlus, LayoutGrid, List } from 'lucide-react'
 import { MenuBar } from '@Common/MenuBar/MenuBar'
 import { Button, Layout, Separator } from '@repo/design-system'
 import { useLocalStorage } from '@Common/hooks/useLocalstorage'
+import { useIntl } from '@I18n/translation'
 
 type ViewMode = 'grid' | 'list'
 
 export const TeamsPage = () => {
+  const intl = useIntl()
   const [viewMode, setViewMode] = useLocalStorage('teams-view-mode', 'grid') as [ViewMode, (v: ViewMode) => void]
 
   return (
@@ -20,7 +22,7 @@ export const TeamsPage = () => {
               <Button
                 variant={viewMode === 'grid' ? 'default' : 'outline'}
                 size="icon"
-                aria-label="Grid view"
+                aria-label={intl.formatMessage({ id: 'teams.gridView' })}
                 onClick={() => setViewMode('grid')}
               >
                 <LayoutGrid />
@@ -28,7 +30,7 @@ export const TeamsPage = () => {
               <Button
                 variant={viewMode === 'list' ? 'default' : 'outline'}
                 size="icon"
-                aria-label="List view"
+                aria-label={intl.formatMessage({ id: 'teams.listView' })}
                 onClick={() => setViewMode('list')}
               >
                 <List />

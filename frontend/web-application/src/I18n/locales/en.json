@@ -119,10 +119,13 @@
     "editTeam": "Edit Team",
     "teamList": "Team List",
     "teamDetails": "Team Details",
-    "teamPlayers": "Team Players"
+    "teamPlayers": "Team Players",
+    "gridView": "Grid view",
+    "listView": "List view"
   },
   "teamCard": {
     "view": "View",
+    "players": "Players",
     "ageCategory": "Age category"
   },
   "players": {
