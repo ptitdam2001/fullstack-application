@@ -4,7 +4,8 @@ import { useGetMatches } from '@Sdk/match/match'
 import type { CoachDashboardStats } from '../domain/Dashboard'
 
 export const useCoachDashboard = (userId: string) => {
-  const { data: userTeams = [] } = useGetCoachTeams(userId)
+  // The signed-in user is not known yet on the first render: no GET /user//coach-teams.
+  const { data: userTeams = [] } = useGetCoachTeams(userId, { query: { enabled: userId !== '' } })
   const teamIds = userTeams.map(ut => ut.teamId)
 
   const { data: allTeams = [] } = useGetTeams()

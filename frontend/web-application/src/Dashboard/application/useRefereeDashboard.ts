@@ -31,7 +31,8 @@ export const teamNameMap = (teams: Team[]): Record<string, string> => Object.fro
 export const useRefereeDashboard = (userId: string) => {
   const refetchInterval = DASHBOARD_POLLING_INTERVAL_MS
 
-  const { data: userMatches = [] } = useGetUserMatches(userId, { query: { refetchInterval } })
+  // The signed-in user is not known yet on the first render: no GET /user//matches.
+  const { data: userMatches = [] } = useGetUserMatches(userId, { query: { refetchInterval, enabled: userId !== '' } })
   const { data: allMatches = [] } = useGetMatches(undefined, { query: { refetchInterval } })
   const { data: allTeams = [] } = useGetTeams(undefined, { query: { refetchInterval } })
 
