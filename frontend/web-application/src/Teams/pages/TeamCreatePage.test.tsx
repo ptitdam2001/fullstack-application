@@ -1,6 +1,5 @@
-import { render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
-import { TeamCreatePage } from './TeamCreatePage'
+import { TeamCreatePagePage } from './TeamCreatePage.page'
 
 vi.mock('react-router', () => ({
   useNavigate: () => vi.fn(),
@@ -16,8 +15,8 @@ vi.mock('../ui/TeamForm/TeamForm', () => ({
 
 describe('TeamCreatePage', () => {
   it('names the dialog with the translated create title', () => {
-    render(<TeamCreatePage />)
-    expect(screen.getByRole('dialog', { name: 'teams.createTeam' })).toBeInTheDocument()
-    expect(screen.getByTestId('team-form')).toBeInTheDocument()
+    const page = new TeamCreatePagePage().render()
+    expect(page.dialog()).toBeInTheDocument()
+    expect(page.teamForm()).toBeInTheDocument()
   })
 })
