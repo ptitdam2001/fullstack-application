@@ -1,6 +1,5 @@
-import { render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
-import { TeamEditPage } from './TeamEditPage'
+import { TeamEditPagePage } from './TeamEditPage.page'
 
 vi.mock('react-router', () => ({
   useNavigate: () => vi.fn(),
@@ -25,8 +24,8 @@ vi.mock('../ui/TeamForm/TeamForm', () => ({
 
 describe('TeamEditPage', () => {
   it('names the dialog with the translated edit title', () => {
-    render(<TeamEditPage />)
-    expect(screen.getByRole('dialog', { name: 'teams.editTeam' })).toBeInTheDocument()
-    expect(screen.getByTestId('team-form')).toHaveAttribute('data-team-id', '1')
+    const page = new TeamEditPagePage().render()
+    expect(page.dialog()).toBeInTheDocument()
+    expect(page.teamForm()).toHaveAttribute('data-team-id', '1')
   })
 })
