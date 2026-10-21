@@ -1,4 +1,4 @@
-.PHONY: seed db-check-duplicates db-push help test-backend-unit test-backend-func db-test-up db-test-down test-e2e up down stack-test-up stack-test-down test-e2e-smoke test check lint gen ds-build ci ci-backend ci-backend-functional ci-frontend ci-storybook ci-markdown ci-docker build-images
+.PHONY: seed db-check-duplicates db-push help test-backend-unit test-backend-func db-test-up db-test-down test-e2e up down front dev dev-stop stack-test-up stack-test-down test-e2e-smoke test check lint gen ds-build ci ci-backend ci-backend-functional ci-frontend ci-storybook ci-markdown ci-docker build-images
 
 TEST_MONGO_CONTAINER := fullstack-test-mongo
 TEST_MONGO_PORT := 27018
@@ -67,6 +67,26 @@ up: ## Lance la stack dev via Docker (API + Mongo + Swagger)
 
 down: ## Arrête la stack dev
 	$(COMPOSE_DEV) down
+
+# Port fixe : le CORS de l'API n'accepte que FRONTEND_URL (backend/.env, http://localhost:5173).
+# Sans --strictPort, Vite prendrait 5174 si 5173 est occupé : chaque appel à l'API serait refusé.
+FRONT_PORT := 5173
+
+front: ## Lance le front (Vite) sur l'API de la stack dev Docker (:4000), sans MSW
+	cd frontend && pnpm --filter application-material dev:docker --port $(FRONT_PORT) --strictPort
+
+# Appels récursifs plutôt que prérequis : l'ordre up → front tient aussi sous `make -j`.
+dev: ## Lance la stack dev complète : Docker (API + Mongo + Swagger) puis le front (Ctrl+C arrête le front seul)
+	$(MAKE) up
+	$(MAKE) front
+
+# -sTCP:LISTEN : seul le serveur Vite est visé, pas un navigateur connecté au port.
+# `|| true` : lsof sort en 1 quand rien n'écoute, `down` doit tourner quand même.
+dev-stop: ## Arrête la stack dev complète : le front sur :5173 puis Docker (données Mongo conservées)
+	@pids=$$(lsof -ti tcp:$(FRONT_PORT) -sTCP:LISTEN || true); \
+	if [ -n "$$pids" ]; then kill $$pids && echo "Front arrêté (port $(FRONT_PORT))"; \
+	else echo "Aucun front sur le port $(FRONT_PORT)"; fi
+	$(MAKE) down
 
 # ─── Docker test (smoke E2E) ─────────────────────────────────────────────────
 
