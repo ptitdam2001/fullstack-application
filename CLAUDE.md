@@ -87,6 +87,7 @@ pnpm check:sync-schema # Flag nullability drift between openapi.yml and prisma/s
 
 # Run from frontend/ using filter, or directly from frontend/web-application/
 pnpm --filter application-material dev             # Vite dev server (MSW mocks enabled in dev)
+pnpm --filter application-material dev:docker      # Vite in `docker` mode: .env.docker targets the API of the Docker dev stack (:4000), no MSW
 pnpm --filter application-material build           # tsc + vite build
 pnpm --filter application-material test            # Vitest (jsdom environment)
 pnpm --filter application-material test:ui         # Vitest with UI and coverage
@@ -110,6 +111,9 @@ git cz               # Commitizen for conventional commits
 pnpm check:format    # Prettier check of the Markdown files outside backend/ and frontend/
 make help             # List all Makefile targets
 make up               # Start dev stack (Docker), waits until Mongo is primary and the API healthy — does NOT create the MongoDB indexes
+make dev              # Full dev stack: make up, then make front (Vite on :5173 against the Docker API, no MSW); Ctrl+C stops Vite only
+make front            # Vite only, docker mode, pinned to :5173 (--strictPort: the API CORS only accepts FRONTEND_URL)
+make dev-stop         # Stop the Vite server listening on :5173, if any, then make down (Mongo volumes kept)
 make db-push          # Create/update the MongoDB indexes (duplicate check, prisma db push, then backfill of missing fields) on backend/.env DATABASE_URL
 make db-check-duplicates # Read-only: list documents that would block a unique index
 make test             # Run the backend tests (unit + func) and the mocked e2e — no frontend unit test
@@ -254,7 +258,7 @@ src/<Feature>/
 - **i18n**: react-intl with locale files under `src/I18n/locales/`.
 - **Module barrels**: `src/<Feature>/index.ts` is the module's public API. Code in another module imports from the barrel (`@AgeCategory`, `@User`), never from a deep path (`@AgeCategory/ui/...`), and `vi.mock` targets follow the same rule. Inside a module, use relative paths, not the module's own barrel (circular imports). ESLint (`no-restricted-imports` in `frontend/web-application/eslint.config.js`) enforces this for `AgeCategory` and `User` only; the other modules are not migrated yet.
 
-> **Gotcha — port**: `config/axios-instance.ts` reads `VITE_BACKEND_BASEURL` and falls back to `http://localhost:4000/`, the port published by Docker. A backend started with `pnpm start:dev` listens on the `PORT` of `backend/.env` (`3000` in `.env.sample`): set `VITE_BACKEND_BASEURL` in `frontend/web-application/.env` to match, do not edit the axios instance.
+> **Gotcha — port**: `config/axios-instance.ts` reads `VITE_BACKEND_BASEURL` and falls back to `http://localhost:4000/`, the port published by Docker. A backend started with `pnpm start:dev` listens on the `PORT` of `backend/.env` (`3000` in `.env.sample`): set `VITE_BACKEND_BASEURL` in `frontend/web-application/.env` to match, do not edit the axios instance. `dev:docker` (`make front`, `make dev`) ignores `.env` for these two variables: `.env.docker` targets `:4000`.
 
 ## Tooling
 

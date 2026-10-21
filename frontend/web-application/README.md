@@ -27,6 +27,8 @@ Note: Vite only exposes the variables prefixed with `VITE_` to the client-side c
 
 The e2e tests do not depend on these values: Playwright starts Vite in `e2e` mode, and `.env.e2e` overrides `.env`.
 
+`pnpm dev:docker` does the same with the `docker` mode: `.env.docker` overrides `.env` and targets the real API of the Docker dev stack (`http://localhost:4000/`, no MSW mocks). `make front` and `make dev`, from the repository root, use this script.
+
 ### Docker build
 
 The image is built by `deployment/frontend/Dockerfile`, from the repository root (the build context must hold `frontend/`, `tooling/` and `backend/openapi.yml`).
