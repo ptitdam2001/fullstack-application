@@ -23,6 +23,8 @@ Des scripts Make sont disponibles pour les opérations courantes.
 
 ```bash
 make help   # liste toutes les commandes
+make dev    # lance la stack dev complète : Docker (API + Mongo + Swagger) puis le front sur :5173
+make dev-stop # arrête la stack dev complète (front puis Docker, données Mongo conservées)
 make seed   # crée un jeu de données de test en base
 make db-push # crée/met à jour les index MongoDB du schéma Prisma (contrôle des doublons d'abord)
 make ci     # rejoue en local les six jobs de la CI (dépendances déjà installées, Docker et Chromium de Playwright requis)
@@ -58,6 +60,8 @@ docker compose -f deployment/docker-compose.yml up --build
 **`db-viewer`** — Mongo Express, a web-based MongoDB admin UI. No authentication required in dev (`ME_CONFIG_BASICAUTH=false`).
 
 `make up` runs the same stack detached with `--wait`: it returns once `mongodb` and `api` are healthy, so a command chained after it (`make up && make db-push`) finds a database that accepts writes. It fails when a container exits at start-up — for instance `api` with the `JWT_SECRET` placeholder of `.env.sample`; read the cause with `docker compose -f deployment/docker-compose.yml logs api`.
+
+The stack has no frontend service: Vite runs on the host, for hot reload. `make dev` runs `make up`, then `make front`, which starts Vite on http://localhost:5173 against the API of the stack (`http://localhost:4000/`, no MSW mocks), whatever `frontend/web-application/.env` says. The port is fixed (`--strictPort`): the API CORS only accepts `FRONTEND_URL` of `backend/.env`. `Ctrl+C` stops Vite only, and `make front` starts it again. `make dev-stop` stops the Vite server listening on :5173, if any, then runs `make down`: the containers go, the Mongo volumes stay.
 
 ### Moving the dev data from the Mongo 4.4 container
 
