@@ -2,8 +2,8 @@ import { render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import { AdminAgeCategoryFormSheet } from './AdminAgeCategoryFormSheet'
 
-vi.mock('../../infrastructure/useAgeCategoryApi', () => ({
-  useGetAgeCategory: vi.fn(),
+vi.mock('../../application/useAgeCategoryDetail', () => ({
+  useAgeCategoryDetail: vi.fn(),
 }))
 
 vi.mock('./AgeCategoryForm', () => ({
@@ -20,9 +20,9 @@ vi.mock('@Common/NotFound', () => ({
   NotFound: () => <div data-testid="not-found" />,
 }))
 
-import { useGetAgeCategory } from '../../infrastructure/useAgeCategoryApi'
+import { useAgeCategoryDetail } from '../../application/useAgeCategoryDetail'
 
-const mockedUseGetAgeCategory = vi.mocked(useGetAgeCategory)
+const mockedUseAgeCategoryDetail = vi.mocked(useAgeCategoryDetail)
 
 const defaultProps = { open: true, onOpenChange: vi.fn() }
 
@@ -51,27 +51,27 @@ describe('AdminAgeCategoryFormSheet', () => {
 
   describe('edit mode (with ageCategoryId)', () => {
     it('renders edit title', () => {
-      mockedUseGetAgeCategory.mockReturnValue({ data: mockData, isLoading: false, isError: false } as never)
+      mockedUseAgeCategoryDetail.mockReturnValue({ data: mockData, isLoading: false, isError: false } as never)
       render(<AdminAgeCategoryFormSheet {...defaultProps} ageCategoryId="1" />)
       expect(screen.getByText('adminAgeCategories.dialog.edit.title')).toBeInTheDocument()
     })
 
     it('renders form with ageCategoryId when data is loaded', () => {
-      mockedUseGetAgeCategory.mockReturnValue({ data: mockData, isLoading: false, isError: false } as never)
+      mockedUseAgeCategoryDetail.mockReturnValue({ data: mockData, isLoading: false, isError: false } as never)
       render(<AdminAgeCategoryFormSheet {...defaultProps} ageCategoryId="1" />)
       const form = screen.getByTestId('age-category-form')
       expect(form).toHaveAttribute('data-age-category-id', '1')
     })
 
     it('renders LinearProgress while loading', () => {
-      mockedUseGetAgeCategory.mockReturnValue({ data: undefined, isLoading: true, isError: false } as never)
+      mockedUseAgeCategoryDetail.mockReturnValue({ data: undefined, isLoading: true, isError: false } as never)
       render(<AdminAgeCategoryFormSheet {...defaultProps} ageCategoryId="1" />)
       expect(screen.getByTestId('linear-progress')).toBeInTheDocument()
       expect(screen.queryByTestId('age-category-form')).not.toBeInTheDocument()
     })
 
     it('renders NotFound on error', () => {
-      mockedUseGetAgeCategory.mockReturnValue({ data: undefined, isLoading: false, isError: true } as never)
+      mockedUseAgeCategoryDetail.mockReturnValue({ data: undefined, isLoading: false, isError: true } as never)
       render(<AdminAgeCategoryFormSheet {...defaultProps} ageCategoryId="1" />)
       expect(screen.getByTestId('not-found')).toBeInTheDocument()
       expect(screen.queryByTestId('age-category-form')).not.toBeInTheDocument()

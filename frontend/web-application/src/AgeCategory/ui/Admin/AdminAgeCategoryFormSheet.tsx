@@ -2,7 +2,7 @@ import { FormattedMessage } from 'react-intl'
 import { SheetContent, SheetHeader, SheetTitle } from '@repo/design-system'
 import { LinearProgress } from '@Common/Loading/LinearProgress'
 import { NotFound } from '@Common/NotFound'
-import { useGetAgeCategory } from '../../infrastructure/useAgeCategoryApi'
+import { useAgeCategoryDetail } from '../../application/useAgeCategoryDetail'
 import { AgeCategoryForm } from './AgeCategoryForm'
 
 type AdminAgeCategoryFormSheetProps = {
@@ -12,7 +12,7 @@ type AdminAgeCategoryFormSheetProps = {
 }
 
 const EditSheetContent = ({ ageCategoryId, onFinish }: { ageCategoryId: string; onFinish: VoidFunction }) => {
-  const { data, isLoading, isError } = useGetAgeCategory(ageCategoryId)
+  const { data, isLoading, isError } = useAgeCategoryDetail(ageCategoryId)
 
   if (isError) {
     return <NotFound />
