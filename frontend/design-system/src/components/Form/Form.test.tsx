@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, waitFor } from '@testing-library/react'
 import { useForm } from 'react-hook-form'
 import { Form, FormField } from './Form'
@@ -172,5 +172,28 @@ describe('FormMessage', () => {
     )
     const el = container.querySelector('[data-slot="form-message"]')
     expect(el?.id).toMatch(/-form-item-message$/)
+  })
+})
+
+function WrapperWithoutField({ children }: { children: React.ReactNode }) {
+  const form = useForm<Fields>({ defaultValues: { username: '' } })
+  return (
+    <Form {...form}>
+      <form>{children}</form>
+    </Form>
+  )
+}
+
+describe('useFormField', () => {
+  it('throws when used outside a FormField', () => {
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
+    expect(() =>
+      render(
+        <WrapperWithoutField>
+          <FormLabel>Username</FormLabel>
+        </WrapperWithoutField>
+      )
+    ).toThrow('useFormField should be used within <FormField>')
+    consoleError.mockRestore()
   })
 })
