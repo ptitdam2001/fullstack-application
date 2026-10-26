@@ -2,7 +2,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, act } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import { useContext } from 'react'
-import { ThemeProvider, ThemeConfigContext } from './ThemeProvider'
+import { ThemeConfigContext } from './ThemeConfigContext'
+import { ThemeProvider } from './ThemeProvider'
 import type { IThemeStorage, ThemeConfig } from '../../theme/types'
 
 const makeStorage = (initial: ThemeConfig | null = null): IThemeStorage => ({
