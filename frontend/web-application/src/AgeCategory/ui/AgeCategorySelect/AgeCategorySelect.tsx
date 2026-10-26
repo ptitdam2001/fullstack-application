@@ -1,6 +1,6 @@
 import { Select, SelectItem } from '@repo/design-system'
 import { FormattedMessage, useIntl } from 'react-intl'
-import { useGetAgeCategories } from '../../infrastructure/useAgeCategoryApi'
+import { useAllAgeCategories } from '../../application/useAllAgeCategories'
 
 type Props = {
   label?: string
@@ -10,8 +10,7 @@ type Props = {
 
 export const AgeCategorySelect = ({ label, value, onChange }: Props) => {
   const intl = useIntl()
-  const { data } = useGetAgeCategories({ page: 1, count: 100 })
-  const ageCategories = data ?? []
+  const ageCategories = useAllAgeCategories()
 
   return (
     <Select
