@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react'
 import { AdminAreaFormSheet } from './AdminAreaFormSheet'
 
-vi.mock('../../infrastructure/useAreaApi', () => ({
-  useGetArea: vi.fn(),
+vi.mock('../../application/useAreaDetail', () => ({
+  useAreaDetail: vi.fn(),
 }))
 
 vi.mock('../AreaForm', () => ({
@@ -17,9 +17,9 @@ vi.mock('@Common/NotFound', () => ({
   NotFound: () => <div data-testid="not-found" />,
 }))
 
-import { useGetArea } from '../../infrastructure/useAreaApi'
+import { useAreaDetail } from '../../application/useAreaDetail'
 
-const mockedUseGetArea = vi.mocked(useGetArea)
+const mockedUseAreaDetail = vi.mocked(useAreaDetail)
 
 const defaultProps = { open: true, onOpenChange: vi.fn() }
 
@@ -49,27 +49,27 @@ describe('AdminAreaFormSheet', () => {
 
   describe('edit mode (with areaId)', () => {
     it('renders edit title', () => {
-      mockedUseGetArea.mockReturnValue({ data: mockData, isLoading: false, isError: false } as never)
+      mockedUseAreaDetail.mockReturnValue({ data: mockData, isLoading: false, isError: false } as never)
       render(<AdminAreaFormSheet {...defaultProps} areaId="1" />)
       expect(screen.getByText('adminAreas.dialog.edit.title')).toBeInTheDocument()
     })
 
     it('renders form with areaId when data is loaded', () => {
-      mockedUseGetArea.mockReturnValue({ data: mockData, isLoading: false, isError: false } as never)
+      mockedUseAreaDetail.mockReturnValue({ data: mockData, isLoading: false, isError: false } as never)
       render(<AdminAreaFormSheet {...defaultProps} areaId="1" />)
       const form = screen.getByTestId('area-form')
       expect(form).toHaveAttribute('data-area-id', '1')
     })
 
     it('renders LinearProgress while loading', () => {
-      mockedUseGetArea.mockReturnValue({ data: undefined, isLoading: true, isError: false } as never)
+      mockedUseAreaDetail.mockReturnValue({ data: undefined, isLoading: true, isError: false } as never)
       render(<AdminAreaFormSheet {...defaultProps} areaId="1" />)
       expect(screen.getByTestId('linear-progress')).toBeInTheDocument()
       expect(screen.queryByTestId('area-form')).not.toBeInTheDocument()
     })
 
     it('renders NotFound on error', () => {
-      mockedUseGetArea.mockReturnValue({ data: undefined, isLoading: false, isError: true } as never)
+      mockedUseAreaDetail.mockReturnValue({ data: undefined, isLoading: false, isError: true } as never)
       render(<AdminAreaFormSheet {...defaultProps} areaId="1" />)
       expect(screen.getByTestId('not-found')).toBeInTheDocument()
       expect(screen.queryByTestId('area-form')).not.toBeInTheDocument()
