@@ -247,6 +247,8 @@ src/<Feature>/
 └── ui/             # Pure components (receive data via props, no SDK hooks)
 ```
 
+`ui/` and `pages/` never import `infrastructure/`: they call a hook of `application/`, or a pure helper of `domain/` (e.g. `Auth/domain/httpError.ts`). Tests, stories and page objects may still mock or import `infrastructure/`. ESLint (`no-restricted-imports` in `frontend/web-application/eslint.config.js`) enforces it in every module.
+
 **Key patterns**:
 
 - **State management**: React context via `createContextWithWrite` (`@Common/Context/`)
