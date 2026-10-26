@@ -191,6 +191,7 @@ export * from './components/Grid/GridItemVariants'
 
 // Providers
 export * from './providers/ThemeProvider/ThemeProvider'
+export * from './providers/ThemeProvider/ThemeConfigContext'
 
 // Hooks
 export * from './hooks/use-mobile'
