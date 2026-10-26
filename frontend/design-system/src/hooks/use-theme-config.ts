@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import { useTheme as useNextTheme } from 'next-themes'
-import { ThemeConfigContext } from '../providers/ThemeProvider/ThemeProvider'
+import { ThemeConfigContext } from '../providers/ThemeProvider/ThemeConfigContext'
 import type { ThemeConfig, ThemeTokens } from '../theme/types'
 import { DEFAULT_THEME } from '../theme/defaultTheme'
 

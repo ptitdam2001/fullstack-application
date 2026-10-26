@@ -54,6 +54,7 @@ export * from './components/DropdownMenu/DropdownMenuSubTrigger'
 export * from './components/DropdownMenu/DropdownMenuSubContent'
 
 export * from './components/Form/Form'
+export * from './components/Form/FormContext'
 export * from './components/Form/FormItem'
 export * from './components/Form/FormLabel'
 export * from './components/Form/FormDescription'
@@ -106,6 +107,7 @@ export * from './components/Sidebar/SidebarGroupContent'
 export * from './components/Sidebar/SidebarMenu'
 export * from './components/Sidebar/SidebarMenuItem'
 export * from './components/Sidebar/SidebarMenuButton'
+export * from './components/Sidebar/SidebarMenuButtonVariants'
 export * from './components/Sidebar/SidebarMenuAction'
 export * from './components/Sidebar/SidebarMenuBadge'
 export * from './components/Sidebar/SidebarMenuSkeleton'
@@ -189,6 +191,7 @@ export * from './components/Grid/GridItemVariants'
 
 // Providers
 export * from './providers/ThemeProvider/ThemeProvider'
+export * from './providers/ThemeProvider/ThemeConfigContext'
 
 // Hooks
 export * from './hooks/use-mobile'
