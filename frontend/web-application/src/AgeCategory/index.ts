@@ -1,6 +1,6 @@
 export type { AgeCategory } from './domain/AgeCategory'
-export { useGetAgeCategories } from './infrastructure/useAgeCategoryApi'
 export { useAgeCategoryList, useAgeCategoryListSuspense } from './application/useAgeCategoryList'
+export { useAllAgeCategories } from './application/useAllAgeCategories'
 export { useAgeCategoryDelete } from './application/useAgeCategoryDelete'
 export { AgeCategorySelect } from './ui/AgeCategorySelect/AgeCategorySelect'
 export { AdminAgeCategoryTable } from './ui/Admin/AdminAgeCategoryTable'

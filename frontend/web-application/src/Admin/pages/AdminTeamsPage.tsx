@@ -9,7 +9,7 @@ import { TablePagination } from '@repo/design-system'
 import { useTeamList } from '@Teams/application/useTeamList'
 import { AdminTeamTable } from '@Teams/ui/Admin/AdminTeamTable'
 import { AdminTeamFormSheet } from '@Teams/ui/Admin/AdminTeamFormSheet'
-import { type AgeCategory, useGetAgeCategories } from '@AgeCategory'
+import { useAllAgeCategories } from '@AgeCategory'
 
 type SheetState = { open: boolean; teamId?: string }
 
@@ -22,8 +22,7 @@ const AdminTeamListContent = ({ onEdit }: AdminTeamListContentProps) => {
   const { query, countQuery, pagination, changePage, isPending } = useTeamList(25)
   const teams = query.data
   const count = countQuery.data
-  const ageCategoriesQuery = useGetAgeCategories({ page: 1, count: 100 })
-  const ageCategories = (ageCategoriesQuery.data ?? []) as AgeCategory[]
+  const ageCategories = useAllAgeCategories()
   const ageCategoryMap = Object.fromEntries(
     ageCategories.map(ac => [
       ac.id,
