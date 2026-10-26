@@ -1,5 +1,5 @@
 import { useLocalStorage } from '@Common/hooks/useLocalstorage'
-import { DEFAULT_LOCALE, LOCALE_STORAGE_KEY, type SupportedLocale } from '../intl.config'
+import { DEFAULT_LOCALE, LOCALE_STORAGE_KEY, SUPPORTED_LOCALES, type SupportedLocale } from '../intl.config'
 import { IntlProvider as ReactIntlProvider } from 'react-intl'
 import { getDictionary } from './intl.helper'
 import { use } from 'react'
@@ -34,6 +34,11 @@ const dictionaryQuery = (locale: SupportedLocale) => ({
 
 /** Loads the dictionary of a locale into the query cache: IntlProvider then renders it without suspending. */
 const loadDictionary = (locale: SupportedLocale) => reactQueryClient.ensureQueryData(dictionaryQuery(locale))
+
+/** Loads the dictionaries of every supported locale, before a render that must not suspend (Storybook loader). */
+const preloadDictionaries = async () => {
+  await Promise.all(SUPPORTED_LOCALES.map(loadDictionary))
+}
 
 const BaseIntlContext = createContextWithWrite<IntlContextType, IntlAction>('Intl', intlReducer)
 
@@ -87,4 +92,4 @@ const useLocale = () => {
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
-export { IntlProvider, useSetLocale, useLocale }
+export { IntlProvider, useSetLocale, useLocale, preloadDictionaries }
