@@ -1,7 +1,7 @@
 import * as React from 'react'
 
 import { cn } from '../../utils/cn'
-import { FormItemContext } from './Form'
+import { FormItemContext } from './FormContext'
 
 function FormItem({ className, ...props }: React.ComponentProps<'div'>) {
   const id = React.useId()

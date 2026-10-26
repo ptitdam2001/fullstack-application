@@ -1,7 +1,7 @@
 import * as React from 'react'
 
 import { cn } from '../../utils/cn'
-import { useFormField } from './Form'
+import { useFormField } from './FormContext'
 
 function FormDescription({ className, ...props }: React.ComponentProps<'p'>) {
   const { formDescriptionId } = useFormField()

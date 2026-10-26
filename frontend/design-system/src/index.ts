@@ -54,6 +54,7 @@ export * from './components/DropdownMenu/DropdownMenuSubTrigger'
 export * from './components/DropdownMenu/DropdownMenuSubContent'
 
 export * from './components/Form/Form'
+export * from './components/Form/FormContext'
 export * from './components/Form/FormItem'
 export * from './components/Form/FormLabel'
 export * from './components/Form/FormDescription'
