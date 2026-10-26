@@ -2,7 +2,7 @@ import { FormattedMessage } from 'react-intl'
 import { SheetContent, SheetHeader, SheetTitle } from '@repo/design-system'
 import { LinearProgress } from '@Common/Loading/LinearProgress'
 import { NotFound } from '@Common/NotFound'
-import { useGetArea } from '../../infrastructure/useAreaApi'
+import { useAreaDetail } from '../../application/useAreaDetail'
 import { AreaForm } from '../AreaForm'
 
 type AdminAreaFormSheetProps = {
@@ -12,7 +12,7 @@ type AdminAreaFormSheetProps = {
 }
 
 const EditSheetContent = ({ areaId, onFinish }: { areaId: string; onFinish: VoidFunction }) => {
-  const { data, isLoading, isError } = useGetArea(areaId)
+  const { data, isLoading, isError } = useAreaDetail(areaId)
 
   if (isError) {
     return <NotFound />
