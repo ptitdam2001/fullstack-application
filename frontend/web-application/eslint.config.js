@@ -18,9 +18,21 @@ const restrictedImportPaths = [
   },
 ]
 
-const restrictedImports = (modules, extraPaths = []) => [
+const restrictedImports = (modules, extraPaths = [], extraPatterns = []) => [
   'error',
-  { paths: [...restrictedImportPaths, ...extraPaths], patterns: deepImportPatterns(modules) },
+  { paths: [...restrictedImportPaths, ...extraPaths], patterns: [...deepImportPatterns(modules), ...extraPatterns] },
+]
+
+// ui/ and pages/ reach the SDK only through the hooks of application/ (and the types of domain/).
+// Tests, stories and page objects stay free to mock or import infrastructure/ at the network boundary.
+const uiLayerFiles = root => [`${root}/ui/**`, `${root}/pages/**`]
+const uiLayerIgnores = ['**/*.test.{ts,tsx}', '**/*.stories.tsx', '**/*.page.{ts,tsx}']
+const infrastructureImportPatterns = [
+  {
+    regex: '(^|/)infrastructure(/|$)',
+    message:
+      'ui/ and pages/ do not import infrastructure/: go through a hook of application/, or move a pure helper to domain/.',
+  },
 ]
 
 // A mocked e2e spec takes `test` from e2e/fixtures/test.ts, which fails the test on an uncaught page error or a console warning.
@@ -76,13 +88,29 @@ export default [
       'no-restricted-syntax': ['error', ...formatMessageSelectors],
     },
   },
-  // A module is free to reach its own internals; only the other modules' deep paths stay forbidden.
-  ...barrelOnlyModules.map(module => ({
-    files: [`src/${module}/**`],
+  {
+    files: uiLayerFiles('src/*'),
+    ignores: uiLayerIgnores,
     rules: {
-      'no-restricted-imports': restrictedImports(barrelOnlyModules.filter(other => other !== module)),
+      'no-restricted-imports': restrictedImports(barrelOnlyModules, [], infrastructureImportPatterns),
     },
-  })),
+  },
+  // A module is free to reach its own internals; only the other modules' deep paths stay forbidden.
+  // Its ui/ and pages/ keep the infrastructure ban, which the first block would otherwise drop.
+  ...barrelOnlyModules.flatMap(module => {
+    const otherModules = barrelOnlyModules.filter(other => other !== module)
+    return [
+      {
+        files: [`src/${module}/**`],
+        rules: { 'no-restricted-imports': restrictedImports(otherModules) },
+      },
+      {
+        files: uiLayerFiles(`src/${module}`),
+        ignores: uiLayerIgnores,
+        rules: { 'no-restricted-imports': restrictedImports(otherModules, [], infrastructureImportPatterns) },
+      },
+    ]
+  }),
   {
     files: ['**/*.test.{ts,tsx}', '**/*.page.{ts,tsx}', '**/*.stories.tsx'],
     rules: {
