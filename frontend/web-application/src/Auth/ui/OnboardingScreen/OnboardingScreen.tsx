@@ -4,7 +4,7 @@ import { useIntl, FormattedMessage } from 'react-intl'
 import { Button, Layout, Toast } from '@repo/design-system'
 import { Loader2 } from 'lucide-react'
 import { TeamSelectField } from '@Teams/ui/TeamSelect/TeamSelectField'
-import { useDeclareReferee, useCreateTeamJoinRequest, useCreateTeamWithCoach } from '../../infrastructure/useAuthApi'
+import { useOnboardingActions } from '../../application/useOnboardingActions'
 import { CONNECTED_HOME } from '../../domain/Auth'
 
 export const OnboardingScreen = () => {
@@ -12,9 +12,14 @@ export const OnboardingScreen = () => {
   const toast = Toast.useToast()
   const navigate = useNavigate()
 
-  const { mutateAsync: declareReferee, isPending: isRefereeLoading } = useDeclareReferee()
-  const { mutateAsync: joinRequest, isPending: isJoinLoading } = useCreateTeamJoinRequest()
-  const { mutateAsync: createTeam, isPending: isCreateLoading } = useCreateTeamWithCoach()
+  const {
+    declareReferee,
+    joinTeam,
+    createTeam,
+    isRefereePending: isRefereeLoading,
+    isJoinPending: isJoinLoading,
+    isCreatePending: isCreateLoading,
+  } = useOnboardingActions()
 
   const [refereeRegistered, setRefereeRegistered] = useState(false)
   const [joinSent, setJoinSent] = useState(false)
@@ -39,7 +44,7 @@ export const OnboardingScreen = () => {
       return
     }
     try {
-      await joinRequest({ teamId: joinTeamId, data: { requestedRole: joinRole } })
+      await joinTeam(joinTeamId, joinRole)
       setJoinSent(true)
       toast(intl.formatMessage({ id: 'onboarding.joinTeam.done' }))
     } catch {
@@ -52,7 +57,7 @@ export const OnboardingScreen = () => {
       return
     }
     try {
-      await createTeam({ data: { name: newTeamName, color: '#000000', areas: [] } })
+      await createTeam(newTeamName)
       setTeamCreated(true)
       toast(intl.formatMessage({ id: 'onboarding.createTeam.done' }))
     } catch {
