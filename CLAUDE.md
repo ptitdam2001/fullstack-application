@@ -388,13 +388,13 @@ openapi-express-ts (backend)
 
 ### Build and dev commands per package
 
-| Package                | Build                                      | Dev / watch                                                               | Test                                      |
-| ---------------------- | ------------------------------------------ | ------------------------------------------------------------------------- | ----------------------------------------- |
-| `@repo/design-system`  | `pnpm --filter @repo/design-system build`  | `pnpm --filter @repo/design-system dev` (vite --watch)                    | `pnpm --filter @repo/design-system test`  |
-| `application-material` | `pnpm --filter application-material build` | `pnpm --filter application-material dev` _(rebuilds design-system first)_ | `pnpm --filter application-material test` |
-| `openapi-express-ts`   | `pnpm --filter openapi-express-ts build`   | `pnpm --filter openapi-express-ts start:dev` (tsx watch)                  | `pnpm --filter openapi-express-ts test`   |
+| Package                | Build                                      | Dev / watch                                                                                | Test                                      |
+| ---------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------ | ----------------------------------------- |
+| `@repo/design-system`  | `pnpm --filter @repo/design-system build`  | `pnpm --filter @repo/design-system dev` (vite --watch)                                     | `pnpm --filter @repo/design-system test`  |
+| `application-material` | `pnpm --filter application-material build` | `pnpm --filter application-material dev` _(rebuilds design-system and form-factory first)_ | `pnpm --filter application-material test` |
+| `openapi-express-ts`   | `pnpm --filter openapi-express-ts build`   | `pnpm --filter openapi-express-ts start:dev` (tsx watch)                                   | `pnpm --filter openapi-express-ts test`   |
 
-> `application-material`'s `dev` script runs `(cd ../design-system && pnpm build) && vite` — it always rebuilds the design system before starting Vite. For faster iteration when only touching the app, skip the prefix rebuild by running `vite` directly inside `frontend/web-application/`.
+> `application-material`'s `dev` script runs `(cd ../design-system && pnpm build) && (cd ../form-factory && pnpm build) && vite` — it always rebuilds the design system and form-factory before starting Vite (`dev:docker` too): the app reads both from their `dist/`, which git ignores. For faster iteration when only touching the app, skip the prefix rebuild by running `vite` directly inside `frontend/web-application/`.
 
 ### Install rules
 
