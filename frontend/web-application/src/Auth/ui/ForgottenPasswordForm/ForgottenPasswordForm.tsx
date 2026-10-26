@@ -6,7 +6,7 @@ import { createFormFactory } from '@repo/form-factory'
 import { ForgotPasswordBody } from '@Sdk/authentication/authentication.zod'
 import { useForgotPasswordAction } from '../../application/useForgotPasswordAction'
 import { useResendActivationAction } from '../../application/useResendActivationAction'
-import { getHttpStatus } from '../../infrastructure/httpError'
+import { getHttpStatus } from '../../domain/httpError'
 
 const forgotPasswordFormFactory = createFormFactory({ schema: ForgotPasswordBody })
 

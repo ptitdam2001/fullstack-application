@@ -7,7 +7,7 @@ import { createFormFactory } from '@repo/form-factory'
 import { ResetPasswordBody } from '@Sdk/authentication/authentication.zod'
 import { useResetPasswordAction } from '../../application/useResetPasswordAction'
 import { isPasswordCompliant } from '../../domain/password'
-import { getErrorKey } from '../../infrastructure/httpError'
+import { getErrorKey } from '../../domain/httpError'
 import { FORGOTTEN_PASSWORD_PAGE } from '../../domain/Auth'
 
 // confirmPassword is a UI-only field: it is checked here and never sent to the API
