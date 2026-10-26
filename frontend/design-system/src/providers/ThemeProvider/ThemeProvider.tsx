@@ -4,13 +4,7 @@ import type { ThemeConfig, IThemeStorage } from '../../theme/types'
 import { DEFAULT_THEME } from '../../theme/defaultTheme'
 import { applyTheme } from '../../theme/applyTheme'
 import { LocalStorageThemeStorage } from '../../theme/storage/LocalStorageThemeStorage'
-
-export type ThemeConfigContextValue = {
-  themeConfig: ThemeConfig
-  setThemeConfig: (config: ThemeConfig) => void
-}
-
-export const ThemeConfigContext = React.createContext<ThemeConfigContextValue | null>(null)
+import { ThemeConfigContext } from './ThemeConfigContext'
 
 const defaultStorage = new LocalStorageThemeStorage()
 

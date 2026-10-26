@@ -18,7 +18,7 @@
     "test:unit": "vitest --project 'unit test'",
     "test:ui": "vitest --ui --coverage",
     "check:types": "tsc --noEmit",
-    "lint": "eslint .",
+    "lint": "eslint . --max-warnings 0",
     "check:format": "prettier -c ."
   },
   "dependencies": {

@@ -175,7 +175,8 @@ src/theme/
     └── LocalStorageThemeStorage.ts   # Implémentation localStorage (clé: "ds-theme-config")
 
 src/providers/ThemeProvider/
-└── ThemeProvider.tsx                 # next-themes + ThemeConfigContext
+├── ThemeProvider.tsx                 # next-themes + ThemeConfigProvider
+└── ThemeConfigContext.ts             # ThemeConfigContext + ThemeConfigContextValue
 
 src/hooks/
 └── use-theme-config.ts               # useThemeConfig — hook principal
