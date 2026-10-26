@@ -1,8 +1,8 @@
 import { useLocalStorage } from '@Common/hooks/useLocalstorage'
-import { DEFAULT_LOCALE, LOCALE_STORAGE_KEY, type SupportedLocale } from '../intl.config'
+import { DEFAULT_LOCALE, LOCALE_STORAGE_KEY, SUPPORTED_LOCALES, type SupportedLocale } from '../intl.config'
 import { IntlProvider as ReactIntlProvider } from 'react-intl'
 import { getDictionary } from './intl.helper'
-import { use, useMemo } from 'react'
+import { use } from 'react'
 import { reactQueryClient } from '@Config/reactQueryClient'
 import { createContextWithWrite } from '@repo/design-system'
 
@@ -27,6 +27,19 @@ const intlReducer = (state: IntlContextType, action: IntlAction): IntlContextTyp
   }
 }
 
+const dictionaryQuery = (locale: SupportedLocale) => ({
+  queryKey: ['i18n', 'messages', locale],
+  queryFn: () => getDictionary(locale),
+})
+
+/** Loads the dictionary of a locale into the query cache: IntlProvider then renders it without suspending. */
+const loadDictionary = (locale: SupportedLocale) => reactQueryClient.ensureQueryData(dictionaryQuery(locale))
+
+/** Loads the dictionaries of every supported locale, before a render that must not suspend (Storybook loader). */
+const preloadDictionaries = async () => {
+  await Promise.all(SUPPORTED_LOCALES.map(loadDictionary))
+}
+
 const BaseIntlContext = createContextWithWrite<IntlContextType, IntlAction>('Intl', intlReducer)
 
 const IntlStateProvider = ({ children }: { children: React.ReactNode }) => {
@@ -46,16 +59,11 @@ type IntlProviderProps = {
 const IntlProvider = ({ children }: IntlProviderProps) => {
   const [lsLocale] = useLocalStorage(LOCALE_STORAGE_KEY, DEFAULT_LOCALE)
 
-  const dictionaryPromise = useMemo(
-    () =>
-      reactQueryClient.ensureQueryData({
-        queryKey: ['i18n', 'messages', lsLocale],
-        queryFn: () => getDictionary(lsLocale),
-      }),
-    [lsLocale]
-  )
-
-  const currentDictionary = use(dictionaryPromise)
+  // ensureQueryData always returns a pending promise, even on a cache hit: read the cache first so that a loaded
+  // dictionary never suspends the render
+  const currentDictionary =
+    reactQueryClient.getQueryData<Record<string, string>>(dictionaryQuery(lsLocale).queryKey) ??
+    use(loadDictionary(lsLocale))
 
   return (
     <BaseIntlContext.Provider value={{ locale: lsLocale, localeMessages: currentDictionary }}>
@@ -70,10 +78,7 @@ const useSetLocale = () => {
   const [, setToStore] = useLocalStorage(LOCALE_STORAGE_KEY, DEFAULT_LOCALE)
 
   return async (locale: SupportedLocale) => {
-    const loadedDictionary = await reactQueryClient.ensureQueryData({
-      queryKey: ['i18n', 'messages', locale],
-      queryFn: () => getDictionary(locale),
-    })
+    const loadedDictionary = await loadDictionary(locale)
 
     dispatch({ type: 'INIT', payload: { locale, messages: loadedDictionary } })
 
@@ -87,4 +92,4 @@ const useLocale = () => {
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
-export { IntlProvider, useSetLocale, useLocale }
+export { IntlProvider, useSetLocale, useLocale, preloadDictionaries }
