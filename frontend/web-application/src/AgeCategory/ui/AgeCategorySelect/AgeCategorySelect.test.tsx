@@ -3,16 +3,16 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { mockAgeCategories } from '../../../mocks/fixtures'
 import { AgeCategorySelect } from './AgeCategorySelect'
 
-vi.mock('../../infrastructure/useAgeCategoryApi', () => ({
-  useGetAgeCategories: vi.fn(),
+vi.mock('../../application/useAllAgeCategories', () => ({
+  useAllAgeCategories: vi.fn(),
 }))
 
-import { useGetAgeCategories } from '../../infrastructure/useAgeCategoryApi'
+import { useAllAgeCategories } from '../../application/useAllAgeCategories'
 
-const mockedUseGetAgeCategories = vi.mocked(useGetAgeCategories)
+const mockedUseAllAgeCategories = vi.mocked(useAllAgeCategories)
 
 beforeEach(() => {
-  mockedUseGetAgeCategories.mockReturnValue({ data: mockAgeCategories } as never)
+  mockedUseAllAgeCategories.mockReturnValue(mockAgeCategories)
 })
 
 describe('AgeCategorySelect', () => {
