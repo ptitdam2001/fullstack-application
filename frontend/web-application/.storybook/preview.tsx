@@ -10,6 +10,7 @@ import { ThemeProvider } from '@Theme/Provider/ThemeProvider'
 import { Toast } from '@repo/design-system'
 import { localStorageDecorator } from './decorators/localstorage'
 import { intlDecorator } from './decorators/intl'
+import { preloadDictionaries } from '@I18n/'
 
 /*
  * Initializes MSW
@@ -48,7 +49,8 @@ const preview: Preview = {
   ],
 
   // 👈 Add the MSW loader to all stories
-  loaders: [mswLoader(setupMsw)],
+  // preloadDictionaries: the i18n decorator then renders the first frame of a story without suspending
+  loaders: [mswLoader(setupMsw), preloadDictionaries],
 
   tags: ['autodocs'],
 }

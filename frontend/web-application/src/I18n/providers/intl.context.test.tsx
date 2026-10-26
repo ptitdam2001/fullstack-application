@@ -2,7 +2,7 @@ import { Suspense, act } from 'react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { reactQueryClient } from '@Config/reactQueryClient'
-import { IntlProvider } from './intl.context'
+import { IntlProvider, preloadDictionaries } from './intl.context'
 import { getDictionary } from './intl.helper'
 
 vi.mock('./intl.helper', () => ({ getDictionary: vi.fn() }))
@@ -42,6 +42,21 @@ describe('IntlProvider', () => {
       resolveDictionary({ 'common.save': 'Save' })
     })
 
+    expect(screen.getByText('content')).toBeInTheDocument()
+  })
+})
+
+describe('preloadDictionaries', () => {
+  afterEach(() => reactQueryClient.clear())
+
+  it('caches the dictionary of every supported locale: IntlProvider then renders without suspending', async () => {
+    vi.mocked(getDictionary).mockImplementation(async locale => ({ 'common.save': `save-${locale}` }))
+
+    await preloadDictionaries()
+
+    expect(reactQueryClient.getQueryData(['i18n', 'messages', 'en'])).toEqual({ 'common.save': 'save-en' })
+    expect(reactQueryClient.getQueryData(['i18n', 'messages', 'fr'])).toEqual({ 'common.save': 'save-fr' })
+    renderProvider()
     expect(screen.getByText('content')).toBeInTheDocument()
   })
 })
