@@ -5,7 +5,7 @@ import { Loader2 } from 'lucide-react'
 import { createFormFactory } from '@repo/form-factory'
 import { ForgotPasswordBody } from '@Sdk/authentication/authentication.zod'
 import { useForgotPasswordAction } from '../../application/useForgotPasswordAction'
-import { useResendActivation } from '../../infrastructure/useAuthApi'
+import { useResendActivationAction } from '../../application/useResendActivationAction'
 import { getHttpStatus } from '../../infrastructure/httpError'
 
 const forgotPasswordFormFactory = createFormFactory({ schema: ForgotPasswordBody })
@@ -14,7 +14,7 @@ export const ForgottenPasswordForm = () => {
   const intl = useIntl()
   const toast = Toast.useToast()
   const { process, isPending, isSuccess } = useForgotPasswordAction()
-  const { mutateAsync: resend, isPending: isResending } = useResendActivation()
+  const { process: resendActivation, isPending: isResending } = useResendActivationAction()
   const [sentEmail, setSentEmail] = useState<string>('')
   const { Field, Form } = forgotPasswordFormFactory.useForm({ mode: 'onBlur' })
 
@@ -38,7 +38,7 @@ export const ForgottenPasswordForm = () => {
   // This screen is also the way back for an account that was never activated
   const onResendActivation = async () => {
     try {
-      await resend({ data: { email: sentEmail } })
+      await resendActivation(sentEmail)
       toast(intl.formatMessage({ id: 'activate.resend.success' }))
     } catch (err: unknown) {
       toastSendError(err)
