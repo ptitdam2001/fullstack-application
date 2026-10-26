@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from 'vitest'
 import { AdminSeasonFormSheetPage } from './AdminSeasonFormSheet.page'
 
-vi.mock('../../infrastructure/useSeasonApi', () => ({
-  useGetSeason: vi.fn(),
+vi.mock('../../application/useSeasonDetail', () => ({
+  useSeasonDetail: vi.fn(),
 }))
 
 vi.mock('./SeasonForm', () => ({
@@ -17,9 +17,9 @@ vi.mock('@Common/NotFound', () => ({
   NotFound: () => <div data-testid="not-found" />,
 }))
 
-import { useGetSeason } from '../../infrastructure/useSeasonApi'
+import { useSeasonDetail } from '../../application/useSeasonDetail'
 
-const mockedUseGetSeason = vi.mocked(useGetSeason)
+const mockedUseSeasonDetail = vi.mocked(useSeasonDetail)
 
 const mockData = {
   id: '1',
@@ -46,26 +46,26 @@ describe('AdminSeasonFormSheet', () => {
 
   describe('edit mode (with seasonId)', () => {
     it('renders edit title', () => {
-      mockedUseGetSeason.mockReturnValue({ data: mockData, isLoading: false, isError: false } as never)
+      mockedUseSeasonDetail.mockReturnValue({ data: mockData, isLoading: false, isError: false } as never)
       const page = new AdminSeasonFormSheetPage({ seasonId: '1' }).render()
       expect(page.editTitle()).toBeInTheDocument()
     })
 
     it('renders form with seasonId when data is loaded', () => {
-      mockedUseGetSeason.mockReturnValue({ data: mockData, isLoading: false, isError: false } as never)
+      mockedUseSeasonDetail.mockReturnValue({ data: mockData, isLoading: false, isError: false } as never)
       const page = new AdminSeasonFormSheetPage({ seasonId: '1' }).render()
       expect(page.form()).toHaveAttribute('data-season-id', '1')
     })
 
     it('renders LinearProgress while loading', () => {
-      mockedUseGetSeason.mockReturnValue({ data: undefined, isLoading: true, isError: false } as never)
+      mockedUseSeasonDetail.mockReturnValue({ data: undefined, isLoading: true, isError: false } as never)
       const page = new AdminSeasonFormSheetPage({ seasonId: '1' }).render()
       expect(page.linearProgress()).toBeInTheDocument()
       expect(page.form()).not.toBeInTheDocument()
     })
 
     it('renders NotFound on error', () => {
-      mockedUseGetSeason.mockReturnValue({ data: undefined, isLoading: false, isError: true } as never)
+      mockedUseSeasonDetail.mockReturnValue({ data: undefined, isLoading: false, isError: true } as never)
       const page = new AdminSeasonFormSheetPage({ seasonId: '1' }).render()
       expect(page.notFound()).toBeInTheDocument()
       expect(page.form()).not.toBeInTheDocument()
