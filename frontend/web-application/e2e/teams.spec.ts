@@ -29,6 +29,8 @@ test.describe('teams — list', () => {
 
   test('create team button navigates to create form', async ({ page }) => {
     await page.getByRole('link', { name: 'Create Team' }).click()
-    await expect(page).toHaveURL(/\/create/)
+    // Exact path: /app/team/create no longer exists, a link to it would land on no page
+    await expect(page).toHaveURL(/\/app\/team\/list\/create$/)
+    await expect(page.getByRole('dialog', { name: 'Create Team' })).toBeVisible()
   })
 })
