@@ -4,8 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "(cd ../design-system && pnpm build) && vite",
-    "dev:docker": "(cd ../design-system && pnpm build) && vite --mode docker",
+    "dev": "(cd ../design-system && pnpm build) && (cd ../form-factory && pnpm build) && vite",
+    "dev:docker": "(cd ../design-system && pnpm build) && (cd ../form-factory && pnpm build) && vite --mode docker",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
