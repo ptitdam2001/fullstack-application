@@ -8,7 +8,7 @@ import type { RegisterInput } from '@Sdk/model'
 import { TeamSelectField } from '@Teams/ui/TeamSelect/TeamSelectField'
 import { useRegisterAction } from '../../application/useRegisterAction'
 import { getPasswordStrength, isPasswordCompliant } from '../../domain/password'
-import { getErrorKey } from '../../infrastructure/httpError'
+import { getErrorKey } from '../../domain/httpError'
 
 // confirmPassword is a UI-only field: it is checked here and never sent to the API
 const RegisterFormSchema = RegisterBody.extend({

@@ -6,7 +6,7 @@ import { createFormFactory } from '@repo/form-factory'
 import { ChangeMyPasswordBody } from '../../domain/Account'
 import { isPasswordCompliant } from '../../domain/password'
 import { useChangeMyPasswordAction } from '../../application/useChangeMyPasswordAction'
-import { getHttpStatus } from '../../infrastructure/httpError'
+import { getHttpStatus } from '../../domain/httpError'
 
 // confirmPassword is a UI-only field: it is checked here and never sent to the API
 const ChangePasswordFormSchema = ChangeMyPasswordBody.extend({

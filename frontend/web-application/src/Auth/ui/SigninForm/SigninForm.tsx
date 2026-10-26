@@ -5,7 +5,7 @@ import { Loader2 } from 'lucide-react'
 import { createFormFactory } from '@repo/form-factory'
 import { LoginBody } from '@Sdk/authentication/authentication.zod'
 import { useLoginAction } from '../../application/useLoginAction'
-import { getHttpStatus } from '../../infrastructure/httpError'
+import { getHttpStatus } from '../../domain/httpError'
 
 const signinFormFactory = createFormFactory({ schema: LoginBody })
 
