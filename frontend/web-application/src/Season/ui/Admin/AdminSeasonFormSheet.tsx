@@ -2,7 +2,7 @@ import { FormattedMessage } from 'react-intl'
 import { SheetContent, SheetHeader, SheetTitle } from '@repo/design-system'
 import { LinearProgress } from '@Common/Loading/LinearProgress'
 import { NotFound } from '@Common/NotFound'
-import { useGetSeason } from '../../infrastructure/useSeasonApi'
+import { useSeasonDetail } from '../../application/useSeasonDetail'
 import { SeasonForm } from './SeasonForm'
 
 type AdminSeasonFormSheetProps = {
@@ -12,7 +12,7 @@ type AdminSeasonFormSheetProps = {
 }
 
 const EditSheetContent = ({ seasonId, onFinish }: { seasonId: string; onFinish: VoidFunction }) => {
-  const { data, isLoading, isError } = useGetSeason(seasonId)
+  const { data, isLoading, isError } = useSeasonDetail(seasonId)
 
   if (isError) {
     return <NotFound />
