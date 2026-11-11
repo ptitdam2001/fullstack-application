@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router'
 import { TeamCardGrid } from './TeamCardGrid'
+import { TeamCardGridPage } from './TeamCardGrid.page'
 import type { Area, Team } from '../../domain/Team'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
@@ -59,5 +60,19 @@ describe('TeamCardGrid', () => {
     expect(screen.getAllByRole('button', { name: 'teamCard.view' })).toHaveLength(2)
     expect(screen.getAllByRole('button', { name: 'teamCard.players' })).toHaveLength(2)
     expect(screen.getAllByRole('button', { name: 'common.edit' })).toHaveLength(2)
+  })
+
+  describe('navigation of the card buttons, from the team list', () => {
+    it.each([
+      ['teamCard.view', '/app/team/1'],
+      ['teamCard.players', '/app/team/1/players'],
+      ['common.edit', '/app/team/list/1/edit'],
+    ] as const)('%s leads to %s', (button, expectedPath) => {
+      const page = new TeamCardGridPage(teams).render()
+
+      page.pressButton('Les Rouges', button)
+
+      expect(page.currentPath()).toBe(expectedPath)
+    })
   })
 })
