@@ -30,6 +30,8 @@
     "error.accountBlocked": "Votre compte a été bloqué suite à trop de tentatives échouées. Contactez un administrateur.",
     "error.tooManyRequests": "Trop de tentatives. Merci de patienter avant de réessayer.",
     "error.generic": "Une erreur est survenue. Veuillez réessayer.",
+    "error.required": "Requis.",
+    "error.invalidEmail": "Adresse e-mail invalide.",
     "noAccount": "Pas encore de compte ?",
     "createAccount": "Créer un compte",
     "alreadyAccount": "Déjà un compte ?",

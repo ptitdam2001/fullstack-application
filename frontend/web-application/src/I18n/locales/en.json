@@ -30,6 +30,8 @@
     "error.accountBlocked": "Your account has been blocked due to too many failed attempts. Please contact an administrator.",
     "error.tooManyRequests": "Too many attempts. Please wait a while before trying again.",
     "error.generic": "An error occurred. Please try again.",
+    "error.required": "Required.",
+    "error.invalidEmail": "Enter a valid email address.",
     "noAccount": "Don't have an account?",
     "createAccount": "Create an account",
     "alreadyAccount": "Already have an account?",
