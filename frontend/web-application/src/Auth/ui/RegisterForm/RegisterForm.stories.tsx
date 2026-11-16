@@ -122,3 +122,24 @@ export const SubmitRejected: Story = {
     await page.toast(/some information is invalid|certaines informations sont invalides/i)
   },
 }
+
+export const EmptyFields: Story = {
+  name: 'Champs vides — erreurs « requis » traduites sur le prénom et l’email',
+  play: async ({ canvasElement }) => {
+    const page = new RegisterFormPage(canvasElement)
+    // isRequired: the browser blocks an empty submit before zod runs, so the messages show on blur
+    await page.leaveFirstNameAndEmailEmpty()
+
+    await expect(await page.requiredErrors()).toHaveLength(2)
+  },
+}
+
+export const InvalidEmail: Story = {
+  name: 'Email mal formé — erreur traduite',
+  play: async ({ canvasElement }) => {
+    const page = new RegisterFormPage(canvasElement)
+    await page.typeEmailAndBlur('jane.doe@')
+
+    await expect(await page.invalidEmailError()).toBeInTheDocument()
+  },
+}

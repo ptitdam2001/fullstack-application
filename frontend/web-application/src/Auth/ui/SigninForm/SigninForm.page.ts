@@ -19,8 +19,27 @@ export class SigninFormPage {
     return this.canvas.getByRole('button', { name: /^(sign in|se connecter)$/i })
   }
 
+  requiredErrors() {
+    return this.canvas.findAllByText(/^(required|requis)\.$/i)
+  }
+
+  invalidEmailError() {
+    return this.canvas.findByText(/^(enter a valid email address|adresse e-mail invalide)\.$/i)
+  }
+
   toast(matcher: RegExp) {
     return within(document.body).findByText(matcher)
+  }
+
+  async typeEmailAndBlur(email: string) {
+    await userEvent.type(await this.emailInput(), email)
+    await userEvent.tab()
+    return this
+  }
+
+  async submit() {
+    await userEvent.click(this.submitButton())
+    return this
   }
 
   async signIn(email: string, password: string) {

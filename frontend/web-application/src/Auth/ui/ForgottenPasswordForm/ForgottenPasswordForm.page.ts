@@ -33,6 +33,14 @@ export class ForgottenPasswordFormPage {
     )
   }
 
+  requiredErrors() {
+    return this.canvas.findAllByText(/^(required|requis)\.$/i)
+  }
+
+  invalidEmailError() {
+    return this.canvas.findByText(/^(enter a valid email address|adresse e-mail invalide)\.$/i)
+  }
+
   toast(matcher: RegExp) {
     return within(document.body).findByText(matcher)
   }
@@ -45,6 +53,18 @@ export class ForgottenPasswordFormPage {
   async fillEmail(email: string) {
     const input = await this.emailInput()
     await userEvent.type(input, email)
+    return this
+  }
+
+  async leaveEmailEmpty() {
+    await userEvent.click(await this.emailInput())
+    await userEvent.tab()
+    return this
+  }
+
+  async typeEmailAndBlur(email: string) {
+    await this.fillEmail(email)
+    await userEvent.tab()
     return this
   }
 
