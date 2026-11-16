@@ -35,6 +35,14 @@ export class RegisterFormPage {
     return this.canvas.getByText(/passwords do not match|les mots de passe ne correspondent pas/i)
   }
 
+  requiredErrors() {
+    return this.canvas.findAllByText(/^(required|requis)\.$/i)
+  }
+
+  invalidEmailError() {
+    return this.canvas.findByText(/^(enter a valid email address|adresse e-mail invalide)\.$/i)
+  }
+
   toast(matcher: RegExp) {
     return within(document.body).findByText(matcher)
   }
@@ -48,6 +56,19 @@ export class RegisterFormPage {
     await userEvent.type(this.emailInput(), 'jane.doe@example.org')
     await userEvent.type(this.passwordInput(), password)
     await userEvent.type(this.confirmPasswordInput(), confirmPassword)
+    return this
+  }
+
+  async leaveFirstNameAndEmailEmpty() {
+    await userEvent.click(await this.firstNameInput())
+    await userEvent.click(this.emailInput())
+    await userEvent.tab()
+    return this
+  }
+
+  async typeEmailAndBlur(email: string) {
+    await userEvent.type(this.emailInput(), email)
+    await userEvent.tab()
     return this
   }
 

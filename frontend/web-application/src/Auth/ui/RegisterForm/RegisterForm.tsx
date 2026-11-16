@@ -9,6 +9,7 @@ import { TeamSelectField } from '@Teams/ui/TeamSelect/TeamSelectField'
 import { useRegisterAction } from '../../application/useRegisterAction'
 import { getPasswordStrength, isPasswordCompliant } from '../../domain/password'
 import { getErrorKey } from '../../domain/httpError'
+import { getEmailErrorKey } from '../../domain/emailError'
 
 // confirmPassword is a UI-only field: it is checked here and never sent to the API
 const RegisterFormSchema = RegisterBody.extend({
@@ -79,12 +80,12 @@ export const RegisterForm = () => {
             label={intl.formatMessage({ id: 'register.field.firstName' })}
             placeholder={intl.formatMessage({ id: 'register.field.firstName.placeholder' })}
             isRequired
-            errorMessage={fieldState.error?.message}
+            errorMessage={fieldState.error ? intl.formatMessage({ id: 'register.error.required' }) : undefined}
           />
         )}
       </Field>
       <Field name="lastName">
-        {({ field, fieldState }) => (
+        {({ field }) => (
           <TextInputField
             name={field.name}
             value={field.value}
@@ -92,7 +93,6 @@ export const RegisterForm = () => {
             onBlur={field.onBlur}
             label={intl.formatMessage({ id: 'register.field.lastName' })}
             placeholder={intl.formatMessage({ id: 'register.field.lastName.placeholder' })}
-            errorMessage={fieldState.error?.message}
           />
         )}
       </Field>
@@ -107,7 +107,9 @@ export const RegisterForm = () => {
             type="email"
             placeholder={intl.formatMessage({ id: 'register.field.email.placeholder' })}
             isRequired
-            errorMessage={fieldState.error?.message}
+            errorMessage={
+              fieldState.error ? intl.formatMessage({ id: getEmailErrorKey(field.value, 'register') }) : undefined
+            }
           />
         )}
       </Field>

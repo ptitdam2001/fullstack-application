@@ -7,6 +7,7 @@ import { ForgotPasswordBody } from '@Sdk/authentication/authentication.zod'
 import { useForgotPasswordAction } from '../../application/useForgotPasswordAction'
 import { useResendActivationAction } from '../../application/useResendActivationAction'
 import { getHttpStatus } from '../../domain/httpError'
+import { getEmailErrorKey } from '../../domain/emailError'
 
 const forgotPasswordFormFactory = createFormFactory({ schema: ForgotPasswordBody })
 
@@ -93,7 +94,9 @@ export const ForgottenPasswordForm = () => {
               type="email"
               placeholder={intl.formatMessage({ id: 'auth.email.placeholder' })}
               isRequired
-              errorMessage={fieldState.error?.message}
+              errorMessage={
+                fieldState.error ? intl.formatMessage({ id: getEmailErrorKey(field.value, 'auth') }) : undefined
+              }
             />
           )}
         </Field>

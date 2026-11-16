@@ -127,3 +127,24 @@ export const ResendActivationTooManyRequests: Story = {
     await waitFor(() => expect(page.toasts(tooManyRequests)).toHaveLength(before + 1))
   },
 }
+
+export const EmptyEmail: Story = {
+  name: 'Email vide — erreur « requis » traduite',
+  play: async ({ canvasElement }) => {
+    const page = new ForgottenPasswordFormPage(canvasElement)
+    // isRequired: the browser blocks an empty submit before zod runs, so the message shows on blur
+    await page.leaveEmailEmpty()
+
+    await expect(await page.requiredErrors()).toHaveLength(1)
+  },
+}
+
+export const InvalidEmail: Story = {
+  name: 'Email mal formé — erreur traduite',
+  play: async ({ canvasElement }) => {
+    const page = new ForgottenPasswordFormPage(canvasElement)
+    await page.typeEmailAndBlur('jane.doe@')
+
+    await expect(await page.invalidEmailError()).toBeInTheDocument()
+  },
+}

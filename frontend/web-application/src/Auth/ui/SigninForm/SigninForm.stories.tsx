@@ -51,3 +51,24 @@ export const WrongCredentials: Story = {
     await expect(page.submitButton()).toBeInTheDocument()
   },
 }
+
+export const EmptyFields: Story = {
+  name: 'Champs vides — erreurs « requis » traduites',
+  play: async ({ canvasElement }) => {
+    const page = new SigninFormPage(canvasElement)
+    await page.submit()
+
+    // One message under the email field, one under the password field
+    await expect(await page.requiredErrors()).toHaveLength(2)
+  },
+}
+
+export const InvalidEmail: Story = {
+  name: 'Email mal formé — erreur traduite',
+  play: async ({ canvasElement }) => {
+    const page = new SigninFormPage(canvasElement)
+    await page.typeEmailAndBlur('jane.doe@')
+
+    await expect(await page.invalidEmailError()).toBeInTheDocument()
+  },
+}

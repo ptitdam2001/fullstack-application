@@ -6,6 +6,7 @@ import { createFormFactory } from '@repo/form-factory'
 import { LoginBody } from '@Sdk/authentication/authentication.zod'
 import { useLoginAction } from '../../application/useLoginAction'
 import { getHttpStatus } from '../../domain/httpError'
+import { getEmailErrorKey } from '../../domain/emailError'
 
 const signinFormFactory = createFormFactory({ schema: LoginBody })
 
@@ -53,7 +54,9 @@ export const SigninForm = ({ forgotPasswordHref }: SigninFormProps) => {
               label={intl.formatMessage({ id: 'auth.email' })}
               type="email"
               placeholder={intl.formatMessage({ id: 'auth.email.placeholder' })}
-              errorMessage={fieldState.error?.message}
+              errorMessage={
+                fieldState.error ? intl.formatMessage({ id: getEmailErrorKey(field.value, 'auth') }) : undefined
+              }
               data-testid="signin-email"
             />
           )}
@@ -65,7 +68,11 @@ export const SigninForm = ({ forgotPasswordHref }: SigninFormProps) => {
                 <FormattedMessage id="auth.password" />
               </label>
               <PasswordInput {...field} placeholder="••••••••" data-testid="signin-password" />
-              {fieldState.error && <p className="absolute bottom-1 text-sm text-red-500">{fieldState.error.message}</p>}
+              {fieldState.error && (
+                <p className="absolute bottom-1 text-sm text-red-500">
+                  <FormattedMessage id="auth.error.required" />
+                </p>
+              )}
             </div>
           )}
         </Field>
