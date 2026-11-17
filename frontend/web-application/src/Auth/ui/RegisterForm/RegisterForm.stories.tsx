@@ -127,7 +127,7 @@ export const EmptyFields: Story = {
   name: 'Champs vides — erreurs « requis » traduites sur le prénom et l’email',
   play: async ({ canvasElement }) => {
     const page = new RegisterFormPage(canvasElement)
-    // noValidate: the browser does not block the submit, zod reports the empty fields
+    // Form of form-factory sets noValidate: the browser does not block the submit, zod reports the empty fields
     await page.submit()
 
     // First name and email; the password fields keep their own messages

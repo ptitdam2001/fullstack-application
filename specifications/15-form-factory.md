@@ -63,13 +63,17 @@ Retourne `{ form, Field, FieldArray, Form }` :
 | `form`       | `UseFormReturn<z.output<Schema>>` | API react-hook-form complète : `handleSubmit`, `watch`, `formState`… |
 | `Field`      | `FieldComponent<TValues>`         | Wrapper typé de `Controller` — render prop `children`                |
 | `FieldArray` | `FieldArrayComponent<TValues>`    | Wrapper typé de `useFieldArray` — render prop `children`             |
-| `Form`       | `FormComponent`                   | `<form>` headless + DevTools auto en mode DEV                        |
+| `Form`       | `FormComponent`                   | `<form noValidate>` headless + DevTools auto en mode DEV             |
 
 ### `Form` — DevTools intégré
 
 `Form` est retourné par `useForm()` et capture `control` en closure. En développement (`import.meta.env.DEV`), `@hookform/devtools` s'affiche automatiquement. En production, Vite dead-code-elimine le bloc DevTools.
 
 Aucun prop supplémentaire requis — `<Form onSubmit={...} className={...}>` suffit.
+
+### `Form` — validation native désactivée
+
+`Form` pose `noValidate` sur le `<form>` : le schéma zod est la seule validation. Sans lui, un champ `isRequired` (attribut `required`) ou un `type="email"` mal rempli fait bloquer le submit par le navigateur, avec sa propre bulle dans la langue du navigateur, avant que zod ne s'exécute : le message traduit n'apparaît jamais. Un formulaire qui veut la validation native passe `noValidate={false}`.
 
 ---
 

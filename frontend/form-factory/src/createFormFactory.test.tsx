@@ -324,3 +324,54 @@ describe('createFormFactory — FieldArray', () => {
     expect((screen.getByTestId('player-0') as HTMLInputElement).value).toBe('Alice')
   })
 })
+
+// ─── Form tests ──────────────────────────────────────────────────────────────
+
+describe('createFormFactory — Form', () => {
+  // zod validates the fields: the browser must not block the submit with its own bubble
+  it('disables the native validation of the browser by default', () => {
+    function Fixture() {
+      const { Form } = loginFactory.useForm()
+      return <Form data-testid="form" onSubmit={() => {}} />
+    }
+    render(<Fixture />)
+
+    expect((screen.getByTestId('form') as HTMLFormElement).noValidate).toBe(true)
+  })
+
+  it('submits through zod an empty required field', async () => {
+    const onSubmit = vi.fn()
+    function Fixture() {
+      const { Form, Field } = loginFactory.useForm()
+      return (
+        <Form onSubmit={onSubmit}>
+          <Field name="email">
+            {({ field, fieldState }) => (
+              <>
+                <input data-testid="email" type="email" required {...field} value={field.value ?? ''} />
+                {fieldState.error && <span data-testid="email-error">error</span>}
+              </>
+            )}
+          </Field>
+          <button type="submit">Submit</button>
+        </Form>
+      )
+    }
+    render(<Fixture />)
+
+    await userEvent.click(screen.getByRole('button'))
+
+    expect(await screen.findByTestId('email-error')).toBeInTheDocument()
+    expect(onSubmit).not.toHaveBeenCalled()
+  })
+
+  it('keeps the native validation when noValidate is false', () => {
+    function Fixture() {
+      const { Form } = loginFactory.useForm()
+      return <Form data-testid="form" noValidate={false} onSubmit={() => {}} />
+    }
+    render(<Fixture />)
+
+    expect((screen.getByTestId('form') as HTMLFormElement).noValidate).toBe(false)
+  })
+})
