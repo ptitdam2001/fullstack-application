@@ -243,8 +243,16 @@ paths:
                 $ref: '#/components/schemas/TokenData'
         '400':
           $ref: '#/components/responses/BadRequest'
-        '404':
-          description: ''
+        '401':
+          description: >-
+            Unknown email or wrong password — same answer for both, whatever the state of the account
+            (see specifications/10). The frontend keeps this 401 on the sign-in form: it is not an expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorOutput'
+        '403':
+          description: Right password on an inactive or blocked account — blocked wins over inactive
           content:
             application/json:
               schema:
