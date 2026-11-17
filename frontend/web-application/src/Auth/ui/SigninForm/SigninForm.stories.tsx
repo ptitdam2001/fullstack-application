@@ -69,6 +69,23 @@ export const AccountInactive: Story = {
   },
 }
 
+export const TooManyRequests: Story = {
+  name: 'Trop de tentatives (429) — toast « patientez », pas « identifiants incorrects »',
+  parameters: {
+    msw: {
+      handlers: [
+        http.post('*/login', () => HttpResponse.json({ status: 429, message: 'Too many requests' }, { status: 429 })),
+      ],
+    },
+  },
+  play: async ({ canvasElement }) => {
+    const page = new SigninFormPage(canvasElement)
+    await page.signIn('jane.doe@example.org', 'Passw0rd')
+
+    await page.toast(/too many attempts|trop de tentatives/i)
+  },
+}
+
 export const EmptyFields: Story = {
   name: 'Champs vides — erreurs « requis » traduites',
   play: async ({ canvasElement }) => {
