@@ -133,6 +133,7 @@ describe('auth domain — functional API', () => {
       const res = await agent.post('/login').send({ email: user.email, password: FIXTURE_PASSWORD })
 
       expect(res.status).toBe(403)
+      expect(res.body).toMatchObject({ status: 403, reason: 'ACCOUNT_INACTIVE' })
     })
 
     it('403 — account blocked', async () => {
@@ -140,6 +141,7 @@ describe('auth domain — functional API', () => {
       const res = await agent.post('/login').send({ email: user.email, password: FIXTURE_PASSWORD })
 
       expect(res.status).toBe(403)
+      expect(res.body).toMatchObject({ status: 403, reason: 'ACCOUNT_BLOCKED' })
     })
 
     it('400 — validation: missing password', async () => {
@@ -225,6 +227,7 @@ describe('auth domain — functional API', () => {
         const res = await agent.post('/login').send({ email: user.email, password: FIXTURE_PASSWORD })
 
         expect(res.status).toBe(403)
+        expect(res.body).toMatchObject({ status: 403, reason: 'ACCOUNT_BLOCKED' })
       })
 
       it('failed attempts during an active lock do not extend it', async () => {

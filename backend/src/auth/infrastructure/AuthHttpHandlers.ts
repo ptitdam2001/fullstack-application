@@ -27,10 +27,10 @@ export const login = async (_: Context, req: Request, res: Response) => {
       return res.status(401).json({ message: 'Email ou mot de passe incorrect', status: 401 })
     }
     if (err instanceof AccountInactiveError) {
-      return res.status(403).json({ message: 'Compte non activé', status: 403 })
+      return res.status(403).json({ message: 'Compte non activé', status: 403, reason: 'ACCOUNT_INACTIVE' })
     }
     if (err instanceof AccountBlockedError) {
-      return res.status(403).json({ message: 'Compte bloqué', status: 403 })
+      return res.status(403).json({ message: 'Compte bloqué', status: 403, reason: 'ACCOUNT_BLOCKED' })
     }
     logger.error(err)
     return res.status(500).json({ message: 'Error! Something went wrong.', status: 500 })
