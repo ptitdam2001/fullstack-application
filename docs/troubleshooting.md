@@ -11,6 +11,12 @@ Pour « j'ai changé X et rien ne bouge » côté web-app, suivre d'abord la che
 - **Cause** : le serveur Vite déjà lancé garde en mémoire son graphe de dépendances optimisées. Supprimer `node_modules/.vite` pendant qu'il tourne ne change rien.
 - **Correctif** : arrêter le processus (`lsof -iTCP:5173 -sTCP:LISTEN -t`, puis `kill <pid>`) et relancer `pnpm --filter application-material dev`.
 
+### Les plays Storybook ignorent le nouveau build du design system ou de form-factory
+
+- **Symptôme** : après le rebuild du package et la suppression de `node_modules/.vite`, `pnpm test:stories` rend encore l'ancienne version (vu sur `@repo/form-factory` : le DOM n'avait pas l'attribut `novalidate` présent dans `dist/index.js`).
+- **Cause** : le projet Vitest `storybook` garde aussi un cache dans `frontend/web-application/node_modules/.cache` (`storybook/`), que la suppression de `.vite` ne touche pas.
+- **Correctif** : `rm -rf node_modules/.vite node_modules/.cache` dans `frontend/web-application/`, puis relancer les plays. Vérifier d'abord que le `dist/` contient bien le changement.
+
 ### Les e2e mockés redirigent vers `/auth/signin` en cours de test
 
 - **Cause** : un `vite` lancé hors Playwright, sans `--mode e2e`, écoute déjà sur `:5173`. `playwright.config.ts` a `reuseExistingServer: !process.env.CI` : il réutilise ce serveur, où MSW n'est pas actif. Les requêtes partent vers le vrai backend, le faux jeton reçoit un `401`, et l'intercepteur axios renvoie vers la connexion.
