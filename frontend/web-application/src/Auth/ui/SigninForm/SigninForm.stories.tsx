@@ -52,6 +52,23 @@ export const WrongCredentials: Story = {
   },
 }
 
+export const AccountInactive: Story = {
+  name: 'Compte non activé (403) — toast « activez votre compte »',
+  parameters: {
+    msw: {
+      handlers: [
+        http.post('*/login', () => HttpResponse.json({ status: 403, message: 'Compte non activé' }, { status: 403 })),
+      ],
+    },
+  },
+  play: async ({ canvasElement }) => {
+    const page = new SigninFormPage(canvasElement)
+    await page.signIn('jane.doe@example.org', 'Passw0rd')
+
+    await page.toast(/account is not yet activated|compte n'est pas encore activé/i)
+  },
+}
+
 export const EmptyFields: Story = {
   name: 'Champs vides — erreurs « requis » traduites',
   play: async ({ canvasElement }) => {
