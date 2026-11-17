@@ -132,7 +132,7 @@ export const EmptyEmail: Story = {
   name: 'Email vide — erreur « requis » traduite',
   play: async ({ canvasElement }) => {
     const page = new ForgottenPasswordFormPage(canvasElement)
-    // noValidate: the browser does not block the submit, zod reports the empty field
+    // Form of form-factory sets noValidate: the browser does not block the submit, zod reports the empty field
     await page.submit()
 
     await expect(await page.requiredErrors()).toHaveLength(1)

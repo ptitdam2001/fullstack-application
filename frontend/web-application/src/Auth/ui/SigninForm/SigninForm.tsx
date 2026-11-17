@@ -27,8 +27,6 @@ export const SigninForm = ({ forgotPasswordHref }: SigninFormProps) => {
       </h2>
       <Form
         data-testid="signin-form"
-        // zod validates the fields: no browser bubble for type="email"
-        noValidate
         onSubmit={async data => {
           try {
             await process(data.email!, data.password!)

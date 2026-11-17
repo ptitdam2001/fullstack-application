@@ -120,7 +120,9 @@ export function createFormFactory<TSchema extends ZodType<FieldValues, FieldValu
       const control = rhfForm.control as unknown as Control<FieldValues>
       const Form = function Form({ children, onSubmit, ...props }: FormProps<TValues>): React.ReactElement {
         return (
-          <form {...props} onSubmit={rhfForm.handleSubmit(onSubmit)}>
+          // zod validates the fields: noValidate stops the browser from blocking the submit with its own bubble
+          // (isRequired, type="email"), in the browser language. A form may still pass noValidate={false}.
+          <form noValidate {...props} onSubmit={rhfForm.handleSubmit(onSubmit)}>
             {children}
             {import.meta.env.DEV && <DevTool control={control} />}
           </form>
