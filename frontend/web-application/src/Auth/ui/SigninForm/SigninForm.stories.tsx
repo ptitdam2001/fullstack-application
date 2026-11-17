@@ -57,7 +57,9 @@ export const AccountInactive: Story = {
   parameters: {
     msw: {
       handlers: [
-        http.post('*/login', () => HttpResponse.json({ status: 403, message: 'Compte non activé' }, { status: 403 })),
+        http.post('*/login', () =>
+          HttpResponse.json({ status: 403, message: 'Compte non activé', reason: 'ACCOUNT_INACTIVE' }, { status: 403 })
+        ),
       ],
     },
   },
@@ -66,6 +68,25 @@ export const AccountInactive: Story = {
     await page.signIn('jane.doe@example.org', 'Passw0rd')
 
     await page.toast(/account is not yet activated|compte n'est pas encore activé/i)
+  },
+}
+
+export const AccountBlocked: Story = {
+  name: 'Compte bloqué (403) — toast « contactez un administrateur »',
+  parameters: {
+    msw: {
+      handlers: [
+        http.post('*/login', () =>
+          HttpResponse.json({ status: 403, message: 'Compte bloqué', reason: 'ACCOUNT_BLOCKED' }, { status: 403 })
+        ),
+      ],
+    },
+  },
+  play: async ({ canvasElement }) => {
+    const page = new SigninFormPage(canvasElement)
+    await page.signIn('jane.doe@example.org', 'Passw0rd')
+
+    await page.toast(/account has been blocked|compte a été bloqué/i)
   },
 }
 

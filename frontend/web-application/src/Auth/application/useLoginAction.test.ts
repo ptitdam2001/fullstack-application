@@ -72,7 +72,9 @@ describe('useLoginAction', () => {
 
   it('throws on 403 (account inactive or blocked)', async () => {
     server.use(
-      http.post('*/login', () => HttpResponse.json({ message: 'Compte non activé', status: 403 }, { status: 403 }))
+      http.post('*/login', () =>
+        HttpResponse.json({ message: 'Compte non activé', status: 403, reason: 'ACCOUNT_INACTIVE' }, { status: 403 })
+      )
     )
     const { result } = renderHookWithProviders(() => useLoginAction())
 
