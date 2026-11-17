@@ -132,10 +132,11 @@ export const EmptyEmail: Story = {
   name: 'Email vide — erreur « requis » traduite',
   play: async ({ canvasElement }) => {
     const page = new ForgottenPasswordFormPage(canvasElement)
-    // isRequired: the browser blocks an empty submit before zod runs, so the message shows on blur
-    await page.leaveEmailEmpty()
+    // noValidate: the browser does not block the submit, zod reports the empty field
+    await page.submit()
 
     await expect(await page.requiredErrors()).toHaveLength(1)
+    await expect(onForgotPassword).not.toHaveBeenCalled()
   },
 }
 

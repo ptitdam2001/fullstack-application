@@ -59,13 +59,6 @@ export class RegisterFormPage {
     return this
   }
 
-  async leaveFirstNameAndEmailEmpty() {
-    await userEvent.click(await this.firstNameInput())
-    await userEvent.click(this.emailInput())
-    await userEvent.tab()
-    return this
-  }
-
   async typeEmailAndBlur(email: string) {
     await userEvent.type(this.emailInput(), email)
     await userEvent.tab()
