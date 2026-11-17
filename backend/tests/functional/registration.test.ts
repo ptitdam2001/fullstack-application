@@ -76,6 +76,18 @@ describe('registration domain — functional API', () => {
       expect(res.body).toMatchObject({ status: 409 })
     })
 
+    it('règle métier: a weak password is reported before an email already in use (400, not 409)', async () => {
+      const existing = await createUser()
+      const res = await agent.post('/register').send({
+        firstName: 'Alice',
+        email: existing.email,
+        password: 'nouppercase1',
+      })
+
+      expect(res.status).toBe(400)
+      expect(res.body).toMatchObject({ status: 400, message: PASSWORD_RULES_MESSAGE })
+    })
+
     it('400 — validation: missing required field', async () => {
       const res = await agent.post('/register').send({ firstName: 'Alice', email: 'alice2@fixtures.local' })
 
