@@ -36,7 +36,7 @@ export const Default: Story = {
     await userEvent.click(canvas.getByRole('button'))
     const listbox = await within(document.body).findByRole('listbox')
     expect(listbox).toBeVisible()
-    const item = within(document.body).getByText('Équipe B')
+    const item = within(document.body).getByRole('option', { name: 'Équipe B' })
     await userEvent.click(item)
     expect(input).toHaveValue('Équipe B')
   },
@@ -71,8 +71,13 @@ export const FilterOnType: Story = {
     const canvas = within(canvasElement)
     const input = canvas.getByRole('combobox')
     await userEvent.type(input, 'u1')
-    const listbox = within(document.body).getByRole('listbox')
+    const body = within(document.body)
+    const listbox = await body.findByRole('listbox')
     expect(listbox).toBeVisible()
+    for (const name of ['U11', 'U13', 'U15', 'U17']) {
+      expect(body.getByRole('option', { name })).toBeVisible()
+    }
+    expect(body.queryByRole('option', { name: 'Senior' })).toBeNull()
   },
 }
 
