@@ -33,7 +33,9 @@ export const SigninForm = ({ forgotPasswordHref }: SigninFormProps) => {
           } catch (err: unknown) {
             const status = getHttpStatus(err)
             const message = (err as { response?: { data?: { message?: string } } })?.response?.data?.message ?? ''
-            if (status === 403 && message.toLowerCase().includes('activé')) {
+            if (status === 429) {
+              toast(intl.formatMessage({ id: 'auth.error.tooManyRequests' }))
+            } else if (status === 403 && message.toLowerCase().includes('activé')) {
               toast(intl.formatMessage({ id: 'auth.error.accountInactive' }))
             } else if (status === 403) {
               toast(intl.formatMessage({ id: 'auth.error.accountBlocked' }))
