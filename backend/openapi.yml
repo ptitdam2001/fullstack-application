@@ -256,7 +256,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorOutput'
+                $ref: '#/components/schemas/LoginForbidden'
         '413':
           $ref: '#/components/responses/PayloadTooLarge'
         '415':
@@ -3470,6 +3470,24 @@ components:
           items:
             type: object
             additionalProperties: true
+
+    LoginForbidden:
+      description: >-
+        403 of POST /login. `reason` tells an inactive account from a blocked one: the frontend reads it,
+        never the message, which is French text and may change
+      allOf:
+        - $ref: '#/components/schemas/ErrorOutput'
+        - type: object
+          required:
+            - status
+            - message
+            - reason
+          properties:
+            reason:
+              type: string
+              enum:
+                - ACCOUNT_INACTIVE
+                - ACCOUNT_BLOCKED
 
     MatchArea:
       type: object

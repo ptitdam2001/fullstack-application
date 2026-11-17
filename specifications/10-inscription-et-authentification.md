@@ -85,6 +85,7 @@ Le login ne doit permettre de deviner ni l'existence d'un compte, ni son état, 
 - **Credentials d'abord, état du compte ensuite.**
 - Email inconnu ou mot de passe incorrect (compte actif, inactif ou bloqué) → **même réponse** : `401` « email ou mot de passe incorrect ».
 - Les états _bloqué_ et _inactif_ (`403`) ne sont révélés qu'avec le **bon** mot de passe ; _bloqué_ prime sur _inactif_.
+- Le `403` porte un champ `reason` (`ACCOUNT_BLOCKED` ou `ACCOUNT_INACTIVE`, schéma `LoginForbidden`) : le frontend choisit son message d'après ce code, jamais d'après le texte de `message`.
 - Email inconnu : une comparaison bcrypt factice est exécutée pour que le temps de réponse ne distingue pas ce cas.
 - Un compte déjà bloqué ou inactif n'incrémente pas `loginAttempts` (un compte non activé ne doit pas arriver bloqué à l'activation).
 - Hors périmètre : `POST /register` reste en `409` explicite (Option A, voir Sécurité).
@@ -838,8 +839,8 @@ Tentative échouée (compte actif et non bloqué) :
   dans tous les cas → 401 "email ou mot de passe incorrect"
   (un compte déjà bloqué n'est pas prolongé par de nouvelles tentatives)
 
-Bon mot de passe sur un compte bloqué → 403 (compte bloqué)
-Bon mot de passe sur un compte inactif → 403 (compte non activé)
+Bon mot de passe sur un compte bloqué → 403 (compte bloqué, reason ACCOUNT_BLOCKED)
+Bon mot de passe sur un compte inactif → 403 (compte non activé, reason ACCOUNT_INACTIVE)
 
 Reset (loginAttempts=0 + lockedUntil=null) : resetPassword (+ isBlocked=false), déblocage par l'Admin (+ isBlocked=false), expiration du blocage, et chaque connexion réussie
 Seuls les échecs consécutifs comptent : un mot de passe correct efface les échecs précédents
