@@ -35,7 +35,10 @@
     "noAccount": "Pas encore de compte ?",
     "createAccount": "Créer un compte",
     "alreadyAccount": "Déjà un compte ?",
-    "backToLogin": "Retour à la connexion"
+    "backToLogin": "Retour à la connexion",
+    "brand.short": "HB",
+    "brand.name": "Handball Manager",
+    "panel.headline": "Handball"
   },
   "activate": {
     "title": "Activation de votre compte",
