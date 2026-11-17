@@ -195,114 +195,134 @@ const { form, Field, Form } = myFormFactory.useForm({
 
 ---
 
-## Étape 4 — Tests unitaires
+## Étape 4 — Page Object
 
-Co-localiser : `MyForm.test.tsx` dans le même dossier que le composant.
+Un formulaire `createFormFactory` n'a **pas** de `MyForm.test.tsx` : il est testé par les plays de sa story (étape 5), à travers un Page Object co-localisé. La règle est dans `specifications/00-conventions.md` › Tests.
 
-```tsx
-import { render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-import { describe, it, expect, vi } from 'vitest'
-import { MyForm } from './MyForm'
+Co-localiser : `MyForm.page.ts` dans le même dossier que le composant. Référence : `Auth/ui/ForgottenPasswordForm/ForgottenPasswordForm.page.ts`.
 
-// Mock du hook d'action — ne pas tester l'infra dans un test unitaire
-const mockProcess = vi.fn()
-vi.mock('../../application/useMyAction', () => ({
-  useMyAction: () => ({ process: mockProcess, isPending: false }),
-}))
+```ts
+import { userEvent, within } from 'storybook/test'
 
-describe('MyForm', () => {
-  it('affiche les erreurs de validation après blur sur champ vide', async () => {
-    const user = userEvent.setup()
-    render(<MyForm />)
+export class MyFormPage {
+  private readonly canvas: ReturnType<typeof within>
 
-    const emailInput = screen.getByRole('textbox', { name: /email/i })
-    await user.click(emailInput)
-    await user.tab() // déclenche blur → validation onBlur
+  constructor(canvasElement: HTMLElement) {
+    this.canvas = within(canvasElement)
+  }
 
-    // react-intl est mocké globalement (tests/setup.ts) — clés i18n retournées telles quelles
-    expect(screen.getByText(/form\.email\.error/i)).toBeInTheDocument()
-  })
+  // Requêtes nommées par intention — rôle + nom accessible d'abord
+  emailInput() {
+    return this.canvas.findByRole('textbox', { name: /email/i })
+  }
 
-  it('ne soumet pas si le formulaire est invalide', async () => {
-    const user = userEvent.setup()
-    render(<MyForm />)
+  // Texte traduit : regex bilingue, Chromium headless rend la locale en-US
+  submitButton() {
+    return this.canvas.getByRole('button', { name: /submit|envoyer/i })
+  }
 
-    await user.click(screen.getByRole('button', { name: /submit/i }))
+  emailError() {
+    return this.canvas.findByText(/invalid email|email invalide/i)
+  }
 
-    expect(mockProcess).not.toHaveBeenCalled()
-  })
+  toast(matcher: RegExp) {
+    return within(document.body).findByText(matcher)
+  }
 
-  it('soumet avec les valeurs correctes si le formulaire est valide', async () => {
-    const user = userEvent.setup()
-    render(<MyForm />)
+  // Actions chaînables : elles renvoient `this`
+  async fillEmail(email: string) {
+    await userEvent.type(await this.emailInput(), email)
+    return this
+  }
 
-    await user.type(screen.getByRole('textbox', { name: /email/i }), 'test@example.com')
-    await user.click(screen.getByRole('button', { name: /submit/i }))
+  async blurEmail() {
+    await userEvent.click(await this.emailInput())
+    await userEvent.tab() // blur → déclenche la validation onBlur
+    return this
+  }
 
-    expect(mockProcess).toHaveBeenCalledWith('test@example.com', expect.anything())
-  })
-})
+  async submit() {
+    await userEvent.click(this.submitButton())
+    return this
+  }
+}
 ```
 
-**Contexte de test :**
-
-- `react-intl` mocké globalement dans `tests/setup.ts` — clés retournées telles quelles
-- `@hookform/devtools` mocké globalement — pas de DevTool rendu dans les tests
-- MSW configuré globalement — utiliser `server.use(...)` dans le `describe` si besoin
-- Pas de `MemoryRouter` sauf si le formulaire utilise `useNavigate` / `useSearchParams`
-- Ne pas mocker `@repo/form-factory` — tester le comportement réel du formulaire
+- Premier champ en `findBy*` : il peut dépendre d'un rendu asynchrone.
+- Un toast se cherche dans `document.body` : il est rendu hors du canvas.
+- Le Page Object ne contient pas d'assertion : les `expect` restent dans les plays.
 
 ---
 
-## Étape 5 — Story Storybook avec play
+## Étape 5 — Story Storybook avec plays
 
-Co-localiser : `MyForm.stories.tsx` dans le même dossier.
+Co-localiser : `MyForm.stories.tsx` dans le même dossier. Les plays tournent dans Chromium (job CI `Storybook plays`) et couvrent les trois cas : erreurs de validation, soumission invalide, soumission valide.
 
 ```tsx
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { expect, userEvent, within } from 'storybook/test'
+import { expect, fn, waitFor } from 'storybook/test'
 import { http, HttpResponse } from 'msw'
 import { MyForm } from './MyForm'
+import { MyFormPage } from './MyForm.page'
+
+// Spy sur le body reçu par la route : il remplace le vi.mock du hook applicatif
+const onCreate = fn()
 
 const meta = {
   component: MyForm,
   title: 'Feature/MyForm',
+  parameters: {
+    msw: {
+      handlers: [
+        http.post('*/my-endpoint', async ({ request }) => {
+          onCreate(await request.json())
+          return HttpResponse.json({ id: '123' })
+        }),
+      ],
+    },
+  },
+  beforeEach: () => {
+    onCreate.mockClear()
+  },
 } satisfies Meta<typeof MyForm>
 
 export default meta
 type Story = StoryObj<typeof meta>
 
-// Story 1 : état par défaut
-export const Default: Story = {}
+export const Default: Story = {
+  name: 'Rendu initial',
+}
 
-// Story 2 : erreurs de validation (champs vides → blur → erreurs visibles)
 export const ValidationErrors: Story = {
+  name: 'Champ vide puis blur — erreur de validation affichée',
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
+    const page = new MyFormPage(canvasElement)
+    await page.blurEmail()
 
-    const emailInput = canvas.getByRole('textbox', { name: /email/i })
-    await userEvent.click(emailInput)
-    await userEvent.tab() // blur → déclenche validation
-
-    await expect(canvas.getByText(/invalide/i)).toBeInTheDocument()
+    await expect(await page.emailError()).toBeInTheDocument()
   },
 }
 
-// Story 3 : soumission réussie (MSW mock API)
-export const SuccessfulSubmit: Story = {
-  parameters: {
-    msw: {
-      handlers: [http.post('/api/my-endpoint', () => HttpResponse.json({ id: '123' }))],
-    },
-  },
+export const InvalidSubmit: Story = {
+  name: 'Soumission invalide — aucun appel API',
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
+    const page = new MyFormPage(canvasElement)
+    await page.fillEmail('not-an-email')
+    await page.submit()
 
-    await userEvent.type(canvas.getByRole('textbox', { name: /email/i }), 'test@example.com')
-    await userEvent.click(canvas.getByRole('button', { name: /submit/i }))
+    await expect(await page.emailError()).toBeInTheDocument()
+    await expect(onCreate).not.toHaveBeenCalled()
+  },
+}
 
-    await expect(canvas.getByText(/success/i)).toBeInTheDocument()
+export const SubmitSuccess: Story = {
+  name: 'Soumission valide — body envoyé à l’API',
+  play: async ({ canvasElement }) => {
+    const page = new MyFormPage(canvasElement)
+    await page.fillEmail('test@example.com')
+    await page.submit()
+
+    await waitFor(() => expect(onCreate).toHaveBeenCalledWith({ email: 'test@example.com' }))
   },
 }
 ```
@@ -310,9 +330,11 @@ export const SuccessfulSubmit: Story = {
 **Notes Storybook :**
 
 - `intlDecorator`, `QueryClientProvider`, `ThemeProvider` sont globaux — pas de wrapper manuel
+- L'i18n est réelle dans les plays (pas de clés brutes) : tout texte traduit se cherche avec une regex bilingue (`/submit|envoyer/i`), Chromium headless rend la locale `en-US`
 - `DevTool` s'affiche automatiquement dans Storybook (mode DEV) — pas besoin de configuration
-- Toujours au moins une story avec `play` couvrant la validation des erreurs
-- MSW via `parameters.msw.handlers` pour mocker les appels réseau
+- MSW via `parameters.msw.handlers` ; un handler qui ne sert qu'à une story se met dans les `parameters` de cette story
+- Une soumission invalide se prouve par un effet visible (message d'erreur) **et** par le spy jamais appelé
+- Ne pas mocker `@repo/form-factory` — les plays testent le comportement réel du formulaire
 
 ---
 
@@ -343,7 +365,8 @@ const { control, handleSubmit } = useForm({ resolver: zodResolver(schema) })
 - [ ] `const onSubmit = async (data: {FormName}Values) => { ... }` — pas de `form.handleSubmit()` à l'usage
 - [ ] `Form`, `Field` (et `FieldArray` si besoin) destructurés depuis `useForm()`
 - [ ] Aucun import de `Controller`, `useForm`, `zodResolver`, `handleSubmit` de `react-hook-form` / `@hookform/resolvers`
-- [ ] Tests unitaires : erreurs de validation + soumission invalide + soumission valide
-- [ ] Story avec `play` couvrant la validation des erreurs
+- [ ] Aucun `{FormName}.test.tsx` — voir `specifications/00-conventions.md` › Tests
+- [ ] Page Object `{FormName}.page.ts` : `within(canvasElement)`, requêtes nommées par intention, actions chaînables, regex bilingues
+- [ ] Plays de la story à travers le Page Object : erreurs de validation + soumission invalide + soumission valide
 - [ ] `pnpm check:types` → 0 erreur
 - [ ] Strings UI via `<FormattedMessage>` ou `intl.formatMessage()` (pas de hardcode)
