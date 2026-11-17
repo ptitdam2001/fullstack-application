@@ -56,12 +56,6 @@ export class ForgottenPasswordFormPage {
     return this
   }
 
-  async leaveEmailEmpty() {
-    await userEvent.click(await this.emailInput())
-    await userEvent.tab()
-    return this
-  }
-
   async typeEmailAndBlur(email: string) {
     await this.fillEmail(email)
     await userEvent.tab()

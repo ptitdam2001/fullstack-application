@@ -69,7 +69,8 @@ export const RegisterForm = () => {
   }
 
   return (
-    <Form onSubmit={onSubmit} className="flex flex-col">
+    // zod validates the fields: no browser bubble for isRequired or type="email"
+    <Form noValidate onSubmit={onSubmit} className="flex flex-col">
       <Field name="firstName">
         {({ field, fieldState }) => (
           <TextInputField

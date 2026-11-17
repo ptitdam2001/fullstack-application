@@ -73,6 +73,8 @@ export const ForgottenPasswordForm = () => {
         <FormattedMessage id="auth.forgottenPassword" />
       </h2>
       <Form
+        // zod validates the fields: no browser bubble for isRequired or type="email"
+        noValidate
         onSubmit={async data => {
           try {
             await process(data.email!)
