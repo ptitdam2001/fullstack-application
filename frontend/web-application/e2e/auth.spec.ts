@@ -1,5 +1,6 @@
 import { test, expect } from './fixtures/test'
 import { LoginPage } from './pages/LoginPage'
+import { mockMsw } from './mockMsw'
 
 /**
  * Auth specs run WITHOUT the storageState injected by setup (explicit
@@ -32,6 +33,22 @@ test.describe('auth — login flow', () => {
 
     // MSW returns random user data — may redirect to /app or /app/onboarding
     await expect(page).toHaveURL(/\/app/, { timeout: 10_000 })
+  })
+
+  test('wrong password keeps the sign-in form: toast shown, no page reload', async ({ page }) => {
+    await mockMsw(page, 'post', '*/login', { status: 401, message: 'Email ou mot de passe incorrect' }, 401)
+    const loginPage = new LoginPage(page)
+    await loginPage.goto()
+    // A reload of the page would wipe this marker: the 401 interceptor must leave the sign-in to the form
+    await page.evaluate(() => {
+      ;(window as Window & { __noReload?: boolean }).__noReload = true
+    })
+
+    await loginPage.login('test@example.com', 'WrongPassw0rd')
+
+    await expect(page.getByText('Incorrect email or password.')).toBeVisible()
+    await expect(page).toHaveURL(/\/auth\/signin/)
+    expect(await page.evaluate(() => (window as Window & { __noReload?: boolean }).__noReload)).toBe(true)
   })
 
   test('/ root route redirects to login when unauthenticated', async ({ page }) => {
